@@ -1,0 +1,21 @@
+.ul {
+  padding: unset;
+  list-style: none;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 10px;
+  display: grid;
+}
+
+.li a {
+  display: block;
+  background-color: brown;
+  border-radius: 10px;
+  transition: 0.3s;
+  padding: 12px;
+  height: 200px;
+  overflow: hidden;
+}
+
+.li a:hover {
+  transform: scale(1.03);
+}
