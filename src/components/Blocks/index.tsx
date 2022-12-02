@@ -1,5 +1,5 @@
-import styles from "../../../styles/Blocks.module.css";
-import Block from "./block";
+import Block from "./Block";
+import styles from "./Block.module.css";
 
 
 export default function Blocks(blocks: any) {

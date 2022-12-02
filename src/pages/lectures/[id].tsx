@@ -1,5 +1,5 @@
 import axios from "axios";
-import Blocks from "../../src/components/Blocks";
+import Blocks from "../../components/Blocks";
 
 export default function Lecture({ lecture }: any) {
   console.log("lecture: ", lecture);

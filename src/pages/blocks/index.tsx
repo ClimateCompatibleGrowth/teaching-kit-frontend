@@ -1,8 +1,8 @@
 import axios from "axios";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
-import { Block } from "../../src/types";
-import styles from "../../styles/PageBlocks.module.css";
+import { Block } from "../../types";
+import styles from "../../styles/LearningUnit.module.css";
 
 
 type props = { blocks: Block[] };

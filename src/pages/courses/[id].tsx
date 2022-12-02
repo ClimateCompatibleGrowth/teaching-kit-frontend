@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 // import { Course, Lecture } from "../../src/types";
-import styles from "../../styles/Course.module.css";
-import styles2 from "../../styles/Blocks.module.css";
+import styles from "./Course.module.css";
 
 export default function Course({ course }: any) {
   const [showLectures, setShowLectures] = useState(false);
@@ -19,7 +18,7 @@ export default function Course({ course }: any) {
         <h2>Prerequisites</h2>
         <p>{course.attributes.prerequisites}</p>
         <h2
-          className={styles2.title}
+          className="title"
           onClick={() => setShowLectures(!showLectures)}
         >
           Course Content
@@ -27,7 +26,7 @@ export default function Course({ course }: any) {
         {showLectures && (
           <ul>
             {course?.attributes.lectures.map((lecture: any) => (
-              <li key={lecture.id} className={styles2.li}>
+              <li key={lecture.id}>
                 {lecture.title}
               </li>
             ))}

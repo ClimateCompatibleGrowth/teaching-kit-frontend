@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { block } from "../../../pages/blocks/index";
-import styles from "../../../styles/Blocks.module.css";
+import styles from "./Block.module.css";
+// import { block } from "../../pages/blocks/index";
 
 export default function Block(block: any) {
   const [showSlides, setShowSlides] = useState(false);

@@ -1,7 +1,7 @@
 import axios from "axios";
 import Link from "next/link";
-import { Lecture } from "../../src/types";
-import styles from '../../styles/PageBlocks.module.css'
+import { Lecture } from "../../types";
+import styles from '../../styles/LearningUnit.module.css'
 
 
 type props = { lectures: Lecture[] };
