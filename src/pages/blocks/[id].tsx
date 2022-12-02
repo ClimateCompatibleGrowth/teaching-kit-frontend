@@ -1,14 +1,21 @@
 import axios from "axios";
-import ReactMarkdown from "react-markdown";
-// import { Block } from "../../src/types";
+import LearningMaterial from "../../components/LearningMaterial";
+import LearningMaterialEnding from "../../components/LearningMaterialEnding";
+import { Block as BlockType} from "../../types";
 
-// type props = { block: Block };
+ type props = { block: BlockType };
 
-export default function Block({ block }: any) {
+export default function Block({ block }: props) {
   return (
     <div className="container">
-      <h1>{block.attributes.Title}</h1>
-      <ReactMarkdown>{block.attributes.Abstract}</ReactMarkdown>
+      <LearningMaterial
+        Title={block.attributes.Title}
+        Abstract={block.attributes.Abstract}
+        LearningOutcomes={block.attributes.LearningOutcomes}
+      />
+      <LearningMaterialEnding
+        References={block.attributes.References}
+      />
     </div>
   );
 }
@@ -24,7 +31,7 @@ export async function getStaticPaths() {
   const res = await axios.get(`${process.env.STRAPI_API_URL}/blocks`);
   const blocks = res.data.data;
 
-  const paths = blocks.map((block: any) => ({
+  const paths = blocks.map((block: BlockType) => ({
     params: { id: block.id.toString() },
   }));
 
@@ -33,7 +40,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(ctx: any) {
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/blocks/${ctx.params.id}`
+    `${process.env.STRAPI_API_URL}/blocks/${ctx.params.id}?populate=*`
   );
   const block = res.data.data;
 

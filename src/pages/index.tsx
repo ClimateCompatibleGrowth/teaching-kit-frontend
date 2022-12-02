@@ -10,7 +10,7 @@ export default function Home() {
         <title>Teaching kit</title>
         <meta
           name="description"
-          content="KTH dUSA Teaching kit Platform, view courses online and download them as a powerpoint"
+          content="KTH dESA Teaching kit Platform, view courses online and download them as a powerpoint"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>

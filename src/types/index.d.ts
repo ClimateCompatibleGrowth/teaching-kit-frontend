@@ -41,15 +41,16 @@ export type Course = {
   attributes: {
     Title: string;
     Abstract: string;
+    LearningOutcomes: LearningOutcome[];
+    Prerequisites: Prerequisite[];
+    Level: "Beginner" | "Intermediate" | "Expert" | null;
+    Acknowledgement: string;
+    CiteAs: string;
+    CourseCreator: Author[];
+    Lectures: { data: Lecture[] };
     createdAt: string;
     updatedAt: string;
     publishedAt: string;
-    Acknowledgement: string;
-    Level: "Beginner" | "Intermediate" | "Expert" | null;
-    CiteAs: string;
-    CourseCreator: Author[];
-    lectures: Lecture[];
-    Prerequisites: Prerequisite[];
   };
 };
 
@@ -58,16 +59,16 @@ export type Lecture = {
   attributes: {
     Title: string;
     Abstract: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
+    LearningOutcomes: LearningOutcome[];
+    LectureCreator: Author[];
     Level: "Beginner" | "Intermediate" | "Expert" | null;
     Acknowledgement: string;
     CiteAs: string;
-    LectureCreator: Author[];
-    Blocks: Block[];
-    Courses: Course[];
-    LearningOutcomes: LearningOutcome[];
+    Blocks: { data: Block[] };
+    Courses: { data: Course[] };
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
   };
 };
 
@@ -77,12 +78,12 @@ export type Block = {
     Title: string;
     Abstract: string;
     LearningOutcomes: LearningOutcome[];
+    Author: Author[];
     DurationInMinutes: number;
     Document: string;
     Slides: Slide[];
-    Author: Author[];
     References: string;
-    Lectures: Lecture[];
+    Lectures: { data: Lecture[] };
     createdAt: string;
     updatedAt: string;
     publishedAt: string;

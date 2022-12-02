@@ -1,17 +1,18 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import styles from "./Block.module.css";
-// import { block } from "../../pages/blocks/index";
+import { Block as BlockType } from "../../types";
 
-export default function Block(block: any) {
+export type Props = { block: BlockType["attributes"] };
+export default function Block({block}: Props) {
+  
   const [showSlides, setShowSlides] = useState(false);
 
   return (
     <>
-      <h2 className={styles.title} onClick={() => setShowSlides(!showSlides)}>
-        Block: {block.block.Title}
+      <h2 className="title" onClick={() => setShowSlides(!showSlides)}>
+        Block: {block.Title}
       </h2>
-      {showSlides && <ReactMarkdown>{block.block.Slides}</ReactMarkdown>}
+      {showSlides && <ReactMarkdown>{block.Document}</ReactMarkdown>}
     </>
   );
 }

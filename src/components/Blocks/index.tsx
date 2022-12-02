@@ -1,13 +1,14 @@
 import Block from "./Block";
 import styles from "./Block.module.css";
+import { Block as BlockType } from "../../types";
 
-
-export default function Blocks(blocks: any) {
+export type Props = { blocks?: BlockType[] };
+export default function Blocks({ blocks }: Props) {
   return (
     <ul className={styles.ul}>
-      {blocks?.blocks.map((block: any) => (
+      {blocks?.map((block: any) => (
         <li key={block.id} className={styles.li}>
-            <Block block={block.attributes}/>
+          <Block block={block.attributes} />
         </li>
       ))}
     </ul>
