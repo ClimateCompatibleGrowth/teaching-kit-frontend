@@ -1,12 +1,14 @@
 import axios from "axios";
-import { block } from ".";
 import ReactMarkdown from "react-markdown";
+// import { Block } from "../../src/types";
+
+// type props = { block: Block };
 
 export default function Block({ block }: any) {
   return (
     <div className="container">
       <h1>{block.attributes.Title}</h1>
-      <ReactMarkdown>{block.attributes.Slides}</ReactMarkdown>
+      <ReactMarkdown>{block.attributes.Abstract}</ReactMarkdown>
     </div>
   );
 }
@@ -22,7 +24,7 @@ export async function getStaticPaths() {
   const res = await axios.get(`${process.env.STRAPI_API_URL}blocks`);
   const blocks = res.data.data;
 
-  const paths = blocks.map((block: block) => ({
+  const paths = blocks.map((block: any) => ({
     params: { id: block.id },
   }));
 

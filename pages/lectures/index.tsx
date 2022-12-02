@@ -1,26 +1,17 @@
 import axios from "axios";
 import Link from "next/link";
+import { Lecture } from "../../src/types";
 import styles from '../../styles/PageBlocks.module.css'
 
-export type lecture = {
-  id: number;
-  attributes: {
-    Title: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
-    vuid: string;
-    versionNumber: number;
-    isVisibleInListView: boolean;
-  };
-};
 
-export default function Lectures({ lectures }: any) {
+type props = { lectures: Lecture[] };
+
+export default function Lectures({ lectures }: props) {
   return (
     <div className="container">
       <h1>Lectures</h1>
       <ul className={styles.ul}>
-        {lectures.map((lecture: lecture) => (
+        {lectures.map((lecture: Lecture) => (
           <li key={lecture.id} className={styles.li}>
             <Link href={`/lectures/${encodeURIComponent(lecture.id)}`}>
               <h2>{lecture.attributes.Title}</h2>

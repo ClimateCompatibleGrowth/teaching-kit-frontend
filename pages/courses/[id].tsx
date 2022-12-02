@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { course } from ".";
+// import { Course, Lecture } from "../../src/types";
 import styles from "../../styles/Course.module.css";
 import styles2 from "../../styles/Blocks.module.css";
 
@@ -51,7 +51,7 @@ export async function getStaticPaths() {
   const res = await axios.get(`${process.env.STRAPI_API_URL}course`);
   const courses = res.data.data;
 
-  const paths = courses.map((course: course) => ({
+  const paths = courses.map((course: any) => ({
     params: { id: course.id },
   }));
 
