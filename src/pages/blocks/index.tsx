@@ -2,13 +2,12 @@ import axios from "axios";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { Block } from "../../types";
-import styles from "../../styles/LearningUnit.module.css";
+import styles from "../../styles/LearningMaterial.module.css";
 
 
 type props = { blocks: Block[] };
 
 export default function Blocks({ blocks }: props) {
-  console.log("blocks:", blocks);
   return (
     <div className="container">
       <h1>Blocks</h1>
@@ -27,9 +26,8 @@ export default function Blocks({ blocks }: props) {
 }
 
 export async function getStaticProps() {
-  const res = await axios.get(`${process.env.STRAPI_API_URL}blocks`);
+  const res = await axios.get(`${process.env.STRAPI_API_URL}/blocks`);
   const blocks = res.data.data;
-  console.log("res: ", res);
 
   return {
     props: { blocks },

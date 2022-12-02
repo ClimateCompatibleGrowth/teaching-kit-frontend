@@ -21,11 +21,11 @@ export async function getStaticPaths() {
     };
   }
 
-  const res = await axios.get(`${process.env.STRAPI_API_URL}blocks`);
+  const res = await axios.get(`${process.env.STRAPI_API_URL}/blocks`);
   const blocks = res.data.data;
 
   const paths = blocks.map((block: any) => ({
-    params: { id: block.id },
+    params: { id: block.id.toString() },
   }));
 
   return { paths, fallback: false };
@@ -33,7 +33,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(ctx: any) {
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}blocks/${ctx.params.id}`
+    `${process.env.STRAPI_API_URL}/blocks/${ctx.params.id}`
   );
   const block = res.data.data;
 

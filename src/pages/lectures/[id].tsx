@@ -2,7 +2,6 @@ import axios from "axios";
 import Blocks from "../../components/Blocks";
 
 export default function Lecture({ lecture }: any) {
-  console.log("lecture: ", lecture);
   
   return (
     <div className="container">
@@ -20,11 +19,11 @@ export async function getStaticPaths() {
     };
   }
 
-  const res = await axios.get(`${process.env.STRAPI_API_URL}lectures`);
+  const res = await axios.get(`${process.env.STRAPI_API_URL}/lectures`);
   const lectures = res.data.data;
 
   const paths = lectures.map((lecture: any) => ({
-    params: { id: lecture.id },
+    params: { id: lecture.id.toString() },
   }));
 
   return { paths, fallback: false };
@@ -32,9 +31,8 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(ctx: any) {
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}lectures/${ctx.params.id}?populate=*`
+    `${process.env.STRAPI_API_URL}/lectures/${ctx.params.id}?populate=*`
   );
-  console.log("res: ", res);
   const lecture = res.data.data;
   
 

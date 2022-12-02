@@ -1,7 +1,7 @@
 import axios from "axios";
 import Link from "next/link";
 import { Course } from "../../types";
-import styles from '../../styles/LearningUnit.module.css'
+import styles from '../../styles/LearningMaterial.module.css'
 
 
 type props = { courses: Course[] };
@@ -24,7 +24,7 @@ export default function Courses({ courses }: props ) {
 }
 
 export async function getStaticProps() {
-  const res = await axios.get(`${process.env.STRAPI_API_URL}courses`);
+  const res = await axios.get(`${process.env.STRAPI_API_URL}/courses`);
   const courses = res.data.data;
 
   return {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-// import { Course, Lecture } from "../../src/types";
+import { Course as CourseType} from "../../types";
 import styles from "./Course.module.css";
 
 export default function Course({ course }: any) {
@@ -17,51 +17,47 @@ export default function Course({ course }: any) {
         <p>{course.attributes.learningOutcomes}</p>
         <h2>Prerequisites</h2>
         <p>{course.attributes.prerequisites}</p>
-        <h2
-          className="title"
-          onClick={() => setShowLectures(!showLectures)}
-        >
+        <h2 className="title" onClick={() => setShowLectures(!showLectures)}>
           Course Content
         </h2>
         {showLectures && (
           <ul>
             {course?.attributes.lectures.map((lecture: any) => (
-              <li key={lecture.id}>
-                {lecture.title}
-              </li>
+              <li key={lecture.id}>{lecture.title}</li>
             ))}
           </ul>
         )}
       </div>
-      <div className={styles.metaDataContainer}>
-      </div>
+      <div className={styles.metaDataContainer}></div>
     </div>
   );
 }
 
 export async function getStaticPaths() {
-  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
+  if (process.env.SKIP_BUILD_STATIC_GENERATION === 'true') {
     return {
       paths: [],
       fallback: "blocking",
     };
   }
 
-  const res = await axios.get(`${process.env.STRAPI_API_URL}course`);
+  const res = await axios.get(`${process.env.STRAPI_API_URL}/courses`);
   const courses = res.data.data;
 
-  const paths = courses.map((course: any) => ({
-    params: { id: course.id },
-  }));
-
+  const paths = courses.map((course: CourseType) => {
+    return {
+      params: { id: course.id.toString() },
+    };
+  });
   return { paths, fallback: false };
 }
 
 export async function getStaticProps(ctx: any) {
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}courses/${ctx.params.id}`
+    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}`
   );
-  const course = res.data.data;
+  const course = res?.data?.data;
+
   course.attributes.abstract =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
   course.attributes.difficulty = "Easy";

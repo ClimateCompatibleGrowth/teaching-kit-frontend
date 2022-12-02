@@ -1,15 +1,14 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Introduction
+This is the frontend part of the Teaching Kit!
+
 
 ## Environment variables for local run
-
-SKIP_BUILD_STATIC_GENERATION=true/false
-STRAPI_API_URL=http://localhost:1337/api
-
 First, run the development server:
 
 ```bash
+npm install
 npm run dev
 ```
 
@@ -35,3 +34,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+# Style Guide
+
+## Types
+
+- if you use a type/interface in more than one place it goes into the ~src/types/index.d.ts file
+- if you extend/use a type/interface, it can be declared locally, but as long as it doesn't get used more than once
+
+## Styles
+We use ... in this project.
+
+The local styles for a component should be placed in the same directory.
+Styles used over multiple components should be placed inside /src/styles/
