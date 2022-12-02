@@ -2,8 +2,9 @@ import axios from "axios";
 import { useState } from "react";
 import LearningMaterial from "../../components/LearningMaterial";
 import LearningMaterialEnding from "../../components/LearningMaterialEnding";
-import { Course as CourseType, Lecture, Prerequisite } from "../../types";
-import styles from "./Course.module.css";
+import MetaDataContainer from "../../components/MetaDataContainer";
+import { Course as CourseType, Lecture, } from "../../types";
+import styles from "../../styles/LearningMaterial.module.css";
 
 type props = { course: CourseType };
 
@@ -11,8 +12,8 @@ export default function Course({ course }: props) {
   const [showLectures, setShowLectures] = useState(false);
 
   return (
-    <div className="container">
-      <div className={styles.courseOverviewContainer}>
+    <div className={styles.learningMaterialContainer}>
+      <div className={styles.learningMaterialOverview}>
         <LearningMaterial
           Title={course.attributes.Title}
           Abstract={course.attributes.Abstract}
@@ -34,13 +35,12 @@ export default function Course({ course }: props) {
           CiteAs={course.attributes.CiteAs}
         />
       </div>
-      <div className={styles.metaDataContainer}>
-        {
-          // level
-          // duration
-          // author
-        }
-      </div>
+      <MetaDataContainer
+        typeOfLearningMaterial="Course"
+        level={course.attributes.Level}
+        duration={"5 h"}
+        authors={course.attributes.CourseCreator}
+      ></MetaDataContainer>
     </div>
   );
 }
@@ -58,7 +58,7 @@ export async function getStaticPaths() {
 
   const paths = courses.map((course: CourseType) => {
     return {
-      params: { id: course.id.toString() },
+      params: { id: `${course.id}`},
     };
   });
   return { paths, fallback: false };

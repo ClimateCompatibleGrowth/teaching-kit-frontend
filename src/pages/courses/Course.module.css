@@ -3,10 +3,6 @@
   padding-top: 1rem;
 }
 
-.courseOverviewContainer {
-
-}
-
-.metaDataContainer {
-  width: 200px;
+.learningMaterialOverview {
+  width: 80%;
 }

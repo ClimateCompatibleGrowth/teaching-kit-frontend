@@ -36,6 +36,8 @@ export type Author = {
   };
 };
 
+export type Level = "Beginner" | "Intermediate" | "Expert" | null;
+
 export type Course = {
   id: number;
   attributes: {
@@ -43,10 +45,10 @@ export type Course = {
     Abstract: string;
     LearningOutcomes: LearningOutcome[];
     Prerequisites: Prerequisite[];
-    Level: "Beginner" | "Intermediate" | "Expert" | null;
+    Level: Level;
     Acknowledgement: string;
     CiteAs: string;
-    CourseCreator: Author[];
+    CourseCreator: {data: Author[];}
     Lectures: { data: Lecture[] };
     createdAt: string;
     updatedAt: string;
@@ -60,8 +62,8 @@ export type Lecture = {
     Title: string;
     Abstract: string;
     LearningOutcomes: LearningOutcome[];
-    LectureCreator: Author[];
-    Level: "Beginner" | "Intermediate" | "Expert" | null;
+    LectureCreator: {data: Author[];}
+    Level: Level;
     Acknowledgement: string;
     CiteAs: string;
     Blocks: { data: Block[] };
@@ -78,7 +80,7 @@ export type Block = {
     Title: string;
     Abstract: string;
     LearningOutcomes: LearningOutcome[];
-    Author: Author[];
+    Authors: {data: Author[];}
     DurationInMinutes: number;
     Document: string;
     Slides: Slide[];

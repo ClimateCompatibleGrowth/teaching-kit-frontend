@@ -1,3 +1,17 @@
+.h1 {
+  border-top: 1px solid;
+  padding-top: 1rem;
+}
+
+.learningMaterialContainer {
+  padding: 0 2rem;
+  display: flex;
+}
+
+.learningMaterialOverview {
+  width: 80%;
+}
+
 .ul {
   padding: unset;
   list-style: none;
