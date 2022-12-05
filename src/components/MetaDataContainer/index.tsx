@@ -1,31 +1,33 @@
-import React from "react";
-import styles from "./MetaDataContainer.module.css";
-import { Author, Level } from "../../types";
+import React from 'react'
+import styles from './MetaDataContainer.module.css'
+import { Author, Block, Lecture, Level } from '../../types'
+import handleDocxDownload from '../../utils/downloadAsDocx'
+
+type DocxDownloadParameters = {
+  title: string
+  courseId?: number
+  blocks?: Block[]
+}
 
 export type Props = {
-  typeOfLearningMaterial: string;
-  level?: Level;
-  duration?: string;
-  authors?: { data: Author[] };
-};
+  typeOfLearningMaterial: string
+  level?: Level
+  duration?: string
+  authors?: { data: Author[] }
+  docxDownloadParameters?: DocxDownloadParameters
+  handlePptxDownload?: () => void
+}
 
 export default function MetaDataContainer({
   typeOfLearningMaterial,
   level,
   duration,
   authors,
+  docxDownloadParameters,
+  handlePptxDownload,
 }: Props) {
-
-  const handleDocxDownload = () => {
-
-  }
-
-  const handlePptxDownload = () => {
-
-  }
-
   return (
-    <div className={styles.metaDataContainer}>
+    <div id="meta-data-html" className={styles.metaDataContainer}>
       <h3>About this {typeOfLearningMaterial}</h3>
       <p>Level: {level}</p>
       <p>Duration: {duration}</p>
@@ -33,7 +35,7 @@ export default function MetaDataContainer({
       <ul className={styles.ul}>
         {authors?.data.map((author: Author) => (
           <li key={author.id}>
-            {author.attributes.Name}:{" "}
+            {author.attributes.Name}:{' '}
             <a href={`mailto:${author.attributes.Email}`}>
               {author.attributes.Email}
             </a>
@@ -42,9 +44,19 @@ export default function MetaDataContainer({
       </ul>
       <h4>Download</h4>
       <div className={styles.downloadContainer}>
-        <button onClick={handleDocxDownload}>Docx</button>
+        <button
+          onClick={() =>
+            handleDocxDownload(
+              docxDownloadParameters?.title,
+              docxDownloadParameters?.courseId,
+              docxDownloadParameters?.blocks
+            )
+          }
+        >
+          Docx
+        </button>
         <button onClick={handlePptxDownload}>Pptx</button>
       </div>
     </div>
-  );
+  )
 }

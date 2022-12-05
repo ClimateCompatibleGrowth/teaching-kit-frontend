@@ -46,5 +46,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## Styles
 We use ... in this project.
 
-The local styles for a component should be placed in the same directory.
-Styles used over multiple components should be placed inside /src/styles/
+- The local styles for a component should be placed in the same directory.
+- Styles used over multiple components should be placed inside /src/styles/

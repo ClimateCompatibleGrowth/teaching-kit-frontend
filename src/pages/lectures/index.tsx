@@ -7,6 +7,7 @@ import styles from '../../styles/LearningMaterial.module.css'
 type props = { lectures: Lecture[] };
 
 export default function Lectures({ lectures }: props) {
+
   return (
     <div className="container">
       <h1>Lectures</h1>
