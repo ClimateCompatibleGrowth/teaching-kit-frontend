@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link'
 
 export default function Navbar() {
   return (
@@ -6,6 +6,9 @@ export default function Navbar() {
       <ul>
         <li>
           <Link href="/">Home</Link>
+        </li>
+        <li>
+          <Link href="/discover">Discover</Link>
         </li>
         <li>
           <Link href="/courses">Courses</Link>
@@ -18,5 +21,5 @@ export default function Navbar() {
         </li>
       </ul>
     </nav>
-  );
+  )
 }
