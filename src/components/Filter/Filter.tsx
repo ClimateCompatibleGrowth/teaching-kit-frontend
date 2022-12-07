@@ -5,11 +5,26 @@ import {
   KeywordAttributes,
   searchForKeywords,
 } from '../../shared/requests/filter'
+import Chip from '../Chip/Chip'
+import FilterDropdownListItem from './FilterDropdownListItem/FilterDropdownListItem'
+
+import {
+  FilterDropdownList,
+  FilterInput,
+  FilterWrapper,
+  MoreResultsInformation,
+  SelectedKeyword,
+  SelectedKeywordWrapper,
+} from './styles'
 
 type Props = {
   selectedKeywords: Data<KeywordAttributes>[]
   setSelectedKeywords: Dispatch<SetStateAction<Data<KeywordAttributes>[]>>
 }
+
+// Note that Strapi's default value for page sizes currently is 25. Hence,
+// if this constant is increased to > 25, we will still only get 25 results.
+const MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN = 20
 
 export default function Filter({
   selectedKeywords,
@@ -26,10 +41,6 @@ export default function Filter({
   }, [debouncedSearchTerm])
 
   const onSearchTermChange = async (searchTerm: string) => {
-    if (searchTerm.length < 2) {
-      return
-    }
-
     const matchingKeywords = await searchForKeywords(searchTerm)
     setMatchingKeywords(matchingKeywords)
   }
@@ -39,33 +50,63 @@ export default function Filter({
       ...new Set([...previousState, selectedKeyword]),
     ])
 
-  const deselectKeyword = (selectedKeyword: Data<KeywordAttributes>) =>
+  const deselectKeyword = (selectedKeywordId: string) =>
     setSelectedKeywords((previousState) =>
-      previousState.filter((keyword) => keyword.id !== selectedKeyword.id)
+      previousState.filter(
+        (keyword) => keyword.id !== parseInt(selectedKeywordId)
+      )
     )
 
-  return (
-    <div className="container">
-      <div>
-        {selectedKeywords.map((selectedKeyword, index) => (
-          <button key={index} onClick={() => deselectKeyword(selectedKeyword)}>
-            {selectedKeyword.attributes.Keyword}
-          </button>
+  const renderAllResults = () =>
+    matchingKeywords.map((matchingKeyword, index) => (
+      <FilterDropdownListItem
+        key={index}
+        label={matchingKeyword.attributes.Keyword}
+        onClick={() => selectKeyword(matchingKeyword)}
+      />
+    ))
+
+  const renderLimitedResults = (resultsLengthLimit: number) => {
+    return (
+      <>
+        {[...Array(resultsLengthLimit).keys()].map((index) => (
+          <FilterDropdownListItem
+            key={index}
+            label={matchingKeywords[index].attributes.Keyword}
+            onClick={() => selectKeyword(matchingKeywords[index])}
+          />
         ))}
-      </div>
-      <input
+        <MoreResultsInformation>{`... and ${
+          matchingKeywords.length - resultsLengthLimit
+        } more matches`}</MoreResultsInformation>
+      </>
+    )
+  }
+
+  return (
+    <FilterWrapper>
+      <SelectedKeywordWrapper>
+        {selectedKeywords.map((selectedKeyword, index) => (
+          <SelectedKeyword key={index}>
+            <Chip
+              label={selectedKeyword.attributes.Keyword}
+              id={selectedKeyword.id.toString()}
+              onDelete={deselectKeyword}
+            />
+          </SelectedKeyword>
+        ))}
+      </SelectedKeywordWrapper>
+      <FilterInput
         placeholder="Search for keywords"
         onChange={(event: React.FormEvent<HTMLInputElement>) =>
           setSearchTerm(event.currentTarget.value)
         }
       />
-      <div>
-        {matchingKeywords.map((matchingKeyword, index) => (
-          <button key={index} onClick={() => selectKeyword(matchingKeyword)}>
-            {matchingKeyword.attributes.Keyword}
-          </button>
-        ))}
-      </div>
-    </div>
+      <FilterDropdownList>
+        {matchingKeywords.length > MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN
+          ? renderLimitedResults(MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN)
+          : renderAllResults()}
+      </FilterDropdownList>
+    </FilterWrapper>
   )
 }
