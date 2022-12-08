@@ -1,5 +1,9 @@
 import styled from "styled-components";
-import { UlWithoutDefaultStyle } from "../../styles/global";
+import { ButtonWithoutDefaultStyle, UlWithoutDefaultStyle } from "../../styles/global";
+
+type IconButtonProps = {
+  isPointingDown: boolean
+}
 
 export const FilterWrapper = styled.div`
   width: 14rem;
@@ -19,6 +23,10 @@ export const SelectedKeywordWrapper = styled(UlWithoutDefaultStyle)`
 
 export const SelectedKeyword = styled.li``
 
+export const InputWrapper = styled.div`
+  position: relative;
+`
+
 export const FilterInput = styled.input`
   width: 100%;
   height: 2.5rem;
@@ -26,6 +34,15 @@ export const FilterInput = styled.input`
   padding-left: 0.5rem;
 
   font-size: inherit;
+`
+
+export const IconButton = styled(ButtonWithoutDefaultStyle) <IconButtonProps>`
+  position: absolute;
+
+  right: 10px;
+  top: 8px;
+
+  transform: rotate(${props => props.isPointingDown ? "180deg" : "0deg"})
 `
 
 export const FilterDropdownList = styled(UlWithoutDefaultStyle)`

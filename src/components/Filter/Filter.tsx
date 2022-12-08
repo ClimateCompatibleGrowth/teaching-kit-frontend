@@ -1,4 +1,12 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import {
+  createRef,
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import useDebounce from '../../hooks/useDebouce'
 import {
   Data,
@@ -8,14 +16,19 @@ import {
 import Chip from '../Chip/Chip'
 import FilterDropdownListItem from './FilterDropdownListItem/FilterDropdownListItem'
 
+import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandLessOutlined'
+
 import {
   FilterDropdownList,
   FilterInput,
   FilterWrapper,
+  IconButton,
   MoreResultsInformation,
+  InputWrapper,
   SelectedKeyword,
   SelectedKeywordWrapper,
 } from './styles'
+import useOutsideClickAlerter from '../../hooks/useOutsideClickAlerter'
 
 type Props = {
   selectedKeywords: Data<KeywordAttributes>[]
@@ -30,11 +43,14 @@ export default function Filter({
   selectedKeywords,
   setSelectedKeywords,
 }: Props) {
+  const wrapperRef: RefObject<HTMLDivElement> = createRef()
   const [searchTerm, setSearchTerm] = useState('')
   const debouncedSearchTerm = useDebounce(searchTerm, 200)
   const [matchingKeywords, setMatchingKeywords] = useState<
     Data<KeywordAttributes>[]
   >([])
+  const [doShowResultsList, setDoShowResultsList] = useState(false)
+  useOutsideClickAlerter(wrapperRef, () => setDoShowResultsList(false))
 
   useEffect(() => {
     onSearchTermChange(debouncedSearchTerm)
@@ -43,6 +59,9 @@ export default function Filter({
   const onSearchTermChange = async (searchTerm: string) => {
     const matchingKeywords = await searchForKeywords(searchTerm)
     setMatchingKeywords(matchingKeywords)
+    if (searchTerm.length > 1) {
+      setDoShowResultsList(true)
+    }
   }
 
   const selectKeyword = (selectedKeyword: Data<KeywordAttributes>) =>
@@ -84,7 +103,7 @@ export default function Filter({
   }
 
   return (
-    <FilterWrapper>
+    <FilterWrapper ref={wrapperRef}>
       <SelectedKeywordWrapper>
         {selectedKeywords.map((selectedKeyword, index) => (
           <SelectedKeyword key={index}>
@@ -96,17 +115,27 @@ export default function Filter({
           </SelectedKeyword>
         ))}
       </SelectedKeywordWrapper>
-      <FilterInput
-        placeholder="Search for keywords"
-        onChange={(event: React.FormEvent<HTMLInputElement>) =>
-          setSearchTerm(event.currentTarget.value)
-        }
-      />
-      <FilterDropdownList>
-        {matchingKeywords.length > MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN
-          ? renderLimitedResults(MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN)
-          : renderAllResults()}
-      </FilterDropdownList>
+      <InputWrapper>
+        <IconButton
+          onClick={() => setDoShowResultsList((prevState) => !prevState)}
+          isPointingDown={doShowResultsList}
+        >
+          <ExpandMoreOutlinedIcon />
+        </IconButton>
+        <FilterInput
+          placeholder="Search for keywords"
+          onChange={(event: React.FormEvent<HTMLInputElement>) =>
+            setSearchTerm(event.currentTarget.value)
+          }
+        />
+      </InputWrapper>
+      {doShowResultsList && (
+        <FilterDropdownList>
+          {matchingKeywords.length > MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN
+            ? renderLimitedResults(MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN)
+            : renderAllResults()}
+        </FilterDropdownList>
+      )}
     </FilterWrapper>
   )
 }
