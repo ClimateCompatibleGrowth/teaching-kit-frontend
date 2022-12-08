@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import { ButtonWithoutDefaultStyle } from "../../../styles/global";
 
 export const ListItem = styled.li`
