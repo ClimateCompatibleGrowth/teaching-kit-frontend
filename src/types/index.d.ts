@@ -1,6 +1,11 @@
 // if you use a type/interface in more than one place it goes into the ~src/types/index.d.ts file
 // if you extend a type/interface, it can be declared locally, but as long as it doesn't get used more than once
 
+export type Data<T> = {
+  id: number
+  attributes: T
+}
+
 export type Slide = {
   id: number;
   Title: string;
@@ -19,78 +24,64 @@ export type LearningOutcome = {
 };
 
 export type Affiliation = {
-  id: number;
-  attributes: {
-    Affiliation: string;
-    Authors: Author[];
-  };
+  Affiliation: string;
+  Authors: Author[];
 };
 
 export type Author = {
-  id: number;
-  attributes: {
-    Name: string;
-    Email?: string;
-    ORCID?: string;
-    Affiliation: Affiliation;
-  };
+  Name: string;
+  Email?: string;
+  ORCID?: string;
+  Affiliation: Data<Affiliation>;
 };
 
 export type Level = "Beginner" | "Intermediate" | "Expert" | null;
 
-export type Course = {
-  id: number;
-  attributes: {
-    Title: string;
-    Abstract: string;
-    LearningOutcomes: LearningOutcome[];
-    Prerequisites: Prerequisite[];
-    Level: Level;
-    Acknowledgement: string;
-    CiteAs: string;
-    CourseCreator: {data: Author[];}
-    Lectures: { data: Lecture[] };
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
-  };
-};
-
-export type Lecture = {
-  id: number;
-  attributes: {
-    Title: string;
-    Abstract: string;
-    LearningOutcomes: LearningOutcome[];
-    LectureCreator: {data: Author[];}
-    Level: Level;
-    Acknowledgement: string;
-    CiteAs: string;
-    Blocks: { data: Block[] };
-    Courses: { data: Course[] };
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
-  };
-};
+export type Keyword = {
+  Keyword: string
+}
 
 export type Block = {
-  id: number;
-  attributes: {
-    Title: string;
-    Abstract: string;
-    LearningOutcomes: LearningOutcome[];
-    Authors: {data: Author[];}
-    DurationInMinutes: number;
-    Document: string;
-    Slides: Slide[];
-    References: string;
-    Lectures: { data: Lecture[] };
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
-    // vuid: string;
-    // versionNumber: number;
-    // isVisibleInListView: boolean;
-  };
-};
+  Title: string;
+  Abstract: string;
+  LearningOutcomes: LearningOutcome[];
+  Authors: { data: Data<Author>[]; }
+  DurationInMinutes: number;
+  Document: string;
+  Slides: Slide[];
+  References: string;
+  Lectures: { data: Data<Lecture>[] };
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+export type Lecture = {
+  Title: string;
+  Abstract: string;
+  LearningOutcomes: LearningOutcome[];
+  LectureCreator: { data: Data<Author>[]; }
+  Level: Level;
+  Acknowledgement: string;
+  CiteAs: string;
+  Blocks: { data: Data<Block>[] };
+  Courses: { data: Data<Course>[] };
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+export type Course = {
+  Title: string;
+  Abstract: string;
+  LearningOutcomes: LearningOutcome[];
+  Prerequisites: Prerequisite[];
+  Level: Level;
+  Acknowledgement: string;
+  CiteAs: string;
+  CourseCreator: { data: Data<Author>[]; }
+  Lectures: { data: Data<Lecture>[] };
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}

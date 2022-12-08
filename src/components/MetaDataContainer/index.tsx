@@ -1,13 +1,13 @@
-import React from "react";
-import styles from "./MetaDataContainer.module.css";
-import { Author, Level } from "../../types";
+import React from 'react'
+import styles from './MetaDataContainer.module.css'
+import { Author, Data, Level } from '../../types'
 
 export type Props = {
-  typeOfLearningMaterial: string;
-  level?: Level;
-  duration?: string;
-  authors?: { data: Author[] };
-};
+  typeOfLearningMaterial: string
+  level?: Level
+  duration?: string
+  authors?: { data: Data<Author>[] }
+}
 
 export default function MetaDataContainer({
   typeOfLearningMaterial,
@@ -15,14 +15,9 @@ export default function MetaDataContainer({
   duration,
   authors,
 }: Props) {
+  const handleDocxDownload = () => {}
 
-  const handleDocxDownload = () => {
-
-  }
-
-  const handlePptxDownload = () => {
-
-  }
+  const handlePptxDownload = () => {}
 
   return (
     <div className={styles.metaDataContainer}>
@@ -31,9 +26,9 @@ export default function MetaDataContainer({
       <p>Duration: {duration}</p>
       <h4>Authors</h4>
       <ul className={styles.ul}>
-        {authors?.data.map((author: Author) => (
+        {authors?.data.map((author) => (
           <li key={author.id}>
-            {author.attributes.Name}:{" "}
+            {author.attributes.Name}:{' '}
             <a href={`mailto:${author.attributes.Email}`}>
               {author.attributes.Email}
             </a>
@@ -46,5 +41,5 @@ export default function MetaDataContainer({
         <button onClick={handlePptxDownload}>Pptx</button>
       </div>
     </div>
-  );
+  )
 }

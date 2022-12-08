@@ -1,11 +1,10 @@
-import { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { Block as BlockType } from "../../types";
+import { useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import { Block as BlockType, Data } from '../../types'
 
-export type Props = { block: BlockType["attributes"] };
-export default function Block({block}: Props) {
-  
-  const [showSlides, setShowSlides] = useState(false);
+export type Props = { block: Data<BlockType>['attributes'] }
+export default function Block({ block }: Props) {
+  const [showSlides, setShowSlides] = useState(false)
 
   return (
     <>
@@ -14,5 +13,5 @@ export default function Block({block}: Props) {
       </h2>
       {showSlides && <ReactMarkdown>{block.Document}</ReactMarkdown>}
     </>
-  );
+  )
 }
