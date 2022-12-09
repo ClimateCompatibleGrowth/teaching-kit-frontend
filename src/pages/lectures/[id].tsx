@@ -11,7 +11,7 @@ export default function LecturePage({ lecture }: props) {
     <div className={styles.learningMaterialContainer}>
       <Lecture lecture={lecture} />
       <MetaDataContainer
-        typeOfLearningMaterial="Lecture"
+        typeOfLearningMaterial="LECTURE"
         level={lecture.attributes.Level}
         duration={'2 h'}
         authors={lecture.attributes.LectureCreator}

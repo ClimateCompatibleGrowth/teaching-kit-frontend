@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './MetaDataContainer.module.css'
-import { Author, Block, Lecture, Level } from '../../types'
+import { Author, Block, LearningMaterialType, Level } from '../../types'
 import handleDocxDownload from '../../utils/downloadAsDocx'
 
 type DocxDownloadParameters = {
@@ -10,7 +10,7 @@ type DocxDownloadParameters = {
 }
 
 export type Props = {
-  typeOfLearningMaterial: string
+  typeOfLearningMaterial: LearningMaterialType
   level?: Level
   duration?: string
   authors?: { data: Author[] }
@@ -29,7 +29,7 @@ export default function MetaDataContainer({
   return (
     <div id="meta-data-html" className={styles.metaDataContainer}>
       <h3>About this {typeOfLearningMaterial}</h3>
-      <p>Level: {level}</p>
+      {level !== undefined && <p>Level: {level}</p>}
       <p>Duration: {duration}</p>
       <h4>Authors</h4>
       <ul className={styles.ul}>

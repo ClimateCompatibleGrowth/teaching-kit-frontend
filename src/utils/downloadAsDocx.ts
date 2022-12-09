@@ -15,6 +15,7 @@ export default async function handleDocxDownload(
     "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
     "xmlns:w='urn:schemas-microsoft-com:office:word' " +
     "xmlns='http://www.w3.org/TR/REC-html40'>" + // Old url?
+    "xmlns='https://www.w3.org/TR/css-multicol-1/'>" +
     `<head><meta charset='utf-8'><title>${title}</title></head><body>`
   const footer = '</body></html>'
   // Add metaData
@@ -30,7 +31,7 @@ export default async function handleDocxDownload(
   // Add LearningMaterial children's content
   if (courseId) {
     const res = await axios.get(
-      `${process.env.STRAPI_API_URL}/courses/${courseId}?populate[Lectures][populate][0]=Blocks`
+      `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/courses/${courseId}?populate[Lectures][populate][0]=Blocks`
     )
     const lectures = res.data.data.attributes.Lectures.data
 
