@@ -4,11 +4,9 @@ import {
   RefObject,
   SetStateAction,
   useEffect,
-  useRef,
   useState,
 } from 'react'
 import useDebounce from '../../hooks/useDebouce'
-import { searchForKeywords } from '../../shared/requests/filter/filter'
 import Chip from '../Chip/Chip'
 import FilterDropdownListItem from './FilterDropdownListItem/FilterDropdownListItem'
 
@@ -26,6 +24,7 @@ import {
 } from './styles'
 import useOutsideClickAlerter from '../../hooks/useOutsideClickAlerter'
 import { Data, Keyword } from '../../types'
+import { searchForKeywords } from '../../shared/requests/keywords/keywords'
 
 type Props = {
   selectedKeywords: Data<Keyword>[]

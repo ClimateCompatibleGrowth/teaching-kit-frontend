@@ -3,29 +3,32 @@ import LearningMaterial from '../../components/LearningMaterial'
 import LearningMaterialEnding from '../../components/LearningMaterialEnding'
 import MetaDataContainer from '../../components/MetaDataContainer'
 import { Block as BlockType, Data } from '../../types'
-import styles from '../../styles/LearningMaterial.module.css'
 import { getBlocks } from '../../shared/requests/blocks/blocks'
+import {
+  LearningMaterialContainer,
+  LearningMaterialOverview,
+} from '../../styles/global'
 
 type props = { block: Data<BlockType> }
 
 export default function Block({ block }: props) {
   return (
-    <div className={styles.learningMaterialContainer}>
-      <div className={styles.learningMaterialOverview}>
+    <LearningMaterialContainer>
+      <LearningMaterialOverview>
         <LearningMaterial
           Title={block.attributes.Title}
           Abstract={block.attributes.Abstract}
           LearningOutcomes={block.attributes.LearningOutcomes}
         />
         <LearningMaterialEnding References={block.attributes.References} />
-      </div>
+      </LearningMaterialOverview>
 
       <MetaDataContainer
         typeOfLearningMaterial="Block"
         duration={`${block.attributes.DurationInMinutes} min`}
         authors={block.attributes.Authors}
       ></MetaDataContainer>
-    </div>
+    </LearningMaterialContainer>
   )
 }
 

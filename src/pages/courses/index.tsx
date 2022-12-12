@@ -1,7 +1,10 @@
 import axios from 'axios'
 import Link from 'next/link'
 import { Course, Data } from '../../types'
-import styles from '../../styles/LearningMaterial.module.css'
+import {
+  LearningMaterialList,
+  LearningMaterialListItem,
+} from '../../styles/global'
 
 type props = { courses: Data<Course>[] }
 
@@ -9,15 +12,15 @@ export default function Courses({ courses }: props) {
   return (
     <div className="container">
       <h1>Courses</h1>
-      <ul className={styles.ul}>
+      <LearningMaterialList>
         {courses.map((course) => (
-          <li key={course.id} className={styles.li}>
+          <LearningMaterialListItem key={course.id}>
             <Link href={`/courses/${encodeURIComponent(course.id)}`}>
               <h2>{course.attributes.Title}</h2>
             </Link>
-          </li>
+          </LearningMaterialListItem>
         ))}
-      </ul>
+      </LearningMaterialList>
     </div>
   )
 }

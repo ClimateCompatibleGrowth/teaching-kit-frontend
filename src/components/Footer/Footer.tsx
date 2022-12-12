@@ -1,9 +1,9 @@
-import styles from './Footer.module.css'
+import { StyledFooter } from './styles'
 
 export default function Footer() {
   return (
-    <footer className={styles.footer}>
+    <StyledFooter>
       <h2>Footers are overrated</h2>
-    </footer>
-  );
+    </StyledFooter>
+  )
 }

@@ -3,9 +3,9 @@ import { ButtonWithoutDefaultStyle } from "../../styles/global";
 
 
 export const StyledChip = styled.div`
-  height: 2rem;
+  height: 4rem;
 
-  padding: 5px 10px;
+  padding: 0px 10px;
 
   display: flex;
   align-items: center;
@@ -17,5 +17,5 @@ export const StyledChip = styled.div`
 export const RemoveButton = styled(ButtonWithoutDefaultStyle)`
   height: inherit;
 
-  margin-left: 0.5rem;
+  margin-left: 1rem;
 `

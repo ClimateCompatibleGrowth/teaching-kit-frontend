@@ -4,15 +4,17 @@ import LearningMaterial from '../../components/LearningMaterial'
 import LearningMaterialEnding from '../../components/LearningMaterialEnding'
 import MetaDataContainer from '../../components/MetaDataContainer'
 import { getLectures } from '../../shared/requests/lectures/lectures'
-
-import styles from '../../styles/LearningMaterial.module.css'
+import {
+  LearningMaterialContainer,
+  LearningMaterialOverview,
+} from '../../styles/global'
 import { Data, Lecture as LectureType } from '../../types'
 
 type props = { lecture: Data<LectureType> }
 export default function Lecture({ lecture }: props) {
   return (
-    <div className={styles.learningMaterialContainer}>
-      <div className={styles.learningMaterialOverview}>
+    <LearningMaterialContainer>
+      <LearningMaterialOverview>
         <LearningMaterial
           Title={lecture.attributes.Title}
           Abstract={lecture.attributes.Abstract}
@@ -26,14 +28,14 @@ export default function Lecture({ lecture }: props) {
           Acknowledgment={lecture.attributes.Acknowledgement}
           CiteAs={lecture.attributes.CiteAs}
         />
-      </div>
+      </LearningMaterialOverview>
       <MetaDataContainer
         typeOfLearningMaterial="Lecture"
         level={lecture.attributes.Level}
         duration={'2 h'}
         authors={lecture.attributes.LectureCreator}
       ></MetaDataContainer>
-    </div>
+    </LearningMaterialContainer>
   )
 }
 

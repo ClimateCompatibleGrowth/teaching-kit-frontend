@@ -6,22 +6,24 @@ type IconButtonProps = {
 }
 
 export const FilterWrapper = styled.div`
-  width: 14rem;
+  width: 20rem;
 `
 
 export const SelectedKeywordWrapper = styled(UlWithoutDefaultStyle)`
   width: 30rem;
-  min-height: 2rem;
+  min-height: 3.5rem;
 
-  margin: 1rem 0;
+  margin: 1.7rem 0;
 
   display: flex;
   flex-wrap: wrap;
 
-  gap: 1rem;
+  gap: 1.7rem;
 `
 
-export const SelectedKeyword = styled.li``
+export const SelectedKeyword = styled.li`
+  font-size: 1.5rem;
+`
 
 export const InputWrapper = styled.div`
   position: relative;
@@ -29,18 +31,18 @@ export const InputWrapper = styled.div`
 
 export const FilterInput = styled.input`
   width: 100%;
-  height: 2.5rem;
+  height: 4rem;
 
-  padding-left: 0.5rem;
+  padding-left: 0.75rem;
 
-  font-size: inherit;
+  font-size: 1.5rem;
 `
 
 export const IconButton = styled(ButtonWithoutDefaultStyle) <IconButtonProps>`
   position: absolute;
 
-  right: 10px;
-  top: 8px;
+  right: 12px;
+  top: 12px;
 
   transform: rotate(${props => props.isPointingDown ? "180deg" : "0deg"})
 `
@@ -53,6 +55,7 @@ export const FilterDropdownList = styled(UlWithoutDefaultStyle)`
   flex-direction: column;
 
   overflow: scroll;
+  font-size: 1.5rem;
 `
 
 export const MoreResultsInformation = styled.li`

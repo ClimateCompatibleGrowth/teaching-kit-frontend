@@ -1,6 +1,11 @@
 import React from 'react'
-import styles from './MetaDataContainer.module.css'
 import { Author, Data, Level } from '../../types'
+import {
+  DownloadContainer,
+  StyledLi,
+  StyledMetaDataContainer,
+  StyledUl,
+} from './styles'
 
 export type Props = {
   typeOfLearningMaterial: string
@@ -20,26 +25,26 @@ export default function MetaDataContainer({
   const handlePptxDownload = () => {}
 
   return (
-    <div className={styles.metaDataContainer}>
+    <StyledMetaDataContainer>
       <h3>About this {typeOfLearningMaterial}</h3>
       <p>Level: {level}</p>
       <p>Duration: {duration}</p>
       <h4>Authors</h4>
-      <ul className={styles.ul}>
+      <StyledUl>
         {authors?.data.map((author) => (
-          <li key={author.id}>
+          <StyledLi key={author.id}>
             {author.attributes.Name}:{' '}
             <a href={`mailto:${author.attributes.Email}`}>
               {author.attributes.Email}
             </a>
-          </li>
+          </StyledLi>
         ))}
-      </ul>
+      </StyledUl>
       <h4>Download</h4>
-      <div className={styles.downloadContainer}>
+      <DownloadContainer>
         <button onClick={handleDocxDownload}>Docx</button>
         <button onClick={handlePptxDownload}>Pptx</button>
-      </div>
-    </div>
+      </DownloadContainer>
+    </StyledMetaDataContainer>
   )
 }

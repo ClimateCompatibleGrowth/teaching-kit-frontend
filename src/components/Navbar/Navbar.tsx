@@ -1,9 +1,10 @@
 import Link from 'next/link'
+import { Navbar as StyledNavbar, NavbarUl } from './styles'
 
 export default function Navbar() {
   return (
-    <nav>
-      <ul>
+    <StyledNavbar>
+      <NavbarUl>
         <li>
           <Link href="/">Home</Link>
         </li>
@@ -19,7 +20,7 @@ export default function Navbar() {
         <li>
           <Link href="/blocks">Blocks</Link>
         </li>
-      </ul>
-    </nav>
+      </NavbarUl>
+    </StyledNavbar>
   )
 }
