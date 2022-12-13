@@ -1,5 +1,5 @@
+import { Data, Block as BlockType } from '../../../types'
 import Block from './Block'
-import { Block as BlockType, Data } from '../../types'
 import { StyledBlocks } from './styles'
 
 export type Props = { blocks?: Data<BlockType>[] }

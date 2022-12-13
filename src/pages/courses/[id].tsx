@@ -3,21 +3,23 @@ import { useState } from 'react'
 import LearningMaterial from '../../components/LearningMaterial'
 import LearningMaterialEnding from '../../components/LearningMaterialEnding'
 import MetaDataContainer from '../../components/MetaDataContainer'
-import { Course as CourseType, Data } from '../../types'
 import { getCourses } from '../../shared/requests/courses/courses'
 import {
   LearningMaterialContainer,
   LearningMaterialOverview,
 } from '../../styles/global'
+import { CourseWithLecturesAndBlocks, Data } from '../../types'
 
-type props = { course: Data<CourseType> }
+type Props = { course: Data<CourseWithLecturesAndBlocks> }
 
-export default function Course({ course }: props) {
+export default function CoursePage({ course }: Props) {
   const [showLectures, setShowLectures] = useState(false)
+
+  const handlePptxDownload = () => {}
 
   return (
     <LearningMaterialContainer>
-      <LearningMaterialOverview>
+      <LearningMaterialOverview id="source-html">
         <LearningMaterial
           Title={course.attributes.Title}
           Abstract={course.attributes.Abstract}
@@ -40,10 +42,15 @@ export default function Course({ course }: props) {
         />
       </LearningMaterialOverview>
       <MetaDataContainer
-        typeOfLearningMaterial="Course"
+        typeOfLearningMaterial="COURSE"
         level={course.attributes.Level}
         duration={'5 h'}
         authors={course.attributes.CourseCreator}
+        docxDownloadParameters={{
+          title: course.attributes.Title,
+          courseId: course.id,
+        }}
+        handlePptxDownload={handlePptxDownload}
       ></MetaDataContainer>
     </LearningMaterialContainer>
   )

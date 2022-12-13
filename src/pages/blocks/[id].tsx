@@ -1,32 +1,21 @@
 import axios from 'axios'
-import LearningMaterial from '../../components/LearningMaterial'
-import LearningMaterialEnding from '../../components/LearningMaterialEnding'
 import MetaDataContainer from '../../components/MetaDataContainer'
 import { Block as BlockType, Data } from '../../types'
 import { getBlocks } from '../../shared/requests/blocks/blocks'
-import {
-  LearningMaterialContainer,
-  LearningMaterialOverview,
-} from '../../styles/global'
+import { LearningMaterialContainer } from '../../styles/global'
+import { Block } from '../../components/Block'
 
 type props = { block: Data<BlockType> }
 
-export default function Block({ block }: props) {
+export default function BlockPage({ block }: props) {
   return (
     <LearningMaterialContainer>
-      <LearningMaterialOverview>
-        <LearningMaterial
-          Title={block.attributes.Title}
-          Abstract={block.attributes.Abstract}
-          LearningOutcomes={block.attributes.LearningOutcomes}
-        />
-        <LearningMaterialEnding References={block.attributes.References} />
-      </LearningMaterialOverview>
-
+      <Block block={block} />
       <MetaDataContainer
-        typeOfLearningMaterial="Block"
+        typeOfLearningMaterial="BLOCK"
         duration={`${block.attributes.DurationInMinutes} min`}
         authors={block.attributes.Authors}
+        docxDownloadParameters={{ title: block.attributes.Title }}
       ></MetaDataContainer>
     </LearningMaterialContainer>
   )

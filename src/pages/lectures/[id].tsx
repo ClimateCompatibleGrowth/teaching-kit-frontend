@@ -1,39 +1,24 @@
 import axios from 'axios'
-import Blocks from '../../components/Blocks'
-import LearningMaterial from '../../components/LearningMaterial'
-import LearningMaterialEnding from '../../components/LearningMaterialEnding'
+import { Lecture } from '../../components/Lecture'
 import MetaDataContainer from '../../components/MetaDataContainer'
 import { getLectures } from '../../shared/requests/lectures/lectures'
-import {
-  LearningMaterialContainer,
-  LearningMaterialOverview,
-} from '../../styles/global'
-import { Data, Lecture as LectureType } from '../../types'
+import { LearningMaterialContainer } from '../../styles/global'
+import { Data, LectureWithBlock } from '../../types'
 
-type props = { lecture: Data<LectureType> }
-export default function Lecture({ lecture }: props) {
+type props = { lecture: Data<LectureWithBlock> }
+export default function LecturePage({ lecture }: props) {
   return (
     <LearningMaterialContainer>
-      <LearningMaterialOverview>
-        <LearningMaterial
-          Title={lecture.attributes.Title}
-          Abstract={lecture.attributes.Abstract}
-          LearningOutcomes={lecture.attributes.LearningOutcomes}
-        />
-        <h2>Lecture content</h2>
-        {lecture.attributes.Blocks && (
-          <Blocks blocks={lecture.attributes.Blocks.data} />
-        )}
-        <LearningMaterialEnding
-          Acknowledgment={lecture.attributes.Acknowledgement}
-          CiteAs={lecture.attributes.CiteAs}
-        />
-      </LearningMaterialOverview>
+      <Lecture lecture={lecture} />
       <MetaDataContainer
-        typeOfLearningMaterial="Lecture"
+        typeOfLearningMaterial="LECTURE"
         level={lecture.attributes.Level}
         duration={'2 h'}
         authors={lecture.attributes.LectureCreator}
+        docxDownloadParameters={{
+          title: lecture.attributes.Title,
+          blocks: lecture.attributes.Blocks.data,
+        }}
       ></MetaDataContainer>
     </LearningMaterialContainer>
   )

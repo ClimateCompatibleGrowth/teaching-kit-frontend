@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { Block as BlockType, Data } from '../../types'
+import { Block as BlockType, Data } from '../../../types'
 
 export type Props = { block: Data<BlockType>['attributes'] }
 export default function Block({ block }: Props) {
