@@ -9,6 +9,7 @@ import {
 type props = { lectures: Data<Lecture>[] }
 
 export default function Lectures({ lectures }: props) {
+
   return (
     <div className="container">
       <h1>Lectures</h1>

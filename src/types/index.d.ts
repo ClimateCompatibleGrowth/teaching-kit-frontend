@@ -35,7 +35,11 @@ export type Author = {
   Affiliation: Data<Affiliation>;
 };
 
-export type Level = "Beginner" | "Intermediate" | "Expert" | null;
+const learningMaterialTypes = ["COURSE", "LECTURE", "BLOCK"] as const;
+export type LearningMaterialType = typeof learningMaterialTypes[number];
+
+const levels = ["BEGINNER", "INTERMEDIATE", "EXPERT"] as const;
+export type Level = typeof levels[number];
 
 export type Keyword = {
   Keyword: string
@@ -64,11 +68,14 @@ export type Lecture = {
   Level: Level;
   Acknowledgement: string;
   CiteAs: string;
-  Blocks: { data: Data<Block>[] };
   Courses: { data: Data<Course>[] };
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
+}
+
+export type LectureWithBlock = Lecture & {
+  Blocks: { data: Data<Block>[] };
 }
 
 export type Course = {
@@ -80,8 +87,11 @@ export type Course = {
   Acknowledgement: string;
   CiteAs: string;
   CourseCreator: { data: Data<Author>[]; }
-  Lectures: { data: Data<Lecture>[] };
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
+}
+
+export type CourseWithLecturesAndBlocks = Course & {
+  Lectures: { data: Data<LectureWithBlock>[] };
 }
