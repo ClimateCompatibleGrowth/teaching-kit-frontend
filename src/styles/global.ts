@@ -1,5 +1,13 @@
 import styled from "@emotion/styled"
 
+// Start of design tokens - The following are Figma variables, which can be used in a design token manner
+export const Background = "#FFFFFF"
+export const Surface = "#F1F1F1"
+export const Accent40 = "#012169"
+export const Primary40 = "#CBD3EA"
+export const OnPrimary40 = "#2E3440"
+// End of design tokens
+
 export const UlWithoutDefaultStyle = styled.ul`
   padding: 0;
   margin: 0;

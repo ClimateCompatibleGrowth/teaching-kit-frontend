@@ -25,8 +25,9 @@ export default function Discover() {
 
   return (
     <div className="container">
-      <h1>Discover</h1>
+      <h1>Learning Material</h1>
       <div>
+        <h2>Apply filter</h2>
         <Filter
           selectedKeywords={selectedKeywords}
           setSelectedKeywords={setSelectedKeywords}

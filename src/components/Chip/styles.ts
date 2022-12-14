@@ -2,10 +2,10 @@ import styled from "@emotion/styled";
 import { ButtonWithoutDefaultStyle } from "../../styles/global";
 
 
-export const StyledChip = styled.div`
+export const Chip = styled.div`
   height: 4rem;
 
-  padding: 0px 10px;
+  padding: 0px 1.4rem;
 
   display: flex;
   align-items: center;

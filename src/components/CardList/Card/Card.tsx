@@ -1,4 +1,5 @@
 import React from 'react'
+import * as Styled from './styles'
 
 export type CardType = {
   id: string
@@ -13,11 +14,11 @@ type Props = {
 
 const Card = ({ card }: Props) => {
   return (
-    <div>
-      <h3>{card.title}</h3>
+    <Styled.Card>
+      <h4>{card.title}</h4>
       <p>{card.text}</p>
-      <p>{card.metaData}</p>
-    </div>
+      <Styled.MetaData>{card.metaData}</Styled.MetaData>
+    </Styled.Card>
   )
 }
 

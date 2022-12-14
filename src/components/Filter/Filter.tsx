@@ -1,4 +1,4 @@
-import {
+import React, {
   createRef,
   Dispatch,
   RefObject,
@@ -12,19 +12,14 @@ import FilterDropdownListItem from './FilterDropdownListItem/FilterDropdownListI
 
 import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandLessOutlined'
 
-import {
-  FilterDropdownList,
-  FilterInput,
-  FilterWrapper,
-  IconButton,
-  MoreResultsInformation,
-  InputWrapper,
-  SelectedKeyword,
-  SelectedKeywordWrapper,
-} from './styles'
+import * as Styled from './styles'
 import useOutsideClickAlerter from '../../hooks/useOutsideClickAlerter'
 import { Data, Keyword } from '../../types'
 import { searchForKeywords } from '../../shared/requests/keywords/keywords'
+import {
+  CheckBoxOutlineBlankOutlined,
+  CheckBoxOutlined,
+} from '@mui/icons-material'
 
 type Props = {
   selectedKeywords: Data<Keyword>[]
@@ -70,12 +65,33 @@ export default function Filter({
       )
     )
 
+  const itemIsSelected = (keyword: Data<Keyword>) =>
+    selectedKeywords
+      .map((selectedKeyword) => selectedKeyword.id)
+      .includes(keyword.id)
+
+  const getListItemCheckIcon = (keyword: Data<Keyword>) => {
+    return itemIsSelected(keyword) ? (
+      <CheckBoxOutlined />
+    ) : (
+      <CheckBoxOutlineBlankOutlined />
+    )
+  }
+
+  const onClickListItem = (keyword: Data<Keyword>) => {
+    itemIsSelected(keyword)
+      ? deselectKeyword(keyword.id.toString())
+      : selectKeyword(keyword)
+  }
+
   const renderAllResults = () =>
     matchingKeywords.map((matchingKeyword, index) => (
       <FilterDropdownListItem
         key={index}
         label={matchingKeyword.attributes.Keyword}
-        onClick={() => selectKeyword(matchingKeyword)}
+        onClick={() => onClickListItem(matchingKeyword)}
+        icon={getListItemCheckIcon(matchingKeyword)}
+        ariaPressed={itemIsSelected(matchingKeyword)}
       />
     ))
 
@@ -86,50 +102,60 @@ export default function Filter({
           <FilterDropdownListItem
             key={index}
             label={matchingKeywords[index].attributes.Keyword}
-            onClick={() => selectKeyword(matchingKeywords[index])}
+            onClick={() => onClickListItem(matchingKeywords[index])}
+            icon={getListItemCheckIcon(matchingKeywords[index])}
+            ariaPressed={itemIsSelected(matchingKeywords[index])}
           />
         ))}
-        <MoreResultsInformation>{`... and ${
+        <Styled.MoreResultsInformation>{`... and ${
           matchingKeywords.length - resultsLengthLimit
-        } more matches`}</MoreResultsInformation>
+        } more matches`}</Styled.MoreResultsInformation>
       </>
     )
   }
 
   return (
-    <FilterWrapper ref={wrapperRef}>
-      <SelectedKeywordWrapper>
+    <>
+      <Styled.FilterWrapper ref={wrapperRef}>
+        <Styled.Label htmlFor="keywordFilter">Keyword</Styled.Label>
+        <Styled.InputWrapper>
+          <Styled.IconButton
+            onClick={() => setDoShowResultsList((prevState) => !prevState)}
+            isPointingDown={doShowResultsList}
+            aria-label={`${
+              doShowResultsList ? 'Hide' : 'Show'
+            } keywords to filter on`}
+            aria-pressed={doShowResultsList}
+          >
+            <ExpandMoreOutlinedIcon style={{ height: '2rem', width: '2rem' }} />
+          </Styled.IconButton>
+          <Styled.FilterInput
+            name="keywordFilter"
+            placeholder="Select keywords"
+            onChange={(event: React.FormEvent<HTMLInputElement>) =>
+              setSearchTerm(event.currentTarget.value)
+            }
+          />
+        </Styled.InputWrapper>
+        {doShowResultsList && (
+          <Styled.FilterDropdownList>
+            {matchingKeywords.length > MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN
+              ? renderLimitedResults(MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN)
+              : renderAllResults()}
+          </Styled.FilterDropdownList>
+        )}
+      </Styled.FilterWrapper>
+      <Styled.SelectedKeywordWrapper>
         {selectedKeywords.map((selectedKeyword, index) => (
-          <SelectedKeyword key={index}>
+          <Styled.SelectedKeyword key={index}>
             <Chip
               label={selectedKeyword.attributes.Keyword}
               id={selectedKeyword.id.toString()}
               onDelete={deselectKeyword}
             />
-          </SelectedKeyword>
+          </Styled.SelectedKeyword>
         ))}
-      </SelectedKeywordWrapper>
-      <InputWrapper>
-        <IconButton
-          onClick={() => setDoShowResultsList((prevState) => !prevState)}
-          isPointingDown={doShowResultsList}
-        >
-          <ExpandMoreOutlinedIcon />
-        </IconButton>
-        <FilterInput
-          placeholder="Search for keywords"
-          onChange={(event: React.FormEvent<HTMLInputElement>) =>
-            setSearchTerm(event.currentTarget.value)
-          }
-        />
-      </InputWrapper>
-      {doShowResultsList && (
-        <FilterDropdownList>
-          {matchingKeywords.length > MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN
-            ? renderLimitedResults(MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN)
-            : renderAllResults()}
-        </FilterDropdownList>
-      )}
-    </FilterWrapper>
+      </Styled.SelectedKeywordWrapper>
+    </>
   )
 }

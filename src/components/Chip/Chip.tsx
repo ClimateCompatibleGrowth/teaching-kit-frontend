@@ -1,5 +1,5 @@
 import React from 'react'
-import { RemoveButton, StyledChip } from './styles'
+import * as Styled from './styles'
 
 type Props = {
   label: string
@@ -9,17 +9,17 @@ type Props = {
 
 const Chip = ({ label, id, onDelete }: Props) => {
   return (
-    <StyledChip>
+    <Styled.Chip>
       <p>{label}</p>
       {onDelete !== undefined ? (
-        <RemoveButton
+        <Styled.RemoveButton
           onClick={() => onDelete(id)}
           aria-label={`Remove chip ${label}`}
         >
           x
-        </RemoveButton>
+        </Styled.RemoveButton>
       ) : undefined}
-    </StyledChip>
+    </Styled.Chip>
   )
 }
 

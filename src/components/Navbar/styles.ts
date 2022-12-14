@@ -6,7 +6,7 @@ export const Navbar = styled.nav`
   left: 0;
   width: 100%;
 
-  font-size: 1.7em;
+  font-size: 1.7rem;
 `
 
 export const NavbarUl = styled.ul`

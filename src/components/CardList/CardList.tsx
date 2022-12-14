@@ -1,5 +1,6 @@
 import React from 'react'
 import Card, { CardType } from './Card/Card'
+import * as Styled from './styles'
 
 type Props = {
   cards: CardType[]
@@ -7,11 +8,11 @@ type Props = {
 
 const CardList = ({ cards }: Props) => {
   return (
-    <div>
+    <Styled.CardList>
       {cards.map((card) => (
         <Card card={card} key={card.id} />
       ))}
-    </div>
+    </Styled.CardList>
   )
 }
 

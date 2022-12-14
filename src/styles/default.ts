@@ -1,21 +1,16 @@
-import { Ubuntu } from '@next/font/google'
 import { css } from "@emotion/react"
+import { ubuntu, montserrat } from "./fonts"
+import { Background } from "./global"
 
-export const ubuntuFont = Ubuntu({
-  subsets: ['latin'],
-  style: ['normal'],
-  weight: '500',
-})
 
 const defaultStyle = css`
-
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-family: ${ubuntuFont.style.fontFamily}
+    font-family: ${ubuntu.normal.style.fontFamily};
   }
 
   h1 {
@@ -27,23 +22,38 @@ const defaultStyle = css`
   }
 
   h3 {
+    margin: 1rem 0;
+
     font-size: 2rem;
   }
 
-  h4, h5 {
-    font-size: 1.7rem;
+  h4,
+  h5 {
+    margin: 1rem 0;
+    font-size: 1.9rem;
   }
 
-  p, li {
-    font-size: 1.7rem;
+  p,
+  li {
+    margin: 1rem 0;
+
+    font-size: 1.5rem;
+    font-family: ${montserrat.normal.style.fontFamily}
   }
-  
+
+  label {
+    font-size: 1.3rem;
+    font-family: ${ubuntu.normal.style.fontFamily}
+  }
+
   html,
   body {
-    font-size: 10px;
-
     padding: 0;
     margin: 0;
+
+    background-color: ${Background};
+
+    font-size: 10px;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
       Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   }
@@ -58,19 +68,8 @@ const defaultStyle = css`
   }
 
   .container {
-    padding: 0 2rem;
+    padding: 0 8rem;
   }
-
-  @media (prefers-color-scheme: dark) {
-    html {
-      color-scheme: dark;
-    }
-    body {
-      color: white;
-      background: black;
-    }
-  }
-  
 `
 
 export default defaultStyle
