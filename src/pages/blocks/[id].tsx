@@ -8,6 +8,8 @@ import { Block } from '../../components/Block'
 type props = { block: Data<BlockType> }
 
 export default function BlockPage({ block }: props) {
+  console.log(block.attributes.Slides)
+
   return (
     <LearningMaterialContainer>
       <Block block={block} />
@@ -16,6 +18,7 @@ export default function BlockPage({ block }: props) {
         duration={`${block.attributes.DurationInMinutes} min`}
         authors={block.attributes.Authors}
         docxDownloadParameters={{ title: block.attributes.Title }}
+        pptxDownloadParameters={{ data: block }}
       ></MetaDataContainer>
     </LearningMaterialContainer>
   )

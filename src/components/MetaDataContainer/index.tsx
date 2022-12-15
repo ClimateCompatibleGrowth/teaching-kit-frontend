@@ -7,11 +7,19 @@ import {
   StyledUl,
 } from './styles'
 import handleDocxDownload from '../../utils/downloadAsDocx'
+import handlePptxDownload from '../../utils/downloadAsPptx'
 
 type DocxDownloadParameters = {
   title: string
   courseId?: number
   blocks?: Data<Block>[]
+}
+
+type PptxDownloadParameters = {
+  title?: string
+  courseId?: number
+  block?: Data<Block>[]
+  data?: any //REPLACE ANY WITH CORRECT TYPE
 }
 
 export type Props = {
@@ -20,7 +28,7 @@ export type Props = {
   duration?: string
   authors?: { data: Data<Author>[] }
   docxDownloadParameters?: DocxDownloadParameters
-  handlePptxDownload?: () => void
+  pptxDownloadParameters?: PptxDownloadParameters
 }
 
 export default function MetaDataContainer({
@@ -29,7 +37,7 @@ export default function MetaDataContainer({
   duration,
   authors,
   docxDownloadParameters,
-  handlePptxDownload,
+  pptxDownloadParameters,
 }: Props) {
   return (
     <StyledMetaDataContainer id="meta-data-html">
@@ -60,7 +68,11 @@ export default function MetaDataContainer({
         >
           Docx
         </button>
-        <button onClick={handlePptxDownload}>Pptx</button>
+        <button
+          onClick={() => handlePptxDownload(pptxDownloadParameters?.data)}
+        >
+          Pptx
+        </button>
       </DownloadContainer>
     </StyledMetaDataContainer>
   )
