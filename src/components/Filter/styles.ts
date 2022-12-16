@@ -9,7 +9,7 @@ export const FilterWrapper = styled.div`
   width: 20rem;
 `
 
-export const SelectedKeywordWrapper = styled(UlWithoutDefaultStyle)`
+export const SelectedFilterWrapper = styled(UlWithoutDefaultStyle)`
   width: 40rem;
   min-height: 3.5rem;
 
@@ -21,7 +21,7 @@ export const SelectedKeywordWrapper = styled(UlWithoutDefaultStyle)`
   gap: 1.7rem;
 `
 
-export const SelectedKeyword = styled.li``
+export const SelectedFilter = styled.li``
 
 export const InputWrapper = styled.div`
   margin: 0.4rem 0;

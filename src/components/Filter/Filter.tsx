@@ -14,84 +14,87 @@ import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandLessOutlined'
 
 import * as Styled from './styles'
 import useOutsideClickAlerter from '../../hooks/useOutsideClickAlerter'
-import { Data, Keyword } from '../../types'
-import { searchForKeywords } from '../../shared/requests/keywords/keywords'
 import {
   CheckBoxOutlineBlankOutlined,
   CheckBoxOutlined,
 } from '@mui/icons-material'
 
-type Props = {
-  selectedKeywords: Data<Keyword>[]
-  setSelectedKeywords: Dispatch<SetStateAction<Data<Keyword>[]>>
+export type Filter = {
+  id: string
+  title: string
 }
 
-// Note that Strapi's default value for page sizes currently is 25. Hence,
-// if this constant is increased to > 25, we will still only get 25 results.
-const MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN = 20
+type Props = {
+  selectedFilters: Filter[]
+  setSelectedFilters: Dispatch<SetStateAction<Filter[]>>
+  typeToFilterOn: string
+  maxAmountOfFiltersInDropdown: number
+  searchForFilters: (searchTerm: string) => Promise<Filter[]>
+}
 
 export default function Filter({
-  selectedKeywords,
-  setSelectedKeywords,
+  selectedFilters,
+  setSelectedFilters,
+  typeToFilterOn,
+  maxAmountOfFiltersInDropdown = 20,
+  searchForFilters,
 }: Props) {
   const wrapperRef: RefObject<HTMLDivElement> = createRef()
   const [searchTerm, setSearchTerm] = useState('')
   const debouncedSearchTerm = useDebounce(searchTerm, 200)
-  const [matchingKeywords, setMatchingKeywords] = useState<Data<Keyword>[]>([])
+  const [matchingFilters, setMatchingFilters] = useState<Filter[]>([])
   const [doShowResultsList, setDoShowResultsList] = useState(false)
   useOutsideClickAlerter(wrapperRef, () => setDoShowResultsList(false))
 
   useEffect(() => {
-    onSearchTermChange(debouncedSearchTerm)
-  }, [debouncedSearchTerm])
-
-  const onSearchTermChange = async (searchTerm: string) => {
-    const matchingKeywords = await searchForKeywords(searchTerm)
-    setMatchingKeywords(matchingKeywords)
-    if (searchTerm.length > 1) {
-      setDoShowResultsList(true)
+    const onSearchTermChange = async (searchTerm: string) => {
+      const matchingFilters = await searchForFilters(searchTerm)
+      setMatchingFilters(matchingFilters)
+      if (searchTerm.length > 1) {
+        setDoShowResultsList(true)
+      }
     }
-  }
 
-  const selectKeyword = (selectedKeyword: Data<Keyword>) =>
-    setSelectedKeywords((previousState) => [
-      ...new Set([...previousState, selectedKeyword]),
+    onSearchTermChange(debouncedSearchTerm)
+  }, [debouncedSearchTerm, searchForFilters])
+
+  const selectFilter = (selectedFilter: Filter) =>
+    setSelectedFilters((previousState) => [
+      ...new Set([...previousState, selectedFilter]),
     ])
 
-  const deselectKeyword = (selectedKeywordId: string) =>
-    setSelectedKeywords((previousState) =>
-      previousState.filter(
-        (keyword) => keyword.id !== parseInt(selectedKeywordId)
-      )
+  const deselectFilter = (selectedFilterId: string) =>
+    setSelectedFilters((previousState) =>
+      previousState.filter((filter) => filter.id !== selectedFilterId)
     )
 
-  const itemIsSelected = (keyword: Data<Keyword>) =>
-    selectedKeywords
-      .map((selectedKeyword) => selectedKeyword.id)
-      .includes(keyword.id)
+  const filterIsSelected = (filter: Filter) =>
+    selectedFilters
+      .map((selectedFilter) => selectedFilter.id)
+      .includes(filter.id)
 
-  const getListItemCheckIcon = (keyword: Data<Keyword>) => {
-    return itemIsSelected(keyword) ? (
+  const getListItemCheckIcon = (filter: Filter) => {
+    return filterIsSelected(filter) ? (
       <CheckBoxOutlined />
     ) : (
       <CheckBoxOutlineBlankOutlined />
     )
   }
 
-  const onClickListItem = (keyword: Data<Keyword>) => {
-    itemIsSelected(keyword)
-      ? deselectKeyword(keyword.id.toString())
-      : selectKeyword(keyword)
+  const onClickListItem = (filter: Filter) => {
+    filterIsSelected(filter)
+      ? deselectFilter(filter.id.toString())
+      : selectFilter(filter)
   }
 
   const renderAllResults = () =>
-    matchingKeywords.map((matchingKeyword, index) => (
+    matchingFilters.map((matchingFilter, index) => (
       <FilterDropdownListItem
         key={index}
-        label={matchingKeyword.attributes.Keyword}
-        onClick={() => onClickListItem(matchingKeyword)}
-        icon={getListItemCheckIcon(matchingKeyword)}
-        ariaPressed={itemIsSelected(matchingKeyword)}
+        label={matchingFilter.title}
+        onClick={() => onClickListItem(matchingFilter)}
+        icon={getListItemCheckIcon(matchingFilter)}
+        ariaPressed={filterIsSelected(matchingFilter)}
       />
     ))
 
@@ -101,14 +104,14 @@ export default function Filter({
         {[...Array(resultsLengthLimit).keys()].map((index) => (
           <FilterDropdownListItem
             key={index}
-            label={matchingKeywords[index].attributes.Keyword}
-            onClick={() => onClickListItem(matchingKeywords[index])}
-            icon={getListItemCheckIcon(matchingKeywords[index])}
-            ariaPressed={itemIsSelected(matchingKeywords[index])}
+            label={matchingFilters[index].title}
+            onClick={() => onClickListItem(matchingFilters[index])}
+            icon={getListItemCheckIcon(matchingFilters[index])}
+            ariaPressed={filterIsSelected(matchingFilters[index])}
           />
         ))}
         <Styled.MoreResultsInformation>{`... and ${
-          matchingKeywords.length - resultsLengthLimit
+          matchingFilters.length - resultsLengthLimit
         } more matches`}</Styled.MoreResultsInformation>
       </>
     )
@@ -117,21 +120,23 @@ export default function Filter({
   return (
     <>
       <Styled.FilterWrapper ref={wrapperRef}>
-        <Styled.Label htmlFor="keywordFilter">Keyword</Styled.Label>
+        <Styled.Label htmlFor={`${typeToFilterOn}filter`}>
+          {typeToFilterOn}
+        </Styled.Label>
         <Styled.InputWrapper>
           <Styled.IconButton
             onClick={() => setDoShowResultsList((prevState) => !prevState)}
             isPointingDown={doShowResultsList}
             aria-label={`${
               doShowResultsList ? 'Hide' : 'Show'
-            } keywords to filter on`}
+            } ${typeToFilterOn}s to filter on`}
             aria-pressed={doShowResultsList}
           >
             <ExpandMoreOutlinedIcon style={{ height: '2rem', width: '2rem' }} />
           </Styled.IconButton>
           <Styled.FilterInput
-            name="keywordFilter"
-            placeholder="Select keywords"
+            name={`${typeToFilterOn}filter`}
+            placeholder={`Select ${typeToFilterOn}s`}
             onChange={(event: React.FormEvent<HTMLInputElement>) =>
               setSearchTerm(event.currentTarget.value)
             }
@@ -139,23 +144,23 @@ export default function Filter({
         </Styled.InputWrapper>
         {doShowResultsList && (
           <Styled.FilterDropdownList>
-            {matchingKeywords.length > MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN
-              ? renderLimitedResults(MAX_AMOUNT_OF_KEYWORDS_IN_DROPDOWN)
+            {matchingFilters.length > maxAmountOfFiltersInDropdown
+              ? renderLimitedResults(maxAmountOfFiltersInDropdown)
               : renderAllResults()}
           </Styled.FilterDropdownList>
         )}
       </Styled.FilterWrapper>
-      <Styled.SelectedKeywordWrapper>
-        {selectedKeywords.map((selectedKeyword, index) => (
-          <Styled.SelectedKeyword key={index}>
+      <Styled.SelectedFilterWrapper>
+        {selectedFilters.map((selectedFilter, index) => (
+          <Styled.SelectedFilter key={index}>
             <Chip
-              label={selectedKeyword.attributes.Keyword}
-              id={selectedKeyword.id.toString()}
-              onDelete={deselectKeyword}
+              label={selectedFilter.title}
+              id={selectedFilter.id.toString()}
+              onDelete={deselectFilter}
             />
-          </Styled.SelectedKeyword>
+          </Styled.SelectedFilter>
         ))}
-      </Styled.SelectedKeywordWrapper>
+      </Styled.SelectedFilterWrapper>
     </>
   )
 }
