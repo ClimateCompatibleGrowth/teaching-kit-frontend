@@ -3,9 +3,9 @@ import { Lecture } from '../../components/Lecture'
 import MetaDataContainer from '../../components/MetaDataContainer'
 import { getLectures } from '../../shared/requests/lectures/lectures'
 import { LearningMaterialContainer } from '../../styles/global'
-import { Data, LectureWithBlock } from '../../types'
+import { Data, DeepLecture } from '../../types'
 
-type props = { lecture: Data<LectureWithBlock> }
+type props = { lecture: Data<DeepLecture> }
 export default function LecturePage({ lecture }: props) {
   return (
     <LearningMaterialContainer>

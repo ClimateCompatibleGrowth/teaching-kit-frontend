@@ -118,7 +118,7 @@ export default function Filter({
   }
 
   return (
-    <>
+    <div>
       <Styled.FilterWrapper ref={wrapperRef}>
         <Styled.Label htmlFor={`${typeToFilterOn}filter`}>
           {typeToFilterOn}
@@ -161,6 +161,6 @@ export default function Filter({
           </Styled.SelectedFilter>
         ))}
       </Styled.SelectedFilterWrapper>
-    </>
+    </div>
   )
 }

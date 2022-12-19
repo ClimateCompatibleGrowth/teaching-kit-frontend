@@ -1,11 +1,11 @@
 import React from 'react'
 import LearningMaterial from '../LearningMaterial'
 import LearningMaterialEnding from '../LearningMaterialEnding'
-import { Data, LectureWithBlock } from '../../types'
+import { Data, DeepLecture } from '../../types'
 import Blocks from '../Block/DropDownView'
 import { LearningMaterialOverview } from '../../styles/global'
 
-export type Props = { lecture: Data<LectureWithBlock> }
+export type Props = { lecture: Data<DeepLecture> }
 
 export const Lecture = ({ lecture }: Props) => {
   return (

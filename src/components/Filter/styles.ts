@@ -5,12 +5,14 @@ type IconButtonProps = {
   isPointingDown: boolean
 }
 
+const filterWrapperWidth = 20
+
 export const FilterWrapper = styled.div`
-  width: 20rem;
+  width: ${filterWrapperWidth}rem;
 `
 
 export const SelectedFilterWrapper = styled(UlWithoutDefaultStyle)`
-  width: 40rem;
+  width: ${filterWrapperWidth}rem;
   min-height: 3.5rem;
 
   margin: 1.7rem 0;
@@ -21,7 +23,9 @@ export const SelectedFilterWrapper = styled(UlWithoutDefaultStyle)`
   gap: 1.7rem;
 `
 
-export const SelectedFilter = styled.li``
+export const SelectedFilter = styled.li`
+  margin: 0;
+`
 
 export const InputWrapper = styled.div`
   margin: 0.4rem 0;
@@ -65,6 +69,7 @@ export const FilterDropdownList = styled(UlWithoutDefaultStyle)`
   overflow: scroll;
   border: 1px solid gray;
   border-radius: 2px;
+  z-index: 10;
 
   background-color: ${Background}
 `

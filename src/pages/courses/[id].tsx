@@ -8,9 +8,9 @@ import {
   LearningMaterialContainer,
   LearningMaterialOverview,
 } from '../../styles/global'
-import { CourseWithLecturesAndBlocks, Data } from '../../types'
+import { TwoLevelsDeepCourse, Data } from '../../types'
 
-type Props = { course: Data<CourseWithLecturesAndBlocks> }
+type Props = { course: Data<TwoLevelsDeepCourse> }
 
 export default function CoursePage({ course }: Props) {
   const [showLectures, setShowLectures] = useState(false)
