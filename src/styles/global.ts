@@ -1,4 +1,4 @@
-import styled from "@emotion/styled"
+import styled from '@emotion/styled'
 
 // Start of design tokens - The following are Figma variables, which can be used in a design token manner
 export const Background = "#FFFFFF"
