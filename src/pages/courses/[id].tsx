@@ -15,6 +15,8 @@ type Props = { course: Data<CourseWithLecturesAndBlocks> }
 export default function CoursePage({ course }: Props) {
   const [showLectures, setShowLectures] = useState(false)
 
+  const handlePptxDownload = () => {}
+
   return (
     <LearningMaterialContainer>
       <LearningMaterialOverview id="source-html">
@@ -48,6 +50,7 @@ export default function CoursePage({ course }: Props) {
           title: course.attributes.Title,
           courseId: course.id,
         }}
+        handlePptxDownload={handlePptxDownload}
       ></MetaDataContainer>
     </LearningMaterialContainer>
   )
