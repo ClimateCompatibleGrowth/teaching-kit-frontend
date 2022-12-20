@@ -95,21 +95,3 @@ export type Course = {
 export type CourseWithLecturesAndBlocks = Course & {
   Lectures: { data: Data<LectureWithBlock>[] }
 }
-
-type PptxSlideListContent = {
-  value?: string
-  content: PptxSlideListContent
-}[]
-
-export type PptxSlide = {
-  title?: string
-  mainContent?: any[]
-  speakerNotes?: string
-  styling?: any
-  image?: string
-  headingStyling?: {}
-  mainContentStyling?: any
-  bulletStyling?: any
-  heading?: string
-  list?: PptxSlideListContent
-}

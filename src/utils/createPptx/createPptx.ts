@@ -1,5 +1,5 @@
 import PptxGenJS from 'pptxgenjs'
-import { PptxSlide } from '../../types'
+import { PptxSlide } from '../../types/pptx'
 
 import {
   masterDescriptionSlide,
@@ -25,7 +25,6 @@ export const createPptxFile = async (
 
   //Content slides
   pptxSlides?.map((pptxSlide: PptxSlide) => {
-    // let bulletString: any = ''
     const contentSlide = pptx.addSlide()
 
     //Headings
@@ -41,11 +40,10 @@ export const createPptxFile = async (
       `${pptxSlide?.mainContent}`,
       pptxSlide.mainContentStyling
     )
-    console.log(pptxSlide?.mainContent, 'pptxSlide.mainContentStyling')
 
     //Bullet points
     if (pptxSlide.list) {
-      let bulletString = pptxSlide.list
+      const bulletString = pptxSlide.list
         .map((item) => {
           return item.content[0].content[0].value
         })
@@ -56,5 +54,5 @@ export const createPptxFile = async (
     //Slide notes
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)
   })
-  // pptx.writeFile({ fileName: `${lectureTitle}.pptx` })
+  pptx.writeFile({ fileName: `${lectureTitle}.pptx` })
 }

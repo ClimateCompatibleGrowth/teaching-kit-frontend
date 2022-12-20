@@ -16,9 +16,6 @@ type DocxDownloadParameters = {
 }
 
 type PptxDownloadParameters = {
-  title?: string
-  courseId?: number
-  block?: Data<Block>[]
   data: Data<Block>
 }
 
@@ -28,7 +25,7 @@ export type Props = {
   duration?: string
   authors?: { data: Data<Author>[] }
   docxDownloadParameters: DocxDownloadParameters
-  pptxDownloadParameters: PptxDownloadParameters
+  pptxDownloadParameters?: PptxDownloadParameters
 }
 
 export default function MetaDataContainer({
@@ -68,11 +65,13 @@ export default function MetaDataContainer({
         >
           Docx
         </button>
-        <button
-          onClick={() => handlePptxDownload(pptxDownloadParameters?.data)}
-        >
-          Pptx
-        </button>
+        {pptxDownloadParameters !== undefined ? (
+          <button
+            onClick={() => handlePptxDownload(pptxDownloadParameters?.data)}
+          >
+            Pptx
+          </button>
+        ) : null}
       </DownloadContainer>
     </StyledMetaDataContainer>
   )

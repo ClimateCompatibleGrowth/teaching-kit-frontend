@@ -1,6 +1,6 @@
 import { richTextFromMarkdown } from '@contentful/rich-text-from-markdown'
 import { createPptxFile } from './createPptx/createPptx'
-import { PptxSlide, Slide } from '../types'
+import { Slide } from '../types'
 import { Block as BlockType, Data } from '../types/index.d'
 
 import {
@@ -12,11 +12,7 @@ import {
   singleHeading,
 } from './createPptx/createPptxStyling'
 import { MarkdownLinkNode } from '@contentful/rich-text-from-markdown/dist/types/types'
-import { Block } from '@contentful/rich-text-types'
-
-type RichTextDocument = Block & {
-  content: any[]
-}
+import { PptxSlide } from '../types/pptx'
 
 const downloadAsPptx = async (block: Data<BlockType>) => {
   const lectureData = {
@@ -55,42 +51,40 @@ const slideSchemaToPptxFormat = async (
   let imageUrl = ''
 
   const promises = Object.values(slide).map(async (value: string) => {
-    const document: RichTextDocument = await richTextFromMarkdown(
-      value,
-      (_node) => {
-        const node = _node as MarkdownLinkNode
+    // The result from richTextFromMarkdown does not reflect the same package's styling - therefore the 'any'
+    const document: any = await richTextFromMarkdown(value, (_node) => {
+      const node = _node as MarkdownLinkNode
 
-        if (node.type === 'image' && node.url) {
-          Promise.resolve({
-            nodeType: 'embedded-[asset]',
-            content: [node.url],
-            data: {
-              target: {
-                sys: {
-                  type: 'Link',
-                  linkType: 'Asset',
-                  id: '',
-                },
-              },
-            },
-          })
-          imageUrl = node.url
-        }
-        return Promise.resolve({
-          nodeType: '',
-          content: [],
+      if (node.type === 'image' && node.url) {
+        Promise.resolve({
+          nodeType: 'embedded-[asset]',
+          content: [node.url],
           data: {
             target: {
               sys: {
-                type: '',
-                linkType: '',
+                type: 'Link',
+                linkType: 'Asset',
                 id: '',
               },
             },
           },
         })
+        imageUrl = node.url
       }
-    )
+      return Promise.resolve({
+        nodeType: '',
+        content: [],
+        data: {
+          target: {
+            sys: {
+              type: '',
+              linkType: '',
+              id: '',
+            },
+          },
+        },
+      })
+    })
 
     if (document.content.length >= 2) {
       for (let i = 0; i < document.content.length; i++) {
