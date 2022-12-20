@@ -7,7 +7,7 @@ export type Data<T> = {
 }
 
 export type Slide = {
-  id: number
+  id: string
   Title: string
   Content: string
   SpeakerNotes: string
@@ -96,24 +96,20 @@ export type CourseWithLecturesAndBlocks = Course & {
   Lectures: { data: Data<LectureWithBlock>[] }
 }
 
-type PptxSlideListContent = [
-  {
-    value: string
-    content: PptxSlideListContent
-  }
-]
+type PptxSlideListContent = {
+  value?: string
+  content: PptxSlideListContent
+}[]
 
 export type PptxSlide = {
   title?: string
   mainContent?: any[]
-  SpeakerNotes?: string
   speakerNotes?: string
   styling?: any
   image?: string
-  h1Styling?: any
+  headingStyling?: {}
   mainContentStyling?: any
   bulletStyling?: any
   heading?: string
   list?: PptxSlideListContent
-  slidesArray?: string[]
 }

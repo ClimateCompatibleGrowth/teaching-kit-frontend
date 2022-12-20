@@ -44,6 +44,14 @@ export const descriptionTitle: PptxGenJS.TextPropsOptions = {
   h: 0.75,
 }
 
+export const singleHeading: PptxGenJS.TextPropsOptions = {
+  x: '35%',
+  y: '45%',
+  fontSize: 42,
+  w: '100%',
+  autoFit: true,
+}
+
 export const h1Heading: PptxGenJS.TextPropsOptions = {
   x: 0.5,
   y: 0,

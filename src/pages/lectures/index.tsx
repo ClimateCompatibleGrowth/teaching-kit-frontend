@@ -1,21 +1,23 @@
 import axios from 'axios'
 import Link from 'next/link'
-import { Block, Data, Lecture } from '../../types'
+import { Data, Lecture } from '../../types'
 import {
   LearningMaterialList,
   LearningMaterialListItem,
 } from '../../styles/global'
 
-type props = { lectures: Data<Lecture>[]; blocks: Block }
+type props = { lectures: Data<Lecture>[] }
 
-export default function Lectures({ lectures, blocks }: props) {
+export default function Lectures({ lectures }: props) {
   return (
     <div className="container">
       <h1>Lectures</h1>
       <LearningMaterialList>
         {lectures.map((lecture) => (
           <LearningMaterialListItem key={lecture.id}>
-            <Link href={`/lectures/${encodeURIComponent(lecture.id)}`}></Link>
+            <Link href={`/lectures/${encodeURIComponent(lecture.id)}`}>
+              <h2>{lecture.attributes.Title}</h2>
+            </Link>
           </LearningMaterialListItem>
         ))}
       </LearningMaterialList>
@@ -27,13 +29,9 @@ export async function getStaticProps() {
   const resLectures = await axios.get(
     `${process.env.STRAPI_API_URL}/lectures?populate=*`
   )
-  const resBlocks = await axios.get(
-    `${process.env.STRAPI_API_URL}/blocks?populate=*`
-  )
-  const blocks = resBlocks.data.data
   const lectures = resLectures.data.data
 
   return {
-    props: { lectures, blocks },
+    props: { lectures },
   }
 }

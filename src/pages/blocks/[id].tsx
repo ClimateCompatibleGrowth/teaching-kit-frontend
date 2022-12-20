@@ -8,8 +8,6 @@ import { Block } from '../../components/Block'
 type props = { block: Data<BlockType> }
 
 export default function BlockPage({ block }: props) {
-  console.log(block.attributes.Slides)
-
   return (
     <LearningMaterialContainer>
       <Block block={block} />

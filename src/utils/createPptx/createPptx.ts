@@ -7,7 +7,10 @@ import {
   imageStyling,
 } from './createPptxStyling'
 
-export const createPptxFile = async (pptxSlides: PptxSlide[]) => {
+export const createPptxFile = async (
+  pptxSlides: PptxSlide[],
+  lectureTitle: string
+) => {
   const pptx = new PptxGenJS()
   pptx.layout = 'LAYOUT_WIDE'
 
@@ -18,22 +21,19 @@ export const createPptxFile = async (pptxSlides: PptxSlide[]) => {
   let descriptionSlide = pptx.addSlide({
     masterName: `${masterContentSlide}`,
   })
-  descriptionSlide.addText(`${pptxSlides[0]?.title}`, descriptionTitle)
+  descriptionSlide.addText(`${lectureTitle}`, descriptionTitle)
 
   //Content slides
   pptxSlides?.map((pptxSlide: PptxSlide) => {
-    let bulletString = ''
+    // let bulletString: any = ''
     const contentSlide = pptx.addSlide()
 
     //Headings
-    contentSlide.addText(`${pptxSlide.heading}`, pptxSlide.h1Styling)
+    contentSlide.addText(`${pptxSlide.heading}`, pptxSlide.headingStyling)
 
     contentSlide.addImage({
       path: `${pptxSlide?.image}`,
-      x: '70%',
-      y: '5%',
-      w: '25%',
-      h: '30%',
+      ...imageStyling,
     })
 
     //Main content
@@ -41,19 +41,20 @@ export const createPptxFile = async (pptxSlides: PptxSlide[]) => {
       `${pptxSlide?.mainContent}`,
       pptxSlide.mainContentStyling
     )
+    console.log(pptxSlide?.mainContent, 'pptxSlide.mainContentStyling')
 
     //Bullet points
     if (pptxSlide.list) {
-      console.log(pptxSlide.list, 'pptxSlide.list')
+      let bulletString = pptxSlide.list
+        .map((item) => {
+          return item.content[0].content[0].value
+        })
+        .join('\n')
 
-      for (let i: number = 0; i < pptxSlide.list?.length; i++) {
-        bulletString +=
-          '\n' + `${pptxSlide.list[i].content[0].content[0].value}`
-      }
       contentSlide.addText(`${bulletString}`, pptxSlide.bulletStyling)
     }
     //Slide notes
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)
   })
-  pptx.writeFile({ fileName: `${pptxSlides[0].title}.pptx` })
+  // pptx.writeFile({ fileName: `${lectureTitle}.pptx` })
 }

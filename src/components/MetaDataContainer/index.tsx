@@ -19,7 +19,7 @@ type PptxDownloadParameters = {
   title?: string
   courseId?: number
   block?: Data<Block>[]
-  data?: any //REPLACE ANY WITH CORRECT TYPE
+  data: Data<Block>
 }
 
 export type Props = {
@@ -27,8 +27,8 @@ export type Props = {
   level?: Level
   duration?: string
   authors?: { data: Data<Author>[] }
-  docxDownloadParameters?: DocxDownloadParameters
-  pptxDownloadParameters?: PptxDownloadParameters
+  docxDownloadParameters: DocxDownloadParameters
+  pptxDownloadParameters: PptxDownloadParameters
 }
 
 export default function MetaDataContainer({
