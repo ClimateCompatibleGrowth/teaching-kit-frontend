@@ -9,7 +9,6 @@ import {
 type props = { lectures: Data<Lecture>[] }
 
 export default function Lectures({ lectures }: props) {
-
   return (
     <div className="container">
       <h1>Lectures</h1>
@@ -27,8 +26,10 @@ export default function Lectures({ lectures }: props) {
 }
 
 export async function getStaticProps() {
-  const res = await axios.get(`${process.env.STRAPI_API_URL}/lectures`)
-  const lectures = res.data.data
+  const resLectures = await axios.get(
+    `${process.env.STRAPI_API_URL}/lectures?populate=*`
+  )
+  const lectures = resLectures.data.data
 
   return {
     props: { lectures },

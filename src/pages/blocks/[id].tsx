@@ -16,6 +16,7 @@ export default function BlockPage({ block }: props) {
         duration={`${block.attributes.DurationInMinutes} min`}
         authors={block.attributes.Authors}
         docxDownloadParameters={{ title: block.attributes.Title }}
+        pptxDownloadParameters={{ data: block }}
       ></MetaDataContainer>
     </LearningMaterialContainer>
   )
