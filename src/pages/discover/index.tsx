@@ -1,7 +1,8 @@
 import styled from '@emotion/styled'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import CardList from '../../components/CardList/CardList'
 import Filter, { Filter as FilterType } from '../../components/Filter/Filter'
+import PaginationController from '../../components/PaginationController/PaginationController'
 import { searchForAuthors } from '../../shared/requests/authors/authors'
 import { filterCourseOnKeywordsAndAuthors } from '../../shared/requests/courses/courses'
 import { searchForKeywords } from '../../shared/requests/keywords/keywords'
@@ -19,47 +20,63 @@ const FilterGroup = styled.div`
 
 const Styled = { FilterGroup }
 
+const defaultPageNumber = 1
+
+const defaultPagination = {
+  page: defaultPageNumber,
+  pageSize: 25,
+  pageCount: 1,
+  total: 0,
+}
+
 export default function Discover() {
   const [selectedKeywords, setSelectedKeywords] = useState<FilterType[]>([])
   const [selectedAuthors, setSelectedAuthors] = useState<FilterType[]>([])
   const [filterResults, setFilterResults] = useState<Data<Course>[]>([])
-  const [pagination, setPagination] = useState<Pagination>()
+  const [pagination, setPagination] = useState<Pagination>(defaultPagination)
+  const [currentPageNumber, setCurrentPageNumber] = useState(defaultPageNumber)
 
   useEffect(() => {
-    onSelectedKeywordsChange(selectedKeywords, selectedAuthors)
-  }, [selectedKeywords, selectedAuthors])
+    onSelectedKeywordsChange(
+      selectedKeywords,
+      selectedAuthors,
+      currentPageNumber
+    )
+  }, [selectedKeywords, selectedAuthors, currentPageNumber])
 
   const onSelectedKeywordsChange = async (
     keywords: FilterType[],
-    authors: FilterType[]
+    authors: FilterType[],
+    currentPageNumber: number
   ) => {
     const filterResponse = await filterCourseOnKeywordsAndAuthors(
       keywords.map((keyword) => keyword.title),
-      authors.map((author) => author.title)
+      authors.map((author) => author.title),
+      currentPageNumber
     )
 
     setFilterResults(filterResponse.data)
     setPagination(filterResponse.meta.pagination)
   }
 
-  const getMatchingFilters = async (searchTerm: string) => {
+  const getMatchingKeywords = useCallback(async (searchTerm: string) => {
     const matchingKeywords = await searchForKeywords(searchTerm)
     return matchingKeywords.map((matchingKeyword) => ({
       id: matchingKeyword.id.toString(),
       title: matchingKeyword.attributes.Keyword,
     }))
-  }
+  }, [])
 
-  const getMatchingAuthors = async (searchTerm: string) => {
+  const getMatchingAuthors = useCallback(async (searchTerm: string) => {
     const matchingAuthors = await searchForAuthors(searchTerm)
     return matchingAuthors.map((matchingAuthor) => ({
       id: matchingAuthor.id.toString(),
       title: matchingAuthor.attributes.Name,
     }))
-  }
+  }, [])
 
   return (
-    <div className="container">
+    <div className='container'>
       <h1>Learning Material</h1>
       <div>
         <h2>Apply filter</h2>
@@ -67,14 +84,14 @@ export default function Discover() {
           <Filter
             selectedFilters={selectedKeywords}
             setSelectedFilters={setSelectedKeywords}
-            typeToFilterOn="Keyword"
+            typeToFilterOn='Keyword'
             maxAmountOfFiltersInDropdown={MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN}
-            searchForFilters={getMatchingFilters}
+            searchForFilters={getMatchingKeywords}
           />
           <Filter
             selectedFilters={selectedAuthors}
             setSelectedFilters={setSelectedAuthors}
-            typeToFilterOn="Author"
+            typeToFilterOn='Author'
             maxAmountOfFiltersInDropdown={MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN}
             searchForFilters={getMatchingAuthors}
           />
@@ -89,6 +106,13 @@ export default function Discover() {
             metaData: `Level: ${result.attributes.Level}`,
           }))}
         />
+        {pagination.pageCount > 1 ? (
+          <PaginationController
+            amountOfPages={pagination.pageCount}
+            currentPageNumber={currentPageNumber}
+            setCurrentPage={(pageNumber) => setCurrentPageNumber(pageNumber)}
+          />
+        ) : null}
       </div>
     </div>
   )
