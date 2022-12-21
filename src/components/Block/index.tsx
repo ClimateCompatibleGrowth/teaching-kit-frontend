@@ -15,7 +15,7 @@ export const Block = ({ block }: Props) => {
         LearningOutcomes={block.attributes.LearningOutcomes}
       />
       <p>{block.attributes.Document}</p>
-      {<LearningMaterialEnding References={block.attributes.References} />}
+      <LearningMaterialEnding References={block.attributes.References} />
     </div>
   )
 }

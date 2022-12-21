@@ -38,13 +38,13 @@ export default function CoursePage({ course }: props) {
         />
       </div>
       <MetaDataContainer
-        typeOfLearningMaterial="Course"
+        typeOfLearningMaterial="COURSE"
         level={course.attributes.Level}
         duration={'5 h'}
         authors={course.attributes.CourseCreator}
         docxDownloadParameters={{
           title: course.attributes.Title,
-          courseId: course.id
+          courseId: course.id,
         }}
         handlePptxDownload={handlePptxDownload}
       ></MetaDataContainer>
@@ -72,8 +72,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(ctx: any) {
-  console.log("process.env.STRAPI_API_URL", process.env.STRAPI_API_URL);
-  
   const res = await axios.get(
     `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?populate=*`
   )

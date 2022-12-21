@@ -36,7 +36,11 @@ export type Author = {
   };
 };
 
-export type Level = "Beginner" | "Intermediate" | "Expert" | null;
+const learningMaterialTypes = ["COURSE", "LECTURE", "BLOCK"] as const;
+export type LearningMaterialType = typeof learningMaterialTypes[number];
+
+const levels = ["BEGINNER", "INTERMEDIATE", "EXPERT"] as const;
+export type Level = typeof levels[number];
 
 export type Course = {
   id: number;
@@ -48,7 +52,7 @@ export type Course = {
     Level: Level;
     Acknowledgement: string;
     CiteAs: string;
-    CourseCreator: {data: Author[];}
+    CourseCreator: { data: Author[]; }
     Lectures: { data: Lecture[] };
     createdAt: string;
     updatedAt: string;
@@ -62,7 +66,7 @@ export type Lecture = {
     Title: string;
     Abstract: string;
     LearningOutcomes: LearningOutcome[];
-    LectureCreator: {data: Author[];}
+    LectureCreator: { data: Author[]; }
     Level: Level;
     Acknowledgement: string;
     CiteAs: string;
@@ -80,7 +84,7 @@ export type Block = {
     Title: string;
     Abstract: string;
     LearningOutcomes: LearningOutcome[];
-    Authors: {data: Author[];}
+    Authors: { data: Author[]; }
     DurationInMinutes: number;
     Document: string;
     Slides: Slide[];

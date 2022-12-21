@@ -1,6 +1,6 @@
 import axios from 'axios'
 import MetaDataContainer from '../../components/MetaDataContainer'
-import { Block as BlockType } from "../../types";
+import { Block as BlockType } from '../../types'
 import styles from '../../styles/LearningMaterial.module.css'
 import { Block } from '../../components/Block'
 
@@ -11,7 +11,7 @@ export default function BlockPage({ block }: props) {
     <div className={styles.learningMaterialContainer}>
       <Block block={block}></Block>
       <MetaDataContainer
-        typeOfLearningMaterial="Block"
+        typeOfLearningMaterial="BLOCK"
         duration={`${block.attributes.DurationInMinutes} min`}
         authors={block.attributes.Authors}
         docxDownloadParameters={{ title: block.attributes.Title }}
