@@ -1,7 +1,6 @@
-import { css } from "@emotion/react"
-import { ubuntu, montserrat } from "./fonts"
-import { Background } from "./global"
-
+import { css } from '@emotion/react'
+import { ubuntu, montserrat } from './fonts'
+import { Background } from './global'
 
 const defaultStyle = css`
   h1,
@@ -10,7 +9,7 @@ const defaultStyle = css`
   h4,
   h5,
   h6 {
-    font-family: ${ubuntu.normal.style.fontFamily};
+    font-family: ${ubuntu['400'].style.fontFamily};
   }
 
   h1 {
@@ -38,12 +37,12 @@ const defaultStyle = css`
     margin: 1rem 0;
 
     font-size: 1.5rem;
-    font-family: ${montserrat.normal.style.fontFamily}
+    font-family: ${montserrat['400'].style.fontFamily};
   }
 
   label {
     font-size: 1.3rem;
-    font-family: ${ubuntu.normal.style.fontFamily}
+    font-family: ${ubuntu['400'].style.fontFamily};
   }
 
   html,
