@@ -1,5 +1,4 @@
-import styled from "@emotion/styled";
-
+import styled from '@emotion/styled'
 
 export const Navbar = styled.nav`
   top: 0;
@@ -12,7 +11,8 @@ export const Navbar = styled.nav`
 export const NavbarUl = styled.ul`
   display: flex;
   list-style: none;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 15rem;
   padding: 0;
 
   li a:hover {

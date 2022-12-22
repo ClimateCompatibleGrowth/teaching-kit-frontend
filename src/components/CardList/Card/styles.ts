@@ -18,6 +18,15 @@ export const MetaData = styled.p`
 `
 
 export const Markdown = styled.div`
+  max-height: 10rem;
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+
   p {
     strong {
       font-family: ${montserrat['500'].style.fontFamily};

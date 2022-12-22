@@ -1,15 +1,14 @@
-import axios from 'axios'
 import ReactDOMServer from 'react-dom/server'
 import { Block } from '../components/Block'
 import { Lecture } from '../components/Lecture'
 import { getCourseWithLecturesAndBlocks } from '../shared/requests/courses/courses'
 
-import { Block as BlockType, Data } from '../types'
+import { BlockOneLevelDeep, Data } from '../types'
 
 export default async function handleDocxDownload(
   title?: string,
   courseId?: number,
-  blocks?: Data<BlockType>[]
+  blocks?: Data<BlockOneLevelDeep>[]
 ) {
   const header =
     "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
@@ -46,7 +45,6 @@ export default async function handleDocxDownload(
   }
 
   sourceHTML += footer
-
 
   const source =
     'data:application/vnd.ms-word;charset=utf-8,' +

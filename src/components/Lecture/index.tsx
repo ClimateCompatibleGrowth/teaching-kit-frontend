@@ -1,15 +1,15 @@
 import React from 'react'
 import LearningMaterial from '../LearningMaterial'
 import LearningMaterialEnding from '../LearningMaterialEnding'
-import { Data, DeepLecture } from '../../types'
+import { Data, LectureTwoLevelsDeep } from '../../types'
 import Blocks from '../Block/DropDownView'
 import { LearningMaterialOverview } from '../../styles/global'
 
-export type Props = { lecture: Data<DeepLecture> }
+export type Props = { lecture: Data<LectureTwoLevelsDeep> }
 
 export const Lecture = ({ lecture }: Props) => {
   return (
-    <LearningMaterialOverview id="source-html">
+    <LearningMaterialOverview id='source-html'>
       <LearningMaterial
         Title={lecture.attributes.Title}
         Abstract={lecture.attributes.Abstract}

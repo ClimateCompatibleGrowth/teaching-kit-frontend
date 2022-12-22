@@ -6,19 +6,10 @@ export default function Navbar() {
     <StyledNavbar>
       <NavbarUl>
         <li>
-          <Link href="/">Home</Link>
+          <Link href='/'>Home</Link>
         </li>
         <li>
-          <Link href="/discover">Discover</Link>
-        </li>
-        <li>
-          <Link href="/courses">Courses</Link>
-        </li>
-        <li>
-          <Link href="/lectures">Lectures</Link>
-        </li>
-        <li>
-          <Link href="/blocks">Blocks</Link>
+          <Link href='/discover'>Discover</Link>
         </li>
       </NavbarUl>
     </StyledNavbar>

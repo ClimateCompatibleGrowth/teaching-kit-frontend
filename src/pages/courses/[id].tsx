@@ -8,23 +8,23 @@ import {
   LearningMaterialContainer,
   LearningMaterialOverview,
 } from '../../styles/global'
-import { TwoLevelsDeepCourse, Data } from '../../types'
+import { CourseThreeLevelsDeep, Data } from '../../types'
 
-type Props = { course: Data<TwoLevelsDeepCourse> }
+type Props = { course: Data<CourseThreeLevelsDeep> }
 
 export default function CoursePage({ course }: Props) {
   const [showLectures, setShowLectures] = useState(false)
 
   return (
     <LearningMaterialContainer>
-      <LearningMaterialOverview id="source-html">
+      <LearningMaterialOverview id='source-html'>
         <LearningMaterial
           Title={course.attributes.Title}
           Abstract={course.attributes.Abstract}
           LearningOutcomes={course.attributes.LearningOutcomes}
           Prerequisites={course.attributes.Prerequisites}
         />
-        <h2 className="title" onClick={() => setShowLectures(!showLectures)}>
+        <h2 className='title' onClick={() => setShowLectures(!showLectures)}>
           Course Content
         </h2>
         {showLectures && (
@@ -40,7 +40,7 @@ export default function CoursePage({ course }: Props) {
         />
       </LearningMaterialOverview>
       <MetaDataContainer
-        typeOfLearningMaterial="COURSE"
+        typeOfLearningMaterial='COURSE'
         level={course.attributes.Level}
         duration={'5 h'}
         authors={course.attributes.CourseCreator}

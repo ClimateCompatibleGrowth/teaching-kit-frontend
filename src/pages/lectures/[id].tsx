@@ -3,15 +3,15 @@ import { Lecture } from '../../components/Lecture'
 import MetaDataContainer from '../../components/MetaDataContainer'
 import { getLectures } from '../../shared/requests/lectures/lectures'
 import { LearningMaterialContainer } from '../../styles/global'
-import { Data, DeepLecture } from '../../types'
+import { Data, LectureTwoLevelsDeep } from '../../types'
 
-type props = { lecture: Data<DeepLecture> }
+type props = { lecture: Data<LectureTwoLevelsDeep> }
 export default function LecturePage({ lecture }: props) {
   return (
     <LearningMaterialContainer>
       <Lecture lecture={lecture} />
       <MetaDataContainer
-        typeOfLearningMaterial="LECTURE"
+        typeOfLearningMaterial='LECTURE'
         level={lecture.attributes.Level}
         duration={'2 h'}
         authors={lecture.attributes.LectureCreator}
