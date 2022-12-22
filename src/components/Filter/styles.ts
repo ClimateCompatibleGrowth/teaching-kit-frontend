@@ -1,5 +1,10 @@
-import styled from "@emotion/styled";
-import { Accent40, Background, ButtonWithoutDefaultStyle, UlWithoutDefaultStyle } from "../../styles/global";
+import styled from '@emotion/styled'
+import {
+  Accent40,
+  Background,
+  ButtonWithoutDefaultStyle,
+  UlWithoutDefaultStyle,
+} from '../../styles/global'
 
 type IconButtonProps = {
   isPointingDown: boolean
@@ -45,16 +50,16 @@ export const FilterInput = styled.input`
 
   font-size: 1.5rem;
 
-  border: 1px solid ${Accent40}
+  border: 1px solid ${Accent40};
 `
 
-export const IconButton = styled(ButtonWithoutDefaultStyle) <IconButtonProps>`
+export const IconButton = styled(ButtonWithoutDefaultStyle)<IconButtonProps>`
   position: absolute;
 
   right: 1rem;
   top: 1rem;
 
-  transform: rotate(${props => props.isPointingDown ? "180deg" : "0deg"})
+  transform: rotate(${(props) => (props.isPointingDown ? '180deg' : '0deg')});
 `
 
 export const FilterDropdownList = styled(UlWithoutDefaultStyle)`
@@ -71,7 +76,7 @@ export const FilterDropdownList = styled(UlWithoutDefaultStyle)`
   border-radius: 2px;
   z-index: 10;
 
-  background-color: ${Background}
+  background-color: ${Background};
 `
 
 export const MoreResultsInformation = styled.li`

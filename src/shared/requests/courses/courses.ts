@@ -1,8 +1,9 @@
 import axios from 'axios'
-import { Course, TwoLevelsDeepCourse } from '../../../types'
+import { Course, CourseTwoLevelsDeep } from '../../../types'
 import { Response, ResponseArray } from '../types'
 
 const ENDPOINT = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/courses`
+const DEFAULT_MATCHES_PER_PAGE = 10
 
 export const getCourses = async () => {
   const response: ResponseArray<Course> = await axios.get(ENDPOINT)
@@ -10,7 +11,7 @@ export const getCourses = async () => {
 }
 
 export const getCourseWithLecturesAndBlocks = async (courseId: string) => {
-  const response: Response<TwoLevelsDeepCourse> = await axios.get(
+  const response: Response<CourseTwoLevelsDeep> = await axios.get(
     `${ENDPOINT}/${courseId}?populate[Lectures][populate][0]=Blocks`
   )
   return response.data.data
@@ -52,16 +53,24 @@ const getFilterStringByAuthor = (author: string) => {
 
 export const filterCourseOnKeywordsAndAuthors = async (
   keywords: string[],
-  authors: string[]
+  authors: string[],
+  pageNumber: number,
+  matchesPerPage?: number
 ) => {
   const keywordsFilterString = getKeywordsFilterString(keywords)
   const authorsFilterString = getAuthorsFilterString(authors)
-  const and = keywordsFilterString.length > 0 ? '&' : ''
 
-  const filters = `${keywordsFilterString}${and}${authorsFilterString}`
+  const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
+    matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
+  }`
+
+  const andKeywords = keywordsFilterString.length > 0 ? '&' : ''
+  const andAuthors = authorsFilterString.length > 0 ? '&' : ''
+
+  const filters = `${pagination}${andKeywords}${keywordsFilterString}${andAuthors}${authorsFilterString}`
   const filterString =
-    filters.length > 0 ? `?${filters}&populate=*` : '?populate=*'
-  const response: ResponseArray<TwoLevelsDeepCourse> = await axios.get(
+    filters.length > 0 ? `${filters}&populate=*` : '?populate=*'
+  const response: ResponseArray<CourseTwoLevelsDeep> = await axios.get(
     `${ENDPOINT}${filterString}`
   )
   return response.data

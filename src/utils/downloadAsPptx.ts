@@ -1,7 +1,6 @@
 import { richTextFromMarkdown } from '@contentful/rich-text-from-markdown'
 import { createPptxFile } from './createPptx/createPptx'
-import { Slide } from '../types'
-import { Block as BlockType, Data } from '../types/index.d'
+import { BlockOneLevelDeep, Data, Slide } from '../types'
 
 import {
   h1Heading,
@@ -14,7 +13,7 @@ import {
 import { MarkdownLinkNode } from '@contentful/rich-text-from-markdown/dist/types/types'
 import { PptxSlide } from '../types/pptx'
 
-const downloadAsPptx = async (block: Data<BlockType>) => {
+const downloadAsPptx = async (block: Data<BlockOneLevelDeep>) => {
   const lectureData = {
     Title: block.attributes.Title,
     Abstract: block.attributes.Abstract,

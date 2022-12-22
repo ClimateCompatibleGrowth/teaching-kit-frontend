@@ -1,5 +1,11 @@
 import React from 'react'
-import { Author, Block, Data, LearningMaterialType, Level } from '../../types'
+import {
+  Author,
+  BlockOneLevelDeep,
+  Data,
+  LearningMaterialType,
+  Level,
+} from '../../types'
 import {
   DownloadContainer,
   StyledLi,
@@ -12,11 +18,11 @@ import handlePptxDownload from '../../utils/downloadAsPptx'
 type DocxDownloadParameters = {
   title: string
   courseId?: number
-  blocks?: Data<Block>[]
+  blocks?: Data<BlockOneLevelDeep>[]
 }
 
 type PptxDownloadParameters = {
-  data: Data<Block>
+  data: Data<BlockOneLevelDeep>
 }
 
 export type Props = {
@@ -37,7 +43,7 @@ export default function MetaDataContainer({
   pptxDownloadParameters,
 }: Props) {
   return (
-    <StyledMetaDataContainer id="meta-data-html">
+    <StyledMetaDataContainer id='meta-data-html'>
       <h3>About this {typeOfLearningMaterial}</h3>
       {level !== undefined && <p>Level: {level}</p>}
       <p>Duration: {duration}</p>
