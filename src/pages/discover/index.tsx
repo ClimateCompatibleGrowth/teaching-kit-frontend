@@ -6,6 +6,7 @@ import PaginationController from '../../components/PaginationController/Paginati
 import { searchForAuthors } from '../../shared/requests/authors/authors'
 import { filterCourseOnKeywordsAndAuthors } from '../../shared/requests/courses/courses'
 import { searchForKeywords } from '../../shared/requests/keywords/keywords'
+import { filterLectureOnKeywordsAndAuthors } from '../../shared/requests/lectures/lectures'
 import { Pagination } from '../../shared/requests/types'
 import { Course, Data } from '../../types'
 
@@ -33,8 +34,11 @@ const defaultPagination = {
 export default function Discover() {
   const [selectedKeywords, setSelectedKeywords] = useState<FilterType[]>([])
   const [selectedAuthors, setSelectedAuthors] = useState<FilterType[]>([])
-  const [filterResults, setFilterResults] = useState<Data<Course>[]>([])
-  const [pagination, setPagination] = useState<Pagination>(defaultPagination)
+  const [courseFilterResults, setCourseFilterResults] = useState<
+    Data<Course>[]
+  >([])
+  const [coursePagination, setCoursePagination] =
+    useState<Pagination>(defaultPagination)
   const [currentPageNumber, setCurrentPageNumber] =
     useState(DEFAULT_PAGE_NUMBER)
 
@@ -51,15 +55,20 @@ export default function Discover() {
     authors: FilterType[],
     currentPageNumber: number
   ) => {
-    const filterResponse = await filterCourseOnKeywordsAndAuthors(
-      keywords.map((keyword) => keyword.title),
-      authors.map((author) => author.title),
-      currentPageNumber,
-      DEFAULT_MATCHES_PER_PAGE
-    )
+    const args = {
+      keywords: keywords.map((keyword) => keyword.title),
+      authors: authors.map((author) => author.title),
+      pageNumber: currentPageNumber,
+      matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
+    }
 
-    setFilterResults(filterResponse.data)
-    setPagination(filterResponse.meta.pagination)
+    const [courseFilterResult] = await Promise.all([
+      filterCourseOnKeywordsAndAuthors(args),
+      filterLectureOnKeywordsAndAuthors(args),
+    ])
+
+    setCourseFilterResults(courseFilterResult.data)
+    setCoursePagination(courseFilterResult.meta.pagination)
   }
 
   const getMatchingKeywords = useCallback(async (searchTerm: string) => {
@@ -102,16 +111,16 @@ export default function Discover() {
       </div>
       <div>
         <CardList
-          cards={filterResults.map((result) => ({
+          cards={courseFilterResults.map((result) => ({
             title: result.attributes.Title,
             id: result.id.toString(),
             text: result.attributes.Abstract,
             metaData: `Level: ${result.attributes.Level}`,
           }))}
         />
-        {pagination.pageCount > 1 ? (
+        {coursePagination.pageCount > 1 ? (
           <PaginationController
-            amountOfPages={pagination.pageCount}
+            amountOfPages={coursePagination.pageCount}
             currentPageNumber={currentPageNumber}
             setCurrentPage={(pageNumber) => setCurrentPageNumber(pageNumber)}
           />
