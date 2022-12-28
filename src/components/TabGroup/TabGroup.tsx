@@ -6,6 +6,7 @@ import Box from '@mui/material/Box'
 import { filterCourseOnKeywordsAndAuthors } from '../../shared/requests/courses/courses'
 import { filterLectureOnKeywordsAndAuthors } from '../../shared/requests/lectures/lectures'
 import {
+  BlockOneLevelDeep,
   CourseTwoLevelsDeep,
   Data,
   LearningMaterialType,
@@ -18,6 +19,8 @@ import { CardType } from '../CardList/Card/Card'
 import TabPanel from './TabPanel/TabPanel'
 
 import * as Styled from './styles'
+import { filterBlockOnKeywordsAndAuthors } from '../../shared/requests/blocks/blocks'
+import TabLabel from './TabLabel/TabLabel'
 
 type Props = {
   selectedKeywords: string[]
@@ -47,9 +50,13 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
     useState<ResponseArrayData<CourseTwoLevelsDeep>>(defaultFilterResult)
   const [lectureResults, setLectureResults] =
     useState<ResponseArrayData<LectureTwoLevelsDeep>>(defaultFilterResult)
+  const [blockResults, setBlockResults] =
+    useState<ResponseArrayData<BlockOneLevelDeep>>(defaultFilterResult)
   const [currentCoursePageNumber, setCurrentCoursePageNumber] =
     useState(DEFAULT_PAGE_NUMBER)
   const [currentLecturePageNumber, setCurrentLecturePageNumber] =
+    useState(DEFAULT_PAGE_NUMBER)
+  const [currentBlockPageNumber, setCurrentBlockPageNumber] =
     useState(DEFAULT_PAGE_NUMBER)
   const [matchesPerPage, setMatchesPerPage] = useState(DEFAULT_MATCHES_PER_PAGE)
 
@@ -81,6 +88,20 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
     [selectedKeywords, selectedAuthors, matchesPerPage]
   )
 
+  const onBlockChange = useCallback(
+    async (pageNumber: number) => {
+      const blockFilterResult = await filterBlockOnKeywordsAndAuthors({
+        keywords: selectedKeywords,
+        authors: selectedAuthors,
+        pageNumber: pageNumber,
+        matchesPerPage,
+      })
+
+      setBlockResults(blockFilterResult)
+    },
+    [selectedKeywords, selectedAuthors, matchesPerPage]
+  )
+
   useEffect(() => {
     onCourseChange(currentCoursePageNumber)
   }, [currentCoursePageNumber, onCourseChange])
@@ -89,41 +110,24 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
     onLectureChange(currentLecturePageNumber)
   }, [currentLecturePageNumber, onLectureChange])
 
-  const getTabLabel = (type: LearningMaterialType): string => {
-    switch (type) {
-      case 'COURSE':
-        return 'Courses'
-      case 'LECTURE':
-        return 'Lectures'
-      case 'BLOCK':
-        return 'Blocks'
-    }
-  }
-
-  const getTabLabelComponent = (
-    type: LearningMaterialType,
-    numberOfResults: number
-  ): ReactNode => {
-    return (
-      <>
-        <h5>{getTabLabel(type)}</h5>
-        <div className='NumberOfMatchesWrapper'>
-          <h5 aria-label={`${numberOfResults} matching results`}>
-            {numberOfResults}
-          </h5>
-        </div>
-      </>
-    )
-  }
+  useEffect(() => {
+    onBlockChange(currentBlockPageNumber)
+  }, [currentBlockPageNumber, onBlockChange])
 
   const dataToCardFormat = (
-    data: Data<CourseTwoLevelsDeep>[] | Data<LectureTwoLevelsDeep>[]
+    data:
+      | Data<CourseTwoLevelsDeep>[]
+      | Data<LectureTwoLevelsDeep>[]
+      | Data<BlockOneLevelDeep>[]
   ): CardType[] => {
     return data.map((result) => ({
       title: result.attributes.Title,
       id: result.id.toString(),
       text: result.attributes.Abstract,
-      metaData: `Level: ${result.attributes.Level}`,
+      metaData:
+        'Level' in result.attributes
+          ? `Level: ${result.attributes.Level}`
+          : undefined,
     }))
   }
 
@@ -151,22 +155,35 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
           sx={Styled.Tabs}
         >
           <Tab
-            label={getTabLabelComponent(
-              'COURSE',
-              courseResults.meta.pagination.total
-            )}
+            label={
+              <TabLabel
+                type='COURSE'
+                numberOfResults={courseResults.meta.pagination.total}
+              />
+            }
             disableRipple
             sx={Styled.Tab}
           />
           <Tab
-            label={getTabLabelComponent(
-              'LECTURE',
-              lectureResults.meta.pagination.total
-            )}
+            label={
+              <TabLabel
+                type='LECTURE'
+                numberOfResults={lectureResults.meta.pagination.total}
+              />
+            }
             disableRipple
             sx={Styled.Tab}
           />
-          <Tab label='Item Three' />
+          <Tab
+            label={
+              <TabLabel
+                type='BLOCK'
+                numberOfResults={blockResults.meta.pagination.total}
+              />
+            }
+            disableRipple
+            sx={Styled.Tab}
+          />
         </Tabs>
       </div>
       <TabPanel value={value} index={0}>
@@ -186,7 +203,12 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
         )}
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <CardList cards={dataToCardFormat(blockResults.data)} />
+        {getPaginationController(
+          lectureResults.meta,
+          currentBlockPageNumber,
+          setCurrentBlockPageNumber
+        )}
       </TabPanel>
     </div>
   )

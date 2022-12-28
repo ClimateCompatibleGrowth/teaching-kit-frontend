@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Lecture, LectureTwoLevelsDeep } from '../../../types'
-import { ResponseArray } from '../types'
+import { ResponseArray, ResponseArrayData } from '../types'
 import {
   FilterParameters,
   getAuthorsFilterString,
@@ -20,7 +20,7 @@ export const filterLectureOnKeywordsAndAuthors = async ({
   authors,
   pageNumber,
   matchesPerPage,
-}: FilterParameters) => {
+}: FilterParameters): Promise<ResponseArrayData<LectureTwoLevelsDeep>> => {
   const keywordsFilterString = getKeywordsFilterString(
     keywords,
     '[Blocks][Keywords][Keyword]'

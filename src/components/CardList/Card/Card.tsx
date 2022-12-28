@@ -6,7 +6,7 @@ export type CardType = {
   id: string
   title: string
   text: string
-  metaData: string
+  metaData?: string
 }
 
 type Props = {
@@ -20,7 +20,9 @@ const Card = ({ card }: Props) => {
       <Styled.Markdown>
         <ReactMarkdown>{card.text}</ReactMarkdown>
       </Styled.Markdown>
-      <Styled.MetaData>{card.metaData}</Styled.MetaData>
+      {card.metaData !== undefined ? (
+        <Styled.MetaData>{card.metaData}</Styled.MetaData>
+      ) : null}
     </Styled.Card>
   )
 }

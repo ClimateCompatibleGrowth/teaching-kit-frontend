@@ -20,22 +20,13 @@ const getFilterStringByAuthor = (
   author: string,
   filterFrom: LearningMaterialType
 ) => {
-  const matchesCourseCreator = (index: number) =>
-    `filters[$or][${index}][CourseCreator][Name][$containsi]=${author}`
-  const matchesLectureCreator = (index: number) =>
-    `filters[$or][${index}][Lectures][LectureCreator][Name][$containsi]=${author}`
-  const matchesBlockAuthor = (index: number) =>
-    `filters[$or]${index}][Lectures][Blocks][Authors][Name][$containsi]=${author}`
-
   switch (filterFrom) {
     case 'COURSE':
-      return `${matchesCourseCreator(0)}&${matchesLectureCreator(
-        1
-      )}&${matchesBlockAuthor(2)}`
+      return `filters[$or][0][CourseCreator][Name][$containsi]=${author}&filters[$or][1][Lectures][LectureCreator][Name][$containsi]=${author}&filters[$or][2][Lectures][Blocks][Authors][Name][$containsi]=${author}`
     case 'LECTURE':
-      return `${matchesLectureCreator(0)}&${matchesBlockAuthor(1)}`
+      return `filters[$or][0][LectureCreator][Name][$containsi]=${author}&filters[$or][1][Blocks][Authors][Name][$containsi]=${author}`
     case 'BLOCK':
-      return `${matchesBlockAuthor(0)}`
+      return `filters[$or][0][Authors][Name][$containsi]=${author}`
   }
 }
 
