@@ -1,16 +1,16 @@
 import styled from '@emotion/styled'
 import { montserrat } from '../../../styles/fonts'
-import { OnPrimary40, Primary40 } from '../../../styles/global'
+import { OnPrimary90, Primary90 } from '../../../styles/global'
 
 export const Card = styled.div`
   width: 100%;
 
   padding: 0.3rem 3rem 1rem 3rem;
 
-  background-color: ${Primary40};
-  color: ${OnPrimary40};
+  background-color: ${Primary90};
+  color: ${OnPrimary90};
 
-  border-radius: 5px;
+  border-radius: 0px 0px 0px 2.5rem;
 `
 
 export const MetaData = styled.p`

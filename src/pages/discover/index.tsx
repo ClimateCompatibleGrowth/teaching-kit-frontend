@@ -1,14 +1,9 @@
 import styled from '@emotion/styled'
-import { useCallback, useEffect, useState } from 'react'
-import CardList from '../../components/CardList/CardList'
+import { useCallback, useState } from 'react'
 import Filter, { Filter as FilterType } from '../../components/Filter/Filter'
-import PaginationController from '../../components/PaginationController/PaginationController'
+import TabGroup from '../../components/TabGroup/TabGroup'
 import { searchForAuthors } from '../../shared/requests/authors/authors'
-import { filterCourseOnKeywordsAndAuthors } from '../../shared/requests/courses/courses'
 import { searchForKeywords } from '../../shared/requests/keywords/keywords'
-import { filterLectureOnKeywordsAndAuthors } from '../../shared/requests/lectures/lectures'
-import { Pagination } from '../../shared/requests/types'
-import { Course, Data } from '../../types'
 
 // Note that Strapi's default value for page sizes currently is 25. Hence,
 // if this constant is increased to > 25, we will still only get 25 results.
@@ -21,55 +16,9 @@ const FilterGroup = styled.div`
 
 const Styled = { FilterGroup }
 
-const DEFAULT_PAGE_NUMBER = 1
-const DEFAULT_MATCHES_PER_PAGE = 10
-
-const defaultPagination = {
-  page: DEFAULT_PAGE_NUMBER,
-  pageSize: DEFAULT_MATCHES_PER_PAGE,
-  pageCount: 1,
-  total: 0,
-}
-
 export default function Discover() {
   const [selectedKeywords, setSelectedKeywords] = useState<FilterType[]>([])
   const [selectedAuthors, setSelectedAuthors] = useState<FilterType[]>([])
-  const [courseFilterResults, setCourseFilterResults] = useState<
-    Data<Course>[]
-  >([])
-  const [coursePagination, setCoursePagination] =
-    useState<Pagination>(defaultPagination)
-  const [currentPageNumber, setCurrentPageNumber] =
-    useState(DEFAULT_PAGE_NUMBER)
-
-  useEffect(() => {
-    onSelectedKeywordsChange(
-      selectedKeywords,
-      selectedAuthors,
-      currentPageNumber
-    )
-  }, [selectedKeywords, selectedAuthors, currentPageNumber])
-
-  const onSelectedKeywordsChange = async (
-    keywords: FilterType[],
-    authors: FilterType[],
-    currentPageNumber: number
-  ) => {
-    const args = {
-      keywords: keywords.map((keyword) => keyword.title),
-      authors: authors.map((author) => author.title),
-      pageNumber: currentPageNumber,
-      matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
-    }
-
-    const [courseFilterResult] = await Promise.all([
-      filterCourseOnKeywordsAndAuthors(args),
-      filterLectureOnKeywordsAndAuthors(args),
-    ])
-
-    setCourseFilterResults(courseFilterResult.data)
-    setCoursePagination(courseFilterResult.meta.pagination)
-  }
 
   const getMatchingKeywords = useCallback(async (searchTerm: string) => {
     const matchingKeywords = await searchForKeywords(searchTerm)
@@ -110,21 +59,14 @@ export default function Discover() {
         </Styled.FilterGroup>
       </div>
       <div>
-        <CardList
-          cards={courseFilterResults.map((result) => ({
-            title: result.attributes.Title,
-            id: result.id.toString(),
-            text: result.attributes.Abstract,
-            metaData: `Level: ${result.attributes.Level}`,
-          }))}
+        <TabGroup
+          selectedKeywords={selectedKeywords.map(
+            (selectedKeyword) => selectedKeyword.title
+          )}
+          selectedAuthors={selectedAuthors.map(
+            (selectedAuthor) => selectedAuthor.title
+          )}
         />
-        {coursePagination.pageCount > 1 ? (
-          <PaginationController
-            amountOfPages={coursePagination.pageCount}
-            currentPageNumber={currentPageNumber}
-            setCurrentPage={(pageNumber) => setCurrentPageNumber(pageNumber)}
-          />
-        ) : null}
       </div>
     </div>
   )

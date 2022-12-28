@@ -4,7 +4,7 @@ import {
   CourseThreeLevelsDeep,
   CourseTwoLevelsDeep,
 } from '../../../types'
-import { Response, ResponseArray } from '../types'
+import { Response, ResponseArray, ResponseArrayData } from '../types'
 import {
   FilterParameters,
   getAuthorsFilterString,
@@ -31,7 +31,7 @@ export const filterCourseOnKeywordsAndAuthors = async ({
   authors,
   pageNumber,
   matchesPerPage,
-}: FilterParameters) => {
+}: FilterParameters): Promise<ResponseArrayData<CourseTwoLevelsDeep>> => {
   const keywordsFilterString = getKeywordsFilterString(
     keywords,
     '[Lectures][Blocks][Keywords][Keyword]'

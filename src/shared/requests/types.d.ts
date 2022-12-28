@@ -1,21 +1,23 @@
-import { Data } from "../../types"
+import { Data } from '../../types'
 
 export type Pagination = {
-  page: number;
-  pageSize: number;
-  pageCount: number;
-  total: number;
+  page: number
+  pageSize: number
+  pageCount: number
+  total: number
 }
 
 type MetaData = {
   pagination: Pagination
 }
 
+export type ResponseArrayData<T> = {
+  data: Data<T>[]
+  meta: MetaData
+}
+
 export type ResponseArray<T> = {
-  data: {
-    data: Data<T>[]
-    meta: MetaData
-  }
+  data: ResponseArrayData<T>
 }
 
 export type Response<T> = {

@@ -9,7 +9,7 @@ const defaultStyle = css`
   h4,
   h5,
   h6 {
-    font-family: ${ubuntu['400'].style.fontFamily};
+    font-family: ${ubuntu['500'].style.fontFamily};
   }
 
   h1 {
@@ -26,10 +26,16 @@ const defaultStyle = css`
     font-size: 2rem;
   }
 
-  h4,
-  h5 {
+  h4 {
     margin: 1rem 0;
     font-size: 1.9rem;
+  }
+
+  h5 {
+    margin: 0;
+
+    font-size: 1.5rem;
+    font-family: ${montserrat['400'].style.fontFamily};
   }
 
   p,
@@ -42,7 +48,7 @@ const defaultStyle = css`
 
   label {
     font-size: 1.3rem;
-    font-family: ${ubuntu['400'].style.fontFamily};
+    font-family: ${ubuntu['500'].style.fontFamily};
   }
 
   html,
