@@ -17,7 +17,7 @@ export default async function handleDocxDownload(
     `<head><meta charset='utf-8'><title>${title}</title></head><body>`
   const footer = '</body></html>'
   // Add metaData
-  const metaDataHTML = document
+  const metadataHTML = document
     ? header + document.getElementById('meta-data-html')?.outerHTML
     : ''
 
@@ -48,7 +48,7 @@ export default async function handleDocxDownload(
 
   const source =
     'data:application/vnd.ms-word;charset=utf-8,' +
-    encodeURIComponent(metaDataHTML) +
+    encodeURIComponent(metadataHTML) +
     encodeURIComponent(sourceHTML)
 
   const fileDownload = document.createElement('a')

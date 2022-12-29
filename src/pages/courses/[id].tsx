@@ -1,20 +1,18 @@
 import axios from 'axios'
-import { useState } from 'react'
+import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
-import LearningMaterialEnding from '../../components/LearningMaterialEnding'
-import MetaDataContainer from '../../components/MetaDataContainer'
+import MetadataContainer from '../../components/MetadataContainer'
 import { getCourses } from '../../shared/requests/courses/courses'
 import {
   LearningMaterialContainer,
   LearningMaterialOverview,
 } from '../../styles/global'
 import { CourseThreeLevelsDeep, Data } from '../../types'
+import { summarizeDurations } from '../../utils/utils'
 
 type Props = { course: Data<CourseThreeLevelsDeep> }
 
 export default function CoursePage({ course }: Props) {
-  const [showLectures, setShowLectures] = useState(false)
-
   return (
     <LearningMaterialContainer>
       <LearningMaterialOverview id='source-html'>
@@ -27,31 +25,31 @@ export default function CoursePage({ course }: Props) {
           acknowledgement={course.attributes.Acknowledgement}
           citeAs={course.attributes.CiteAs}
         />
-        <h2 className='title' onClick={() => setShowLectures(!showLectures)}>
-          Course Content
-        </h2>
-        {showLectures && (
-          <ul>
-            {course.attributes.Lectures?.data.map((lecture) => (
-              <li key={lecture.id}>{lecture.attributes.Title}</li>
-            ))}
-          </ul>
-        )}
-        <LearningMaterialEnding
-          Acknowledgment={course.attributes.Acknowledgement}
-          CiteAs={course.attributes.CiteAs}
+        <h2>Course Content</h2>
+        <CardList
+          cards={course.attributes.Lectures.data.map((lecture, index) => ({
+            id: lecture.id.toString(),
+            title: lecture.attributes.Title,
+            text: lecture.attributes.Abstract,
+            subTitle: `Lecture ${index + 1}`,
+          }))}
         />
       </LearningMaterialOverview>
-      <MetaDataContainer
-        typeOfLearningMaterial='COURSE'
+      <MetadataContainer
         level={course.attributes.Level}
-        duration={'5 h'}
+        duration={summarizeDurations(
+          course.attributes.Lectures.data
+            .map((lecture) =>
+              lecture.attributes.Blocks.data.map((block) => block)
+            )
+            .flat()
+        )}
         authors={course.attributes.CourseCreator}
         docxDownloadParameters={{
           title: course.attributes.Title,
           courseId: course.id,
         }}
-      ></MetaDataContainer>
+      />
     </LearningMaterialContainer>
   )
 }
@@ -76,7 +74,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(ctx: any) {
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?populate=*`
+    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?populate[Lectures][populate][0]=Blocks`
   )
   const course = res.data.data
 

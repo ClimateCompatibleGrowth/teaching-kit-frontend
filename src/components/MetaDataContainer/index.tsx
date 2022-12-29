@@ -1,19 +1,9 @@
 import React from 'react'
-import {
-  Author,
-  BlockOneLevelDeep,
-  Data,
-  LearningMaterialType,
-  Level,
-} from '../../types'
-import {
-  DownloadContainer,
-  StyledLi,
-  StyledMetaDataContainer,
-  StyledUl,
-} from './styles'
+import { Author, BlockOneLevelDeep, Data, Level } from '../../types'
 import handleDocxDownload from '../../utils/downloadAsDocx'
 import handlePptxDownload from '../../utils/downloadAsPptx'
+
+import * as Styled from './styles'
 
 type DocxDownloadParameters = {
   title: string
@@ -26,7 +16,6 @@ type PptxDownloadParameters = {
 }
 
 export type Props = {
-  typeOfLearningMaterial: LearningMaterialType
   level?: Level
   duration?: string
   authors?: { data: Data<Author>[] }
@@ -34,8 +23,7 @@ export type Props = {
   pptxDownloadParameters?: PptxDownloadParameters
 }
 
-export default function MetaDataContainer({
-  typeOfLearningMaterial,
+export default function MetadataContainer({
   level,
   duration,
   authors,
@@ -43,23 +31,32 @@ export default function MetaDataContainer({
   pptxDownloadParameters,
 }: Props) {
   return (
-    <StyledMetaDataContainer id='meta-data-html'>
-      <h3>About this {typeOfLearningMaterial}</h3>
-      {level !== undefined && <p>Level: {level}</p>}
-      <p>Duration: {duration}</p>
+    <Styled.MetadataContainer id='meta-data-html'>
+      {level !== undefined ? (
+        <Styled.HeadingSet>
+          <h6>Level</h6>
+          <p>{level}</p>
+        </Styled.HeadingSet>
+      ) : null}
+      {duration !== undefined ? (
+        <Styled.HeadingSet>
+          <h6>Duration</h6>
+          <p>{duration}</p>
+        </Styled.HeadingSet>
+      ) : null}
       <h4>Authors</h4>
-      <StyledUl>
+      <Styled.Ul>
         {authors?.data.map((author) => (
-          <StyledLi key={author.id}>
+          <Styled.Li key={author.id}>
             {author.attributes.Name}:{' '}
             <a href={`mailto:${author.attributes.Email}`}>
               {author.attributes.Email}
             </a>
-          </StyledLi>
+          </Styled.Li>
         ))}
-      </StyledUl>
+      </Styled.Ul>
       <h4>Download</h4>
-      <DownloadContainer>
+      <Styled.DownloadContainer>
         <button
           onClick={() =>
             handleDocxDownload(
@@ -78,7 +75,7 @@ export default function MetaDataContainer({
             Pptx
           </button>
         ) : null}
-      </DownloadContainer>
-    </StyledMetaDataContainer>
+      </Styled.DownloadContainer>
+    </Styled.MetadataContainer>
   )
 }

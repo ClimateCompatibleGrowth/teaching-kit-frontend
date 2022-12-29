@@ -10,9 +10,10 @@ export const Block = ({ block }: Props) => {
   return (
     <LearningMaterialOverview id='source-html'>
       <LearningMaterial
-        Title={block.attributes.Title}
-        Abstract={block.attributes.Abstract}
-        LearningOutcomes={block.attributes.LearningOutcomes}
+        type='BLOCK'
+        title={block.attributes.Title}
+        abstract={block.attributes.Abstract}
+        learningOutcomes={block.attributes.LearningOutcomes}
       />
       <LearningMaterialEnding References={block.attributes.References} />
     </LearningMaterialOverview>

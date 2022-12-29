@@ -8,6 +8,9 @@ import {
 import AccordionGroup from '../AccordionGroup/AccordionGroup'
 import UnorderedList, { Content } from './UnorderedList/UnorderedList'
 
+import * as Styled from './styles'
+import { typeToText } from '../../utils/utils'
+
 export type Props = {
   type: LearningMaterialType
   title: string
@@ -27,17 +30,6 @@ export default function LearningMaterial({
   acknowledgement,
   citeAs,
 }: Props) {
-  const typeToHeading = (type: LearningMaterialType) => {
-    switch (type) {
-      case 'COURSE':
-        return 'Course'
-      case 'LECTURE':
-        return 'Lecture'
-      case 'BLOCK':
-        return 'Block'
-    }
-  }
-
   const getUnorderedListAccordion = (label: string, listItems?: Content[]) => {
     return listItems !== undefined
       ? [{ label, content: <UnorderedList listOfContent={listItems} /> }]
@@ -85,9 +77,9 @@ export default function LearningMaterial({
 
   return (
     <>
-      <h4>{typeToHeading(type)}</h4>
-      <h1>{title}</h1>
-      <h2>{`${typeToHeading(type)} description`}</h2>
+      <Styled.H4>{typeToText(type)}</Styled.H4>
+      <Styled.H1>{title}</Styled.H1>
+      <Styled.H2>{`${typeToText(type)} description`}</Styled.H2>
       <ReactMarkdown>{abstract}</ReactMarkdown>
       <AccordionGroup
         accordions={getAccordions(

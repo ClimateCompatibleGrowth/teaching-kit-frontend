@@ -16,5 +16,5 @@ export const Accordion = {
 export const Summary = {
   color: Accent40,
   fontFamily: montserrat['400'].style.fontFamily,
-  fontSize: '1.6rem',
+  fontSize: '1.8rem',
 }

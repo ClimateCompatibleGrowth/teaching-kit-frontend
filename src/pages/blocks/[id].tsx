@@ -1,5 +1,5 @@
 import axios from 'axios'
-import MetaDataContainer from '../../components/MetaDataContainer'
+import MetadataContainer from '../../components/MetadataContainer'
 import { BlockOneLevelDeep, Data } from '../../types'
 import { getBlocks } from '../../shared/requests/blocks/blocks'
 import { LearningMaterialContainer } from '../../styles/global'
@@ -11,13 +11,12 @@ export default function BlockPage({ block }: props) {
   return (
     <LearningMaterialContainer>
       <Block block={block} />
-      <MetaDataContainer
-        typeOfLearningMaterial='BLOCK'
+      <MetadataContainer
         duration={`${block.attributes.DurationInMinutes} min`}
         authors={block.attributes.Authors}
         docxDownloadParameters={{ title: block.attributes.Title }}
         pptxDownloadParameters={{ data: block }}
-      ></MetaDataContainer>
+      ></MetadataContainer>
     </LearningMaterialContainer>
   )
 }

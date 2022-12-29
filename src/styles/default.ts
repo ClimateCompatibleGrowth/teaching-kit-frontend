@@ -9,15 +9,15 @@ const defaultStyle = css`
   h4,
   h5,
   h6 {
-    font-family: ${ubuntu['400'].style.fontFamily};
+    font-family: ${ubuntu[500].style.fontFamily};
   }
 
   h1 {
-    font-size: 4.5rem;
+    font-size: 4rem;
   }
 
   h2 {
-    font-size: 3rem;
+    font-size: 3.2rem;
   }
 
   h3 {
@@ -32,17 +32,24 @@ const defaultStyle = css`
     font-size: 1.9rem;
   }
 
+  h6 {
+    margin: 0;
+    font-size: 1.6rem;
+
+    font-family: ${ubuntu[700].style.fontFamily};
+  }
+
   p,
   li {
-    margin: 1rem 0;
+    margin: 0.8rem 0;
 
-    font-size: 1.5rem;
-    font-family: ${montserrat['400'].style.fontFamily};
+    font-size: 1.6rem;
+    font-family: ${montserrat[400].style.fontFamily};
   }
 
   label {
     font-size: 1.3rem;
-    font-family: ${ubuntu['400'].style.fontFamily};
+    font-family: ${ubuntu[500].style.fontFamily};
   }
 
   html,

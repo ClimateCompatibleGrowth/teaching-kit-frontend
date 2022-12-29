@@ -6,7 +6,8 @@ export type CardType = {
   id: string
   title: string
   text: string
-  metaData: string
+  subTitle?: string
+  metadata?: string
 }
 
 type Props = {
@@ -16,11 +17,16 @@ type Props = {
 const Card = ({ card }: Props) => {
   return (
     <Styled.Card>
-      <h4>{card.title}</h4>
+      {card.subTitle !== undefined ? (
+        <Styled.SubTitle>{card.subTitle}</Styled.SubTitle>
+      ) : null}
+      <Styled.Title>{card.title}</Styled.Title>
       <Styled.Markdown>
         <ReactMarkdown>{card.text}</ReactMarkdown>
       </Styled.Markdown>
-      <Styled.MetaData>{card.metaData}</Styled.MetaData>
+      {card.metadata !== undefined ? (
+        <Styled.Metadata>{card.metadata}</Styled.Metadata>
+      ) : null}
     </Styled.Card>
   )
 }

@@ -14,7 +14,12 @@ export const Neutral99 = '#EBEBEB'
 
 export const Primary40 = '#CBD3EA'
 export const OnPrimary40 = '#2E3440'
+
+export const Primary90 = '#F0F3F9'
+export const OnPrimary90 = '#2E3440'
 // End of design tokens
+
+export const BorderRadius = '0rem 0rem 0rem 2.5rem'
 
 export const UlWithoutDefaultStyle = styled.ul`
   padding: 0;

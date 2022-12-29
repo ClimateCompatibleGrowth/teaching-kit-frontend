@@ -106,7 +106,7 @@ export default function Discover() {
             title: result.attributes.Title,
             id: result.id.toString(),
             text: result.attributes.Abstract,
-            metaData: `Level: ${result.attributes.Level}`,
+            metadata: `Level: ${result.attributes.Level}`,
           }))}
         />
         {pagination.pageCount > 1 ? (

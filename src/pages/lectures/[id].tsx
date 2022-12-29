@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Lecture } from '../../components/Lecture'
-import MetaDataContainer from '../../components/MetaDataContainer'
+import MetadataContainer from '../../components/MetadataContainer'
 import { getLectures } from '../../shared/requests/lectures/lectures'
 import { LearningMaterialContainer } from '../../styles/global'
 import { Data, LectureTwoLevelsDeep } from '../../types'
@@ -10,8 +10,7 @@ export default function LecturePage({ lecture }: props) {
   return (
     <LearningMaterialContainer>
       <Lecture lecture={lecture} />
-      <MetaDataContainer
-        typeOfLearningMaterial='LECTURE'
+      <MetadataContainer
         level={lecture.attributes.Level}
         duration={'2 h'}
         authors={lecture.attributes.LectureCreator}
@@ -19,7 +18,7 @@ export default function LecturePage({ lecture }: props) {
           title: lecture.attributes.Title,
           blocks: lecture.attributes.Blocks.data,
         }}
-      ></MetaDataContainer>
+      ></MetadataContainer>
     </LearningMaterialContainer>
   )
 }
