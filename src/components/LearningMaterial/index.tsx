@@ -1,49 +1,102 @@
-import React from "react";
-import ReactMarkdown from "react-markdown";
-import { LearningOutcome, Prerequisite } from "../../types";
+import React from 'react'
+import ReactMarkdown from 'react-markdown'
+import {
+  LearningMaterialType,
+  LearningOutcome,
+  Prerequisite,
+} from '../../types'
+import AccordionGroup from '../AccordionGroup/AccordionGroup'
+import UnorderedList, { Content } from './UnorderedList/UnorderedList'
 
 export type Props = {
-  Title: string;
-  Abstract?: string;
-  LearningOutcomes?: LearningOutcome[];
-  Prerequisites?: Prerequisite[];
-};
+  type: LearningMaterialType
+  title: string
+  abstract: string
+  learningOutcomes?: LearningOutcome[]
+  prerequisites?: Prerequisite[]
+  acknowledgement?: string
+  citeAs?: string
+}
 
 export default function LearningMaterial({
-  Title,
-  Abstract,
-  LearningOutcomes,
-  Prerequisites,
+  type,
+  title,
+  abstract,
+  learningOutcomes,
+  prerequisites,
+  acknowledgement,
+  citeAs,
 }: Props) {
+  const typeToHeading = (type: LearningMaterialType) => {
+    switch (type) {
+      case 'COURSE':
+        return 'Course'
+      case 'LECTURE':
+        return 'Lecture'
+      case 'BLOCK':
+        return 'Block'
+    }
+  }
+
+  const getUnorderedListAccordion = (label: string, listItems?: Content[]) => {
+    return listItems !== undefined
+      ? [{ label, content: <UnorderedList listOfContent={listItems} /> }]
+      : []
+  }
+
+  const getStringAccordion = (label: string, content?: string) => {
+    return content !== undefined
+      ? [
+          {
+            label,
+            content: <p>{content}</p>,
+          },
+        ]
+      : []
+  }
+
+  const getAccordions = (
+    learningOutcomes?: LearningOutcome[],
+    prerequisites?: Prerequisite[],
+    acknowledgement?: string,
+    citeAs?: string
+  ) => {
+    const learningOutComesListItems = learningOutcomes?.map(
+      (learningOutcome) => ({
+        id: learningOutcome.id,
+        listItem: learningOutcome.LearningOutcome,
+      })
+    )
+
+    const prerequisitesListItems = prerequisites?.map((prerequisite) => ({
+      id: prerequisite.id,
+      listItem: prerequisite.Prerequisite,
+    }))
+    return [
+      ...getUnorderedListAccordion(
+        'Learning outcomes',
+        learningOutComesListItems
+      ),
+      ...getUnorderedListAccordion('Prerequisites', prerequisitesListItems),
+      ...getStringAccordion('Acknowledgement', acknowledgement),
+      ...getStringAccordion('Cite as', citeAs),
+    ]
+  }
+
   return (
     <>
-      <h1>{Title}</h1>
-      {Abstract && (
-        <>
-          <h2>Abstract</h2>
-          <ReactMarkdown>{Abstract}</ReactMarkdown>
-        </>
-      )}
-      {LearningOutcomes && (
-        <>
-          <h2>Learning Outcomes</h2>
-          <ul>
-            {LearningOutcomes?.map((learningOutcome: LearningOutcome) => (
-              <li key={learningOutcome.id}>{learningOutcome.LearningOutcome}</li>
-            ))}
-          </ul>
-        </>
-      )}
-      {Prerequisites && (
-        <>
-          <h2>Prerequisites</h2>
-          <ul>
-            {Prerequisites?.map((prerequisite: Prerequisite) => (
-              <li key={prerequisite.id}>{prerequisite.Prerequisite}</li>
-            ))}
-          </ul>
-        </>
-      )}
+      <h4>{typeToHeading(type)}</h4>
+      <h1>{title}</h1>
+      <h2>{`${typeToHeading(type)} description`}</h2>
+      <ReactMarkdown>{abstract}</ReactMarkdown>
+      <AccordionGroup
+        accordions={getAccordions(
+          learningOutcomes,
+          prerequisites,
+          acknowledgement,
+          citeAs
+        )}
+      />
     </>
-  );
+  )
 }

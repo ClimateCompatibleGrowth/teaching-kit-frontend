@@ -115,6 +115,8 @@ export type CourseOneLevelDeep = Course & {
   CourseCreator: { data: Data<Author>[] }
   LearningOutcomes: LearningOutcome[]
   Prerequisites: Prerequisite[]
+  Acknowledgement: string
+  CiteAs: string
 }
 
 export type CourseTwoLevelsDeep = Modify<

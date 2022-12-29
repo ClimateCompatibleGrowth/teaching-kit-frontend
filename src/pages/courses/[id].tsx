@@ -19,10 +19,13 @@ export default function CoursePage({ course }: Props) {
     <LearningMaterialContainer>
       <LearningMaterialOverview id='source-html'>
         <LearningMaterial
-          Title={course.attributes.Title}
-          Abstract={course.attributes.Abstract}
-          LearningOutcomes={course.attributes.LearningOutcomes}
-          Prerequisites={course.attributes.Prerequisites}
+          type='COURSE'
+          title={course.attributes.Title}
+          abstract={course.attributes.Abstract}
+          learningOutcomes={course.attributes.LearningOutcomes}
+          prerequisites={course.attributes.Prerequisites}
+          acknowledgement={course.attributes.Acknowledgement}
+          citeAs={course.attributes.CiteAs}
         />
         <h2 className='title' onClick={() => setShowLectures(!showLectures)}>
           Course Content
