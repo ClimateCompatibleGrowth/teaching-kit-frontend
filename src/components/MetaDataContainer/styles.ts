@@ -1,5 +1,9 @@
 import styled from '@emotion/styled'
-import { BorderRadius, Primary90 } from '../../styles/global'
+import {
+  BorderRadius,
+  Primary90,
+  UlWithoutDefaultStyle,
+} from '../../styles/global'
 
 export const MetadataContainer = styled.div`
   height: max-content;
@@ -25,9 +29,7 @@ export const MetadataContainer = styled.div`
   }
 `
 
-export const Ul = styled.ul`
-  padding-left: 16px;
-`
+export const Ul = styled(UlWithoutDefaultStyle)``
 
 export const Li = styled.li`
   a {
@@ -40,8 +42,11 @@ export const Li = styled.li`
   }
 `
 
-export const DownloadContainer = styled.div`
+export const DownloadButtonsContainer = styled.div`
+  margin-top: 1rem;
+
   display: flex;
-  justify-content: space-evenly;
+  flex-wrap: wrap;
+  justify-content: space-between;
 `
 export const HeadingSet = styled.div``

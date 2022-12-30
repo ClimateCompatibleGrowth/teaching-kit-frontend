@@ -1,9 +1,9 @@
 import axios from 'axios'
-import MetadataContainer from '../../components/MetadataContainer'
 import { BlockOneLevelDeep, Data } from '../../types'
 import { getBlocks } from '../../shared/requests/blocks/blocks'
 import { LearningMaterialContainer } from '../../styles/global'
 import { Block } from '../../components/Block'
+import MetadataContainer from '../../components/MetadataContainer'
 
 type props = { block: Data<BlockOneLevelDeep> }
 
@@ -16,7 +16,7 @@ export default function BlockPage({ block }: props) {
         authors={block.attributes.Authors}
         docxDownloadParameters={{ title: block.attributes.Title }}
         pptxDownloadParameters={{ data: block }}
-      ></MetadataContainer>
+      />
     </LearningMaterialContainer>
   )
 }

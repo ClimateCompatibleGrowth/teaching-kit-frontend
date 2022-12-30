@@ -21,11 +21,26 @@ export const OnPrimary90 = '#2E3440'
 
 export const BorderRadius = '0rem 0rem 0rem 2.5rem'
 
+export const PageContainerPaddings = {
+  horizontal: '8rem',
+  vertical: '2rem',
+}
+
+export const PageContainer = styled.div`
+  padding: ${PageContainerPaddings.vertical} ${PageContainerPaddings.horizontal};
+`
+
 export const UlWithoutDefaultStyle = styled.ul`
   padding: 0;
   margin: 0;
 
   list-style-type: none;
+
+  a {
+    &:hover {
+      color: darkblue;
+    }
+  }
 `
 
 export const ButtonWithoutDefaultStyle = styled.button`
@@ -39,7 +54,7 @@ export const ButtonWithoutDefaultStyle = styled.button`
 `
 
 export const LearningMaterialContainer = styled.div`
-  padding: 0 20rem;
+  padding: 7rem 20rem;
   display: flex;
 `
 

@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import axios from 'axios'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
@@ -9,6 +10,12 @@ import {
 } from '../../styles/global'
 import { CourseThreeLevelsDeep, Data } from '../../types'
 import { summarizeDurations } from '../../utils/utils'
+
+const CourseContentWrapper = styled.div`
+  margin-top: 5rem;
+`
+
+const Styled = { CourseContentWrapper }
 
 type Props = { course: Data<CourseThreeLevelsDeep> }
 
@@ -25,15 +32,17 @@ export default function CoursePage({ course }: Props) {
           acknowledgement={course.attributes.Acknowledgement}
           citeAs={course.attributes.CiteAs}
         />
-        <h2>Course Content</h2>
-        <CardList
-          cards={course.attributes.Lectures.data.map((lecture, index) => ({
-            id: lecture.id.toString(),
-            title: lecture.attributes.Title,
-            text: lecture.attributes.Abstract,
-            subTitle: `Lecture ${index + 1}`,
-          }))}
-        />
+        <Styled.CourseContentWrapper>
+          <h2>Course Content</h2>
+          <CardList
+            cards={course.attributes.Lectures.data.map((lecture, index) => ({
+              id: lecture.id.toString(),
+              title: lecture.attributes.Title,
+              text: lecture.attributes.Abstract,
+              subTitle: `Lecture ${index + 1}`,
+            }))}
+          />
+        </Styled.CourseContentWrapper>
       </LearningMaterialOverview>
       <MetadataContainer
         level={course.attributes.Level}
@@ -74,7 +83,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(ctx: any) {
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?populate[Lectures][populate][0]=Blocks`
+    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?populate[Lectures][populate][0]=Blocks&populate=CourseCreator`
   )
   const course = res.data.data
 

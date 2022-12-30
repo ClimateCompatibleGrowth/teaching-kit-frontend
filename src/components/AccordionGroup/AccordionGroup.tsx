@@ -17,7 +17,7 @@ type AccordionType = {
 
 const AccordionGroup = ({ accordions }: Props) => {
   return (
-    <div>
+    <Styled.Wrapper>
       {accordions.map((accordion, index) => (
         <Accordion
           square
@@ -36,7 +36,7 @@ const AccordionGroup = ({ accordions }: Props) => {
           <AccordionDetails>{accordion.content}</AccordionDetails>
         </Accordion>
       ))}
-    </div>
+    </Styled.Wrapper>
   )
 }
 

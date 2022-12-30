@@ -1,5 +1,10 @@
+import styled from '@emotion/styled'
 import { montserrat } from '../../styles/fonts'
 import { Accent40, Neutral90 } from '../../styles/global'
+
+export const Wrapper = styled.div`
+  margin: 3rem 0;
+`
 
 export const Accordion = {
   borderBottom: `1px solid ${Neutral90}`,

@@ -76,7 +76,7 @@ export default function LearningMaterial({
   }
 
   return (
-    <>
+    <Styled.Wrapper>
       <Styled.H4>{typeToText(type)}</Styled.H4>
       <Styled.H1>{title}</Styled.H1>
       <Styled.H2>{`${typeToText(type)} description`}</Styled.H2>
@@ -89,6 +89,6 @@ export default function LearningMaterial({
           citeAs
         )}
       />
-    </>
+    </Styled.Wrapper>
   )
 }

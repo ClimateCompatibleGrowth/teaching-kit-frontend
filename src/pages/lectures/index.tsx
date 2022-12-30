@@ -4,13 +4,14 @@ import { Data, Lecture } from '../../types'
 import {
   LearningMaterialList,
   LearningMaterialListItem,
+  PageContainer,
 } from '../../styles/global'
 
 type props = { lectures: Data<Lecture>[] }
 
 export default function Lectures({ lectures }: props) {
   return (
-    <div className="container">
+    <PageContainer>
       <h1>Lectures</h1>
       <LearningMaterialList>
         {lectures.map((lecture) => (
@@ -21,7 +22,7 @@ export default function Lectures({ lectures }: props) {
           </LearningMaterialListItem>
         ))}
       </LearningMaterialList>
-    </div>
+    </PageContainer>
   )
 }
 

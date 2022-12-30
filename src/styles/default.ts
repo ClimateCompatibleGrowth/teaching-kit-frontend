@@ -48,7 +48,7 @@ const defaultStyle = css`
   }
 
   label {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-family: ${ubuntu[500].style.fontFamily};
   }
 
@@ -71,10 +71,6 @@ const defaultStyle = css`
 
   * {
     box-sizing: border-box;
-  }
-
-  .container {
-    padding: 0 8rem;
   }
 `
 

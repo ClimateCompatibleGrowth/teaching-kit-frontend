@@ -7,6 +7,7 @@ import { searchForAuthors } from '../../shared/requests/authors/authors'
 import { filterCourseOnKeywordsAndAuthors } from '../../shared/requests/courses/courses'
 import { searchForKeywords } from '../../shared/requests/keywords/keywords'
 import { Pagination } from '../../shared/requests/types'
+import { PageContainer } from '../../styles/global'
 import { Course, Data } from '../../types'
 
 // Note that Strapi's default value for page sizes currently is 25. Hence,
@@ -18,7 +19,11 @@ const FilterGroup = styled.div`
   gap: 3rem;
 `
 
-const Styled = { FilterGroup }
+const H2 = styled.h2`
+  font-size: 2.8rem;
+`
+
+const Styled = { FilterGroup, H2 }
 
 const DEFAULT_PAGE_NUMBER = 1
 const DEFAULT_MATCHES_PER_PAGE = 10
@@ -79,10 +84,10 @@ export default function Discover() {
   }, [])
 
   return (
-    <div className='container'>
+    <PageContainer>
       <h1>Learning Material</h1>
       <div>
-        <h2>Apply filter</h2>
+        <Styled.H2>Apply filter</Styled.H2>
         <Styled.FilterGroup>
           <Filter
             selectedFilters={selectedKeywords}
@@ -100,6 +105,7 @@ export default function Discover() {
           />
         </Styled.FilterGroup>
       </div>
+      <Styled.H2>All Learning Material</Styled.H2>
       <div>
         <CardList
           cards={filterResults.map((result) => ({
@@ -117,6 +123,6 @@ export default function Discover() {
           />
         ) : null}
       </div>
-    </div>
+    </PageContainer>
   )
 }
