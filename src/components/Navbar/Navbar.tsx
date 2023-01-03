@@ -1,17 +1,23 @@
 import Link from 'next/link'
-import { Navbar as StyledNavbar, NavbarUl } from './styles'
+import Image from 'next/image'
+import * as Styled from './styles'
+
+import logo from '../../../public/logo.png'
 
 export default function Navbar() {
   return (
-    <StyledNavbar>
-      <NavbarUl>
-        <li>
+    <Styled.Navbar>
+      <Styled.LogoWrapper>
+        <Image src={logo} alt='Climate Compatible Growth logotype' />
+      </Styled.LogoWrapper>
+      <Styled.Ul>
+        <Styled.Li>
           <Link href='/'>Home</Link>
-        </li>
-        <li>
+        </Styled.Li>
+        <Styled.Li>
           <Link href='/discover'>Discover</Link>
-        </li>
-      </NavbarUl>
-    </StyledNavbar>
+        </Styled.Li>
+      </Styled.Ul>
+    </Styled.Navbar>
   )
 }

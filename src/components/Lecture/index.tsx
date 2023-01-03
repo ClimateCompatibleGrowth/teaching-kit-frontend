@@ -11,9 +11,10 @@ export const Lecture = ({ lecture }: Props) => {
   return (
     <LearningMaterialOverview id='source-html'>
       <LearningMaterial
-        Title={lecture.attributes.Title}
-        Abstract={lecture.attributes.Abstract}
-        LearningOutcomes={lecture.attributes.LearningOutcomes}
+        type='LECTURE'
+        title={lecture.attributes.Title}
+        abstract={lecture.attributes.Abstract}
+        learningOutcomes={lecture.attributes.LearningOutcomes}
       />
       <h2>Lecture content</h2>
       {lecture.attributes.Blocks && (

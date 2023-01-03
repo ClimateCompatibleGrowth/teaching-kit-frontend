@@ -1,12 +1,5 @@
 import axios from 'axios'
-import {
-  BlockOneLevelDeep,
-  Course,
-  CourseThreeLevelsDeep,
-  CourseTwoLevelsDeep,
-  Data,
-  LectureTwoLevelsDeep,
-} from '../../../types'
+import { Course, CourseThreeLevelsDeep } from '../../../types'
 import { Response, ResponseArray } from '../types'
 
 const ENDPOINT = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/courses`
@@ -41,14 +34,6 @@ const getKeywordsFilterString = (keywords: string[]) => {
 
 const getAuthorsFilterString = (authors: string[]) => {
   return authors.map((author) => getFilterStringByAuthor(author)).join('&')
-}
-
-export const filterCoursesOnKeywords = async (keywords: string[]) => {
-  const filterString = getKeywordsFilterString(keywords)
-  const response: ResponseArray<Course> = await axios.get(
-    `${ENDPOINT}${filterString}`
-  )
-  return response.data
 }
 
 const getFilterStringByAuthor = (author: string) => {

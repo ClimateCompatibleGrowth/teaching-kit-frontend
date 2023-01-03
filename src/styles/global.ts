@@ -1,18 +1,53 @@
 import styled from '@emotion/styled'
 
 // Start of design tokens - The following are Figma variables, which can be used in a design token manner
-export const Background = "#FFFFFF"
-export const Surface = "#F1F1F1"
-export const Accent40 = "#012169"
-export const Primary40 = "#CBD3EA"
-export const OnPrimary40 = "#2E3440"
+export const Background = '#FFFFFF'
+export const Surface = '#F1F1F1'
+
+export const Accent40 = '#012169'
+export const OnAccent40 = '#FFFFFF'
+
+export const Neutral40 = '#757575'
+export const OnNeutral40 = '#FFFFFF'
+
+export const Neutral90 = '#CCCCCC'
+export const OnNeutral90 = '#242424'
+
+export const Neutral99 = '#EBEBEB'
+export const OnNeutral99 = '#242424'
+
+export const SurfaceAlternative = '#FFFFFF'
+export const OnSurfaceAlternative = '#242424'
+
+export const Primary40 = '#CBD3EA'
+export const OnPrimary40 = '#2E3440'
+
+export const Primary90 = '#F0F3F9'
+export const OnPrimary90 = '#2E3440'
 // End of design tokens
+
+export const BorderRadius = '0rem 0rem 0rem 2.5rem'
+
+export const PageContainerPaddings = {
+  horizontal: '8rem',
+  vertical: '2rem',
+}
+
+export const PageContainer = styled.div`
+  padding: ${PageContainerPaddings.vertical} ${PageContainerPaddings.horizontal};
+`
 
 export const UlWithoutDefaultStyle = styled.ul`
   padding: 0;
   margin: 0;
 
   list-style-type: none;
+
+  a {
+    &:hover {
+      color: darkblue;
+    }
+  }
 `
 
 export const ButtonWithoutDefaultStyle = styled.button`
@@ -26,7 +61,7 @@ export const ButtonWithoutDefaultStyle = styled.button`
 `
 
 export const LearningMaterialContainer = styled.div`
-  padding: 0 2rem;
+  padding: 7rem 20rem;
   display: flex;
 `
 

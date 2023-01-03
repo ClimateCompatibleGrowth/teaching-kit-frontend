@@ -1,19 +1,19 @@
 import styled from '@emotion/styled'
-import { montserrat } from '../../../styles/fonts'
-import { OnPrimary40, Primary40 } from '../../../styles/global'
+import { montserrat, ubuntu } from '../../../styles/fonts'
+import { BorderRadius, OnPrimary90, Primary90 } from '../../../styles/global'
 
 export const Card = styled.div`
   width: 100%;
 
-  padding: 0.3rem 3rem 1rem 3rem;
+  padding: 3.2rem 2.4rem;
 
-  background-color: ${Primary40};
-  color: ${OnPrimary40};
+  background-color: ${Primary90};
+  color: ${OnPrimary90};
 
-  border-radius: 5px;
+  border-radius: ${BorderRadius};
 `
 
-export const MetaData = styled.p`
+export const Metadata = styled.p`
   margin-top: 2rem;
 `
 
@@ -28,8 +28,23 @@ export const Markdown = styled.div`
   white-space: normal;
 
   p {
+    margin-bottom: 0;
+
     strong {
-      font-family: ${montserrat['500'].style.fontFamily};
+      font-family: ${montserrat[500].style.fontFamily};
     }
   }
+`
+
+export const Title = styled.h4`
+  font-family: ${ubuntu[700].style.fontFamily};
+  font-size: 2.4rem;
+`
+
+export const SubTitle = styled.h5`
+  margin-top: 0;
+
+  font-family: ${montserrat[400].style.fontFamily};
+  font-size: 1.8rem;
+  color: ${OnPrimary90};
 `

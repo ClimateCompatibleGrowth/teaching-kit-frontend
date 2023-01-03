@@ -6,7 +6,8 @@ export type CardType = {
   id: string
   title: string
   text: string
-  metadata: Metadata
+  metadata?: Metadata
+  subTitle?: string
 }
 
 type Metadata = {
@@ -26,7 +27,7 @@ type Props = {
 
 const Card = ({ card }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [metadata, setMetadata] = useState(card.metadata.defaultMetadata)
+  const [metadata, setMetadata] = useState(card.metadata?.defaultMetadata)
   const [error, setError] = useState<string | undefined>(undefined)
 
   const fetchMetadata = useCallback(
@@ -49,25 +50,28 @@ const Card = ({ card }: Props) => {
   )
 
   useEffect(() => {
-    if (card.metadata.dynamicMetadata !== undefined) {
+    if (card.metadata?.dynamicMetadata !== undefined) {
       const { getMetadata, userFacingErrorText, errorLogText } =
         card.metadata.dynamicMetadata
       fetchMetadata(getMetadata, userFacingErrorText, errorLogText)
     }
-  }, [fetchMetadata, card.metadata.dynamicMetadata])
+  }, [fetchMetadata, card.metadata?.dynamicMetadata])
 
   return (
     <Styled.Card>
-      <h4>{card.title}</h4>
+      {card.subTitle !== undefined ? (
+        <Styled.SubTitle>{card.subTitle}</Styled.SubTitle>
+      ) : null}
+      <Styled.Title>{card.title}</Styled.Title>
       <Styled.Markdown>
         <ReactMarkdown>{card.text}</ReactMarkdown>
       </Styled.Markdown>
       {isLoading ? (
-        <Styled.MetaData>{metadata} - Loading</Styled.MetaData>
+        <Styled.Metadata>{metadata} - Loading</Styled.Metadata>
       ) : (
-        <Styled.MetaData>
+        <Styled.Metadata>
           {metadata} {error !== undefined ? `- ${error}` : ''}
-        </Styled.MetaData>
+        </Styled.Metadata>
       )}
     </Styled.Card>
   )

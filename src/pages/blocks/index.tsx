@@ -5,13 +5,14 @@ import { Block, Data } from '../../types'
 import {
   LearningMaterialList,
   LearningMaterialListItem,
+  PageContainer,
 } from '../../styles/global'
 
 type props = { blocks: Data<Block>[] }
 
 export default function Blocks({ blocks }: props) {
   return (
-    <div className="container">
+    <PageContainer>
       <h1>Blocks</h1>
       <LearningMaterialList>
         {blocks.map((block) => (
@@ -23,7 +24,7 @@ export default function Blocks({ blocks }: props) {
           </LearningMaterialListItem>
         ))}
       </LearningMaterialList>
-    </div>
+    </PageContainer>
   )
 }
 

@@ -1,18 +1,33 @@
 import { NextFont } from '@next/font/dist/types'
 import { Montserrat, Ubuntu } from '@next/font/google'
 
-type Font = {
-  400: NextFont
+type UbuntuFont = {
+  500: NextFont
+  700: NextFont
 }
 
-type FontWithMoreWeights = Font & {
+type MontserratFont = {
+  300: NextFont
+  400: NextFont
   500: NextFont
 }
 
-const normalUbuntu = Ubuntu({
+const Ubuntu500 = Ubuntu({
   subsets: ['latin'],
   style: ['normal'],
   weight: '500',
+})
+
+const Ubuntu700 = Ubuntu({
+  subsets: ['latin'],
+  style: ['normal'],
+  weight: '700',
+})
+
+const Montserrat300 = Montserrat({
+  subsets: ['latin'],
+  style: ['normal'],
+  weight: ['300'],
 })
 
 const Montserrat400 = Montserrat({
@@ -27,11 +42,13 @@ const Montserrat500 = Montserrat({
   weight: '500',
 })
 
-export const ubuntu: Font = {
-  400: normalUbuntu,
+export const ubuntu: UbuntuFont = {
+  500: Ubuntu500,
+  700: Ubuntu700,
 }
 
-export const montserrat: FontWithMoreWeights = {
+export const montserrat: MontserratFont = {
+  300: Montserrat300,
   400: Montserrat400,
   500: Montserrat500,
 }
