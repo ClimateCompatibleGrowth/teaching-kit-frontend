@@ -5,12 +5,19 @@ export const Background = '#FFFFFF'
 export const Surface = '#F1F1F1'
 
 export const Accent40 = '#012169'
+export const OnAccent40 = '#FFFFFF'
 
 export const Neutral40 = '#757575'
+export const OnNeutral40 = '#FFFFFF'
 
 export const Neutral90 = '#CCCCCC'
+export const OnNeutral90 = '#242424'
 
 export const Neutral99 = '#EBEBEB'
+export const OnNeutral99 = '#242424'
+
+export const SurfaceAlternative = '#FFFFFF'
+export const OnSurfaceAlternative = '#242424'
 
 export const Primary40 = '#CBD3EA'
 export const OnPrimary40 = '#2E3440'

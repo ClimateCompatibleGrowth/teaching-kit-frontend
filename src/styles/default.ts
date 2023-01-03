@@ -26,16 +26,22 @@ const defaultStyle = css`
     font-size: 2rem;
   }
 
-  h4,
-  h5 {
+  h4 {
     margin: 1rem 0;
     font-size: 1.9rem;
   }
 
+  h5 {
+    margin: 0;
+
+    font-size: 1.5rem;
+    font-family: ${montserrat['400'].style.fontFamily};
+  }
+
   h6 {
     margin: 0;
-    font-size: 1.6rem;
 
+    font-size: 1.6rem;
     font-family: ${ubuntu[700].style.fontFamily};
   }
 

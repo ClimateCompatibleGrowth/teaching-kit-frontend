@@ -11,11 +11,13 @@ type Metadata = {
   pagination: Pagination
 }
 
+export type ResponseArrayData<T> = {
+  data: Data<T>[]
+  meta: Metadata
+}
+
 export type ResponseArray<T> = {
-  data: {
-    data: Data<T>[]
-    meta: Metadata
-  }
+  data: ResponseArrayData<T>
 }
 
 export type Response<T> = {
