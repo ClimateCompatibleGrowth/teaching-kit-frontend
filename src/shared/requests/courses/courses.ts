@@ -1,8 +1,11 @@
 import axios from 'axios'
 import {
+  BlockOneLevelDeep,
   Course,
   CourseThreeLevelsDeep,
   CourseTwoLevelsDeep,
+  Data,
+  LectureTwoLevelsDeep,
 } from '../../../types'
 import { Response, ResponseArray } from '../types'
 
@@ -55,6 +58,17 @@ const getFilterStringByAuthor = (author: string) => {
   return `${matchesCourseCreator}&${matchesLectureCreator}&${matchesBlockAuthor}`
 }
 
+const getPopulateString = () => {
+  const populateCourseCreator = 'populate[CourseCreator][populate]=*'
+  const populateLectureCreator =
+    'populate[Lectures][populate][LectureCreator]=*'
+  const populateBlockAuthors =
+    'populate[Lectures][populate][Blocks][populate][Authors]=*'
+  const populateKeywords =
+    'populate[Lectures][populate][Blocks][populate][Keywords]=*'
+  return `${populateKeywords}&${populateCourseCreator}&${populateLectureCreator}&${populateBlockAuthors}`
+}
+
 export const filterCourseOnKeywordsAndAuthors = async (
   keywords: string[],
   authors: string[],
@@ -70,11 +84,12 @@ export const filterCourseOnKeywordsAndAuthors = async (
 
   const andKeywords = keywordsFilterString.length > 0 ? '&' : ''
   const andAuthors = authorsFilterString.length > 0 ? '&' : ''
-
+  const populate = getPopulateString()
   const filters = `${pagination}${andKeywords}${keywordsFilterString}${andAuthors}${authorsFilterString}`
+
   const filterString =
-    filters.length > 0 ? `${filters}&populate=*` : '?populate=*'
-  const response: ResponseArray<CourseTwoLevelsDeep> = await axios.get(
+    filters.length > 0 ? `${filters}&${populate}` : `?${populate}`
+  const response: ResponseArray<CourseThreeLevelsDeep> = await axios.get(
     `${ENDPOINT}${filterString}`
   )
   return response.data
