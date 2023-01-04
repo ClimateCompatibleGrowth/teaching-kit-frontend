@@ -1,50 +1,58 @@
-import React from 'react'
-import { CourseThreeLevelsDeep, Data } from '../../types'
+import { CourseThreeLevelsDeep, Data, LectureTwoLevelsDeep } from '../../types'
 
-type MatchesInCourse = {
+export type Matches = {
   [key: string]: Match
 }
 
-type Match = {
-  lecture: string
-  block?: string
+export type Match = {
+  lecture: Location
+  block?: Location
+}
+
+type Location = {
+  title: string
+  href: string
 }
 
 export const TIMEOUT_THRESHOLD_FOR_MATCH_LOCALIZATION = 3000
 
-export const getMatchingLecturesAndBlocks = (
-  course: Data<CourseThreeLevelsDeep>,
-  keywords: string[],
-  authors: string[]
-): Promise<MatchesInCourse> => {
-  const timeout = new Promise<never>((_, reject) => {
+const startOperationTimeout = () => {
+  return new Promise<never>((_, reject) => {
     setTimeout(() => {
       reject(new Error('Operation timed out!'))
     }, TIMEOUT_THRESHOLD_FOR_MATCH_LOCALIZATION)
   })
+}
 
+export const getMatchingLecturesAndBlocksMatchingLecture = (
+  lecture: Data<LectureTwoLevelsDeep>,
+  keywords: string[],
+  authors: string[]
+): Promise<Matches> => {
   return Promise.race([
-    extractMatchingSubElementsInCourse(course, keywords, authors),
-    timeout,
+    extractMatchingSubElementsInLecture(lecture, keywords, authors),
+    startOperationTimeout(),
   ])
 }
 
-const wait = (): Promise<MatchesInCourse> => {
-  return new Promise((resolve) =>
-    setTimeout(() => resolve({ test: { lecture: 'Resolved' } }), 4000)
-  )
+export const getMatchingLecturesAndBlocksMatchingCourse = (
+  course: Data<CourseThreeLevelsDeep>,
+  keywords: string[],
+  authors: string[]
+): Promise<Matches> => {
+  return Promise.race([
+    extractMatchingSubElementsInCourse(course, keywords, authors),
+    startOperationTimeout(),
+  ])
 }
 
-export const matchesInCourseToStrings = (matchesInCourse: MatchesInCourse) => {
-  const matches = Object.entries(matchesInCourse).map(
-    ([filterString, value]) => {
-      if (value.block) {
-        return `"${filterString}" found in the lecture block ${value.block}, which is a part of the lecture ${value.lecture}`
-      }
-      return `"${filterString}" found in the lecture ${value.lecture}`
-    }
+const wait = (): Promise<Matches> => {
+  return new Promise((resolve) =>
+    setTimeout(
+      () => resolve({ test: { lecture: { title: 'Resolved', href: '/' } } }),
+      4000
+    )
   )
-  return matches
 }
 
 // This can obviously get very time consuming. We would like it more to have this built into
@@ -66,53 +74,86 @@ export const matchesInCourseToStrings = (matchesInCourse: MatchesInCourse) => {
 // amount of authors on either level, or similar.
 //
 // The function should be timed, tested and time limited (abort the operation if it takes too much time).
-const extractMatchingSubElementsInCourse = (
+const extractMatchingSubElementsInCourse = async (
   course: Data<CourseThreeLevelsDeep>,
   keywords: string[],
   authors: string[]
-): Promise<MatchesInCourse> => {
-  let metadata = {}
+): Promise<Matches> => {
+  let matches: Matches = {}
   for (const lecture of course.attributes.Lectures.data) {
     for (const author of authors) {
       for (const lectureCreator of lecture.attributes.LectureCreator.data) {
         if (lectureCreator.attributes.Name === author) {
-          metadata = {
-            ...metadata,
+          matches = {
+            ...matches,
             [author]: {
-              lecture: lecture.attributes.Title,
+              lecture: {
+                title: lecture.attributes.Title,
+                href: `/lectures/${lecture.id}`,
+              },
             },
           }
         }
       }
     }
-    for (const block of lecture.attributes.Blocks.data) {
-      for (const author of authors) {
-        for (const blockAuthor of block.attributes.Authors.data) {
-          if (blockAuthor.attributes.Name === author) {
-            metadata = {
-              ...metadata,
-              [author]: {
-                block: block.attributes.Title,
-                lecture: lecture.attributes.Title,
+    const lectureMatches = await extractMatchingSubElementsInLecture(
+      lecture,
+      keywords,
+      authors
+    )
+    matches = {
+      ...matches,
+      ...lectureMatches,
+    }
+  }
+  return Promise.resolve(matches)
+}
+
+export const extractMatchingSubElementsInLecture = (
+  lecture: Data<LectureTwoLevelsDeep>,
+  keywords: string[],
+  authors: string[]
+): Promise<Matches> => {
+  let matches: Matches = {}
+  for (const block of lecture.attributes.Blocks.data) {
+    for (const author of authors) {
+      for (const blockAuthor of block.attributes.Authors.data) {
+        if (blockAuthor.attributes.Name === author) {
+          matches = {
+            ...matches,
+            [author]: {
+              block: {
+                title: block.attributes.Title,
+                href: `/blocks/${block.id}`,
               },
-            }
+              lecture: {
+                title: lecture.attributes.Title,
+                href: `/lectures/${lecture.id}`,
+              },
+            },
           }
         }
       }
-      for (const selectedKeyword of keywords) {
-        for (const keyword of block.attributes.Keywords.data) {
-          if (keyword.attributes.Keyword === selectedKeyword) {
-            metadata = {
-              ...metadata,
-              [selectedKeyword]: {
-                block: block.attributes.Title,
-                lecture: lecture.attributes.Title,
+    }
+    for (const selectedKeyword of keywords) {
+      for (const keyword of block.attributes.Keywords.data) {
+        if (keyword.attributes.Keyword === selectedKeyword) {
+          matches = {
+            ...matches,
+            [selectedKeyword]: {
+              block: {
+                title: block.attributes.Title,
+                href: `/blocks/${block.id}`,
               },
-            }
+              lecture: {
+                title: lecture.attributes.Title,
+                href: `/lectures/${lecture.id}`,
+              },
+            },
           }
         }
       }
     }
   }
-  return Promise.resolve(metadata)
+  return Promise.resolve(matches)
 }

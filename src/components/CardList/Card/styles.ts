@@ -1,11 +1,6 @@
 import styled from '@emotion/styled'
 import { montserrat, ubuntu } from '../../../styles/fonts'
-import {
-  BorderRadius,
-  OnPrimary90,
-  Primary90,
-  UlWithoutDefaultStyle,
-} from '../../../styles/global'
+import { BorderRadius, OnPrimary90, Primary90 } from '../../../styles/global'
 
 export const Card = styled.div`
   width: 100%;
@@ -18,7 +13,7 @@ export const Card = styled.div`
   border-radius: ${BorderRadius};
 `
 
-export const Metadata = styled(UlWithoutDefaultStyle)`
+export const Metadata = styled.p`
   margin-top: 2rem;
 `
 
@@ -54,21 +49,7 @@ export const SubTitle = styled.h5`
   color: ${OnPrimary90};
 `
 
-const MetadataInformation = styled.p`
-  color: ${OnPrimary90}80;
-`
-
-export const Error = styled(MetadataInformation)`
-  margin: 1.5rem 0 0 0;
-`
-
-export const Spinner = styled.div`
-  margin-top: 1.5rem;
-
-  display: flex;
-  align-items: center;
-`
-
-export const LoaderInfo = styled(MetadataInformation)`
-  margin: 0 1.5rem 0 0;
+export const SubComponentWrapper = styled.div`
+  width: 95%;
+  margin-top: 2rem;
 `
