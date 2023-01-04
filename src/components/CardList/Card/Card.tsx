@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import * as Styled from './styles'
+import CircularProgress from '@mui/material/CircularProgress'
 
 export type CardType = {
   id: string
@@ -16,7 +17,8 @@ type Metadata = {
 }
 
 type DynamicMetadata = {
-  getMetadata: () => Promise<string>
+  getMetadata: () => Promise<string[]>
+  loadingText: string
   userFacingErrorText: string
   errorLogText: string
 }
@@ -26,24 +28,26 @@ type Props = {
 }
 
 const Card = ({ card }: Props) => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [metadata, setMetadata] = useState(card.metadata?.defaultMetadata)
+  const [isLoading, setIsLoading] = useState(true)
+  const [metadata, setMetadata] = useState([card.metadata?.defaultMetadata])
   const [error, setError] = useState<string | undefined>(undefined)
 
   const fetchMetadata = useCallback(
     async (
-      callback: () => Promise<string>,
+      callback: () => Promise<string[]>,
       userFacingErrorText: string,
       errorLogText: string
     ) => {
-      setIsLoading(true)
+      setError(undefined)
+      const delayedLoading = setTimeout(() => setIsLoading(true), 500)
       try {
-        const metadata = await callback()
-        setMetadata(metadata)
+        const fetchedMetadata = await callback()
+        setMetadata(fetchedMetadata)
       } catch (error) {
         console.error(errorLogText)
         setError(userFacingErrorText)
       }
+      clearTimeout(delayedLoading)
       setIsLoading(false)
     },
     []
@@ -66,13 +70,20 @@ const Card = ({ card }: Props) => {
       <Styled.Markdown>
         <ReactMarkdown>{card.text}</ReactMarkdown>
       </Styled.Markdown>
-      {isLoading ? (
-        <Styled.Metadata>{metadata} - Loading</Styled.Metadata>
-      ) : (
-        <Styled.Metadata>
-          {metadata} {error !== undefined ? `- ${error}` : ''}
-        </Styled.Metadata>
-      )}
+      <Styled.Metadata>
+        {metadata.map((metadata, index) => (
+          <li key={index}>{metadata}</li>
+        ))}
+      </Styled.Metadata>
+      {error !== undefined ? <Styled.Error>{error}</Styled.Error> : null}
+      {card.metadata?.dynamicMetadata !== undefined && isLoading ? (
+        <Styled.Spinner>
+          <Styled.LoaderInfo>
+            {card.metadata.dynamicMetadata.loadingText}
+          </Styled.LoaderInfo>
+          <CircularProgress size={15} />
+        </Styled.Spinner>
+      ) : null}
     </Styled.Card>
   )
 }

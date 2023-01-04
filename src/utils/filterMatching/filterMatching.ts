@@ -29,20 +29,22 @@ export const getMatchingLecturesAndBlocks = (
   ])
 }
 
-const wait = () => {
-  return new Promise((resolve) => setTimeout(() => resolve('Resolved'), 4000))
+const wait = (): Promise<MatchesInCourse> => {
+  return new Promise((resolve) =>
+    setTimeout(() => resolve({ test: { lecture: 'Resolved' } }), 4000)
+  )
 }
 
-export const matchesInCourseToString = (matchesInCourse: MatchesInCourse) => {
+export const matchesInCourseToStrings = (matchesInCourse: MatchesInCourse) => {
   const matches = Object.entries(matchesInCourse).map(
     ([filterString, value]) => {
       if (value.block) {
-        return `${filterString} found in the lecture block ${value.block}, which is a part of the lecture ${value.lecture}`
+        return `"${filterString}" found in the lecture block ${value.block}, which is a part of the lecture ${value.lecture}`
       }
-      return `${filterString} found in the lecture ${value.lecture}`
+      return `"${filterString}" found in the lecture ${value.lecture}`
     }
   )
-  return matches.join('\n')
+  return matches
 }
 
 // This can obviously get very time consuming. We would like it more to have this built into

@@ -8,6 +8,7 @@ import {
   BlockOneLevelDeep,
   CourseThreeLevelsDeep,
   Data,
+  LearningMaterialType,
   LectureTwoLevelsDeep,
 } from '../../types'
 import { Metadata, ResponseArrayData } from '../../shared/requests/types'
@@ -21,9 +22,10 @@ import { filterBlockOnKeywordsAndAuthors } from '../../shared/requests/blocks/bl
 import TabLabel from './TabLabel/TabLabel'
 import {
   getMatchingLecturesAndBlocks,
-  matchesInCourseToString,
+  matchesInCourseToStrings,
   TIMEOUT_THRESHOLD_FOR_MATCH_LOCALIZATION,
 } from '../../utils/filterMatching/filterMatching'
+import { typeToText } from '../../utils/utils'
 
 type Props = {
   selectedKeywords: string[]
@@ -128,8 +130,8 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       authors
     )
 
-    const matchesString = matchesInCourseToString(matches)
-    return `Level: ${course.attributes.Level} ${matchesString}`
+    const matchesString = matchesInCourseToStrings(matches)
+    return [`Level: ${course.attributes.Level}`, ...matchesString]
   }
 
   const dataToCardFormat = (
@@ -143,23 +145,27 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
   }
 
   const courseDataToCardFormat = (
-    data: Data<CourseThreeLevelsDeep>[]
+    data: Data<CourseThreeLevelsDeep>[],
+    learningMaterialType: LearningMaterialType
   ): CardType[] => {
-    return data.map((result) => ({
-      title: result.attributes.Title,
-      id: result.id.toString(),
-      text: result.attributes.Abstract,
-      metadata: {
-        defaultMetadata: `Level: ${result.attributes.Level}`,
-        dynamicMetadata: {
-          getMetadata: () =>
-            getMetadata(result, selectedKeywords, selectedAuthors),
-          errorLogText: `Localization of filter matches for course with title '${result.attributes.Title} timed out after ${TIMEOUT_THRESHOLD_FOR_MATCH_LOCALIZATION} ms.'`,
-          userFacingErrorText:
-            'Unable to localize where in the course the filter matched...',
+    return data.map((result) => {
+      const typeAsText = typeToText(learningMaterialType).toLowerCase()
+      return {
+        title: result.attributes.Title,
+        id: result.id.toString(),
+        text: result.attributes.Abstract,
+        metadata: {
+          defaultMetadata: `Level: ${result.attributes.Level}`,
+          dynamicMetadata: {
+            getMetadata: () =>
+              getMetadata(result, selectedKeywords, selectedAuthors),
+            loadingText: `Localizing where in the ${typeAsText} the match was made...`,
+            errorLogText: `Localization of filter matches for ${typeAsText} with title '${result.attributes.Title}' timed out after ${TIMEOUT_THRESHOLD_FOR_MATCH_LOCALIZATION} ms.'`,
+            userFacingErrorText: `Unable to localize where in the ${typeAsText} the filter matched...`,
+          },
         },
-      },
-    }))
+      }
+    })
   }
 
   const getPaginationController = (
@@ -218,7 +224,9 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
         </Tabs>
       </div>
       <TabPanel value={value} index={0}>
-        <CardList cards={courseDataToCardFormat(courseResults.data)} />
+        <CardList
+          cards={courseDataToCardFormat(courseResults.data, 'COURSE')}
+        />
         {getPaginationController(
           courseResults.meta,
           currentCoursePageNumber,
