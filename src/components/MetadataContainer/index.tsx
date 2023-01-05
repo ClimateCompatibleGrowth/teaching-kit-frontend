@@ -1,7 +1,7 @@
+import dynamic from 'next/dynamic'
 import React from 'react'
 import { Author, BlockOneLevelDeep, Data, Level } from '../../types'
 import handleDocxDownload from '../../utils/downloadAsDocx'
-import handlePptxDownload from '../../utils/downloadAsPptx'
 import Button from '../Button/Button'
 
 import * as Styled from './styles'
@@ -23,6 +23,12 @@ export type Props = {
   docxDownloadParameters: DocxDownloadParameters
   pptxDownloadParameters?: PptxDownloadParameters
 }
+
+// The pptx download function chain makes next throw hydration errors in production,
+// unless it's dynamically imported
+const DynamicPptxDownloadButton = dynamic(
+  () => import('./PowerpointDownloadButton/PowerpointDownloadButton')
+)
 
 export default function MetadataContainer({
   level,
@@ -77,11 +83,7 @@ export default function MetadataContainer({
               DOCX
             </Button>
             {pptxDownloadParameters !== undefined ? (
-              <button
-                onClick={() => handlePptxDownload(pptxDownloadParameters?.data)}
-              >
-                Pptx
-              </button>
+              <DynamicPptxDownloadButton block={pptxDownloadParameters.data} />
             ) : null}
           </Styled.DownloadButtonsContainer>
         </Styled.HeadingSet>
