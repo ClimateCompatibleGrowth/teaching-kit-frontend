@@ -103,3 +103,10 @@ export const imageStyling: PptxGenJS.ImageProps = {
   w: '25%',
   h: '30%',
 }
+
+export const citeAsStyling: PptxGenJS.TextPropsOptions = {
+  x: '70%',
+  y: '85%',
+  fontSize: 12,
+  w: '30%',
+}

@@ -14,4 +14,5 @@ export type PptxSlide = {
   bulletStyling?: any
   heading?: string
   list?: PptxSlideListContent[]
+  citeAs: string
 }

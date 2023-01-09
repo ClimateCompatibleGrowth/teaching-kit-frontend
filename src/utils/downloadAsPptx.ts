@@ -14,23 +14,25 @@ import { MarkdownLinkNode } from '@contentful/rich-text-from-markdown/dist/types
 import { PptxSlide } from '../types/pptx'
 
 const downloadAsPptx = async (block: Data<BlockOneLevelDeep>) => {
-  const lectureData = {
+  const blockData = {
     Title: block.attributes.Title,
     Abstract: block.attributes.Abstract,
     References: block.attributes.References,
     createdAt: block.attributes.createdAt,
     slides: block.attributes.Slides,
+    citeAs: block.attributes.Lectures.data[0].attributes.CiteAs,
   }
 
-  const slidesArray: Slide[] = lectureData.slides
-  const lectureTitle = lectureData.Title
+  const slidesArray: Slide[] = blockData.slides
+  const blockTitle = blockData.Title
+  const citeAs = blockData.citeAs
 
-  const pptxSlides = await lectureToPptxSlideFormat(slidesArray)
+  const pptxSlides = await blockToPptxSlideFormat(slidesArray)
 
-  createPptxFile(pptxSlides, lectureTitle)
+  createPptxFile(pptxSlides, blockTitle, citeAs)
 }
 
-const lectureToPptxSlideFormat = async (slidesArray: Slide[]) => {
+const blockToPptxSlideFormat = async (slidesArray: Slide[]) => {
   const promises = slidesArray.map((slide: Slide, index: number) => {
     slide.id = slide.id.toString()
     return slideSchemaToPptxFormat(slide, slidesArray, index)
@@ -121,6 +123,8 @@ const slideSchemaToPptxFormat = async (
       pptxSlide.mainContent = [''] // empty string to avoid undefined error. Will work for now.
     }
     pptxSlide.image = imageUrl
+
+    pptxSlide.heading ? pptxSlide.heading : (pptxSlide.heading = '')
   })
 
   if (slidesArray) {
