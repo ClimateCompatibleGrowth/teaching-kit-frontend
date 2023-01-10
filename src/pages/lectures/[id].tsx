@@ -1,24 +1,57 @@
+import styled from '@emotion/styled'
 import axios from 'axios'
-import { Lecture } from '../../components/Lecture'
+import CardList from '../../components/CardList/CardList'
+import LearningMaterial from '../../components/LearningMaterial'
 import MetadataContainer from '../../components/MetadataContainer'
 import { getLectures } from '../../shared/requests/lectures/lectures'
-import { LearningMaterialContainer } from '../../styles/global'
+import {
+  LearningMaterialContainer,
+  LearningMaterialOverview,
+} from '../../styles/global'
 import { Data, LectureTwoLevelsDeep } from '../../types'
+import { summarizeDurations } from '../../utils/utils'
 
-type props = { lecture: Data<LectureTwoLevelsDeep> }
-export default function LecturePage({ lecture }: props) {
+const LectureContentWrapper = styled.div`
+  margin-top: 5rem;
+`
+
+const Styled = { LectureContentWrapper }
+
+type Props = { lecture: Data<LectureTwoLevelsDeep> }
+
+export default function LecturePage({ lecture }: Props) {
   return (
     <LearningMaterialContainer>
-      <Lecture lecture={lecture} />
+      <LearningMaterialOverview>
+        <LearningMaterial
+          type='LECTURE'
+          title={lecture.attributes.Title}
+          abstract={lecture.attributes.Abstract}
+          learningOutcomes={lecture.attributes.LearningOutcomes}
+          acknowledgement={lecture.attributes.Acknowledgement}
+          citeAs={lecture.attributes.CiteAs}
+        />
+        <Styled.LectureContentWrapper>
+          <h2>Lecture Content</h2>
+          <CardList
+            cards={lecture.attributes.Blocks.data.map((block, index) => ({
+              id: block.id.toString(),
+              title: block.attributes.Title,
+              text: block.attributes.Abstract,
+              subTitle: `Lecture block ${index + 1}`,
+            }))}
+          />
+        </Styled.LectureContentWrapper>
+      </LearningMaterialOverview>
       <MetadataContainer
         level={lecture.attributes.Level}
-        duration={'2 h'}
+        duration={summarizeDurations(lecture.attributes.Blocks.data)}
         authors={lecture.attributes.LectureCreator}
         docxDownloadParameters={{
           title: lecture.attributes.Title,
           blocks: lecture.attributes.Blocks.data,
         }}
-      ></MetadataContainer>
+      />
     </LearningMaterialContainer>
   )
 }

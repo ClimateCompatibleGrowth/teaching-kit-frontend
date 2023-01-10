@@ -22,7 +22,7 @@ type Props = { course: Data<CourseThreeLevelsDeep> }
 export default function CoursePage({ course }: Props) {
   return (
     <LearningMaterialContainer>
-      <LearningMaterialOverview id='source-html'>
+      <LearningMaterialOverview>
         <LearningMaterial
           type='COURSE'
           title={course.attributes.Title}

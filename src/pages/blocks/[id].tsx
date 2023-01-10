@@ -1,18 +1,40 @@
 import axios from 'axios'
 import { BlockOneLevelDeep, Data } from '../../types'
 import { getBlocks } from '../../shared/requests/blocks/blocks'
-import { LearningMaterialContainer } from '../../styles/global'
-import { Block } from '../../components/Block'
+import {
+  LearningMaterialContainer,
+  LearningMaterialOverview,
+} from '../../styles/global'
 import MetadataContainer from '../../components/MetadataContainer'
+import { summarizeDurations } from '../../utils/utils'
+import styled from '@emotion/styled'
+import LearningMaterial from '../../components/LearningMaterial'
+import { ReactMarkdown } from 'react-markdown/lib/react-markdown'
 
-type props = { block: Data<BlockOneLevelDeep> }
+const BlockContentWrapper = styled.div`
+  margin-top: 5rem;
+`
 
-export default function BlockPage({ block }: props) {
+const Styled = { BlockContentWrapper }
+
+type Props = { block: Data<BlockOneLevelDeep> }
+
+export default function BlockPage({ block }: Props) {
   return (
     <LearningMaterialContainer>
-      <Block block={block} />
+      <LearningMaterialOverview>
+        <LearningMaterial
+          type='BLOCK'
+          title={block.attributes.Title}
+          abstract={block.attributes.Abstract}
+          learningOutcomes={block.attributes.LearningOutcomes}
+        />
+        <Styled.BlockContentWrapper>
+          <ReactMarkdown>{block.attributes.Document}</ReactMarkdown>
+        </Styled.BlockContentWrapper>
+      </LearningMaterialOverview>
       <MetadataContainer
-        duration={`${block.attributes.DurationInMinutes} min`}
+        duration={summarizeDurations([block])}
         authors={block.attributes.Authors}
         docxDownloadParameters={{ title: block.attributes.Title }}
         pptxDownloadParameters={{ data: block }}
