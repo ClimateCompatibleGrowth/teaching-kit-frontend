@@ -16,20 +16,15 @@ import { PptxSlide } from '../types/pptx'
 const downloadAsPptx = async (block: Data<BlockOneLevelDeep>) => {
   const blockData = {
     Title: block.attributes.Title,
-    Abstract: block.attributes.Abstract,
-    References: block.attributes.References,
-    createdAt: block.attributes.createdAt,
     slides: block.attributes.Slides,
-    citeAs: block.attributes.Lectures.data[0].attributes.CiteAs,
   }
 
   const slidesArray: Slide[] = blockData.slides
   const blockTitle = blockData.Title
-  const citeAs = blockData.citeAs
 
   const pptxSlides = await blockToPptxSlideFormat(slidesArray)
 
-  createPptxFile(pptxSlides, blockTitle, citeAs)
+  createPptxFile(pptxSlides, blockTitle)
 }
 
 const blockToPptxSlideFormat = async (slidesArray: Slide[]) => {

@@ -5,13 +5,11 @@ import {
   masterDescriptionSlide,
   descriptionTitle,
   imageStyling,
-  citeAsStyling,
 } from './createPptxStyling'
 
 export const createPptxFile = async (
   pptxSlides: PptxSlide[],
-  lectureTitle: string,
-  citeAs: string
+  lectureTitle: string
 ) => {
   const pptx = new PptxGenJS()
   pptx.layout = 'LAYOUT_WIDE'
@@ -53,8 +51,6 @@ export const createPptxFile = async (
 
       contentSlide.addText(`${bulletString}`, pptxSlide.bulletStyling)
     }
-
-    contentSlide.addText(`${citeAs}`, citeAsStyling)
 
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)
   })
