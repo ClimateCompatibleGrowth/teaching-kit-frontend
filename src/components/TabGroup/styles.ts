@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import {
   Accent40,
   Neutral40,
@@ -61,3 +62,10 @@ export const NumberOfMatchesWrapper = {
 
   borderRadius: '1.5rem',
 }
+
+export const LinkWrapper = styled.p`
+  a {
+    color: ${Accent40};
+    text-decoration: underline;
+  }
+`

@@ -58,5 +58,5 @@ export const createPptxFile = async (
 
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)
   })
-  // pptx.writeFile({ fileName: `${lectureTitle}.pptx` })
+  pptx.writeFile({ fileName: `${lectureTitle}.pptx` })
 }

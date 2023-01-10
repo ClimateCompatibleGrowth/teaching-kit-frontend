@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
 import * as Styled from './styles'
 
@@ -8,6 +8,7 @@ export type CardType = {
   text: string
   subTitle?: string
   metadata?: string
+  subComponent?: ReactNode
 }
 
 type Props = {
@@ -24,8 +25,12 @@ const Card = ({ card }: Props) => {
       <Styled.Markdown>
         <ReactMarkdown>{card.text}</ReactMarkdown>
       </Styled.Markdown>
-      {card.metadata !== undefined ? (
-        <Styled.Metadata>{card.metadata}</Styled.Metadata>
+      <Styled.Metadata>{card.metadata}</Styled.Metadata>
+      {card.subComponent !== undefined ? (
+        <Styled.SubComponentWrapper>
+          <hr />
+          {card.subComponent}
+        </Styled.SubComponentWrapper>
       ) : null}
     </Styled.Card>
   )
