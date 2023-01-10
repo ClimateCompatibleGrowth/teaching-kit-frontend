@@ -11,6 +11,13 @@ export const getLectures = async () => {
   return response.data.data
 }
 
+const getPopulateString = () => {
+  const populateLectureCreator = 'populate[LectureCreator]=*'
+  const populateBlockAuthors = 'populate[Blocks][populate][Authors]=*'
+  const populateKeywords = 'populate[Blocks][populate][Keywords]=*'
+  return `${populateKeywords}&${populateBlockAuthors}&${populateLectureCreator}`
+}
+
 export const filterLectureOnKeywordsAndAuthors = async ({
   keywords,
   authors,
@@ -27,9 +34,11 @@ export const filterLectureOnKeywordsAndAuthors = async ({
     'LECTURE'
   )
 
+  const populate = getPopulateString()
+
   const filters = `${pagination}${authorsAndKeywordsFilterString}`
   const filterString =
-    filters.length > 0 ? `${filters}&populate=*` : '?populate=*'
+    filters.length > 0 ? `${filters}&${populate}` : `?${populate}`
   const response: ResponseArray<LectureTwoLevelsDeep> = await axios.get(
     `${ENDPOINT}${filterString}`
   )

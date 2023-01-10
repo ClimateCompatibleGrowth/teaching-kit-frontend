@@ -48,3 +48,8 @@ export const SubTitle = styled.h5`
   font-size: 1.8rem;
   color: ${OnPrimary90};
 `
+
+export const SubComponentWrapper = styled.div`
+  width: 95%;
+  margin-top: 2rem;
+`
