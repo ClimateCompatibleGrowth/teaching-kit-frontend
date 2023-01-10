@@ -5,11 +5,7 @@ import {
   CourseTwoLevelsDeep,
 } from '../../../types'
 import { Response, ResponseArray, ResponseArrayData } from '../types'
-import {
-  FilterParameters,
-  getAuthorsFilterString,
-  getKeywordsFilterString,
-} from '../utils'
+import { FilterParameters, getAuthorsAndKeywordsFilterString } from '../utils'
 
 const ENDPOINT = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/courses`
 const DEFAULT_MATCHES_PER_PAGE = 10
@@ -32,20 +28,17 @@ export const filterCourseOnKeywordsAndAuthors = async ({
   pageNumber,
   matchesPerPage,
 }: FilterParameters): Promise<ResponseArrayData<CourseTwoLevelsDeep>> => {
-  const keywordsFilterString = getKeywordsFilterString(
-    keywords,
-    '[Lectures][Blocks][Keywords][Keyword]'
-  )
-  const authorsFilterString = getAuthorsFilterString(authors, 'COURSE')
-
   const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
     matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
   }`
 
-  const andKeywords = keywordsFilterString.length > 0 ? '&' : ''
-  const andAuthors = authorsFilterString.length > 0 ? '&' : ''
+  const authorsAndKeywordsFilterString = getAuthorsAndKeywordsFilterString(
+    authors,
+    keywords,
+    'COURSE'
+  )
 
-  const filters = `${pagination}${andKeywords}${keywordsFilterString}${andAuthors}${authorsFilterString}`
+  const filters = `${pagination}${authorsAndKeywordsFilterString}`
   const filterString =
     filters.length > 0 ? `${filters}&populate=*` : '?populate=*'
   const response: ResponseArray<CourseTwoLevelsDeep> = await axios.get(

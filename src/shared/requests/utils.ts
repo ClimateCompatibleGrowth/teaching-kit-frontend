@@ -7,34 +7,85 @@ export type FilterParameters = {
   matchesPerPage?: number
 }
 
+type AuthorsFilters = {
+  authorsFilterString: string
+  amountOfFilters: number
+}
+
+export const getAuthorsAndKeywordsFilterString = (
+  authors: string[],
+  keywords: string[],
+  filterFrom: LearningMaterialType
+) => {
+  const authorsFilter = getAuthorsFilterString(authors, filterFrom)
+  const keywordsFilterString = getKeywordsFilterString(
+    keywords,
+    filterFrom,
+    authorsFilter.amountOfFilters
+  )
+
+  const andKeywords = keywordsFilterString.length > 0 ? '&' : ''
+  const andAuthors = authorsFilter.authorsFilterString.length > 0 ? '&' : ''
+
+  return `${andKeywords}${keywordsFilterString}${andAuthors}${authorsFilter.authorsFilterString}`
+}
+
 export const getAuthorsFilterString = (
   authors: string[],
   filterFrom: LearningMaterialType
-) => {
-  return authors
-    .map((author) => getFilterStringByAuthor(author, filterFrom))
-    .join('&')
+): AuthorsFilters => {
+  const authorsFilters = authors.map((author, index) =>
+    getFilterStringByAuthor(author, filterFrom, index)
+  )
+
+  const authorsFilterString = authorsFilters.join('&')
+  return {
+    authorsFilterString,
+    amountOfFilters: authorsFilters.length,
+  }
 }
 
+// andGroup is a Strapi query functionality that is not very well documented at the time of writing. See more here:
+// https://forum.strapi.io/t/advanced-api-filter-combining-and-and-or/24375
 const getFilterStringByAuthor = (
   author: string,
-  filterFrom: LearningMaterialType
+  filterFrom: LearningMaterialType,
+  andGroup: number
 ) => {
   switch (filterFrom) {
     case 'COURSE':
-      return `filters[$or][0][CourseCreator][Name][$containsi]=${author}&filters[$or][1][Lectures][LectureCreator][Name][$containsi]=${author}&filters[$or][2][Lectures][Blocks][Authors][Name][$containsi]=${author}`
+      return `filters[$and][${andGroup}][$or][0][CourseCreator][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][1][Lectures][LectureCreator][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][2][Lectures][Blocks][Authors][Name][$containsi]=${author}`
     case 'LECTURE':
-      return `filters[$or][0][LectureCreator][Name][$containsi]=${author}&filters[$or][1][Blocks][Authors][Name][$containsi]=${author}`
+      return `filters[$and][${andGroup}][$or][0][LectureCreator][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][1][Blocks][Authors][Name][$containsi]=${author}`
     case 'BLOCK':
-      return `filters[$or][0][Authors][Name][$containsi]=${author}`
+      return `filters[$and][${andGroup}][$or][0][Authors][Name][$containsi]=${author}`
   }
 }
 
 export const getKeywordsFilterString = (
   keywords: string[],
-  pathToKeywords: string
+  filterFrom: LearningMaterialType,
+  andGroupStartIndex = 0
 ) => {
   return keywords
-    .map((keyword) => `filters${pathToKeywords}[$containsi]=${keyword}`)
+    .map((keyword, index) =>
+      getFilterStringByKeyword(keyword, filterFrom, index, andGroupStartIndex)
+    )
     .join('&')
+}
+
+const getFilterStringByKeyword = (
+  keyword: string,
+  filterFrom: LearningMaterialType,
+  andGroup: number,
+  andGroupStartIndex: number
+) => {
+  switch (filterFrom) {
+    case 'COURSE':
+      return `filters[$and][${andGroupStartIndex}][$and][${andGroup}][Lectures][Blocks][Keywords][Keyword][$containsi]=${keyword}`
+    case 'LECTURE':
+      return `filters[$and][${andGroupStartIndex}][$and][${andGroup}][Blocks][Keywords][Keyword][$containsi]=${keyword}`
+    case 'BLOCK':
+      return `filters[$and][${andGroupStartIndex}][$and][${andGroup}][Keywords][Keyword][$containsi]=${keyword}`
+  }
 }
