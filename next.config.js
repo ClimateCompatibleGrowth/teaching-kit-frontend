@@ -7,6 +7,15 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+
+  // https://github.com/privateOmega/html-to-docx/issues/129
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+    }
+    return config
+  },
 }
 
 module.exports = withBundleAnalyzer(nextConfig)

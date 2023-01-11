@@ -10,6 +10,7 @@ import { summarizeDurations } from '../../utils/utils'
 import styled from '@emotion/styled'
 import LearningMaterial from '../../components/LearningMaterial'
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown'
+import { handleBlockDocxDownload } from '../../utils/downloadAsDocx'
 
 const BlockContentWrapper = styled.div`
   margin-top: 5rem;
@@ -36,7 +37,7 @@ export default function BlockPage({ block }: Props) {
       <MetadataContainer
         duration={summarizeDurations([block])}
         authors={block.attributes.Authors}
-        docxDownloadParameters={{ title: block.attributes.Title }}
+        downloadAsDocx={() => handleBlockDocxDownload(block)}
         pptxDownloadParameters={{ data: block }}
       />
     </LearningMaterialContainer>

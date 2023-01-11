@@ -9,6 +9,7 @@ import {
   LearningMaterialOverview,
 } from '../../styles/global'
 import { CourseThreeLevelsDeep, Data } from '../../types'
+import { handleCourseDocxDownload } from '../../utils/downloadAsDocx'
 import { summarizeDurations } from '../../utils/utils'
 
 const CourseContentWrapper = styled.div`
@@ -54,10 +55,7 @@ export default function CoursePage({ course }: Props) {
             .flat()
         )}
         authors={course.attributes.CourseCreator}
-        docxDownloadParameters={{
-          title: course.attributes.Title,
-          courseId: course.id,
-        }}
+        downloadAsDocx={() => handleCourseDocxDownload(course)}
       />
     </LearningMaterialContainer>
   )

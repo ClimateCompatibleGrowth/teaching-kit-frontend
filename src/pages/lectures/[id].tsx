@@ -9,6 +9,7 @@ import {
   LearningMaterialOverview,
 } from '../../styles/global'
 import { Data, LectureTwoLevelsDeep } from '../../types'
+import { handleLectureDocxDownload } from '../../utils/downloadAsDocx'
 import { summarizeDurations } from '../../utils/utils'
 
 const LectureContentWrapper = styled.div`
@@ -47,10 +48,7 @@ export default function LecturePage({ lecture }: Props) {
         level={lecture.attributes.Level}
         duration={summarizeDurations(lecture.attributes.Blocks.data)}
         authors={lecture.attributes.LectureCreator}
-        docxDownloadParameters={{
-          title: lecture.attributes.Title,
-          blocks: lecture.attributes.Blocks.data,
-        }}
+        downloadAsDocx={() => handleLectureDocxDownload(lecture)}
       />
     </LearningMaterialContainer>
   )
