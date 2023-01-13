@@ -24,6 +24,12 @@ export const OnPrimary40 = '#2E3440'
 
 export const Primary90 = '#F0F3F9'
 export const OnPrimary90 = '#2E3440'
+
+export const Error20 = '#6F0800'
+export const OnError20 = '#FFFFFF'
+
+export const Error99 = '#FFDAD7'
+export const OnError99 = '#242424'
 // End of design tokens
 
 export const BorderRadius = '0rem 0rem 0rem 2.5rem'

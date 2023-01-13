@@ -5,12 +5,12 @@ import {
   LearningMaterialContainer,
   LearningMaterialOverview,
 } from '../../styles/global'
-import MetadataContainer from '../../components/MetadataContainer'
+import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { summarizeDurations } from '../../utils/utils'
 import styled from '@emotion/styled'
 import LearningMaterial from '../../components/LearningMaterial'
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown'
-import { handleBlockDocxDownload } from '../../utils/downloadAsDocx'
+import { handleBlockDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 
 const BlockContentWrapper = styled.div`
   margin-top: 5rem;

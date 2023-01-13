@@ -38,7 +38,7 @@ type Props = {
 }
 
 const DEFAULT_PAGE_NUMBER = 1
-const DEFAULT_MATCHES_PER_PAGE = 4
+const DEFAULT_MATCHES_PER_PAGE = 10
 
 const defaultPagination = {
   page: DEFAULT_PAGE_NUMBER,
@@ -329,7 +329,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       <TabPanel value={value} index={2}>
         <CardList cards={dataToCardFormat(blockResults.data)} />
         {getPaginationController(
-          lectureResults.meta,
+          blockResults.meta,
           currentBlockPageNumber,
           setCurrentBlockPageNumber
         )}

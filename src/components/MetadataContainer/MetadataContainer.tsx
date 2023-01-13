@@ -1,6 +1,8 @@
 import dynamic from 'next/dynamic'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Author, BlockOneLevelDeep, Data, Level } from '../../types'
+import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
+import Alert from '../Alert/Alert'
 import Button from '../Button/Button'
 
 import * as Styled from './styles'
@@ -13,7 +15,7 @@ export type Props = {
   level?: Level
   duration?: string
   authors?: { data: Data<Author>[] }
-  downloadAsDocx: () => void
+  downloadAsDocx: () => Promise<void | DownloadError>
   pptxDownloadParameters?: PptxDownloadParameters
 }
 
@@ -30,6 +32,19 @@ export default function MetadataContainer({
   downloadAsDocx,
   pptxDownloadParameters,
 }: Props) {
+  const [docxDownloadIsLoading, setDocxDownloadIsLoading] = useState(false)
+  const [docxDowloadErrored, setDocxDownloadErrored] = useState(false)
+
+  const downloadBlock = async () => {
+    const delayedLoading = setTimeout(() => setDocxDownloadIsLoading(true), 300)
+    const download = await downloadAsDocx()
+    if (download?.hasError) {
+      setDocxDownloadErrored(true)
+    }
+    clearTimeout(delayedLoading)
+    setDocxDownloadIsLoading(false)
+  }
+
   return (
     <Styled.MetadataContainer>
       {level !== undefined ? (
@@ -62,11 +77,25 @@ export default function MetadataContainer({
       <Styled.HeadingSet>
         <h6>Download</h6>
         <Styled.DownloadButtonsContainer>
-          <Button onClick={() => downloadAsDocx()}>DOCX</Button>
+          <Button
+            onClick={() => downloadBlock()}
+            isLoading={docxDownloadIsLoading}
+          >
+            DOCX
+          </Button>
           {pptxDownloadParameters !== undefined ? (
             <DynamicPptxDownloadButton block={pptxDownloadParameters.data} />
           ) : null}
         </Styled.DownloadButtonsContainer>
+        {docxDowloadErrored === true ? (
+          <Styled.Alert>
+            <Alert
+              title='The download failed'
+              text='Something went wrong when trying to download the DOCX document...'
+              type='ERROR'
+            />
+          </Styled.Alert>
+        ) : null}
       </Styled.HeadingSet>
     </Styled.MetadataContainer>
   )

@@ -2,14 +2,14 @@ import styled from '@emotion/styled'
 import axios from 'axios'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
-import MetadataContainer from '../../components/MetadataContainer'
+import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { getCourses } from '../../shared/requests/courses/courses'
 import {
   LearningMaterialContainer,
   LearningMaterialOverview,
 } from '../../styles/global'
 import { CourseThreeLevelsDeep, Data } from '../../types'
-import { handleCourseDocxDownload } from '../../utils/downloadAsDocx'
+import { handleCourseDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { summarizeDurations } from '../../utils/utils'
 
 const CourseContentWrapper = styled.div`
