@@ -30,6 +30,8 @@ export const createPptxFile = async (
     //Headings
     contentSlide.addText(`${pptxSlide.heading}`, pptxSlide.headingStyling)
 
+    console.log(pptxSlide.image)
+
     contentSlide.addImage({
       path: `${pptxSlide?.image}`,
       ...imageStyling,

@@ -45,6 +45,7 @@ const slideSchemaToPptxFormat = async (
   let pptxSlide: PptxSlide = {} as PptxSlide
   let mainContentArray: string[] = []
   let imageUrl = ''
+  console.log(slide.Content)
 
   const promises = Object.values(slide).map(async (value: string) => {
     // The result from richTextFromMarkdown does not reflect the same package's styling - therefore the 'any'
@@ -118,6 +119,7 @@ const slideSchemaToPptxFormat = async (
       pptxSlide.mainContent = [''] // empty string to avoid undefined error. Will work for now.
     }
     pptxSlide.image = imageUrl
+    console.log(imageUrl, 'imageUrl')
 
     pptxSlide.heading ? pptxSlide.heading : (pptxSlide.heading = '')
   })
