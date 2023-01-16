@@ -13,42 +13,39 @@ import {
 import BlockDocxDownload from '../../components/DocxDownloadTemplates/BlockDocxDownload/BlockDocxDownload'
 import LectureDocxDownload from '../../components/DocxDownloadTemplates/LectureDocxDownload/LectureDocxDownload'
 import CourseDocxDownload from '../../components/DocxDownloadTemplates/CourseDocxDownload/CourseDocxDowload'
-import { BaseError, getWrappingHTMLElements, processHTMLString } from './utils'
+import { BaseError, processHTMLString } from './utils'
 
 export type DownloadError = BaseError & {}
 
 export const handleCourseDocxDownload = async (
   course: Data<CourseThreeLevelsDeep>
 ) => {
-  const { header, footer } = getWrappingHTMLElements(course.attributes.Title)
   const sourceHTML = ReactDOMServer.renderToString(
     CourseDocxDownload({ course })
   )
-  const blob = await HTMLtoDOCX(sourceHTML, header, {}, footer)
+  const blob = await HTMLtoDOCX(sourceHTML, undefined, {}, undefined)
   saveAs(blob, `${course.attributes.Title}.docx`)
 }
 
 export const handleLectureDocxDownload = async (
   lecture: Data<LectureTwoLevelsDeep>
 ) => {
-  const { header, footer } = getWrappingHTMLElements(lecture.attributes.Title)
   const sourceHTML = ReactDOMServer.renderToString(
     LectureDocxDownload({ lecture })
   )
-  const blob = await HTMLtoDOCX(sourceHTML, header, {}, footer)
+  const blob = await HTMLtoDOCX(sourceHTML, undefined, {}, undefined)
   saveAs(blob, `${lecture.attributes.Title}.docx`)
 }
 
 export const handleBlockDocxDownload = async (
   block: Data<BlockOneLevelDeep>
 ): Promise<void | DownloadError> => {
-  const { header, footer } = getWrappingHTMLElements(block.attributes.Title)
   const sourceHTML = ReactDOMServer.renderToString(
     BlockDocxDownload({ block, downloadedAs: 'BLOCK' })
   )
 
   try {
-    const newHtml = await processHTMLString(header + sourceHTML + footer)
+    const newHtml = await processHTMLString(sourceHTML, block.attributes.Title)
     const blob = await HTMLtoDOCX(newHtml, undefined, {}, undefined)
     saveAs(blob, `${block.attributes.Title}.docx`)
   } catch (error) {

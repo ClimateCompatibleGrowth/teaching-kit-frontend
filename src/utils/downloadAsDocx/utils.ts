@@ -2,14 +2,17 @@ import { decode } from 'html-entities'
 
 // @ts-ignore (image-to-base64 doesn't have type declarations)
 import imageToBase64 from 'image-to-base64'
+import { sourceIsFromS3 } from '../utils'
 
 export type BaseError = {
   hasError: boolean
 }
 
 export const processHTMLString = async (
-  HTMLString: string
+  HTMLString: string,
+  title: string
 ): Promise<string> => {
+  const { header, footer } = getWrappingHTMLElements(title)
   const unicodeDecodedHtmlString = decode(HTMLString)
 
   let temporaryHTML = document.createElement('div')
@@ -18,18 +21,25 @@ export const processHTMLString = async (
   temporaryHTML = await convertImagesToBase64(temporaryHTML)
   temporaryHTML = decreaseFontSizeOfParagraphs(temporaryHTML)
 
-  return temporaryHTML.innerHTML
+  return header + temporaryHTML.innerHTML + footer
 }
 
 // html-to-docx only accepts base64 images, not hosted images like Strapi uses.
+// We also only want to allow download of files uploaded through Strapi (to our S3 bucket), because of both licensing and security.
 const convertImagesToBase64 = async (HTMLDiv: HTMLDivElement) => {
-  const images = HTMLDiv.getElementsByTagName('img')
+  const images = HTMLDiv.querySelectorAll('img')
 
-  for (const image of images) {
-    const imageUrl = image.src
-    // Dummy parameter to avoid cache (CORS): https://www.hacksoft.io/blog/handle-images-cors-error-in-chrome#solution
-    const base64 = await imageToBase64(`${imageUrl}?do-not-fetch-from-cache`)
-    image.src = `data:image/png;base64, ${base64}`
+  for (let i = 0; i < images.length; i++) {
+    const imageSource = images[i].src
+    if (sourceIsFromS3(imageSource)) {
+      // Dummy parameter to avoid cache (CORS): https://www.hacksoft.io/blog/handle-images-cors-error-in-chrome#solution
+      const base64 = await imageToBase64(
+        `${imageSource}?do-not-fetch-from-cache`
+      )
+      images[i].src = `data:image/png;base64,${base64}`
+    } else {
+      images[i].parentNode?.removeChild(images[i])
+    }
   }
 
   return HTMLDiv

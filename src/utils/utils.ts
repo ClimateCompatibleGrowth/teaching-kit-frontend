@@ -33,3 +33,21 @@ export const summarizeDurations = (blocks: Data<BlockOneLevelDeep>[]) => {
   }
   return `${minutesToFormattedHourString(durationInMinutes)}`
 }
+
+export const isValidUrl = (string: string): boolean => {
+  let url
+  try {
+    url = new URL(string)
+  } catch (_) {
+    return false
+  }
+  return url.protocol === 'http:' || url.protocol === 'https:'
+}
+
+export const sourceIsFromS3 = (string: string): boolean => {
+  if (isValidUrl(string)) {
+    const source = new URL(string)
+    return source.hostname === process.env.NEXT_PUBLIC_S3_HOST
+  }
+  return false
+}
