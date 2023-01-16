@@ -1,6 +1,9 @@
 // if you use a type/interface in more than one place it goes into the ~src/types/index.d.ts file
 // if you extend a type/interface, it can be declared locally, but as long as it doesn't get used more than once
 
+import { Attributes } from 'react'
+import { PptxSlide } from './pptx'
+
 type Modify<T, R> = Omit<T, keyof R> & R
 
 export type Data<T> = {
@@ -8,7 +11,7 @@ export type Data<T> = {
   attributes: T
 }
 
-export type Slide = {
+export type Slide = PptxSlide & {
   id: string
   Title: string
   Content: string

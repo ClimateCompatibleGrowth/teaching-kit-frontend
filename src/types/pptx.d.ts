@@ -15,3 +15,5 @@ export type PptxSlide = {
   heading?: string
   list?: PptxSlideListContent[]
 }
+
+export type PptxLectureSlides = PptxSlide[]

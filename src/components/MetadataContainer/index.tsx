@@ -1,6 +1,13 @@
 import dynamic from 'next/dynamic'
 import React from 'react'
-import { Author, BlockOneLevelDeep, Data, Level } from '../../types'
+import {
+  Author,
+  BlockOneLevelDeep,
+  Data,
+  Lecture,
+  LectureTwoLevelsDeep,
+  Level,
+} from '../../types'
 import handleDocxDownload from '../../utils/downloadAsDocx'
 import Button from '../Button/Button'
 
@@ -14,6 +21,7 @@ type DocxDownloadParameters = {
 
 type PptxDownloadParameters = {
   data: Data<BlockOneLevelDeep>
+  lecture: Data<Lecture>[]
 }
 
 export type Props = {
@@ -83,7 +91,10 @@ export default function MetadataContainer({
               DOCX
             </Button>
             {pptxDownloadParameters !== undefined ? (
-              <DynamicPptxDownloadButton block={pptxDownloadParameters.data} />
+              <DynamicPptxDownloadButton
+                block={pptxDownloadParameters.data}
+                lecture={pptxDownloadParameters.lecture}
+              />
             ) : null}
           </Styled.DownloadButtonsContainer>
         </Styled.HeadingSet>

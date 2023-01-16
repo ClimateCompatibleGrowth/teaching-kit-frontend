@@ -51,6 +51,9 @@ export default function LecturePage({ lecture }: Props) {
           title: lecture.attributes.Title,
           blocks: lecture.attributes.Blocks.data,
         }}
+        pptxDownloadParameters={{
+          lecture: lecture,
+        }}
       />
     </LearningMaterialContainer>
   )
@@ -75,7 +78,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(ctx: any) {
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/lectures/${ctx.params.id}?populate=*`
+    `${process.env.STRAPI_API_URL}/lectures/${ctx.params.id}?populate[Blocks][populate][Slides]=*`
   )
   const lecture = res.data.data
 

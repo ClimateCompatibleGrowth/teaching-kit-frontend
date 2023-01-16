@@ -7,12 +7,13 @@ import {
   imageStyling,
 } from './createPptxStyling'
 
-export const createPptxFile = async (
+export const createBlockPptxFile = async (
   pptxSlides: PptxSlide[],
   lectureTitle: string
 ) => {
   const pptx = new PptxGenJS()
   pptx.layout = 'LAYOUT_WIDE'
+  console.log('pptxSlides', pptxSlides)
 
   // Master slides
   pptx.defineSlideMaster(masterDescriptionSlide)
@@ -26,6 +27,7 @@ export const createPptxFile = async (
   //Content slides
   pptxSlides?.map((pptxSlide: PptxSlide) => {
     const contentSlide = pptx.addSlide()
+    console.log('pptxSlide', pptxSlide)
 
     //Headings
     contentSlide.addText(`${pptxSlide.heading}`, pptxSlide.headingStyling)
