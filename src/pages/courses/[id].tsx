@@ -2,13 +2,15 @@ import styled from '@emotion/styled'
 import axios from 'axios'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
-import MetadataContainer from '../../components/MetadataContainer'
+import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { getCourses } from '../../shared/requests/courses/courses'
 import {
   LearningMaterialContainer,
   LearningMaterialOverview,
 } from '../../styles/global'
 import { CourseThreeLevelsDeep, Data } from '../../types'
+import { handleCourseDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
+import { handleLecturePptxDownload } from '../../utils/downloadAsPptx'
 import { summarizeDurations } from '../../utils/utils'
 
 const CourseContentWrapper = styled.div`
@@ -54,10 +56,8 @@ export default function CoursePage({ course }: Props) {
             .flat()
         )}
         authors={course.attributes.CourseCreator}
-        docxDownloadParameters={{
-          title: course.attributes.Title,
-          courseId: course.id,
-        }}
+        downloadAsDocx={() => handleCourseDocxDownload(course)}
+        downloadAsPptx={() => handleLecturePptxDownload(course)}
       />
     </LearningMaterialContainer>
   )

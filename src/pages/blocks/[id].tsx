@@ -5,11 +5,13 @@ import {
   LearningMaterialContainer,
   LearningMaterialOverview,
 } from '../../styles/global'
-import MetadataContainer from '../../components/MetadataContainer'
+import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { summarizeDurations } from '../../utils/utils'
 import styled from '@emotion/styled'
 import LearningMaterial from '../../components/LearningMaterial'
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown'
+import { handleBlockDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
+import { handleBlockPptxDownload } from '../../utils/downloadAsPptx'
 
 const BlockContentWrapper = styled.div`
   margin-top: 5rem;
@@ -36,8 +38,8 @@ export default function BlockPage({ block }: Props) {
       <MetadataContainer
         duration={summarizeDurations([block])}
         authors={block.attributes.Authors}
-        docxDownloadParameters={{ title: block.attributes.Title }}
-        pptxDownloadParameters={{ data: block }}
+        downloadAsDocx={() => handleBlockDocxDownload(block)}
+        downloadAsPptx={() => handleBlockPptxDownload(block)}
       />
     </LearningMaterialContainer>
   )

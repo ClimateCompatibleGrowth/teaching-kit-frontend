@@ -49,4 +49,9 @@ export const DownloadButtonsContainer = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
 `
+
 export const HeadingSet = styled.div``
+
+export const Alert = styled.div`
+  margin-top: 2.5rem;
+`

@@ -4,23 +4,47 @@ import downloadBlockAsPptx from './downloadBlockAsPptx'
 import downloadAsLecturePptx from './downloadLectureAsPptx'
 import { createLecturePptxFile } from './createPptx/createLecturePptx'
 
-const downloadAsPptx = async (block: Data<BlockOneLevelDeep>, lecture: any) => {
-  if (block && !lecture) {
-    const blockData = {
-      Title: block.attributes.Title,
-      slides: block.attributes.Slides,
-    }
+// const downloadAsPptx = async (
+//   block?: Data<BlockOneLevelDeep>,
+//   lecture?: any
+// ) => {
 
-    const slidesArray: Slide[] = blockData.slides
-    const blockTitle = blockData.Title
+//   if (block && !lecture) {
+//     const blockData = {
+//       Title: block.attributes.Title,
+//       slides: block.attributes.Slides,
+//     }
 
-    const pptxSlides = await downloadBlockAsPptx(slidesArray)
-    createBlockPptxFile(pptxSlides, blockTitle)
-  } else {
-    const pptxLecture = await downloadAsLecturePptx(lecture)
-    const lectureTitle = lecture.attributes.Title
-    createLecturePptxFile(pptxLecture, lectureTitle)
+//     const slidesArray: Slide[] = blockData.slides
+//     const blockTitle = blockData.Title
+
+//     const pptxSlides = await downloadBlockAsPptx(slidesArray)
+//     createBlockPptxFile(pptxSlides, blockTitle)
+//   } else {
+//     const pptxLecture = await downloadAsLecturePptx(lecture)
+//     const lectureTitle = lecture.attributes.Title
+//     createLecturePptxFile(pptxLecture, lectureTitle)
+//   }
+// }
+
+export const handleBlockPptxDownload = async (
+  block: Data<BlockOneLevelDeep>
+) => {
+  const blockData = {
+    Title: block.attributes.Title,
+    slides: block.attributes.Slides,
   }
+
+  const slidesArray: Slide[] = blockData.slides
+  const blockTitle = blockData.Title
+
+  const pptxSlides = await downloadBlockAsPptx(slidesArray)
+  createBlockPptxFile(pptxSlides, blockTitle)
 }
 
-export default downloadAsPptx
+export const handleLecturePptxDownload = async (lecture: any) => {
+  const pptxLecture = await downloadAsLecturePptx(lecture)
+  const lectureTitle = lecture.attributes.Title
+  createLecturePptxFile(pptxLecture, lectureTitle)
+}
+// export default downloadAsPptx

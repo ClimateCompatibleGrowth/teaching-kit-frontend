@@ -13,13 +13,6 @@ export const Error = styled(MetadataInformation)`
   margin: 1.5rem 0 0 0;
 `
 
-export const Spinner = styled.div`
+export const Loader = styled.div`
   margin-top: 1.5rem;
-
-  display: flex;
-  align-items: center;
-`
-
-export const LoaderInfo = styled(MetadataInformation)`
-  margin: 0 1.5rem 0 0;
 `

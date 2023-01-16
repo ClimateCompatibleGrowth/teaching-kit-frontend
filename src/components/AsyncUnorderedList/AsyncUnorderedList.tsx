@@ -1,5 +1,5 @@
-import { CircularProgress } from '@mui/material'
-import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
+import Loader from '../Loader/Loader'
 import * as Styled from './styles'
 
 type Props = {
@@ -55,12 +55,7 @@ const AsyncUnorderedList = ({
         ))}
       </Styled.Metadata>
       {error !== undefined ? <Styled.Error>{error}</Styled.Error> : null}
-      {isLoading ? (
-        <Styled.Spinner>
-          <Styled.LoaderInfo>{loadingText}</Styled.LoaderInfo>
-          <CircularProgress size={15} />
-        </Styled.Spinner>
-      ) : null}
+      {isLoading ? <Loader loadingText={loadingText} /> : null}
     </div>
   )
 }

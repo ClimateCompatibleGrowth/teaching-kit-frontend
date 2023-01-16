@@ -2,13 +2,15 @@ import styled from '@emotion/styled'
 import axios from 'axios'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
-import MetadataContainer from '../../components/MetadataContainer'
+import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { getLectures } from '../../shared/requests/lectures/lectures'
 import {
   LearningMaterialContainer,
   LearningMaterialOverview,
 } from '../../styles/global'
 import { Data, LectureTwoLevelsDeep } from '../../types'
+import { handleLectureDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
+import { handleLecturePptxDownload } from '../../utils/downloadAsPptx'
 import { summarizeDurations } from '../../utils/utils'
 
 const LectureContentWrapper = styled.div`
@@ -47,13 +49,8 @@ export default function LecturePage({ lecture }: Props) {
         level={lecture.attributes.Level}
         duration={summarizeDurations(lecture.attributes.Blocks.data)}
         authors={lecture.attributes.LectureCreator}
-        docxDownloadParameters={{
-          title: lecture.attributes.Title,
-          blocks: lecture.attributes.Blocks.data,
-        }}
-        pptxDownloadParameters={{
-          lecture: lecture,
-        }}
+        downloadAsPptx={() => handleLecturePptxDownload(lecture)}
+        downloadAsDocx={() => handleLectureDocxDownload(lecture)}
       />
     </LearningMaterialContainer>
   )
