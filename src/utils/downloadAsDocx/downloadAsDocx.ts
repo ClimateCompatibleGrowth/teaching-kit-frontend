@@ -40,9 +40,7 @@ export const handleLectureDocxDownload = async (
 export const handleBlockDocxDownload = async (
   block: Data<BlockOneLevelDeep>
 ): Promise<void | DownloadError> => {
-  const sourceHTML = ReactDOMServer.renderToString(
-    BlockDocxDownload({ block, downloadedAs: 'BLOCK' })
-  )
+  const sourceHTML = ReactDOMServer.renderToString(BlockDocxDownload({ block }))
 
   try {
     const newHtml = await processHTMLString(sourceHTML, block.attributes.Title)
