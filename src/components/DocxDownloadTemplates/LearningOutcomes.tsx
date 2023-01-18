@@ -6,13 +6,13 @@ type Props = {
 }
 
 const LearningOutcomes = ({ learningOutcomes }: Props) => {
-  return (
+  return learningOutcomes !== undefined ? (
     <ul>
       {learningOutcomes.map((learningOutcome, index) => (
         <li key={index}>{learningOutcome.LearningOutcome}</li>
       ))}
     </ul>
-  )
+  ) : null
 }
 
 export default LearningOutcomes

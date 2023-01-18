@@ -33,8 +33,20 @@ export const handleLectureDocxDownload = async (
   const sourceHTML = ReactDOMServer.renderToString(
     LectureDocxDownload({ lecture })
   )
-  const blob = await HTMLtoDOCX(sourceHTML, undefined, {}, undefined)
-  saveAs(blob, `${lecture.attributes.Title}.docx`)
+
+  try {
+    const newHtml = await processHTMLString(
+      sourceHTML,
+      lecture.attributes.Title
+    )
+    const blob = await HTMLtoDOCX(newHtml, undefined, {}, undefined)
+    saveAs(blob, `${lecture.attributes.Title}.docx`)
+  } catch (error) {
+    console.error(`Download of docx failed with error: ${error}`)
+    return {
+      hasError: true,
+    }
+  }
 }
 
 export const handleBlockDocxDownload = async (

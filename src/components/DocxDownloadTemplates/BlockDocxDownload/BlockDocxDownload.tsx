@@ -12,18 +12,20 @@ export type Props = {
   block: Data<BlockOneLevelDeep>
 }
 
+const TYPE = 'BLOCK'
+
 const BlockDocxDownload = ({ block }: Props) => {
   return (
     <div>
-      <Heading downloadedAs='BLOCK'>{block.attributes.Title}</Heading>
+      <Heading downloadedAs={TYPE}>{block.attributes.Title}</Heading>
       <Authors authors={block.attributes.Authors.data} />
       <Duration blocks={[block]} />
-      <Abstract downloadedAs='BLOCK' markdown={block.attributes.Abstract} />
+      <Abstract downloadedAs={TYPE} markdown={block.attributes.Abstract} />
       <LearningOutcomes learningOutcomes={block.attributes.LearningOutcomes} />
       <Document markdown={block.attributes.Document} />
       <References
         references={block.attributes.References}
-        downloadedAs='BLOCK'
+        downloadedAs={TYPE}
       />
     </div>
   )
