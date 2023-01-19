@@ -30,24 +30,23 @@ export const createPptxFile = async (
     //Headings
     contentSlide.addText(`${pptxSlide.heading}`, pptxSlide.headingStyling)
 
-    contentSlide.addImage({
-      path: `${pptxSlide?.image}`,
-      ...imageStyling,
-    })
+    if (pptxSlide?.image !== undefined && pptxSlide?.image !== '') {
+      contentSlide.addImage({
+        path: `${pptxSlide.image}?do-not-fetch-from-cache`,
+        ...imageStyling,
+      })
+    }
 
-    //Main content
-    contentSlide.addText(
-      `${pptxSlide?.mainContent}`,
-      pptxSlide.mainContentStyling
-    )
+    if (pptxSlide?.mainContent !== undefined) {
+      contentSlide.addText(
+        pptxSlide?.mainContent?.join(''),
+        pptxSlide.mainContentStyling
+      )
+    }
 
     //Bullet points
     if (pptxSlide.list) {
-      const bulletString = pptxSlide.list
-        .map((item) => {
-          return item.content[0].content[0].value
-        })
-        .join('\n')
+      const bulletString = pptxSlide.list.map((item) => item.text).join('\n')
 
       contentSlide.addText(`${bulletString}`, pptxSlide.bulletStyling)
     }

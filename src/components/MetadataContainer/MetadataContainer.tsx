@@ -1,9 +1,9 @@
-import dynamic from 'next/dynamic'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Author, BlockOneLevelDeep, Data, Level } from '../../types'
 import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
 import Alert from '../Alert/Alert'
 import Button from '../Button/Button'
+import handlePptxDownload from '../../utils/downloadAsPptx'
 
 import * as Styled from './styles'
 
@@ -18,12 +18,6 @@ export type Props = {
   downloadAsDocx: () => Promise<void | DownloadError>
   pptxDownloadParameters?: PptxDownloadParameters
 }
-
-// The pptx download function chain makes next throw hydration errors in production,
-// unless it's dynamically imported
-const DynamicPptxDownloadButton = dynamic(
-  () => import('./PowerpointDownloadButton/PowerpointDownloadButton')
-)
 
 export default function MetadataContainer({
   level,
@@ -84,7 +78,11 @@ export default function MetadataContainer({
             DOCX
           </Button>
           {pptxDownloadParameters !== undefined ? (
-            <DynamicPptxDownloadButton block={pptxDownloadParameters.data} />
+            <Button
+              onClick={() => handlePptxDownload(pptxDownloadParameters.data)}
+            >
+              PPT
+            </Button>
           ) : null}
         </Styled.DownloadButtonsContainer>
         {docxDowloadErrored === true ? (
