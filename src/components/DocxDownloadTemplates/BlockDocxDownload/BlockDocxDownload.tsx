@@ -1,12 +1,14 @@
 import React, { ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { BlockOneLevelDeep, Data, LearningMaterialType } from '../../../types'
+import { BlockOneLevelDeep, Data } from '../../../types'
 import { summarizeDurations } from '../../../utils/utils'
 
 export type Props = {
   block: Data<BlockOneLevelDeep>
-  downloadedAs: LearningMaterialType
+  downloadedAs: DownloadedAs
 }
+
+type DownloadedAs = 'BLOCK' | 'LECTURE'
 
 const BlockDocxDownload = ({ block, downloadedAs }: Props) => {
   const Heading = ({ children }: { children: ReactNode }) => {
@@ -15,8 +17,6 @@ const BlockDocxDownload = ({ block, downloadedAs }: Props) => {
         return <h1>{children}</h1>
       case 'LECTURE':
         return <h2>{children}</h2>
-      case 'COURSE':
-        return <h3>{children}</h3>
     }
   }
 
@@ -26,8 +26,6 @@ const BlockDocxDownload = ({ block, downloadedAs }: Props) => {
         return <h2>{children}</h2>
       case 'LECTURE':
         return <h3>{children}</h3>
-      case 'COURSE':
-        return <h4>{children}</h4>
     }
   }
 

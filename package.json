@@ -28,6 +28,7 @@
     "html-entities": "^2.3.3",
     "html-to-docx": "^1.6.4",
     "image-to-base64": "2.0.1",
+    "jszip": "^3.10.1",
     "marked": "^4.2.12",
     "next": "13.0.6",
     "pptxgenjs": "^3.11.0",

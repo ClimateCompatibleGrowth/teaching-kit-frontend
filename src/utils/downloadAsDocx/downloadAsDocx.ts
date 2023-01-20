@@ -12,29 +12,50 @@ import {
 } from '../../types'
 import BlockDocxDownload from '../../components/DocxDownloadTemplates/BlockDocxDownload/BlockDocxDownload'
 import LectureDocxDownload from '../../components/DocxDownloadTemplates/LectureDocxDownload/LectureDocxDownload'
-import CourseDocxDownload from '../../components/DocxDownloadTemplates/CourseDocxDownload/CourseDocxDowload'
 import { BaseError, processHTMLString } from './utils'
+import JSZip from 'jszip'
 
 export type DownloadError = BaseError & {}
+
+const createLectureBlob = async (lecture: Data<LectureTwoLevelsDeep>) => {
+  const sourceHTML = ReactDOMServer.renderToString(
+    LectureDocxDownload({ lecture })
+  )
+  const lectureBlob = await HTMLtoDOCX(sourceHTML, undefined, {}, undefined)
+  return lectureBlob
+}
 
 export const handleCourseDocxDownload = async (
   course: Data<CourseThreeLevelsDeep>
 ) => {
-  const sourceHTML = ReactDOMServer.renderToString(
-    CourseDocxDownload({ course })
-  )
-  const blob = await HTMLtoDOCX(sourceHTML, undefined, {}, undefined)
-  saveAs(blob, `${course.attributes.Title}.docx`)
+  const zip = new JSZip()
+  for (const lecture of course.attributes.Lectures.data) {
+    try {
+      const lectureBlob = await createLectureBlob(lecture)
+      zip.file(`${lecture.attributes.Title}.docx`, lectureBlob)
+    } catch (error) {
+      zip.file(
+        `Docx generation failed for lecture ${lecture.attributes.Title}`,
+        `FAILED_${lecture.attributes.Title}.docx`
+      )
+    }
+  }
+  const generatedZip = await zip.generateAsync({ type: 'blob' })
+  saveAs(generatedZip, `${course.attributes.Title}.zip`)
 }
 
 export const handleLectureDocxDownload = async (
   lecture: Data<LectureTwoLevelsDeep>
-) => {
-  const sourceHTML = ReactDOMServer.renderToString(
-    LectureDocxDownload({ lecture })
-  )
-  const blob = await HTMLtoDOCX(sourceHTML, undefined, {}, undefined)
-  saveAs(blob, `${lecture.attributes.Title}.docx`)
+): Promise<void | DownloadError> => {
+  try {
+    const blob = await createLectureBlob(lecture)
+    saveAs(blob, `${lecture.attributes.Title}.docx`)
+  } catch (error) {
+    console.error(`Download of lecture docx failed with error: ${error}`)
+    return {
+      hasError: true,
+    }
+  }
 }
 
 export const handleBlockDocxDownload = async (
@@ -49,7 +70,7 @@ export const handleBlockDocxDownload = async (
     const blob = await HTMLtoDOCX(newHtml, undefined, {}, undefined)
     saveAs(blob, `${block.attributes.Title}.docx`)
   } catch (error) {
-    console.error(`Download of docx failed with error: ${error}`)
+    console.error(`Download of block docx failed with error: ${error}`)
     return {
       hasError: true,
     }
