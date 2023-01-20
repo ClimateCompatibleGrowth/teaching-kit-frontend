@@ -10,6 +10,7 @@ import {
 } from '../../styles/global'
 import { Data, LectureTwoLevelsDeep } from '../../types'
 import { handleLectureDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
+import { handleLecturePptxDownload } from '../../utils/downloadAsPptx/handlePptxDownloads'
 import { summarizeDurations } from '../../utils/utils'
 
 const LectureContentWrapper = styled.div`
@@ -48,6 +49,7 @@ export default function LecturePage({ lecture }: Props) {
         level={lecture.attributes.Level}
         duration={summarizeDurations(lecture.attributes.Blocks.data)}
         authors={lecture.attributes.LectureCreator}
+        downloadAsPptx={() => handleLecturePptxDownload(lecture)}
         downloadAsDocx={() => handleLectureDocxDownload(lecture)}
       />
     </LearningMaterialContainer>
@@ -73,7 +75,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(ctx: any) {
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/lectures/${ctx.params.id}?populate=*`
+    `${process.env.STRAPI_API_URL}/lectures/${ctx.params.id}?populate[Blocks][populate][Slides]=*`
   )
   const lecture = res.data.data
 

@@ -3,20 +3,15 @@ import { Author, BlockOneLevelDeep, Data, Level } from '../../types'
 import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
 import Alert from '../Alert/Alert'
 import Button from '../Button/Button'
-import handlePptxDownload from '../../utils/downloadAsPptx'
 
 import * as Styled from './styles'
-
-type PptxDownloadParameters = {
-  data: Data<BlockOneLevelDeep>
-}
 
 export type Props = {
   level?: Level
   duration?: string
   authors?: { data: Data<Author>[] }
   downloadAsDocx: () => Promise<void | DownloadError>
-  pptxDownloadParameters?: PptxDownloadParameters
+  downloadAsPptx: () => void
 }
 
 export default function MetadataContainer({
@@ -24,7 +19,7 @@ export default function MetadataContainer({
   duration,
   authors,
   downloadAsDocx,
-  pptxDownloadParameters,
+  downloadAsPptx,
 }: Props) {
   const [docxDownloadIsLoading, setDocxDownloadIsLoading] = useState(false)
   const [docxDowloadErrored, setDocxDownloadErrored] = useState(false)
@@ -77,13 +72,8 @@ export default function MetadataContainer({
           >
             DOCX
           </Button>
-          {pptxDownloadParameters !== undefined ? (
-            <Button
-              onClick={() => handlePptxDownload(pptxDownloadParameters.data)}
-            >
-              PPT
-            </Button>
-          ) : null}
+
+          <Button onClick={() => downloadAsPptx()}>PPT</Button>
         </Styled.DownloadButtonsContainer>
         {docxDowloadErrored === true ? (
           <Styled.Alert>

@@ -1,5 +1,4 @@
-import { createPptxFile } from './createPptx/createPptx'
-import { BlockOneLevelDeep, Data, Slide } from '../types'
+import { Slide } from '../../types'
 
 import {
   h1Heading,
@@ -7,40 +6,12 @@ import {
   mainContentStyling,
   h2Heading,
   h3Heading,
-  singleHeading,
-} from './createPptx/createPptxStyling'
-import { PptxSlide } from '../types/pptx'
+} from '../createPptx/createPptxStyling'
+import { PptxSlide } from '../../types/pptx'
 import { marked } from 'marked'
 import { decode } from 'html-entities'
 
-const downloadAsPptx = async (block: Data<BlockOneLevelDeep>) => {
-  const blockData = {
-    Title: block.attributes.Title,
-    slides: block.attributes.Slides,
-  }
-
-  const slidesArray: Slide[] = blockData.slides
-  const blockTitle = blockData.Title
-
-  const pptxSlides = await blockToPptxSlideFormat(slidesArray)
-
-  createPptxFile(pptxSlides, blockTitle)
-}
-
-const blockToPptxSlideFormat = async (slidesArray: Slide[]) => {
-  const pptxSlides = slidesArray.map((slide: Slide, index: number) => {
-    slide.id = slide.id.toString()
-    return slideSchemaToPptxFormat(slide, slidesArray, index)
-  })
-
-  return pptxSlides
-}
-
-const slideSchemaToPptxFormat = (
-  slide: Slide,
-  slidesArray: Slide[],
-  index: number
-) => {
+const generatePptxSlides = (slide: Slide) => {
   const pptxSlide = Object.values(slide).reduce(
     (finalSlide, slideValue, index) => {
       const slideAttribute = {} as PptxSlide
@@ -100,6 +71,7 @@ const slideSchemaToPptxFormat = (
 
       slideAttribute.mainContent = mainSlideContent
       slideAttribute.heading = slideAttribute.heading ?? ''
+      slideAttribute.title = slide.Title
 
       return {
         ...finalSlide,
@@ -109,11 +81,11 @@ const slideSchemaToPptxFormat = (
     {} as PptxSlide
   )
 
-  if (slidesArray) {
-    pptxSlide.speakerNotes = slidesArray[index].SpeakerNotes
+  if (slide) {
+    pptxSlide.speakerNotes = slide.SpeakerNotes
   }
 
   return pptxSlide
 }
 
-export default downloadAsPptx
+export default generatePptxSlides

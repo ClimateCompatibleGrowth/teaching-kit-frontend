@@ -13,3 +13,8 @@ export type PptxSlide = {
   heading?: string
   list?: PptxSlideListContent[]
 }
+
+export type LectureBlock = {
+  title: string
+  pptxSlides: PptxSlide[]
+}
