@@ -21,7 +21,8 @@ const createLectureBlob = async (lecture: Data<LectureTwoLevelsDeep>) => {
   const sourceHTML = ReactDOMServer.renderToString(
     LectureDocxDownload({ lecture })
   )
-  const lectureBlob = await HTMLtoDOCX(sourceHTML, undefined, {}, undefined)
+  const newHtml = await processHTMLString(sourceHTML, lecture.attributes.Title)
+  const lectureBlob = await HTMLtoDOCX(newHtml, undefined, {}, undefined)
   return lectureBlob
 }
 
@@ -31,12 +32,15 @@ export const handleCourseDocxDownload = async (
   const zip = new JSZip()
   for (const lecture of course.attributes.Lectures.data) {
     try {
+      console.log(lecture)
       const lectureBlob = await createLectureBlob(lecture)
+      console.log(lectureBlob)
       zip.file(`${lecture.attributes.Title}.docx`, lectureBlob)
     } catch (error) {
+      console.log(error)
       zip.file(
-        `Docx generation failed for lecture ${lecture.attributes.Title}`,
-        `FAILED_${lecture.attributes.Title}.docx`
+        `FAILED_${lecture.attributes.Title}.docx`,
+        `Docx generation failed for lecture ${lecture.attributes.Title}`
       )
     }
   }
@@ -61,9 +65,7 @@ export const handleLectureDocxDownload = async (
 export const handleBlockDocxDownload = async (
   block: Data<BlockOneLevelDeep>
 ): Promise<void | DownloadError> => {
-  const sourceHTML = ReactDOMServer.renderToString(
-    BlockDocxDownload({ block, downloadedAs: 'BLOCK' })
-  )
+  const sourceHTML = ReactDOMServer.renderToString(BlockDocxDownload({ block }))
 
   try {
     const newHtml = await processHTMLString(sourceHTML, block.attributes.Title)

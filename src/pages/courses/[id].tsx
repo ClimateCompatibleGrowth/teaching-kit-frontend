@@ -80,8 +80,17 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(ctx: any) {
+  const populateBlocks = 'populate[Lectures][populate][0]=Blocks'
+  const populateCourseCreator = 'populate=CourseCreator'
+  const populateLectureCreator =
+    'populate[Lectures][populate][LectureCreator]=*'
+  const populateLearningOutcomes =
+    'populate[Lectures][populate][LearningOutcomes]=*'
+  const populateBlockAuthors =
+    'populate[Lectures][populate][Blocks][populate][Authors]=*'
+
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?populate[Lectures][populate][0]=Blocks&populate=CourseCreator`
+    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreator}&${populateLectureCreator}&${populateLearningOutcomes}&${populateBlockAuthors}`
   )
   const course = res.data.data
 

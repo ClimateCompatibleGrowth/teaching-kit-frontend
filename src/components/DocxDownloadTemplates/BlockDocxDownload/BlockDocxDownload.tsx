@@ -1,63 +1,32 @@
-import React, { ReactNode } from 'react'
-import ReactMarkdown from 'react-markdown'
+import React from 'react'
 import { BlockOneLevelDeep, Data } from '../../../types'
-import { summarizeDurations } from '../../../utils/utils'
+import Abstract from '../Abstract'
+import Authors from '../Authors'
+import Document from '../Document'
+import Duration from '../Duration'
+import Heading from '../Heading'
+import LearningOutcomes from '../LearningOutcomes'
+import References from '../References'
 
 export type Props = {
   block: Data<BlockOneLevelDeep>
-  downloadedAs: DownloadedAs
 }
 
-type DownloadedAs = 'BLOCK' | 'LECTURE'
+const TYPE = 'BLOCK'
 
-const BlockDocxDownload = ({ block, downloadedAs }: Props) => {
-  const Heading = ({ children }: { children: ReactNode }) => {
-    switch (downloadedAs) {
-      case 'BLOCK':
-        return <h1>{children}</h1>
-      case 'LECTURE':
-        return <h2>{children}</h2>
-    }
-  }
-
-  const SubHeading = ({ children }: { children: ReactNode }) => {
-    switch (downloadedAs) {
-      case 'BLOCK':
-        return <h2>{children}</h2>
-      case 'LECTURE':
-        return <h3>{children}</h3>
-    }
-  }
-
+const BlockDocxDownload = ({ block }: Props) => {
   return (
     <div>
-      <Heading>{block.attributes.Title}</Heading>
-      {block.attributes.Authors.data !== undefined &&
-      block.attributes.Authors.data.length > 0 ? (
-        <p>
-          Author(s):{'   '}
-          {block.attributes.Authors.data
-            .map((author) => author.attributes.Name)
-            .join(', ')}
-        </p>
-      ) : null}
-      {block.attributes.DurationInMinutes !== undefined ? (
-        <p>Duration: {summarizeDurations([block])}</p>
-      ) : null}
-      <SubHeading>Abstract</SubHeading>
-      <ReactMarkdown>{block.attributes.Abstract}</ReactMarkdown>
-      <ul>
-        {block.attributes.LearningOutcomes.map((learningOutcome, index) => (
-          <li key={index}>{learningOutcome.LearningOutcome}</li>
-        ))}
-      </ul>
-      <ReactMarkdown>{block.attributes.Document}</ReactMarkdown>
-      {block.attributes.References !== undefined ? (
-        <>
-          <SubHeading>References</SubHeading>
-          <p>{block.attributes.References}</p>
-        </>
-      ) : null}
+      <Heading downloadedAs={TYPE}>{block.attributes.Title}</Heading>
+      <Authors authors={block.attributes.Authors.data} />
+      <Duration blocks={[block]} />
+      <Abstract downloadedAs={TYPE} markdown={block.attributes.Abstract} />
+      <LearningOutcomes learningOutcomes={block.attributes.LearningOutcomes} />
+      <Document markdown={block.attributes.Document} />
+      <References
+        references={block.attributes.References}
+        downloadedAs={TYPE}
+      />
     </div>
   )
 }
