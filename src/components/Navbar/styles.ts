@@ -1,23 +1,25 @@
 import styled from '@emotion/styled'
-import { PageContainerPaddings, Primary40 } from '../../styles/global'
+import {
+  breakpoints,
+  PageContainerPaddings,
+  Primary40,
+} from '../../styles/global'
 
 const navHeight = '10rem'
 
+export const ColorBar = styled.div`
+  background-color: ${Primary40};
+`
+
 export const Navbar = styled.nav`
-  width: 100%;
-  height: ${navHeight};
-
-  padding: 0 ${PageContainerPaddings.horizontal};
-
-  top: 0;
-  left: 0;
-
   display: flex;
+  height: ${navHeight};
+  max-width: ${breakpoints.lg};
+  margin: 0 auto;
+  padding: 0 ${PageContainerPaddings.horizontal};
   justify-content: space-between;
 
   font-size: 1.7rem;
-
-  background-color: ${Primary40};
 `
 
 export const LogoWrapper = styled.div`
