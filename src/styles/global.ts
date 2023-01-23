@@ -32,6 +32,19 @@ export const Error99 = '#FFDAD7'
 export const OnError99 = '#242424'
 // End of design tokens
 
+export const breakpoints = {
+  xs: '480px',
+  sm: '768px',
+  md: '1024px',
+  lg: '1440px',
+}
+export const mq = {
+  xs: `@media (min-width: ${breakpoints.xs})`,
+  sm: `@media (min-width: ${breakpoints.sm})`,
+  md: `@media (min-width: ${breakpoints.md})`,
+  lg: `@media (min-width: ${breakpoints.lg})`,
+}
+
 export const BorderRadius = '0rem 0rem 0rem 2.5rem'
 
 export const PageContainerPaddings = {
@@ -41,6 +54,10 @@ export const PageContainerPaddings = {
 
 export const PageContainer = styled.div`
   padding: ${PageContainerPaddings.vertical} ${PageContainerPaddings.horizontal};
+  ${mq.lg} {
+    max-width: ${breakpoints.lg};
+    margin: 0 auto;
+  }
 `
 
 export const UlWithoutDefaultStyle = styled.ul`

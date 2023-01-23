@@ -1,7 +1,5 @@
 type PptxSlideListContent = {
-  content: any
-  data: any
-  nodeType: string
+  text: string
 }
 
 export type PptxSlide = {
