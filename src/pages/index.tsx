@@ -1,8 +1,10 @@
 import Head from 'next/head'
-import Link from 'next/link'
-import Footer from '../components/Footer/Footer'
+import PosterList from '../components/PosterList/PosterList'
 import Hero from '../components/Hero/Hero'
 import hero from '/public/images/hero.png'
+import DocumentIcon from '/public/icons/document.svg'
+import ReuseIcon from '/public/icons/reuse.svg'
+import GroupIcon from '/public/icons/group.svg'
 
 export default function Home() {
   return (
@@ -16,6 +18,7 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Hero {...heroProps} />
+      <PosterList {...posterProps} />
     </div>
   )
 }
@@ -31,4 +34,28 @@ const heroProps = {
     href: '/discover',
     label: 'Find teaching material',
   },
+}
+
+const posterProps = {
+  title: 'Benefits of the teaching kit website',
+  posters: [
+    {
+      id: 'find',
+      subTitle: <DocumentIcon />,
+      title: 'Find teaching material',
+      text: 'Teachers have limited resources to develop high-quality teaching materials, while their students are hungry for new knowledge and have high expectations. Using an existing course can save precious teacher time.\n\n All Courses can be translated into different languages.',
+    },
+    {
+      id: 'customize',
+      subTitle: <ReuseIcon />,
+      title: 'Customize material',
+      text: 'Customizing existing courses can make the material more relevant for learners increasing interest and learner motivation. To customize existing material also saves time. ',
+    },
+    {
+      id: 'collaborate',
+      subTitle: <GroupIcon />,
+      title: 'Collaborate on material',
+      text: 'Global collaboration on course material means that it is always up to date – especially important in cutting edge fields of research such as energy.',
+    },
+  ],
 }

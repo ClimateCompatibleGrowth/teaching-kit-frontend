@@ -13,6 +13,7 @@ export const StyledWrapper = styled.div`
   max-width: 834px;
   margin: 0 auto;
   text-align: center;
+  margin-bottom: 10rem;
 `
 
 export const StyledParagraph = styled.p`
