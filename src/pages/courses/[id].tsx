@@ -3,12 +3,13 @@ import axios from 'axios'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
-import { getCourses } from '../../shared/requests/courses/courses'
+import { ResponseArray } from '../../shared/requests/types'
+import { filterOutOnlyPublishedEntriesOnCourse } from '../../shared/requests/utils/publishedEntriesFilter'
 import {
   LearningMaterialContainer,
   LearningMaterialOverview,
 } from '../../styles/global'
-import { CourseThreeLevelsDeep, Data } from '../../types'
+import { Course, CourseThreeLevelsDeep, Data } from '../../types'
 import { handleCourseDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { summarizeDurations } from '../../utils/utils'
 
@@ -69,9 +70,11 @@ export async function getStaticPaths() {
     }
   }
 
-  const courses = await getCourses()
+  const courses: ResponseArray<Course> = await axios.get(
+    `${process.env.STRAPI_API_URL}/courses`
+  )
 
-  const paths = courses.map((course) => {
+  const paths = courses.data.data.map((course) => {
     return {
       params: { id: `${course.id}` },
     }
@@ -92,9 +95,9 @@ export async function getStaticProps(ctx: any) {
   const res = await axios.get(
     `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreator}&${populateLectureCreator}&${populateLearningOutcomes}&${populateBlockAuthors}`
   )
-  const course = res.data.data
+  const course: Data<CourseThreeLevelsDeep> = res.data.data
 
   return {
-    props: { course },
+    props: { course: filterOutOnlyPublishedEntriesOnCourse(course) },
   }
 }

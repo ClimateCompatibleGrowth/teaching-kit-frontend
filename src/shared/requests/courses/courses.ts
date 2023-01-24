@@ -1,22 +1,10 @@
 import axios from 'axios'
-import { getAuthorsAndKeywordsFilterString } from '../utils'
-import { Course, CourseThreeLevelsDeep } from '../../../types'
-import { Response, ResponseArray } from '../types'
+import { getAuthorsAndKeywordsFilterString } from '../utils/utils'
+import { CourseThreeLevelsDeep } from '../../../types'
+import { ResponseArray } from '../types'
 
 const ENDPOINT = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/courses`
 const DEFAULT_MATCHES_PER_PAGE = 10
-
-export const getCourses = async () => {
-  const response: ResponseArray<Course> = await axios.get(ENDPOINT)
-  return response.data.data
-}
-
-export const getCourseWithLecturesAndBlocks = async (courseId: string) => {
-  const response: Response<CourseThreeLevelsDeep> = await axios.get(
-    `${ENDPOINT}/${courseId}?populate[Lectures][populate][0]=Blocks`
-  )
-  return response.data.data
-}
 
 const getPopulateString = () => {
   const populateCourseCreator = 'populate[CourseCreator][populate]=*'

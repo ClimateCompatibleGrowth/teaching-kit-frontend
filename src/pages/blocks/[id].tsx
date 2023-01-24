@@ -1,6 +1,5 @@
 import axios from 'axios'
-import { BlockOneLevelDeep, Data } from '../../types'
-import { getBlocks } from '../../shared/requests/blocks/blocks'
+import { Block, BlockOneLevelDeep, Data } from '../../types'
 import {
   LearningMaterialContainer,
   LearningMaterialOverview,
@@ -11,6 +10,7 @@ import styled from '@emotion/styled'
 import LearningMaterial from '../../components/LearningMaterial'
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown'
 import { handleBlockDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
+import { ResponseArray } from '../../shared/requests/types'
 
 const BlockContentWrapper = styled.div`
   margin-top: 5rem;
@@ -52,9 +52,11 @@ export async function getStaticPaths() {
     }
   }
 
-  const blocks = await getBlocks()
+  const blocks: ResponseArray<Block> = await axios.get(
+    `${process.env.STRAPI_API_URL}/blocks`
+  )
 
-  const paths = blocks.map((block) => ({
+  const paths = blocks.data.data.map((block) => ({
     params: { id: `${block.id}` },
   }))
 

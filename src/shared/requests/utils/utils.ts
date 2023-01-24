@@ -1,4 +1,4 @@
-import { LearningMaterialType } from '../../types'
+import { LearningMaterialType } from '../../../types'
 
 export type FilterParameters = {
   keywords: string[]
