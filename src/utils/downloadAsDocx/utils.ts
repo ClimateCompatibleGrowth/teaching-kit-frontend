@@ -37,6 +37,8 @@ const convertImagesToBase64 = async (HTMLDiv: HTMLDivElement) => {
         `${imageSource}?do-not-fetch-from-cache`
       )
       images[i].src = `data:image/png;base64,${base64}`
+      const parentNode = images[i].parentNode as HTMLElement | undefined
+      parentNode?.replaceWith(images[i])
     } else {
       images[i].parentNode?.removeChild(images[i])
     }

@@ -17,12 +17,23 @@ import JSZip from 'jszip'
 
 export type DownloadError = BaseError & {}
 
+const footer = `<div><span style="text-align: center;"></span><p style="font-size: 8pt">This material was exported from the teaching kit and is available for re-use under a CC-BY-4.0 license</p><br></div>`
+const downloadConfiguration = {
+  footer: true,
+  pageNumber: true,
+}
+
 const createLectureBlob = async (lecture: Data<LectureTwoLevelsDeep>) => {
   const sourceHTML = ReactDOMServer.renderToString(
     LectureDocxDownload({ lecture })
   )
   const newHtml = await processHTMLString(sourceHTML, lecture.attributes.Title)
-  const lectureBlob = await HTMLtoDOCX(newHtml, undefined, {}, undefined)
+  const lectureBlob = await HTMLtoDOCX(
+    newHtml,
+    undefined,
+    downloadConfiguration,
+    footer
+  )
   return lectureBlob
 }
 
@@ -32,9 +43,7 @@ export const handleCourseDocxDownload = async (
   const zip = new JSZip()
   for (const lecture of course.attributes.Lectures.data) {
     try {
-      console.log(lecture)
       const lectureBlob = await createLectureBlob(lecture)
-      console.log(lectureBlob)
       zip.file(`${lecture.attributes.Title}.docx`, lectureBlob)
     } catch (error) {
       console.log(error)
@@ -69,7 +78,12 @@ export const handleBlockDocxDownload = async (
 
   try {
     const newHtml = await processHTMLString(sourceHTML, block.attributes.Title)
-    const blob = await HTMLtoDOCX(newHtml, undefined, {}, undefined)
+    const blob = await HTMLtoDOCX(
+      newHtml,
+      undefined,
+      downloadConfiguration,
+      footer
+    )
     saveAs(blob, `${block.attributes.Title}.docx`)
   } catch (error) {
     console.error(`Download of block docx failed with error: ${error}`)

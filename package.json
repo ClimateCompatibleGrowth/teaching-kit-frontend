@@ -20,7 +20,7 @@
     "axios": "^1.2.0",
     "file-saver": "^2.0.5",
     "html-entities": "^2.3.3",
-    "html-to-docx": "1.4",
+    "html-to-docx": "1.4.0",
     "image-to-base64": "2.0.1",
     "jszip": "^3.10.1",
     "marked": "^4.2.12",
