@@ -55,7 +55,7 @@ export default function CoursePage({ course }: Props) {
             )
             .flat()
         )}
-        authors={course.attributes.CourseCreator}
+        authors={course.attributes.CourseCreators}
         downloadAsDocx={() => handleCourseDocxDownload(course)}
       />
     </LearningMaterialContainer>
@@ -84,16 +84,16 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(ctx: any) {
   const populateBlocks = 'populate[Lectures][populate][0]=Blocks'
-  const populateCourseCreator = 'populate=CourseCreator'
-  const populateLectureCreator =
-    'populate[Lectures][populate][LectureCreator]=*'
+  const populateCourseCreators = 'populate=CourseCreators'
+  const populateLectureCreators =
+    'populate[Lectures][populate][LectureCreators]=*'
   const populateLearningOutcomes =
     'populate[Lectures][populate][LearningOutcomes]=*'
   const populateBlockAuthors =
     'populate[Lectures][populate][Blocks][populate][Authors]=*'
 
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreator}&${populateLectureCreator}&${populateLearningOutcomes}&${populateBlockAuthors}`
+    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}`
   )
   const course: Data<CourseThreeLevelsDeep> = res.data.data
 

@@ -7,14 +7,14 @@ const ENDPOINT = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/courses`
 const DEFAULT_MATCHES_PER_PAGE = 10
 
 const getPopulateString = () => {
-  const populateCourseCreator = 'populate[CourseCreator][populate]=*'
-  const populateLectureCreator =
-    'populate[Lectures][populate][LectureCreator]=*'
+  const populateCourseCreators = 'populate[CourseCreators][populate]=*'
+  const populateLectureCreators =
+    'populate[Lectures][populate][LectureCreators]=*'
   const populateBlockAuthors =
     'populate[Lectures][populate][Blocks][populate][Authors]=*'
   const populateKeywords =
     'populate[Lectures][populate][Blocks][populate][Keywords]=*'
-  return `${populateKeywords}&${populateCourseCreator}&${populateLectureCreator}&${populateBlockAuthors}`
+  return `${populateKeywords}&${populateCourseCreators}&${populateLectureCreators}&${populateBlockAuthors}`
 }
 
 export const filterCourseOnKeywordsAndAuthors = async (

@@ -18,7 +18,7 @@ const LectureDocxDownload = ({ lecture }: Props) => {
     <div>
       <Heading downloadedAs={TYPE}>{lecture.attributes.Title}</Heading>
       <Level level={lecture.attributes.Level} />
-      <Authors authors={lecture.attributes.LectureCreator.data} />
+      <Authors authors={lecture.attributes.LectureCreators.data} />
       <Duration blocks={lecture.attributes.Blocks.data} />
       <Abstract downloadedAs={TYPE} markdown={lecture.attributes.Abstract} />
       <LearningOutcomes

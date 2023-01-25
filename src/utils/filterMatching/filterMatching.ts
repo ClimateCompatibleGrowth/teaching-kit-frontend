@@ -82,7 +82,7 @@ const extractMatchingSubElementsInCourse = async (
   let matches: Matches = {}
   for (const lecture of course.attributes.Lectures.data) {
     for (const author of authors) {
-      for (const lectureCreator of lecture.attributes.LectureCreator.data) {
+      for (const lectureCreator of lecture.attributes.LectureCreators.data) {
         if (lectureCreator.attributes.Name === author) {
           matches = {
             ...matches,
