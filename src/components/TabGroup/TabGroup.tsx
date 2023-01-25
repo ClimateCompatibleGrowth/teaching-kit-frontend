@@ -8,7 +8,6 @@ import {
   BlockOneLevelDeep,
   CourseThreeLevelsDeep,
   Data,
-  LearningMaterialType,
   LectureTwoLevelsDeep,
 } from '../../types'
 import { Metadata, ResponseArrayData } from '../../shared/requests/types'
@@ -20,17 +19,6 @@ import TabPanel from './TabPanel/TabPanel'
 import * as Styled from './styles'
 import { filterBlockOnKeywordsAndAuthors } from '../../shared/requests/blocks/blocks'
 import TabLabel from './TabLabel/TabLabel'
-import {
-  getMatchingLecturesAndBlocksMatchingCourse,
-  getMatchingLecturesAndBlocksMatchingLecture,
-  Matches,
-  TIMEOUT_THRESHOLD_FOR_MATCH_LOCALIZATION,
-} from '../../utils/filterMatching/filterMatching'
-import { typeToText } from '../../utils/utils'
-import AsyncUnorderedList, {
-  ListItem,
-} from '../AsyncUnorderedList/AsyncUnorderedList'
-import Link from 'next/link'
 
 type Props = {
   selectedKeywords: string[]
@@ -124,39 +112,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
     onBlockChange(currentBlockPageNumber)
   }, [currentBlockPageNumber, onBlockChange])
 
-  const getLectureMatches = async (
-    lecture: Data<LectureTwoLevelsDeep>,
-    keywords: string[],
-    authors: string[]
-  ) => {
-    const matches = await getMatchingLecturesAndBlocksMatchingLecture(
-      lecture,
-      keywords,
-      authors
-    )
-
-    return Object.entries(matches).map(([filter, matchLocation]) => ({
-      [filter]: matchLocation,
-    }))
-  }
-
-  const getCourseMatches = async (
-    course: Data<CourseThreeLevelsDeep>,
-    keywords: string[],
-    authors: string[]
-  ) => {
-    const matches = await getMatchingLecturesAndBlocksMatchingCourse(
-      course,
-      keywords,
-      authors
-    )
-
-    return Object.entries(matches).map(([filter, matchLocation]) => ({
-      [filter]: matchLocation,
-    }))
-  }
-
-  const dataToCardFormat = (
+  const blockDataToCardFormat = (
     data: Data<LectureTwoLevelsDeep>[] | Data<BlockOneLevelDeep>[]
   ): CardType[] => {
     return data.map((result) => ({
@@ -166,12 +122,9 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
     }))
   }
 
-  const learningMaterialToCardFormat = (
-    learningMaterial: Data<LectureTwoLevelsDeep> | Data<CourseThreeLevelsDeep>,
-    learningMaterialType: LearningMaterialType,
-    getMatches: () => Promise<Matches[]>
+  const dataToCardFormat = (
+    learningMaterial: Data<LectureTwoLevelsDeep> | Data<CourseThreeLevelsDeep>
   ): CardType => {
-    const typeAsText = typeToText(learningMaterialType).toLowerCase()
     return {
       title: learningMaterial.attributes.Title,
       id: learningMaterial.id.toString(),
@@ -181,74 +134,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
           ? `Level: ${learningMaterial.attributes.Level}`
           : undefined
       }`,
-      subComponent: (
-        <AsyncUnorderedList
-          getListItems={getMatches}
-          renderListItem={(listItem) =>
-            renderFilterLocalization(listItem, learningMaterialType)
-          }
-          loadingText={`Localizing where in the ${typeAsText} the match was made...`}
-          errorLogText={`Localization of filter matches for ${typeAsText} with title '${learningMaterial.attributes.Title}' timed out after ${TIMEOUT_THRESHOLD_FOR_MATCH_LOCALIZATION} ms.'`}
-          userFacingErrorText={`Unable to localize where in the ${typeAsText} the filter matched...`}
-        />
-      ),
     }
-  }
-
-  const lectureDataToCardFormat = (
-    data: Data<LectureTwoLevelsDeep>[],
-    learningMaterialType: LearningMaterialType
-  ): CardType[] => {
-    return data.map((result) =>
-      learningMaterialToCardFormat(result, learningMaterialType, () =>
-        getLectureMatches(result, selectedKeywords, selectedAuthors)
-      )
-    )
-  }
-
-  const courseDataToCardFormat = (
-    data: Data<CourseThreeLevelsDeep>[],
-    learningMaterialType: LearningMaterialType
-  ): CardType[] => {
-    return data.map((result) =>
-      learningMaterialToCardFormat(result, learningMaterialType, () =>
-        getCourseMatches(result, selectedKeywords, selectedAuthors)
-      )
-    )
-  }
-
-  const renderFilterLocalization = (
-    matchingFilter: ListItem,
-    learningMaterialType: LearningMaterialType
-  ) => {
-    const match = matchingFilter as Matches
-    const [filter, matchLocation] = Object.entries(match)[0]
-    if (matchLocation.block !== undefined) {
-      return (
-        <Styled.LinkWrapper>
-          {`"${filter}" found in the lecture block `}
-          <Link href={matchLocation.block.href}>
-            {matchLocation.block.title}
-          </Link>
-          {learningMaterialType === 'COURSE' ? (
-            <>
-              {', which is part of the lecture '}
-              <Link href={matchLocation.lecture.href}>
-                {matchLocation.lecture.title}
-              </Link>{' '}
-            </>
-          ) : null}
-        </Styled.LinkWrapper>
-      )
-    }
-    return (
-      <Styled.LinkWrapper>
-        {`"${filter}" found in the lecture `}
-        <Link href={matchLocation.lecture.href}>
-          {matchLocation.lecture.title}
-        </Link>
-      </Styled.LinkWrapper>
-    )
   }
 
   const getPaginationController = (
@@ -308,7 +194,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       </div>
       <TabPanel value={value} index={0}>
         <CardList
-          cards={courseDataToCardFormat(courseResults.data, 'COURSE')}
+          cards={courseResults.data.map((result) => dataToCardFormat(result))}
         />
         {getPaginationController(
           courseResults.meta,
@@ -318,7 +204,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <CardList
-          cards={lectureDataToCardFormat(lectureResults.data, 'LECTURE')}
+          cards={lectureResults.data.map((result) => dataToCardFormat(result))}
         />
         {getPaginationController(
           lectureResults.meta,
@@ -327,7 +213,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
         )}
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <CardList cards={dataToCardFormat(blockResults.data)} />
+        <CardList cards={blockDataToCardFormat(blockResults.data)} />
         {getPaginationController(
           blockResults.meta,
           currentBlockPageNumber,
