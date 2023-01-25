@@ -45,7 +45,7 @@ export const mq = {
   lg: `@media (min-width: ${breakpoints.lg})`,
 }
 
-export const BorderRadius = '0rem 0rem 0rem 2.5rem'
+export const BorderRadius = '0.5rem'
 
 export const PageContainerPaddings = {
   horizontal: '8rem',

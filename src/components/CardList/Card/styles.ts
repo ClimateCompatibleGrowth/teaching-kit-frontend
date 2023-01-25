@@ -1,16 +1,38 @@
 import styled from '@emotion/styled'
+import Link from 'next/link'
 import { montserrat, ubuntu } from '../../../styles/fonts'
-import { BorderRadius, OnPrimary90, Primary90 } from '../../../styles/global'
+import {
+  Background,
+  BorderRadius,
+  Neutral90,
+  OnPrimary90,
+  Primary90,
+  Surface,
+} from '../../../styles/global'
 
-export const Card = styled.div`
+type CardProps = {
+  isInteractive: boolean
+}
+
+export const NextLink = styled(Link)`
+  width: 100%;
+`
+
+export const Card = styled.div<CardProps>`
   width: 100%;
 
   padding: 3.2rem 2.4rem;
 
-  background-color: ${Primary90};
+  background-color: ${(props) => (props.isInteractive ? Background : Surface)};
   color: ${OnPrimary90};
 
+  border: ${(props) =>
+    props.isInteractive ? `1px solid ${Neutral90}` : 'none'};
   border-radius: ${BorderRadius};
+
+  &:hover {
+    background-color: ${(props) => (props.isInteractive ? Primary90 : Surface)};
+  }
 `
 
 export const Metadata = styled.p`

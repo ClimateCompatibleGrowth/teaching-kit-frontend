@@ -42,6 +42,7 @@ export default function CoursePage({ course }: Props) {
               title: lecture.attributes.Title,
               text: lecture.attributes.Abstract,
               subTitle: `Lecture ${index + 1}`,
+              href: `/lectures/${lecture.id}`,
             }))}
           />
         </Styled.CourseContentWrapper>

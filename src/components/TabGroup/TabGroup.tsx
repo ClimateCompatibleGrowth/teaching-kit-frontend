@@ -113,13 +113,30 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
   }, [currentBlockPageNumber, onBlockChange])
 
   const blockDataToCardFormat = (
-    data: Data<LectureTwoLevelsDeep>[] | Data<BlockOneLevelDeep>[]
+    data: Data<BlockOneLevelDeep>[]
   ): CardType[] => {
-    return data.map((result) => ({
-      title: result.attributes.Title,
-      id: result.id.toString(),
-      text: result.attributes.Abstract,
+    return data.map((block) => ({
+      title: block.attributes.Title,
+      id: block.id.toString(),
+      text: block.attributes.Abstract,
+      href: `/blocks/${block.id}`,
     }))
+  }
+
+  const lectureDataToCardFormat = (data: Data<LectureTwoLevelsDeep>) => {
+    const baseCard = dataToCardFormat(data)
+    return {
+      ...baseCard,
+      href: `/lectures/${data.id}`,
+    }
+  }
+
+  const courseDataToCardFormat = (data: Data<CourseThreeLevelsDeep>) => {
+    const baseCard = dataToCardFormat(data)
+    return {
+      ...baseCard,
+      href: `/courses/${data.id}`,
+    }
   }
 
   const dataToCardFormat = (
@@ -194,7 +211,9 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       </div>
       <TabPanel value={value} index={0}>
         <CardList
-          cards={courseResults.data.map((result) => dataToCardFormat(result))}
+          cards={courseResults.data.map((result) =>
+            courseDataToCardFormat(result)
+          )}
         />
         {getPaginationController(
           courseResults.meta,
@@ -204,7 +223,9 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <CardList
-          cards={lectureResults.data.map((result) => dataToCardFormat(result))}
+          cards={lectureResults.data.map((result) =>
+            lectureDataToCardFormat(result)
+          )}
         />
         {getPaginationController(
           lectureResults.meta,

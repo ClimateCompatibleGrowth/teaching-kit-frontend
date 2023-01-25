@@ -41,6 +41,7 @@ export default function LecturePage({ lecture }: Props) {
               title: block.attributes.Title,
               text: block.attributes.Abstract,
               subTitle: `Lecture block ${index + 1}`,
+              href: `/blocks/${block.id}`,
             }))}
           />
         </Styled.LectureContentWrapper>
