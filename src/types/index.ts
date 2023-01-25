@@ -86,7 +86,7 @@ export type Lecture = {
 export type LectureOneLevelDeep = Lecture & {
   Blocks: { data: Data<Block>[] }
   LearningOutcomes: LearningOutcome[]
-  LectureCreator: { data: Data<Author>[] }
+  LectureCreators: { data: Data<Author>[] }
   Courses: { data: Data<Course>[] }
 }
 
@@ -94,7 +94,7 @@ export type LectureTwoLevelsDeep = Modify<
   LectureOneLevelDeep,
   {
     Blocks: { data: Data<BlockOneLevelDeep>[] }
-    LectureCreator: { data: Data<AuthorOneLevelDeep>[] }
+    LectureCreators: { data: Data<AuthorOneLevelDeep>[] }
     Courses: { data: Data<CourseOneLevelDeep>[] }
   }
 >
@@ -112,7 +112,7 @@ export type Course = {
 
 export type CourseOneLevelDeep = Course & {
   Lectures: { data: Data<Lecture> }
-  CourseCreator: { data: Data<Author>[] }
+  CourseCreators: { data: Data<Author>[] }
   LearningOutcomes: LearningOutcome[]
   Prerequisites: Prerequisite[]
   Acknowledgement: string
@@ -123,7 +123,7 @@ export type CourseTwoLevelsDeep = Modify<
   CourseOneLevelDeep,
   {
     Lectures: { data: Data<LectureOneLevelDeep>[] }
-    CourseCreator: { data: Data<AuthorOneLevelDeep>[] }
+    CourseCreators: { data: Data<AuthorOneLevelDeep>[] }
   }
 >
 

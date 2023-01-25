@@ -1,15 +1,13 @@
 import axios from 'axios'
-import { Block, BlockOneLevelDeep } from '../../../types'
+import { BlockOneLevelDeep } from '../../../types'
 import { ResponseArray, ResponseArrayData } from '../types'
-import { FilterParameters, getAuthorsAndKeywordsFilterString } from '../utils'
+import {
+  FilterParameters,
+  getAuthorsAndKeywordsFilterString,
+} from '../utils/utils'
 
 const ENDPOINT = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/blocks`
 const DEFAULT_MATCHES_PER_PAGE = 10
-
-export const getBlocks = async () => {
-  const response: ResponseArray<Block> = await axios.get(ENDPOINT)
-  return response.data.data
-}
 
 export const filterBlockOnKeywordsAndAuthors = async ({
   keywords,
