@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Author, BlockOneLevelDeep, Data, Level } from '../../types'
+import { Author, Data } from '../../types'
 import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
 import Alert from '../Alert/Alert'
 import Button from '../Button/Button'
@@ -7,7 +7,7 @@ import Button from '../Button/Button'
 import * as Styled from './styles'
 
 export type Props = {
-  level?: Level
+  level?: string
   duration?: string
   authors?: { data: Data<Author>[] }
   downloadAsDocx: () => Promise<void | DownloadError>

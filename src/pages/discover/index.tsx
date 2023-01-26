@@ -1,6 +1,8 @@
 import styled from '@emotion/styled'
 import { useCallback, useState } from 'react'
-import Filter, { Filter as FilterType } from '../../components/Filter/Filter'
+import DropdownMultipleSelectables, {
+  Item,
+} from '../../components/Dropdown/DropdownMultipleSelectables'
 import TabGroup from '../../components/TabGroup/TabGroup'
 import { searchForAuthors } from '../../shared/requests/authors/authors'
 import { searchForKeywords } from '../../shared/requests/keywords/keywords'
@@ -22,24 +24,30 @@ const H2 = styled.h2`
 const Styled = { FilterGroup, H2 }
 
 export default function Discover() {
-  const [selectedKeywords, setSelectedKeywords] = useState<FilterType[]>([])
-  const [selectedAuthors, setSelectedAuthors] = useState<FilterType[]>([])
+  const [selectedKeywords, setSelectedKeywords] = useState<Item[]>([])
+  const [selectedAuthors, setSelectedAuthors] = useState<Item[]>([])
 
-  const getMatchingKeywords = useCallback(async (searchTerm: string) => {
-    const matchingKeywords = await searchForKeywords(searchTerm)
-    return matchingKeywords.map((matchingKeyword) => ({
-      id: matchingKeyword.id.toString(),
-      title: matchingKeyword.attributes.Keyword,
-    }))
-  }, [])
+  const getMatchingKeywords = useCallback(
+    async (searchTerm: string): Promise<Item[]> => {
+      const matchingKeywords = await searchForKeywords(searchTerm)
+      return matchingKeywords.map((matchingKeyword) => ({
+        id: matchingKeyword.id.toString(),
+        label: matchingKeyword.attributes.Keyword,
+      }))
+    },
+    []
+  )
 
-  const getMatchingAuthors = useCallback(async (searchTerm: string) => {
-    const matchingAuthors = await searchForAuthors(searchTerm)
-    return matchingAuthors.map((matchingAuthor) => ({
-      id: matchingAuthor.id.toString(),
-      title: matchingAuthor.attributes.Name,
-    }))
-  }, [])
+  const getMatchingAuthors = useCallback(
+    async (searchTerm: string): Promise<Item[]> => {
+      const matchingAuthors = await searchForAuthors(searchTerm)
+      return matchingAuthors.map((matchingAuthor) => ({
+        id: matchingAuthor.id.toString(),
+        label: matchingAuthor.attributes.Name,
+      }))
+    },
+    []
+  )
 
   return (
     <PageContainer>
@@ -47,19 +55,23 @@ export default function Discover() {
       <div>
         <Styled.H2>Apply filter</Styled.H2>
         <Styled.FilterGroup>
-          <Filter
-            selectedFilters={selectedKeywords}
-            setSelectedFilters={setSelectedKeywords}
-            typeToFilterOn='Keyword'
-            maxAmountOfFiltersInDropdown={MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN}
-            searchForFilters={getMatchingKeywords}
+          <DropdownMultipleSelectables
+            selectedItems={selectedKeywords}
+            setSelectedItems={setSelectedKeywords}
+            label='Keyword'
+            placeholder='Select Keywords'
+            ariaLabel='Keywords to pick from'
+            maxAmountOfItems={MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN}
+            getItems={getMatchingKeywords}
           />
-          <Filter
-            selectedFilters={selectedAuthors}
-            setSelectedFilters={setSelectedAuthors}
-            typeToFilterOn='Author'
-            maxAmountOfFiltersInDropdown={MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN}
-            searchForFilters={getMatchingAuthors}
+          <DropdownMultipleSelectables
+            selectedItems={selectedAuthors}
+            setSelectedItems={setSelectedAuthors}
+            label='Author'
+            placeholder='Select Authors'
+            ariaLabel='Authors to pick from'
+            maxAmountOfItems={MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN}
+            getItems={getMatchingAuthors}
           />
         </Styled.FilterGroup>
       </div>
@@ -67,10 +79,10 @@ export default function Discover() {
       <div>
         <TabGroup
           selectedKeywords={selectedKeywords.map(
-            (selectedKeyword) => selectedKeyword.title
+            (selectedKeyword) => selectedKeyword.label
           )}
           selectedAuthors={selectedAuthors.map(
-            (selectedAuthor) => selectedAuthor.title
+            (selectedAuthor) => selectedAuthor.label
           )}
         />
       </div>

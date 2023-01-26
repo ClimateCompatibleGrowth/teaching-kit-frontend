@@ -12,7 +12,7 @@ import {
 import { Course, CourseThreeLevelsDeep, Data } from '../../types'
 import { handleCourseDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import downloadAsCoursePptx from '../../utils/downloadAsPptx/downloadCourseAsPptx'
-import { summarizeDurations } from '../../utils/utils'
+import { levelToString, summarizeDurations } from '../../utils/utils'
 
 const CourseContentWrapper = styled.div`
   margin-top: 5rem;
@@ -48,7 +48,7 @@ export default function CoursePage({ course }: Props) {
         </Styled.CourseContentWrapper>
       </LearningMaterialOverview>
       <MetadataContainer
-        level={course.attributes.Level}
+        level={levelToString(course.attributes.Level)}
         duration={summarizeDurations(
           course.attributes.Lectures.data
             .map((lecture) =>
@@ -93,9 +93,10 @@ export async function getStaticProps(ctx: any) {
     'populate[Lectures][populate][LearningOutcomes]=*'
   const populateBlockAuthors =
     'populate[Lectures][populate][Blocks][populate][Authors]=*'
+  const populateLevel = 'populate[Level]=Level'
 
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}`
+    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateLevel}`
   )
   const course: Data<CourseThreeLevelsDeep> = res.data.data
 

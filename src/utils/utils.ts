@@ -1,4 +1,4 @@
-import { BlockOneLevelDeep, Data, LearningMaterialType } from '../types'
+import { BlockOneLevelDeep, Data, LearningMaterialType, Level } from '../types'
 
 export const typeToText = (type: LearningMaterialType) => {
   switch (type) {
@@ -50,4 +50,17 @@ export const sourceIsFromS3 = (string: string): boolean => {
     return source.hostname === process.env.NEXT_PUBLIC_S3_HOST
   }
   return false
+}
+
+export const levelToString = (level: {
+  data?: Data<Level>
+}): string | undefined => {
+  if (!level.data) {
+    return undefined
+  }
+  const withoutNumerationPrefix = level.data.attributes.Level.replace(
+    /[0-9]./g,
+    ''
+  )
+  return withoutNumerationPrefix
 }

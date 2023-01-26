@@ -10,14 +10,18 @@ type IconButtonProps = {
   isPointingDown: boolean
 }
 
-const filterWrapperWidth = 20
+type DropdownInputProps = {
+  searchIsEnabled: boolean
+}
 
-export const FilterWrapper = styled.div`
-  width: ${filterWrapperWidth}rem;
+const dropdownWrapperWidth = 20
+
+export const DropdownWrapper = styled.div`
+  width: ${dropdownWrapperWidth}rem;
 `
 
-export const SelectedFilterWrapper = styled(UlWithoutDefaultStyle)`
-  width: ${filterWrapperWidth}rem;
+export const SelectedItemsWrapper = styled(UlWithoutDefaultStyle)`
+  width: ${dropdownWrapperWidth}rem;
   min-height: 3.5rem;
 
   margin: 1.7rem 0;
@@ -28,7 +32,7 @@ export const SelectedFilterWrapper = styled(UlWithoutDefaultStyle)`
   gap: 1.7rem;
 `
 
-export const SelectedFilter = styled.li`
+export const SelectedItem = styled.li`
   margin: 0;
 `
 
@@ -42,7 +46,7 @@ export const Label = styled.label`
   margin-bottom: 0.2rem;
 `
 
-export const FilterInput = styled.input`
+export const DropdownInput = styled.input<DropdownInputProps>`
   width: 100%;
   height: 4rem;
 
@@ -51,6 +55,10 @@ export const FilterInput = styled.input`
   font-size: 1.5rem;
 
   border: 1px solid ${Accent40};
+
+  &:hover {
+    ${(props) => (!props.searchIsEnabled ? 'cursor: pointer;' : null)}
+  }
 `
 
 export const IconButton = styled(ButtonWithoutDefaultStyle)<IconButtonProps>`
@@ -62,7 +70,7 @@ export const IconButton = styled(ButtonWithoutDefaultStyle)<IconButtonProps>`
   transform: rotate(${(props) => (props.isPointingDown ? '180deg' : '0deg')});
 `
 
-export const FilterDropdownList = styled(UlWithoutDefaultStyle)`
+export const DropdownList = styled(UlWithoutDefaultStyle)`
   height: 150px;
   width: inherit;
 

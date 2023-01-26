@@ -9,12 +9,7 @@ type Props = {
   ariaPressed: boolean
 }
 
-const FilterDropdownListItem = ({
-  label,
-  onClick,
-  icon,
-  ariaPressed,
-}: Props) => {
+const DropdownListItem = ({ label, onClick, icon, ariaPressed }: Props) => {
   return (
     <ListItem>
       <ClickableListItem onClick={onClick} aria-pressed={ariaPressed}>
@@ -25,4 +20,4 @@ const FilterDropdownListItem = ({
   )
 }
 
-export default FilterDropdownListItem
+export default DropdownListItem

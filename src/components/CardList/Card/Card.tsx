@@ -25,7 +25,9 @@ const Card = ({ card }: Props) => {
       <Styled.Markdown>
         <ReactMarkdown>{card.text}</ReactMarkdown>
       </Styled.Markdown>
-      <Styled.Metadata>{card.metadata}</Styled.Metadata>
+      {card.metadata !== undefined ? (
+        <Styled.Metadata>{card.metadata}</Styled.Metadata>
+      ) : null}
       {card.subComponent !== undefined ? (
         <Styled.SubComponentWrapper>
           <hr />
