@@ -2,7 +2,7 @@ import PptxGenJS from 'pptxgenjs'
 import { LectureBlock } from '../../types/pptx'
 import getSlides from './utils/getSlides'
 
-import { masterDescriptionSlide, descriptionTitle } from './createPptxStyling'
+import { masterDescriptionSlide, descriptionTitle } from './pptxConfigurations'
 import createTitleSlide from './utils/generalSlides/titleSlide'
 
 export const createLecturePptxFile = async (
@@ -26,5 +26,5 @@ export const createLecturePptxFile = async (
     return getSlides(block.pptxSlides, pptx)
   })
 
-  pptx.writeFile({ fileName: `${lectureTitle}.pptx` })
+  return pptx
 }

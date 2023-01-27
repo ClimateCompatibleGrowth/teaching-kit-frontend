@@ -6,12 +6,12 @@ import {
   mainContentStyling,
   h2Heading,
   h3Heading,
-} from '../createPptx/createPptxStyling'
+} from '../createPptx/pptxConfigurations'
 import { PptxSlide } from '../../types/pptx'
 import { marked } from 'marked'
 import { decode } from 'html-entities'
 
-const generatePptxSlides = (slide: Slide) => {
+const markdownToSlideFormat = (slide: Slide) => {
   const pptxSlide = Object.values(slide).reduce(
     (finalSlide, slideValue, index) => {
       const slideAttribute = {} as PptxSlide
@@ -88,4 +88,4 @@ const generatePptxSlides = (slide: Slide) => {
   return pptxSlide
 }
 
-export default generatePptxSlides
+export default markdownToSlideFormat

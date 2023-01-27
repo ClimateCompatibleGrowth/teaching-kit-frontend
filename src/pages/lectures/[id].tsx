@@ -11,7 +11,7 @@ import {
 } from '../../styles/global'
 import { Data, Lecture, LectureTwoLevelsDeep } from '../../types'
 import { handleLectureDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
-import { handleLecturePptxDownload } from '../../utils/downloadAsPptx/handlePptxDownloads'
+import { downloadLecturePptx } from '../../utils/downloadAsPptx/downloadLectureAsPptx'
 import { summarizeDurations } from '../../utils/utils'
 
 const LectureContentWrapper = styled.div`
@@ -23,7 +23,6 @@ const Styled = { LectureContentWrapper }
 type Props = { lecture: Data<LectureTwoLevelsDeep> }
 
 export default function LecturePage({ lecture }: Props) {
-  console.log(lecture)
   return (
     <LearningMaterialContainer>
       <LearningMaterialOverview>
@@ -51,8 +50,8 @@ export default function LecturePage({ lecture }: Props) {
         level={lecture.attributes.Level.data?.attributes.Level}
         duration={summarizeDurations(lecture.attributes.Blocks.data)}
         authors={lecture.attributes.LectureCreators}
-        downloadAsPptx={() => handleLecturePptxDownload(lecture)}
         downloadAsDocx={() => handleLectureDocxDownload(lecture)}
+        downloadAsPptx={() => downloadLecturePptx(lecture)}
       />
     </LearningMaterialContainer>
   )

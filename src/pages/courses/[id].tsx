@@ -11,7 +11,7 @@ import {
 } from '../../styles/global'
 import { Course, CourseThreeLevelsDeep, Data } from '../../types'
 import { handleCourseDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
-import downloadAsCoursePptx from '../../utils/downloadAsPptx/downloadCourseAsPptx'
+import downloadCoursePptx from '../../utils/downloadAsPptx/downloadCourseAsPptx'
 import { levelToString, summarizeDurations } from '../../utils/utils'
 
 const CourseContentWrapper = styled.div`
@@ -58,7 +58,7 @@ export default function CoursePage({ course }: Props) {
         )}
         authors={course.attributes.CourseCreators}
         downloadAsDocx={() => handleCourseDocxDownload(course)}
-        downloadAsPptx={() => downloadAsCoursePptx(course)}
+        downloadAsPptx={() => downloadCoursePptx(course)}
       />
     </LearningMaterialContainer>
   )
@@ -93,10 +93,12 @@ export async function getStaticProps(ctx: any) {
     'populate[Lectures][populate][LearningOutcomes]=*'
   const populateBlockAuthors =
     'populate[Lectures][populate][Blocks][populate][Authors]=*'
+  const populateBlockSlides =
+    'populate[Lectures][populate][Blocks][populate][Slides]=*'
   const populateLevel = 'populate[Level]=Level'
 
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateLevel}`
+    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
   )
   const course: Data<CourseThreeLevelsDeep> = res.data.data
 

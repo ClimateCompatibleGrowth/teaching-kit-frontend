@@ -1,7 +1,6 @@
 import PptxGenJS from 'pptxgenjs'
-import { imageStyling } from '../createPptxStyling'
+import { imageStyling } from '../pptxConfigurations'
 import { PptxSlide } from '../../../types/pptx'
-import { masterDescriptionSlide, descriptionTitle } from '../createPptxStyling'
 
 const getSlides = (block: PptxSlide[], pptx: PptxGenJS) => {
   return block.map((pptxSlide) => {
