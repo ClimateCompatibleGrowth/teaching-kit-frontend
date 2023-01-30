@@ -45,8 +45,10 @@ const Poster = ({ recentUpdate }: Props) => {
       <Styled.MetaWrapper>
         {recentUpdate.Level && (
           <Styled.MetaInformation>
-            <SignalStrengthIcon aria-label={levelExplanation} />
-            {recentUpdate.Level}
+            <>
+              <SignalStrengthIcon aria-label={levelExplanation} />
+              {recentUpdate.Level}
+            </>
           </Styled.MetaInformation>
         )}
         {recentUpdate.Duration && (
