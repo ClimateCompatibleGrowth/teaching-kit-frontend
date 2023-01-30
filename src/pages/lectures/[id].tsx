@@ -81,7 +81,7 @@ export async function getStaticProps(ctx: any) {
   const populateBlocks = 'populate[Blocks][populate][0]=*'
   const populateLectureCreators = 'populate[LectureCreators][populate]=*'
   const populateLearningOutcomes = 'populate[LearningOutcomes][populate]=*'
-  const populateBlockAuthors = 'populate[Blocks][populate]=Authors'
+  const populateBlockAuthors = 'populate[Blocks][populate][Authors]=*'
   const populateBlockSlides = 'populate[Blocks][populate][Slides]=*'
   const populateLevel = 'populate[Level]=Level'
 
