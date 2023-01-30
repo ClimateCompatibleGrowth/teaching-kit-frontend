@@ -5,6 +5,7 @@ import hero from '/public/images/hero.png'
 import DocumentIcon from '/public/icons/document.svg'
 import ReuseIcon from '/public/icons/reuse.svg'
 import GroupIcon from '/public/icons/group.svg'
+import RecentUpdates from '../components/RecentUpdates/RecentUpdates'
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
       </Head>
       <Hero {...heroProps} />
       <PosterList {...posterProps} />
+      <RecentUpdates />
     </div>
   )
 }

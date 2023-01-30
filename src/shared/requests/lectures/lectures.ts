@@ -43,3 +43,11 @@ export const filterLectureOnKeywordsAndAuthors = async ({
   )
   return response.data
 }
+
+export const getRecentLectures = async (limit = 30) => {
+  const filterRecents = `?pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
+  const populate = `&populate[Blocks]=DurationInMinutes`
+  const response: ResponseArray<Partial<LectureTwoLevelsDeep>> =
+    await axios.get(`${ENDPOINT}${filterRecents}${populate}`)
+  return response.data.data
+}
