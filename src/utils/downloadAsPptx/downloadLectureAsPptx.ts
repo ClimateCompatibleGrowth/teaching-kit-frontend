@@ -1,8 +1,28 @@
 import { Data, LectureTwoLevelsDeep, Slide } from '../../types'
+import PptxGenJS from 'pptxgenjs'
 
-import generatePptxSlides from './generatePptxSlides'
+import markdownToSlideFormat from './markdownToSlideFormat'
+import { createLecturePptxFile } from '../createPptx/createLecturePptx'
 
-const downloadAsLecturePptx = (lecture: Data<LectureTwoLevelsDeep>) => {
+export const downloadLecturePptx = async (
+  lecture: Data<LectureTwoLevelsDeep>
+) => {
+  const title = lecture.attributes.Title
+  const pptx = await lectureToPptx(lecture)
+  pptx.writeFile({ fileName: `${title}.pptx` })
+}
+
+export const lectureToPptx = async (
+  lecture: Data<LectureTwoLevelsDeep>
+): Promise<PptxGenJS> => {
+  const slides = generateLectureBlockSlides(lecture)
+  const title = lecture.attributes.Title
+
+  const pptx = await createLecturePptxFile(slides, title)
+  return pptx
+}
+
+const generateLectureBlockSlides = (lecture: Data<LectureTwoLevelsDeep>) => {
   const blocks = lecture.attributes.Blocks.data
 
   const lectureBlockSlides = blocks.map((blockSlides) => {
@@ -10,7 +30,7 @@ const downloadAsLecturePptx = (lecture: Data<LectureTwoLevelsDeep>) => {
       (slide: Slide) => {
         slide.id = slide.id.toString()
 
-        return generatePptxSlides(slide)
+        return markdownToSlideFormat(slide)
       }
     )
 
@@ -22,5 +42,3 @@ const downloadAsLecturePptx = (lecture: Data<LectureTwoLevelsDeep>) => {
 
   return lectureBlockSlides
 }
-
-export default downloadAsLecturePptx

@@ -1,3 +1,4 @@
+import { SortOptionType } from '../../../components/TabGroup/TabGroup'
 import { LearningMaterialType } from '../../../types'
 
 export type FilterParameters = {
@@ -42,6 +43,19 @@ export const getAuthorsFilterString = (
   return {
     authorsFilterString,
     amountOfFilters: authorsFilters.length,
+  }
+}
+
+export const getSortString = (sortOption: SortOptionType) => {
+  switch (sortOption) {
+    case 'ALPHABETICAL_ASC':
+      return 'sort=Title:asc'
+    case 'ALPHABETICAL_DESC':
+      return 'sort=Title:desc'
+    case 'LEVEL_ASC':
+      return 'sort=Level[Level]:asc'
+    case 'LEVEL_DESC':
+      return 'sort=Level[Level]:desc'
   }
 }
 

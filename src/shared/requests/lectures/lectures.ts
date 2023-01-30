@@ -13,7 +13,8 @@ const getPopulateString = () => {
   const populateLectureCreators = 'populate[LectureCreators]=*'
   const populateBlockAuthors = 'populate[Blocks][populate][Authors]=*'
   const populateKeywords = 'populate[Blocks][populate][Keywords]=*'
-  return `${populateKeywords}&${populateBlockAuthors}&${populateLectureCreators}`
+  const populateLevel = 'populate[Level][populate]=Level'
+  return `${populateKeywords}&${populateBlockAuthors}&${populateLectureCreators}&${populateLevel}`
 }
 
 export const filterLectureOnKeywordsAndAuthors = async ({

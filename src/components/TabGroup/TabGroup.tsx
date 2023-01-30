@@ -19,6 +19,10 @@ import TabPanel from './TabPanel/TabPanel'
 import * as Styled from './styles'
 import { filterBlockOnKeywordsAndAuthors } from '../../shared/requests/blocks/blocks'
 import TabLabel from './TabLabel/TabLabel'
+import DropdownSingleSelectable, {
+  Item,
+} from '../Dropdown/DropdownSingleSelectable'
+import { levelToString } from '../../utils/utils'
 
 type Props = {
   selectedKeywords: string[]
@@ -42,6 +46,49 @@ const defaultFilterResult: ResponseArrayData<any> = {
   },
 }
 
+export type SortOptionType =
+  | 'ALPHABETICAL_ASC'
+  | 'ALPHABETICAL_DESC'
+  | 'LEVEL_ASC'
+  | 'LEVEL_DESC'
+
+type SortOption = Item & {
+  id: SortOptionType
+}
+
+type BlockSortOptions = {
+  alphabeticalASC: SortOption
+  alphabeticalDESC: SortOption
+}
+
+type SortOptions = BlockSortOptions & {
+  levelASC: SortOption
+  levelDESC: SortOption
+}
+
+const blockSortOptions: BlockSortOptions = {
+  alphabeticalASC: {
+    id: 'ALPHABETICAL_ASC',
+    label: 'A - Z',
+  },
+  alphabeticalDESC: {
+    id: 'ALPHABETICAL_DESC',
+    label: 'Z - A',
+  },
+}
+
+const sortOptions: SortOptions = {
+  ...blockSortOptions,
+  levelASC: {
+    id: 'LEVEL_ASC',
+    label: 'Beginner - Expert',
+  },
+  levelDESC: {
+    id: 'LEVEL_DESC',
+    label: 'Expert - Beginner',
+  },
+}
+
 const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
   const [value, setValue] = React.useState(0)
   const [courseResults, setCourseResults] =
@@ -57,6 +104,9 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
   const [currentBlockPageNumber, setCurrentBlockPageNumber] =
     useState(DEFAULT_PAGE_NUMBER)
   const [matchesPerPage, setMatchesPerPage] = useState(DEFAULT_MATCHES_PER_PAGE)
+  const [sortMethod, setSortMethod] = useState<SortOption>(
+    sortOptions.alphabeticalASC
+  )
 
   const onCourseChange = useCallback(
     async (pageNumber: number) => {
@@ -64,12 +114,13 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
         selectedKeywords,
         selectedAuthors,
         pageNumber,
+        sortMethod.id,
         matchesPerPage
       )
 
       setCourseResults(courseFilterResult)
     },
-    [selectedKeywords, selectedAuthors, matchesPerPage]
+    [selectedKeywords, selectedAuthors, sortMethod, matchesPerPage]
   )
 
   const onLectureChange = useCallback(
@@ -113,27 +164,41 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
   }, [currentBlockPageNumber, onBlockChange])
 
   const blockDataToCardFormat = (
-    data: Data<LectureTwoLevelsDeep>[] | Data<BlockOneLevelDeep>[]
+    data: Data<BlockOneLevelDeep>[]
   ): CardType[] => {
-    return data.map((result) => ({
-      title: result.attributes.Title,
-      id: result.id.toString(),
-      text: result.attributes.Abstract,
+    return data.map((block) => ({
+      title: block.attributes.Title,
+      id: block.id.toString(),
+      text: block.attributes.Abstract,
+      href: `/blocks/${block.id}`,
     }))
+  }
+
+  const lectureDataToCardFormat = (data: Data<LectureTwoLevelsDeep>) => {
+    const baseCard = dataToCardFormat(data)
+    return {
+      ...baseCard,
+      href: `/lectures/${data.id}`,
+    }
+  }
+
+  const courseDataToCardFormat = (data: Data<CourseThreeLevelsDeep>) => {
+    const baseCard = dataToCardFormat(data)
+    return {
+      ...baseCard,
+      href: `/courses/${data.id}`,
+    }
   }
 
   const dataToCardFormat = (
     learningMaterial: Data<LectureTwoLevelsDeep> | Data<CourseThreeLevelsDeep>
   ): CardType => {
+    const level = levelToString(learningMaterial.attributes.Level)
     return {
       title: learningMaterial.attributes.Title,
       id: learningMaterial.id.toString(),
       text: learningMaterial.attributes.Abstract,
-      metadata: `${
-        learningMaterial.attributes.Level !== undefined
-          ? `Level: ${learningMaterial.attributes.Level}`
-          : undefined
-      }`,
+      metadata: level !== undefined ? `Level: ${level}` : undefined,
     }
   }
 
@@ -151,50 +216,72 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
     ) : null
   }
 
+  const getSortOptions = (tabValue: number) => {
+    if (tabValue === 2) {
+      return blockSortOptions
+    }
+    return sortOptions
+  }
+
   return (
     <div>
-      <div style={Styled.TabsWrapper}>
-        <Tabs
-          value={value}
-          onChange={(_event, newValue) => setValue(newValue)}
-          aria-label='Toggle between categorized filter results'
-          sx={Styled.Tabs}
-        >
-          <Tab
-            label={
-              <TabLabel
-                type='COURSE'
-                numberOfResults={courseResults.meta.pagination.total}
-              />
-            }
-            disableRipple
-            sx={Styled.Tab}
-          />
-          <Tab
-            label={
-              <TabLabel
-                type='LECTURE'
-                numberOfResults={lectureResults.meta.pagination.total}
-              />
-            }
-            disableRipple
-            sx={Styled.Tab}
-          />
-          <Tab
-            label={
-              <TabLabel
-                type='BLOCK'
-                numberOfResults={blockResults.meta.pagination.total}
-              />
-            }
-            disableRipple
-            sx={Styled.Tab}
-          />
-        </Tabs>
+      <div style={Styled.HeaderWrapper}>
+        <div>
+          <Tabs
+            value={value}
+            onChange={(_event, newValue) => setValue(newValue)}
+            aria-label='Toggle between categorized filter results'
+            sx={Styled.Tabs}
+          >
+            <Tab
+              label={
+                <TabLabel
+                  type='COURSE'
+                  numberOfResults={courseResults.meta.pagination.total}
+                />
+              }
+              disableRipple
+              sx={Styled.Tab}
+            />
+            <Tab
+              label={
+                <TabLabel
+                  type='LECTURE'
+                  numberOfResults={lectureResults.meta.pagination.total}
+                />
+              }
+              disableRipple
+              sx={Styled.Tab}
+            />
+            <Tab
+              label={
+                <TabLabel
+                  type='BLOCK'
+                  numberOfResults={blockResults.meta.pagination.total}
+                />
+              }
+              disableRipple
+              sx={Styled.Tab}
+            />
+          </Tabs>
+        </div>
+        <DropdownSingleSelectable
+          selectedItem={sortMethod}
+          setSelectedItem={(newSortmethod) =>
+            setSortMethod(newSortmethod as SortOption)
+          }
+          label='Sort'
+          placeholder={sortMethod.label}
+          ariaLabel='Sort options to pick from'
+          enableSearch={false}
+          getItems={() => Promise.resolve(Object.values(getSortOptions(value)))}
+        />
       </div>
       <TabPanel value={value} index={0}>
         <CardList
-          cards={courseResults.data.map((result) => dataToCardFormat(result))}
+          cards={courseResults.data.map((result) =>
+            courseDataToCardFormat(result)
+          )}
         />
         {getPaginationController(
           courseResults.meta,
@@ -204,7 +291,9 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <CardList
-          cards={lectureResults.data.map((result) => dataToCardFormat(result))}
+          cards={lectureResults.data.map((result) =>
+            lectureDataToCardFormat(result)
+          )}
         />
         {getPaginationController(
           lectureResults.meta,
