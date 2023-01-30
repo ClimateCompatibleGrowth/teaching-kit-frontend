@@ -1,11 +1,7 @@
 import { StaticImageData } from 'next/image'
-import { PageContainer } from '../../styles/global'
-import {
-  StyledButtonLink,
-  StyledImage,
-  StyledParagraph,
-  StyledWrapper,
-} from './styles'
+import { Accent40, OnAccent40, PageContainer } from '../../styles/global'
+import ButtonLink from '../ButtonLink/ButtonLink'
+import * as Styled from './styles'
 
 interface Props {
   image: {
@@ -23,17 +19,21 @@ interface Props {
 export default function Hero({ image, title, body, action }: Props) {
   return (
     <>
-      <StyledImage alt={image.alt} src={image.src} />
+      <Styled.Image alt={image.alt} src={image.src} />
       <PageContainer>
-        <StyledWrapper>
+        <Styled.Wrapper>
           <h1>{title}</h1>
-          <StyledParagraph>{body}</StyledParagraph>
+          <Styled.Paragraph>{body}</Styled.Paragraph>
           {action && (
-            <StyledButtonLink href={action?.href}>
+            <ButtonLink
+              backgroundColor={Accent40}
+              color={OnAccent40}
+              href={action.href}
+            >
               {action.label}
-            </StyledButtonLink>
+            </ButtonLink>
           )}
-        </StyledWrapper>
+        </Styled.Wrapper>
       </PageContainer>
     </>
   )

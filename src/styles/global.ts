@@ -32,6 +32,10 @@ export const Error99 = '#FFDAD7'
 export const OnError99 = '#242424'
 // End of design tokens
 
+export const AccentBlue = '#6C99FE'
+export const AccentGreen = '#D7EAC4'
+export const AccentYellow = '#F8EABC'
+
 export const breakpoints = {
   xs: '480px',
   sm: '768px',
@@ -52,11 +56,12 @@ export const PageContainerPaddings = {
   vertical: '2rem',
 }
 
-export const PageContainer = styled.div`
+export const PageContainer = styled.div<{ hasBottomMargin?: boolean }>`
   padding: ${PageContainerPaddings.vertical} ${PageContainerPaddings.horizontal};
   ${mq.lg} {
     max-width: ${breakpoints.lg};
     margin: 0 auto;
+    margin-bottom: ${(props) => (props.hasBottomMargin ? '10rem' : undefined)};
   }
 `
 
