@@ -1,30 +1,9 @@
 import PptxGenJS from 'pptxgenjs'
-import { PptxSlide } from '../../types/pptx'
+import { imageStyling } from '../pptxConfigurations'
+import { PptxSlide } from '../../../types/pptx'
 
-import {
-  masterDescriptionSlide,
-  descriptionTitle,
-  imageStyling,
-} from './createPptxStyling'
-
-export const createPptxFile = async (
-  pptxSlides: PptxSlide[],
-  lectureTitle: string
-) => {
-  const pptx = new PptxGenJS()
-  pptx.layout = 'LAYOUT_WIDE'
-
-  // Master slides
-  pptx.defineSlideMaster(masterDescriptionSlide)
-  const masterContentSlide = masterDescriptionSlide.title
-
-  let descriptionSlide = pptx.addSlide({
-    masterName: `${masterContentSlide}`,
-  })
-  descriptionSlide.addText(`${lectureTitle}`, descriptionTitle)
-
-  //Content slides
-  pptxSlides?.map((pptxSlide: PptxSlide) => {
+const getSlides = (block: PptxSlide[], pptx: PptxGenJS) => {
+  return block.map((pptxSlide) => {
     const contentSlide = pptx.addSlide()
 
     //Headings
@@ -53,5 +32,6 @@ export const createPptxFile = async (
 
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)
   })
-  pptx.writeFile({ fileName: `${lectureTitle}.pptx` })
 }
+
+export default getSlides

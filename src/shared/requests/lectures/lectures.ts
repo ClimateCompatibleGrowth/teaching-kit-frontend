@@ -10,10 +10,11 @@ const ENDPOINT = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/lectures`
 const DEFAULT_MATCHES_PER_PAGE = 10
 
 const getPopulateString = () => {
-  const populateLectureCreator = 'populate[LectureCreator]=*'
+  const populateLectureCreators = 'populate[LectureCreators]=*'
   const populateBlockAuthors = 'populate[Blocks][populate][Authors]=*'
   const populateKeywords = 'populate[Blocks][populate][Keywords]=*'
-  return `${populateKeywords}&${populateBlockAuthors}&${populateLectureCreator}`
+  const populateLevel = 'populate[Level][populate]=Level'
+  return `${populateKeywords}&${populateBlockAuthors}&${populateLectureCreators}&${populateLevel}`
 }
 
 export const filterLectureOnKeywordsAndAuthors = async ({

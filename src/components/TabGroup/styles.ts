@@ -11,7 +11,11 @@ import {
   SurfaceAlternative,
 } from '../../styles/global'
 
-export const TabsWrapper = {
+export const HeaderWrapper = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'end',
+
   borderBottom: `1px solid ${Neutral40}`,
 }
 

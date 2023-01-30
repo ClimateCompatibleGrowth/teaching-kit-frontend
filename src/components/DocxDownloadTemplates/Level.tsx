@@ -1,8 +1,8 @@
 import React from 'react'
-import { Level } from '../../types'
+import { LevelName } from '../../types'
 
 type Props = {
-  level: Level
+  level: LevelName
 }
 
 const Level = ({ level }: Props) => {

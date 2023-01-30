@@ -1,3 +1,4 @@
+import { SortOptionType } from '../../../components/TabGroup/TabGroup'
 import { LearningMaterialType } from '../../../types'
 
 export type FilterParameters = {
@@ -45,6 +46,19 @@ export const getAuthorsFilterString = (
   }
 }
 
+export const getSortString = (sortOption: SortOptionType) => {
+  switch (sortOption) {
+    case 'ALPHABETICAL_ASC':
+      return 'sort=Title:asc'
+    case 'ALPHABETICAL_DESC':
+      return 'sort=Title:desc'
+    case 'LEVEL_ASC':
+      return 'sort=Level[Level]:asc'
+    case 'LEVEL_DESC':
+      return 'sort=Level[Level]:desc'
+  }
+}
+
 // andGroup is a Strapi query functionality that is not very well documented at the time of writing. See more here:
 // https://forum.strapi.io/t/advanced-api-filter-combining-and-and-or/24375
 const getFilterStringByAuthor = (
@@ -54,9 +68,9 @@ const getFilterStringByAuthor = (
 ) => {
   switch (filterFrom) {
     case 'COURSE':
-      return `filters[$and][${andGroup}][$or][0][CourseCreator][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][1][Lectures][LectureCreator][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][2][Lectures][Blocks][Authors][Name][$containsi]=${author}`
+      return `filters[$and][${andGroup}][$or][0][CourseCreators][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][1][Lectures][LectureCreators][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][2][Lectures][Blocks][Authors][Name][$containsi]=${author}`
     case 'LECTURE':
-      return `filters[$and][${andGroup}][$or][0][LectureCreator][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][1][Blocks][Authors][Name][$containsi]=${author}`
+      return `filters[$and][${andGroup}][$or][0][LectureCreators][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][1][Blocks][Authors][Name][$containsi]=${author}`
     case 'BLOCK':
       return `filters[$and][${andGroup}][$or][0][Authors][Name][$containsi]=${author}`
   }

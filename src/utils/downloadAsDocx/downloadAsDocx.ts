@@ -46,7 +46,7 @@ export const handleCourseDocxDownload = async (
       const lectureBlob = await createLectureBlob(lecture)
       zip.file(`${lecture.attributes.Title}.docx`, lectureBlob)
     } catch (error) {
-      console.log(error)
+      console.error(error)
       zip.file(
         `FAILED_${lecture.attributes.Title}.docx`,
         `Docx generation failed for lecture ${lecture.attributes.Title}`

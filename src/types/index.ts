@@ -46,8 +46,12 @@ export type AuthorOneLevelDeep = Author & {
 export const learningMaterialTypes = ['COURSE', 'LECTURE', 'BLOCK'] as const
 export type LearningMaterialType = typeof learningMaterialTypes[number]
 
-const levels = ['BEGINNER', 'INTERMEDIATE', 'EXPERT'] as const
-export type Level = typeof levels[number]
+const levelNames = ['1. Beginner', '2. Intermediate', '3. Expert'] as const
+export type LevelName = typeof levelNames[number]
+
+export type Level = {
+  Level: LevelName
+}
 
 export type Keyword = {
   Keyword: string
@@ -75,7 +79,6 @@ export type BlockOneLevelDeep = Block & {
 export type Lecture = {
   Title: string
   Abstract: string
-  Level: Level
   Acknowledgement: string
   CiteAs: string
   createdAt: string
@@ -86,15 +89,16 @@ export type Lecture = {
 export type LectureOneLevelDeep = Lecture & {
   Blocks: { data: Data<Block>[] }
   LearningOutcomes: LearningOutcome[]
-  LectureCreator: { data: Data<Author>[] }
+  LectureCreators: { data: Data<Author>[] }
   Courses: { data: Data<Course>[] }
+  Level: { data?: Data<Level> }
 }
 
 export type LectureTwoLevelsDeep = Modify<
   LectureOneLevelDeep,
   {
     Blocks: { data: Data<BlockOneLevelDeep>[] }
-    LectureCreator: { data: Data<AuthorOneLevelDeep>[] }
+    LectureCreators: { data: Data<AuthorOneLevelDeep>[] }
     Courses: { data: Data<CourseOneLevelDeep>[] }
   }
 >
@@ -103,7 +107,6 @@ export type Course = {
   Title: string
   Abstract: string
   Acknowledgement: string
-  Level: Level
   CiteAs: string
   createdAt: string
   updatedAt: string
@@ -112,18 +115,19 @@ export type Course = {
 
 export type CourseOneLevelDeep = Course & {
   Lectures: { data: Data<Lecture> }
-  CourseCreator: { data: Data<Author>[] }
+  CourseCreators: { data: Data<Author>[] }
   LearningOutcomes: LearningOutcome[]
   Prerequisites: Prerequisite[]
   Acknowledgement: string
   CiteAs: string
+  Level: { data?: Data<Level> }
 }
 
 export type CourseTwoLevelsDeep = Modify<
   CourseOneLevelDeep,
   {
     Lectures: { data: Data<LectureOneLevelDeep>[] }
-    CourseCreator: { data: Data<AuthorOneLevelDeep>[] }
+    CourseCreators: { data: Data<AuthorOneLevelDeep>[] }
   }
 >
 
