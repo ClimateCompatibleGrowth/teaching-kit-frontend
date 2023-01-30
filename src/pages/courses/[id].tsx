@@ -96,10 +96,11 @@ export async function getStaticProps(ctx: any) {
     'populate[Lectures][populate][Blocks][populate][Authors]=*'
   const populateBlockSlides =
     'populate[Lectures][populate][Blocks][populate][Slides]=*'
-  const populateLevel = 'populate[Level]=Level'
+  const populateLevel = 'populate[Level]=*'
+  const populateLectureLevel = 'populate[Lectures][populate][Level]=*'
 
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
+    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
   )
   const course: Data<CourseThreeLevelsDeep> = res.data.data
 
