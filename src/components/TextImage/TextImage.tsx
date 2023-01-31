@@ -17,7 +17,7 @@ const TextImage = ({ image, title, body }: Props) => {
   return (
     <PageContainer>
       <Styled.Wrapper>
-        <Styled.Portion>
+        <Styled.Portion mobileOrder={1}>
           <Styled.TextContainer>
             <h3>{title}</h3>
             <ReactMarkdown>{body}</ReactMarkdown>

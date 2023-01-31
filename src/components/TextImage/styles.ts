@@ -2,6 +2,10 @@ import styled from '@emotion/styled'
 import NextImage from 'next/image'
 import { Accent40, mq, Neutral99, OnNeutral99 } from '../../styles/global'
 
+type PortionProps = {
+  mobileOrder?: number
+}
+
 export const Wrapper = styled.div`
   display: flex;
   background-color: ${Neutral99};
@@ -13,11 +17,13 @@ export const Wrapper = styled.div`
   }
 `
 
-export const Portion = styled.div`
+export const Portion = styled.div<PortionProps>`
   flex: 0 0 100%;
+  order: ${(props) => props.mobileOrder};
   ${mq.sm} {
     flex: 0 1 50%;
     width: 50%;
+    order: 0;
   }
 `
 
