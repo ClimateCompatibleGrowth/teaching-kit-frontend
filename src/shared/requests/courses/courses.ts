@@ -56,7 +56,7 @@ export const filterCourseOnKeywordsAndAuthors = async (
 
 export const getRecentCourses = async (limit = 30) => {
   const pagination = `pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
-  const populate = `populate[Level][populate]=Level&populate[Lectures][populate][Blocks]=DurationInMinutes`
+  const populate = `populate[Level]=Level&populate[Lectures][populate][Blocks]=DurationInMinutes`
   const response: ResponseArray<CourseTwoLevelsDeep> = await axios.get(
     `${ENDPOINT}?${pagination}&${populate}`
   )
