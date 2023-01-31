@@ -11,7 +11,7 @@ type Props = {
   recentUpdate: RecentUpdateType
 }
 
-const Poster = ({ recentUpdate }: Props) => {
+const RecentUpdate = ({ recentUpdate }: Props) => {
   let typeColor = 'none'
   let href = '/'
   let levelExplanation = 'Level is'
@@ -62,4 +62,4 @@ const Poster = ({ recentUpdate }: Props) => {
   )
 }
 
-export default Poster
+export default RecentUpdate
