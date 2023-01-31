@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import NextImage from 'next/image'
-import { mq, Neutral99, OnNeutral99 } from '../../styles/global'
+import { Accent40, mq, Neutral99, OnNeutral99 } from '../../styles/global'
 
 export const Wrapper = styled.div`
   display: flex;
@@ -24,11 +24,14 @@ export const Portion = styled.div`
 export const TextContainer = styled.div`
   padding: 5.4rem 2.4rem;
   word-break: break-word;
+  a {
+    color: ${Accent40};
+    text-decoration: underline;
+  }
 `
 
 export const Image = styled(NextImage)`
   height: 100%;
   width: 100%;
-  // max-width: 100%;
   object-fit: cover;
 `
