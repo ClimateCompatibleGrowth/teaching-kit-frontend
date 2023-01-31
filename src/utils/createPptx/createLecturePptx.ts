@@ -2,8 +2,11 @@ import PptxGenJS from 'pptxgenjs'
 import { LectureBlock } from '../../types/pptx'
 import getSlides from './utils/getSlides'
 
-import { masterDescriptionSlide, descriptionTitle } from './pptxConfigurations'
 import createTitleSlide from './utils/generalSlides/titleSlide'
+import {
+  descriptionTitle,
+  masterDescriptionSlide,
+} from './pptxConfiguration/masterSlide'
 
 export const createLecturePptxFile = async (
   lectureBlocks: LectureBlock[],

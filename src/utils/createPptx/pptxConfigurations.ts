@@ -1,49 +1,5 @@
 import PptxGenJS from 'pptxgenjs'
 
-export const masterDescriptionSlide = {
-  title: 'MASTER_DESCRIPTION_SLIDE',
-  background: { color: 'FFFFFF' },
-  objects: [
-    {
-      rect: {
-        x: 0.0,
-        y: 6.5,
-        w: '100%',
-        h: 0.75,
-        fill: { color: 'F1F1F1' },
-      },
-    },
-    {
-      text: {
-        text: `Author: Jimmy Rickardsson`,
-        options: {
-          x: 0.5,
-          y: 6.5,
-          w: 5.5,
-          h: 0.75,
-        },
-      },
-    },
-    {
-      image: {
-        x: 11.3,
-        y: 0.5,
-        w: 1.67,
-        h: 1.67,
-        path: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/KTH_Royal_Institute_of_Technology_logo.svg/380px-KTH_Royal_Institute_of_Technology_logo.svg.png',
-      },
-    },
-  ],
-}
-
-export const descriptionTitle: PptxGenJS.TextPropsOptions = {
-  x: 0.5,
-  y: 0.7,
-  fontSize: 36,
-  w: '100%',
-  h: 0.75,
-}
-
 export const singleHeading: PptxGenJS.TextPropsOptions = {
   x: '35%',
   y: '45%',
