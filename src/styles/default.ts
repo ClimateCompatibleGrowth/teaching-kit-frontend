@@ -1,6 +1,6 @@
 import { css } from '@emotion/react'
 import { ubuntu, montserrat } from './fonts'
-import { Background } from './global'
+import { Accent40, Background } from './global'
 
 const defaultStyle = css`
   h1,
@@ -71,8 +71,7 @@ const defaultStyle = css`
   }
 
   a {
-    color: inherit;
-    text-decoration: none;
+    color: ${Accent40};
   }
 
   * {

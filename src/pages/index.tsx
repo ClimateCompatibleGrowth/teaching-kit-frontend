@@ -2,10 +2,12 @@ import Head from 'next/head'
 import PosterList from '../components/PosterList/PosterList'
 import Hero from '../components/Hero/Hero'
 import hero from '/public/images/hero.png'
+import handsTogether from '/public/images/hands-together.png'
 import DocumentIcon from '/public/icons/document.svg'
 import ReuseIcon from '/public/icons/reuse.svg'
 import GroupIcon from '/public/icons/group.svg'
 import RecentUpdates from '../components/RecentUpdates/RecentUpdates'
+import TextImage from '../components/TextImage/TextImage'
 
 export default function Home() {
   return (
@@ -20,6 +22,7 @@ export default function Home() {
       </Head>
       <Hero {...heroProps} />
       <PosterList {...posterProps} />
+      <TextImage {...textImageProps} />
       <RecentUpdates />
     </div>
   )
@@ -60,4 +63,13 @@ const posterProps = {
       text: 'Global collaboration on course material means that it is always up to date – especially important in cutting edge fields of research such as energy.',
     },
   ],
+}
+
+const textImageProps = {
+  image: {
+    alt: 'Overhead view of hands from various people coming in from a circle towards the center',
+    src: handsTogether,
+  },
+  title: 'Want to develop learning material or provide feedback?',
+  body: 'Global collaboration on course material means that it is always up to date – especially important in cutting edge fields of research such as energy.\n\nTo enquire about access to the teaching kit website to develop and share your own material, please e-mail [teaching@climatecompatiblegrowth.com](mailto:teaching@climatecompatiblegrowth.com)\n\nTo provide feedback on the teaching kit website, please e-mail [platform@climatecompatiblegrowth.com](mailto:platform@climatecompatiblegrowth.com)',
 }
