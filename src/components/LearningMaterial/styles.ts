@@ -4,7 +4,7 @@ import { Neutral40 } from '../../styles/global'
 export const Wrapper = styled.div``
 
 export const H1 = styled.h1`
-  margin-top: 0.5rem;
+  margin-top: 3.5rem;
   margin-bottom: 5rem;
 `
 

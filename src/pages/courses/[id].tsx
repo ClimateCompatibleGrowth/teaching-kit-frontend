@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import axios from 'axios'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
+import LearningMaterialBadge from '../../components/LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnCourse } from '../../shared/requests/utils/publishedEntriesFilter'
@@ -38,12 +39,12 @@ export default function CoursePage({ course }: Props) {
         <Styled.CourseContentWrapper>
           <h2>Course Content</h2>
           <CardList
-            cards={course.attributes.Lectures.data.map((lecture, index) => ({
+            cards={course.attributes.Lectures.data.map((lecture) => ({
               id: lecture.id.toString(),
               title: lecture.attributes.Title,
               text: lecture.attributes.Abstract,
-              subTitle: `Lecture ${index + 1}`,
               href: `/lectures/${lecture.id}`,
+              subTitle: <LearningMaterialBadge type={'LECTURE'} />,
             }))}
           />
         </Styled.CourseContentWrapper>

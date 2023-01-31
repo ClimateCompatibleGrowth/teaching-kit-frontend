@@ -32,6 +32,10 @@ export const Error99 = '#FFDAD7'
 export const OnError99 = '#242424'
 // End of design tokens
 
+export const AccentBlue = '#6C99FE'
+export const AccentGreen = '#D7EAC4'
+export const AccentYellow = '#F8EABC'
+
 export const breakpoints = {
   xs: '480px',
   sm: '768px',

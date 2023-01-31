@@ -23,6 +23,7 @@ import DropdownSingleSelectable, {
   Item,
 } from '../Dropdown/DropdownSingleSelectable'
 import { levelToString } from '../../utils/utils'
+import LearningMaterialBadge from '../LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
 
 type Props = {
   selectedKeywords: string[]
@@ -171,6 +172,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       id: block.id.toString(),
       text: block.attributes.Abstract,
       href: `/blocks/${block.id}`,
+      subTitle: <LearningMaterialBadge type='BLOCK' />,
     }))
   }
 
@@ -179,14 +181,18 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
     return {
       ...baseCard,
       href: `/lectures/${data.id}`,
+      subTitle: <LearningMaterialBadge type='LECTURE' />,
     }
   }
 
-  const courseDataToCardFormat = (data: Data<CourseThreeLevelsDeep>) => {
+  const courseDataToCardFormat = (
+    data: Data<CourseThreeLevelsDeep>
+  ): CardType => {
     const baseCard = dataToCardFormat(data)
     return {
       ...baseCard,
       href: `/courses/${data.id}`,
+      subTitle: <LearningMaterialBadge type='COURSE' />,
     }
   }
 
