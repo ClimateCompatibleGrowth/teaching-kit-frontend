@@ -8,6 +8,7 @@ import ReuseIcon from '/public/icons/reuse.svg'
 import GroupIcon from '/public/icons/group.svg'
 import RecentUpdates from '../components/RecentUpdates/RecentUpdates'
 import TextImage from '../components/TextImage/TextImage'
+import ContentColumns from '../components/ContentColumns/ContentColumns'
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
       <PosterList {...posterProps} />
       <TextImage {...textImageProps} />
       <RecentUpdates />
+      <ContentColumns {...contentColumnsProps} />
     </div>
   )
 }
@@ -72,4 +74,17 @@ const textImageProps = {
   },
   title: 'Want to develop learning material or provide feedback?',
   body: 'Global collaboration on course material means that it is always up to date – especially important in cutting edge fields of research such as energy.\n\nTo enquire about access to the teaching kit website to develop and share your own material, please e-mail [teaching@climatecompatiblegrowth.com](mailto:teaching@climatecompatiblegrowth.com)\n\nTo provide feedback on the teaching kit website, please e-mail [platform@climatecompatiblegrowth.com](mailto:platform@climatecompatiblegrowth.com)',
+}
+
+const contentColumnsProps = {
+  columns: [
+    {
+      content:
+        'The teaching kit website was developed by KTH Royal Institute of Technology and implemented by Frank Digital within the Climate Compatible Growth Program, funded by the UK Foreign Commonwealth and Development Office.\n\n Original prototypes were developed at KTH Royal Institute of Technology and the early concept was explored in a Masters thesis by Saga Kubulenso.',
+    },
+    {
+      content:
+        'Many individuals have offered their time and expertise during the conceptualisation and implementation of the teaching kit website and to you we offer our thanks.',
+    },
+  ],
 }
