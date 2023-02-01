@@ -51,14 +51,10 @@ export const mq = {
 
 export const BorderRadius = '0.5rem'
 
-export const PageContainerPaddings = {
-  horizontal: '8rem',
-  vertical: '2rem',
-}
-
 export const PageContainer = styled.div<{ hasBottomMargin?: boolean }>`
-  padding: ${PageContainerPaddings.vertical} ${PageContainerPaddings.horizontal};
+  padding: 2rem 1.6rem;
   ${mq.lg} {
+    padding: 2rem 8rem;
     max-width: ${breakpoints.lg};
     margin: 0 auto;
     margin-bottom: ${(props) => (props.hasBottomMargin ? '10rem' : undefined)};
@@ -89,7 +85,7 @@ export const ButtonWithoutDefaultStyle = styled.button`
 `
 
 export const LearningMaterialContainer = styled.div`
-  padding: 7rem 20rem;
+  // padding: 7rem 20rem;
   display: flex;
 `
 

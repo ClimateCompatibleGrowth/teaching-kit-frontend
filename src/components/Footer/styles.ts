@@ -1,11 +1,5 @@
 import styled from '@emotion/styled'
-import {
-  Accent40,
-  breakpoints,
-  mq,
-  PageContainerPaddings,
-  Primary40,
-} from '../../styles/global'
+import { Accent40, breakpoints, mq, Primary40 } from '../../styles/global'
 
 export const ColorBar = styled.div`
   background-color: ${Primary40};
@@ -16,12 +10,13 @@ export const Footer = styled.footer`
   display: flex;
   max-width: ${breakpoints.lg};
   margin: 0 auto;
-  padding: 0 2.4rem;
+  padding: 0 1.6rem;
   justify-content: space-between;
   font-size: 1.8rem;
   line-height: 2.2rem;
   column-gap: 1.6rem;
   flex-wrap: wrap;
+  word-break: break-word;
   ${mq.sm} {
     padding: 0 8rem;
     flex-wrap: nowrap;

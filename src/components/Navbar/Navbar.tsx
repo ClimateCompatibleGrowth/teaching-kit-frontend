@@ -3,8 +3,10 @@ import Image from 'next/image'
 import * as Styled from './styles'
 
 import logo from '../../../public/logo.png'
+import { useRouter } from 'next/router'
 
 export default function Navbar() {
+  const { pathname } = useRouter()
   return (
     <Styled.ColorBar>
       <Styled.Navbar>
@@ -13,10 +15,17 @@ export default function Navbar() {
         </Styled.LogoWrapper>
         <Styled.Ul>
           <Styled.Li>
-            <Link href='/'>Home</Link>
+            <Link aria-current={pathname === '/' ? 'page' : undefined} href='/'>
+              Home
+            </Link>
           </Styled.Li>
           <Styled.Li>
-            <Link href='/discover'>Discover</Link>
+            <Link
+              aria-current={pathname === '/discover' ? 'page' : undefined}
+              href='/discover'
+            >
+              Discover
+            </Link>
           </Styled.Li>
         </Styled.Ul>
       </Styled.Navbar>
