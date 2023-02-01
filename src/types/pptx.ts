@@ -7,7 +7,7 @@ type PptxSlideListContent = {
 export type PptxSlide = {
   title: string
   heading: string
-  mainContent?: string[]
+  mainContent: PptxGenJS.TextProps[]
   mainContentStyling?: PptxGenJS.TextPropsOptions
   speakerNotes?: string
   image?: string

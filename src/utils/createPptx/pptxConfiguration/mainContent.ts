@@ -52,7 +52,6 @@ const primaryContentStyling: PptxGenJS.TextPropsOptions = {
   y: toPercentage(Y_PADDING + ESTIMATED_SLIDE_TITLE_HEIGHT),
   w: toPercentage(PRIMARY_CONTENT_WIDTH - X_PADDING),
   h: 0.75,
-  fontSize: 16,
   autoFit: true,
 }
 
@@ -69,6 +68,5 @@ const fallbackContentStyling: PptxGenJS.TextPropsOptions = {
   y: '80%',
   w: '30%',
   h: 0.5,
-  fontSize: 16,
   autoFit: true,
 }

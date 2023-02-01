@@ -16,13 +16,21 @@ import {
   getPrimaryContentStyling,
   getSecondaryContentStyling,
   ListStyle,
-} from '../createPptx/pptxConfiguration/textContent'
+} from '../createPptx/pptxConfiguration/mainContent'
+import {
+  h3Style,
+  olStyle,
+  paragraphStyle,
+  ulStyle,
+} from '../createPptx/pptxConfiguration/text'
 
-const textNodeTypes = ['paragraph', 'list']
+const textNodeTypes = ['paragraph', 'list', 'space']
+
 const nodeTypes = [
-  ...textNodeTypes,
-  'heading',
+  'paragraph',
+  'list',
   'space',
+  'heading',
   'code',
   'table',
   'hr',
@@ -43,6 +51,10 @@ const nodeTypes = [
 type NodeType = typeof nodeTypes[number]
 
 const isTextElement = (type: NodeType) => textNodeTypes.includes(type)
+
+const isOrderedList = (node: marked.Tokens.List): boolean => {
+  return node.ordered
+}
 
 const getListProps = (node: marked.Token): ListStyle | undefined => {
   if (node.type === 'list') {
@@ -80,11 +92,40 @@ const getDynamicStyling = (
   return getFallbackContentStyling(listProps)
 }
 
+type TextNodeType = 'paragraph' | 'h3' | 'ul' | 'ol' | 'space'
+
+const convertToTextProp = (
+  text: string,
+  type: TextNodeType
+): PptxGenJS.TextProps => {
+  return {
+    text,
+    options: getTextStyling(type),
+  }
+}
+
+const getTextStyling = (type: TextNodeType): PptxGenJS.TextPropsOptions => {
+  switch (type) {
+    case 'paragraph':
+      return paragraphStyle
+    case 'h3':
+      return h3Style
+    case 'ul':
+      return ulStyle
+    case 'ol':
+      return olStyle
+    case 'space':
+      return {}
+    default:
+      return {}
+  }
+}
+
 const markdownToSlideFormat = (slide: Slide) => {
   const pptxSlide = Object.values(slide).reduce(
     (finalSlide, slideValue, index) => {
       const slideAttribute = {} as PptxSlide
-      const mainSlideContent = []
+      const mainSlideContent = [] as PptxGenJS.TextProps[]
 
       // Ignore id (first index) and speaker notes (last index)
       if (index === 0 || index === Object.values(slide).length - 1) {
@@ -121,7 +162,11 @@ const markdownToSlideFormat = (slide: Slide) => {
           )
 
           for (const paragraphToken of paragraphTokens) {
-            mainSlideContent.push(`${decode(paragraphToken.text)}`)
+            const textProps = convertToTextProp(
+              `${decode(paragraphToken.text)}`,
+              'paragraph'
+            )
+            mainSlideContent.push(textProps)
             if (slideAttribute.mainContentStyling === undefined) {
               const styling = getDynamicStyling(
                 node,
@@ -134,7 +179,8 @@ const markdownToSlideFormat = (slide: Slide) => {
         }
 
         if (node.type === 'space') {
-          mainSlideContent.push(node.raw)
+          const textProps = convertToTextProp(node.raw, 'space')
+          mainSlideContent.push(textProps)
         }
 
         if (node.type === 'heading') {
@@ -147,19 +193,28 @@ const markdownToSlideFormat = (slide: Slide) => {
             slideAttribute.headingStyling = h2Heading
           }
           if (node.depth === 3) {
-            slideAttribute.heading = decode(node.text)
-            slideAttribute.headingStyling = h3Heading
+            const textProps = convertToTextProp(`${decode(node.text)}`, 'h3')
+            mainSlideContent.push(textProps)
           }
         }
 
         if (node.type === 'list') {
-          slideAttribute.list = node.items
-          const styling = getDynamicStyling(
-            node,
-            index,
-            nodeTypesInOrderOfOccurance
-          )
-          slideAttribute.listStyling = styling
+          const listType = node.ordered ? 'ol' : 'ul'
+          for (const item of node.items) {
+            const textProps = convertToTextProp(
+              `${decode(item.text)}`,
+              listType
+            )
+            mainSlideContent.push(textProps)
+          }
+          // const bulletString = node.items.map((item) => item.text).join('\n')
+          // slideAttribute.list = node.items
+          // const styling = getDynamicStyling(
+          //   node,
+          //   index,
+          //   nodeTypesInOrderOfOccurance
+          // )
+          // slideAttribute.listStyling = styling
         }
       }
 
@@ -176,6 +231,8 @@ const markdownToSlideFormat = (slide: Slide) => {
   if (slide) {
     pptxSlide.speakerNotes = slide.SpeakerNotes
   }
+
+  console.log(pptxSlide)
 
   return pptxSlide
 }
