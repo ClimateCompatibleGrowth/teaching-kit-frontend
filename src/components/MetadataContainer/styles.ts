@@ -9,8 +9,6 @@ import {
 export const MetadataContainer = styled.div`
   flex: 0 1 100%;
   padding: 3.2rem 2.6rem;
-  // display: flex;
-  // flex-wrap: wrap;
   background: ${Primary90};
   overflow: auto;
   border-radius: ${BorderRadius};
