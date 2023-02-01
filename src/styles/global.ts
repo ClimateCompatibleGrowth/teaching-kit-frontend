@@ -85,7 +85,6 @@ export const ButtonWithoutDefaultStyle = styled.button`
 `
 
 export const LearningMaterialContainer = styled.div`
-  // padding: 7rem 20rem;
   display: flex;
 `
 

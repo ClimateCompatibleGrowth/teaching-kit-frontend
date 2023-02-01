@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { montserrat } from '../../styles/fonts'
 import { breakpoints, mq, Primary40 } from '../../styles/global'
 
 const navHeight = '10rem'
@@ -47,7 +48,7 @@ export const Li = styled.li`
   font-size: 1.8rem;
 
   a[aria-current='page'] {
-    font-weight: bold;
+    font-family: ${montserrat[700].style.fontFamily};
   }
 
   a:hover {
