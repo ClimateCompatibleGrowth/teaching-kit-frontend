@@ -3,6 +3,7 @@ import { Block, BlockOneLevelDeep, Data } from '../../types'
 import {
   LearningMaterialContainer,
   LearningMaterialOverview,
+  PageContainer,
 } from '../../styles/global'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { summarizeDurations } from '../../utils/utils'
@@ -15,6 +16,9 @@ import { downloadBlockPptx } from '../../utils/downloadAsPptx/downloadBlockAsPpt
 
 const BlockContentWrapper = styled.div`
   margin-top: 5rem;
+  img {
+    max-width: 100%;
+  }
 `
 
 const Styled = { BlockContentWrapper }
@@ -23,25 +27,27 @@ type Props = { block: Data<BlockOneLevelDeep> }
 
 export default function BlockPage({ block }: Props) {
   return (
-    <LearningMaterialContainer>
-      <LearningMaterialOverview>
-        <LearningMaterial
-          type='BLOCK'
-          title={block.attributes.Title}
-          abstract={block.attributes.Abstract}
-          learningOutcomes={block.attributes.LearningOutcomes}
+    <PageContainer>
+      <LearningMaterialContainer>
+        <LearningMaterialOverview>
+          <LearningMaterial
+            type='BLOCK'
+            title={block.attributes.Title}
+            abstract={block.attributes.Abstract}
+            learningOutcomes={block.attributes.LearningOutcomes}
+          />
+          <Styled.BlockContentWrapper>
+            <ReactMarkdown>{block.attributes.Document}</ReactMarkdown>
+          </Styled.BlockContentWrapper>
+        </LearningMaterialOverview>
+        <MetadataContainer
+          duration={summarizeDurations([block])}
+          authors={block.attributes.Authors}
+          downloadAsDocx={() => handleBlockDocxDownload(block)}
+          downloadAsPptx={() => downloadBlockPptx(block)}
         />
-        <Styled.BlockContentWrapper>
-          <ReactMarkdown>{block.attributes.Document}</ReactMarkdown>
-        </Styled.BlockContentWrapper>
-      </LearningMaterialOverview>
-      <MetadataContainer
-        duration={summarizeDurations([block])}
-        authors={block.attributes.Authors}
-        downloadAsDocx={() => handleBlockDocxDownload(block)}
-        downloadAsPptx={() => downloadBlockPptx(block)}
-      />
-    </LearningMaterialContainer>
+      </LearningMaterialContainer>
+    </PageContainer>
   )
 }
 

@@ -9,6 +9,7 @@ import { filterOutOnlyPublishedEntriesOnCourse } from '../../shared/requests/uti
 import {
   LearningMaterialContainer,
   LearningMaterialOverview,
+  PageContainer,
 } from '../../styles/global'
 import { Course, CourseThreeLevelsDeep, Data } from '../../types'
 import { handleCourseDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
@@ -25,44 +26,46 @@ type Props = { course: Data<CourseThreeLevelsDeep> }
 
 export default function CoursePage({ course }: Props) {
   return (
-    <LearningMaterialContainer>
-      <LearningMaterialOverview>
-        <LearningMaterial
-          type='COURSE'
-          title={course.attributes.Title}
-          abstract={course.attributes.Abstract}
-          learningOutcomes={course.attributes.LearningOutcomes}
-          prerequisites={course.attributes.Prerequisites}
-          acknowledgement={course.attributes.Acknowledgement}
-          citeAs={course.attributes.CiteAs}
-        />
-        <Styled.CourseContentWrapper>
-          <h2>Course Content</h2>
-          <CardList
-            cards={course.attributes.Lectures.data.map((lecture) => ({
-              id: lecture.id.toString(),
-              title: lecture.attributes.Title,
-              text: lecture.attributes.Abstract,
-              href: `/lectures/${lecture.id}`,
-              subTitle: <LearningMaterialBadge type={'LECTURE'} />,
-            }))}
+    <PageContainer>
+      <LearningMaterialContainer>
+        <LearningMaterialOverview>
+          <LearningMaterial
+            type='COURSE'
+            title={course.attributes.Title}
+            abstract={course.attributes.Abstract}
+            learningOutcomes={course.attributes.LearningOutcomes}
+            prerequisites={course.attributes.Prerequisites}
+            acknowledgement={course.attributes.Acknowledgement}
+            citeAs={course.attributes.CiteAs}
           />
-        </Styled.CourseContentWrapper>
-      </LearningMaterialOverview>
-      <MetadataContainer
-        level={levelToString(course.attributes.Level)}
-        duration={summarizeDurations(
-          course.attributes.Lectures.data
-            .map((lecture) =>
-              lecture.attributes.Blocks.data.map((block) => block)
-            )
-            .flat()
-        )}
-        authors={course.attributes.CourseCreators}
-        downloadAsDocx={() => handleCourseDocxDownload(course)}
-        downloadAsPptx={() => downloadCoursePptx(course)}
-      />
-    </LearningMaterialContainer>
+          <Styled.CourseContentWrapper>
+            <h2>Course Content</h2>
+            <CardList
+              cards={course.attributes.Lectures.data.map((lecture) => ({
+                id: lecture.id.toString(),
+                title: lecture.attributes.Title,
+                text: lecture.attributes.Abstract,
+                href: `/lectures/${lecture.id}`,
+                subTitle: <LearningMaterialBadge type={'LECTURE'} />,
+              }))}
+            />
+          </Styled.CourseContentWrapper>
+        </LearningMaterialOverview>
+        <MetadataContainer
+          level={levelToString(course.attributes.Level)}
+          duration={summarizeDurations(
+            course.attributes.Lectures.data
+              .map((lecture) =>
+                lecture.attributes.Blocks.data.map((block) => block)
+              )
+              .flat()
+          )}
+          authors={course.attributes.CourseCreators}
+          downloadAsDocx={() => handleCourseDocxDownload(course)}
+          downloadAsPptx={() => downloadCoursePptx(course)}
+        />
+      </LearningMaterialContainer>
+    </PageContainer>
   )
 }
 

@@ -53,7 +53,7 @@ export const BorderRadius = '0.5rem'
 
 export const PageContainer = styled.div<{ hasBottomMargin?: boolean }>`
   padding: 2rem 1.6rem;
-  ${mq.lg} {
+  ${mq.md} {
     padding: 2rem 8rem;
     max-width: ${breakpoints.lg};
     margin: 0 auto;
@@ -86,10 +86,20 @@ export const ButtonWithoutDefaultStyle = styled.button`
 
 export const LearningMaterialContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  column-gap: 4.6rem;
+  align-items: flex-start;
+
+  ${mq.sm} {
+    flex-wrap: nowrap;
+  }
 `
 
 export const LearningMaterialOverview = styled.div`
-  width: 80%;
+  flex: 0 0 100%;
+  ${mq.sm} {
+    flex: 0 1 78%;
+  }
 `
 
 export const LearningMaterialList = styled.ul`
