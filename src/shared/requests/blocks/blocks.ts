@@ -33,3 +33,11 @@ export const filterBlockOnKeywordsAndAuthors = async ({
   )
   return response.data
 }
+
+export const getRecentBlocks = async (limit = 30) => {
+  const pagination = `pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
+  const response: ResponseArray<BlockOneLevelDeep> = await axios.get(
+    `${ENDPOINT}?${pagination}`
+  )
+  return response.data.data
+}

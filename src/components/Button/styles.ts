@@ -7,8 +7,7 @@ import {
 } from '../../styles/global'
 
 export const Button = styled(ButtonWithoutDefaultStyle)`
-  width: 11rem;
-  height: 5rem;
+  padding: 0.8rem 1.6rem;
 
   display: flex;
   justify-content: center;

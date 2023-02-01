@@ -11,7 +11,9 @@ export const typeToText = (type: LearningMaterialType) => {
   }
 }
 
-const summarizeDurationsInMinutes = (blocks: Data<BlockOneLevelDeep>[]) => {
+const summarizeDurationsInMinutes = (
+  blocks: Data<Pick<BlockOneLevelDeep, 'DurationInMinutes'>>[]
+) => {
   return blocks.reduce(
     (total, block) => (total += block.attributes.DurationInMinutes),
     0
@@ -26,7 +28,9 @@ const minutesToFormattedHourString = (totalMinutes: number) => {
   return `${hourString}${minutesString}`
 }
 
-export const summarizeDurations = (blocks: Data<BlockOneLevelDeep>[]) => {
+export const summarizeDurations = (
+  blocks: Data<Pick<BlockOneLevelDeep, 'DurationInMinutes'>>[]
+) => {
   const durationInMinutes = summarizeDurationsInMinutes(blocks)
   if (durationInMinutes < 60) {
     return `${durationInMinutes} minutes`

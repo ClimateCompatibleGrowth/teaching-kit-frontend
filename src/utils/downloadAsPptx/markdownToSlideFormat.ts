@@ -10,6 +10,7 @@ import {
 import { PptxSlide } from '../../types/pptx'
 import { marked } from 'marked'
 import { decode } from 'html-entities'
+import { sourceIsFromS3 } from '../utils'
 
 const markdownToSlideFormat = (slide: Slide) => {
   const pptxSlide = Object.values(slide).reduce(
@@ -30,7 +31,7 @@ const markdownToSlideFormat = (slide: Slide) => {
             (token): token is marked.Tokens.Image => token.type === 'image'
           )
 
-          if (imageToken !== undefined) {
+          if (imageToken !== undefined && sourceIsFromS3(imageToken.href)) {
             slideAttribute.image = imageToken.href
           }
 

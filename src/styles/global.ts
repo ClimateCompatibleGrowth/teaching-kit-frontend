@@ -56,11 +56,12 @@ export const PageContainerPaddings = {
   vertical: '2rem',
 }
 
-export const PageContainer = styled.div`
+export const PageContainer = styled.div<{ hasBottomMargin?: boolean }>`
   padding: ${PageContainerPaddings.vertical} ${PageContainerPaddings.horizontal};
   ${mq.lg} {
     max-width: ${breakpoints.lg};
     margin: 0 auto;
+    margin-bottom: ${(props) => (props.hasBottomMargin ? '10rem' : undefined)};
   }
 `
 

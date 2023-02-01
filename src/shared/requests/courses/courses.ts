@@ -3,7 +3,7 @@ import {
   getAuthorsAndKeywordsFilterString,
   getSortString,
 } from '../utils/utils'
-import { CourseThreeLevelsDeep } from '../../../types'
+import { CourseThreeLevelsDeep, CourseTwoLevelsDeep } from '../../../types'
 import { ResponseArray } from '../types'
 import { SortOptionType } from '../../../components/TabGroup/TabGroup'
 
@@ -52,4 +52,13 @@ export const filterCourseOnKeywordsAndAuthors = async (
     `${ENDPOINT}${filterString}`
   )
   return response.data
+}
+
+export const getRecentCourses = async (limit = 30) => {
+  const pagination = `pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
+  const populate = `populate[Level]=Level&populate[Lectures][populate][Blocks]=DurationInMinutes`
+  const response: ResponseArray<CourseTwoLevelsDeep> = await axios.get(
+    `${ENDPOINT}?${pagination}&${populate}`
+  )
+  return response.data.data
 }
