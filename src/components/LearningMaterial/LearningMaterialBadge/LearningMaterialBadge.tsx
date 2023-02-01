@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { AccentBlue, AccentGreen, AccentYellow } from '../../../styles/global'
+import { AccentPink, AccentGreen, AccentYellow } from '../../../styles/global'
 import { LearningMaterialType } from '../../../types'
 import Badge from '../../Badge/Badge'
 
@@ -11,7 +11,7 @@ type Props = {
 }
 
 const learningMaterialColors = {
-  course: AccentBlue,
+  course: AccentPink,
   lecture: AccentGreen,
   block: AccentYellow,
 }
