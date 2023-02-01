@@ -1,6 +1,6 @@
 import { css } from '@emotion/react'
 import { ubuntu, montserrat } from './fonts'
-import { Background } from './global'
+import { Background, mq } from './global'
 
 const defaultStyle = css`
   h1,
@@ -77,6 +77,17 @@ const defaultStyle = css`
 
   * {
     box-sizing: border-box;
+  }
+
+  main {
+    background-image: url('/icons/three-lines.svg');
+    background-repeat: no-repeat;
+    background-position: bottom -150px right;
+    background-size: 75%;
+    ${mq.sm} {
+      background-position: bottom -300px right;
+      background-size: initial;
+    }
   }
 `
 

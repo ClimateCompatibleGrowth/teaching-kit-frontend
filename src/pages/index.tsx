@@ -12,7 +12,7 @@ import ContentColumns from '../components/ContentColumns/ContentColumns'
 
 export default function Home() {
   return (
-    <div>
+    <main>
       <Head>
         <title>Teaching kit</title>
         <meta
@@ -26,7 +26,7 @@ export default function Home() {
       <TextImage {...textImageProps} />
       <RecentUpdates />
       <ContentColumns {...contentColumnsProps} />
-    </div>
+    </main>
   )
 }
 
