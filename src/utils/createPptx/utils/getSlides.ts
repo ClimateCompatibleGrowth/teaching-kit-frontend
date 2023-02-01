@@ -27,7 +27,7 @@ const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
     if (pptxSlide.list) {
       const bulletString = pptxSlide.list.map((item) => item.text).join('\n')
 
-      contentSlide.addText(`${bulletString}`, pptxSlide.bulletStyling)
+      contentSlide.addText(`${bulletString}`, pptxSlide.listStyling)
     }
 
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)

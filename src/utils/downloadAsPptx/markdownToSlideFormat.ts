@@ -159,7 +159,7 @@ const markdownToSlideFormat = (slide: Slide) => {
             index,
             nodeTypesInOrderOfOccurance
           )
-          slideAttribute.bulletStyling = styling
+          slideAttribute.listStyling = styling
         }
       }
 
