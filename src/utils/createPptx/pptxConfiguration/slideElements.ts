@@ -1,11 +1,19 @@
 import PptxGenJS from 'pptxgenjs'
+import {
+  remainingWidth,
+  toPercentage,
+  startXPos,
+  X_PADDING,
+  startYPos,
+} from './utils'
 
-export const singleHeading: PptxGenJS.TextPropsOptions = {
-  x: '35%',
-  y: '45%',
-  fontSize: 42,
-  w: '100%',
-  autoFit: true,
+export const slideHeading: PptxGenJS.TextPropsOptions = {
+  x: startXPos,
+  y: startYPos,
+  fontSize: 36,
+  w: toPercentage(remainingWidth(2 * X_PADDING)),
+  h: 0.75,
+  breakLine: true,
 }
 
 export const h1Heading: PptxGenJS.TextPropsOptions = {
@@ -31,24 +39,6 @@ export const h3Heading: PptxGenJS.TextPropsOptions = {
   y: 0,
   fontSize: 20,
   w: '90%',
-  h: 0.75,
-  autoFit: true,
-}
-
-export const bulletPoints: PptxGenJS.TextPropsOptions = {
-  x: '70%',
-  y: '50%',
-  w: '30%',
-  h: 0.5,
-  bullet: true,
-  breakLine: true,
-}
-
-export const mainContentStyling: PptxGenJS.TextPropsOptions = {
-  x: 0.5,
-  y: '40%',
-  fontSize: 16,
-  w: '65%',
   h: 0.75,
   autoFit: true,
 }

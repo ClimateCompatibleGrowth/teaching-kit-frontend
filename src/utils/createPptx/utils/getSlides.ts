@@ -1,9 +1,9 @@
 import PptxGenJS from 'pptxgenjs'
-import { imageStyling } from '../pptxConfigurations'
+import { imageStyling } from '../pptxConfiguration/slideElements'
 import { PptxSlide } from '../../../types/pptx'
 
-const getSlides = (block: PptxSlide[], pptx: PptxGenJS) => {
-  return block.map((pptxSlide) => {
+const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
+  return blockSlides.map((pptxSlide) => {
     const contentSlide = pptx.addSlide()
 
     //Headings

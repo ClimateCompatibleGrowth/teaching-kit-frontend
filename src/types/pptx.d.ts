@@ -3,14 +3,14 @@ type PptxSlideListContent = {
 }
 
 export type PptxSlide = {
-  title?: string
+  title: string
+  heading: string
   mainContent?: string[]
+  mainContentStyling?: any
   speakerNotes?: string
   image?: string
   headingStyling?: {}
-  mainContentStyling?: any
   bulletStyling?: any
-  heading?: string
   list?: PptxSlideListContent[]
 }
 

@@ -4,7 +4,7 @@ import {
   masterDescriptionSlide,
 } from '../../pptxConfiguration/masterSlide'
 
-const createTitleSlide = async (lectureTitle: string, pptx: PptxGenJS) => {
+const createTitleSlide = (lectureTitle: string, pptx: PptxGenJS) => {
   // Master slides
   pptx.defineSlideMaster(masterDescriptionSlide)
   const masterContentSlide = masterDescriptionSlide.title
