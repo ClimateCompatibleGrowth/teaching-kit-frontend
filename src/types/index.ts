@@ -6,8 +6,8 @@ type Modify<T, R> = Omit<T, keyof R> & R
 export type Data<T> = {
   id: number
   attributes: T
+  Name?: string
 }
-
 export type Slide = {
   id: string
   Title: string
@@ -33,10 +33,12 @@ export type DeepAffiliation = Affiliation & {
   Authors: Data<Author[]>
 }
 
+//NOTE remove any
 export type Author = {
-  Name: string
+  Name?: string
   Email?: string
   ORCID?: string
+  attributes: any
 }
 
 export type AuthorOneLevelDeep = Author & {

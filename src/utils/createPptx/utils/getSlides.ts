@@ -1,9 +1,9 @@
 import PptxGenJS from 'pptxgenjs'
-import { imageStyling } from '../pptxConfigurations'
+import { imageStyling } from '../pptxConfiguration/slideElements'
 import { PptxSlide } from '../../../types/pptx'
 
-const getSlides = (block: PptxSlide[], pptx: PptxGenJS) => {
-  return block.map((pptxSlide) => {
+const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
+  return blockSlides.map((pptxSlide) => {
     const contentSlide = pptx.addSlide()
 
     //Headings
@@ -27,7 +27,7 @@ const getSlides = (block: PptxSlide[], pptx: PptxGenJS) => {
     if (pptxSlide.list) {
       const bulletString = pptxSlide.list.map((item) => item.text).join('\n')
 
-      contentSlide.addText(`${bulletString}`, pptxSlide.bulletStyling)
+      contentSlide.addText(`${bulletString}`, pptxSlide.listStyling)
     }
 
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)

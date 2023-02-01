@@ -9,6 +9,7 @@ export const downloadLecturePptx = async (
 ) => {
   const title = lecture.attributes.Title
   const pptx = await lectureToPptx(lecture)
+
   pptx.writeFile({ fileName: `${title}.pptx` })
 }
 
@@ -16,6 +17,7 @@ export const lectureToPptx = async (
   lecture: Data<LectureTwoLevelsDeep>
 ): Promise<PptxGenJS> => {
   const slides = generateLectureBlockSlides(lecture)
+
   const title = lecture.attributes.Title
 
   const pptx = await createLecturePptxFile(slides, title)
@@ -36,6 +38,7 @@ const generateLectureBlockSlides = (lecture: Data<LectureTwoLevelsDeep>) => {
 
     return {
       title: blockSlides.attributes.Title,
+      authors: blockSlides.attributes.Authors.data,
       pptxSlides: lectureBlockSlides,
     }
   })
