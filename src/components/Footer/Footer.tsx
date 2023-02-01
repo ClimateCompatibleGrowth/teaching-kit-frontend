@@ -11,7 +11,7 @@ export default function Navbar() {
         <Styled.LogoWrapper>
           <Image src={logo} alt='Climate Compatible Growth logotype' />
           <p>
-            Copyright © Climate Compatible Growth 2022. All rights reserved.
+            {`Copyright © Climate Compatible Growth ${new Date().getUTCFullYear()}. All rights reserved.`}
           </p>
         </Styled.LogoWrapper>
         <Styled.ContactWrapper>
