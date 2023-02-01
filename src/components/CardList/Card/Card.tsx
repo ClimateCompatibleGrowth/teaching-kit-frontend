@@ -7,7 +7,7 @@ export type CardType = {
   title: string
   text: string
   href?: string
-  subTitle?: string
+  subTitle?: ReactNode
   metadata?: string
   subComponent?: ReactNode
 }
@@ -20,9 +20,12 @@ const Card = ({ card }: Props) => {
   return (
     <LinkWrapper card={card}>
       <Styled.Card isInteractive={card.href !== undefined}>
-        {card.subTitle !== undefined ? (
+        {typeof card.subTitle === 'string' ? (
           <Styled.SubTitle>{card.subTitle}</Styled.SubTitle>
         ) : null}
+        {typeof card.subTitle === 'object' && (
+          <Styled.SubTitleNode>{card.subTitle}</Styled.SubTitleNode>
+        )}
         <Styled.Title>{card.title}</Styled.Title>
         <Styled.Markdown>
           <ReactMarkdown>{card.text}</ReactMarkdown>

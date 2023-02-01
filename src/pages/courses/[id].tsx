@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import axios from 'axios'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
+import LearningMaterialBadge from '../../components/LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnCourse } from '../../shared/requests/utils/publishedEntriesFilter'
@@ -38,12 +39,12 @@ export default function CoursePage({ course }: Props) {
         <Styled.CourseContentWrapper>
           <h2>Course Content</h2>
           <CardList
-            cards={course.attributes.Lectures.data.map((lecture, index) => ({
+            cards={course.attributes.Lectures.data.map((lecture) => ({
               id: lecture.id.toString(),
               title: lecture.attributes.Title,
               text: lecture.attributes.Abstract,
-              subTitle: `Lecture ${index + 1}`,
               href: `/lectures/${lecture.id}`,
+              subTitle: <LearningMaterialBadge type={'LECTURE'} />,
             }))}
           />
         </Styled.CourseContentWrapper>
@@ -96,10 +97,11 @@ export async function getStaticProps(ctx: any) {
     'populate[Lectures][populate][Blocks][populate][Authors]=*'
   const populateBlockSlides =
     'populate[Lectures][populate][Blocks][populate][Slides]=*'
-  const populateLevel = 'populate[Level]=Level'
+  const populateLevel = 'populate[Level]=*'
+  const populateLectureLevel = 'populate[Lectures][populate][Level]=*'
 
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
+    `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
   )
   const course: Data<CourseThreeLevelsDeep> = res.data.data
 

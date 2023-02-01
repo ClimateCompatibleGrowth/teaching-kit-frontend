@@ -71,6 +71,10 @@ export const SubTitle = styled.h5`
   color: ${OnPrimary90};
 `
 
+export const SubTitleNode = styled.div`
+  margin-bottom: 3rem;
+`
+
 export const SubComponentWrapper = styled.div`
   width: 95%;
   margin-top: 2rem;

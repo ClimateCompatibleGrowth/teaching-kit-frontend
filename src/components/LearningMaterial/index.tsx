@@ -10,6 +10,7 @@ import UnorderedList, { Content } from './UnorderedList/UnorderedList'
 
 import * as Styled from './styles'
 import { typeToText } from '../../utils/utils'
+import LearningMaterialBadge from './LearningMaterialBadge/LearningMaterialBadge'
 
 export type Props = {
   type: LearningMaterialType
@@ -77,7 +78,7 @@ export default function LearningMaterial({
 
   return (
     <Styled.Wrapper>
-      <Styled.H4>{typeToText(type)}</Styled.H4>
+      <LearningMaterialBadge type={type} elementType='h4' />
       <Styled.H1>{title}</Styled.H1>
       <Styled.H2>{`${typeToText(type)} description`}</Styled.H2>
       <ReactMarkdown>{abstract}</ReactMarkdown>

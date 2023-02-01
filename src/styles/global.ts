@@ -32,6 +32,10 @@ export const Error99 = '#FFDAD7'
 export const OnError99 = '#242424'
 // End of design tokens
 
+export const AccentPink = '#EACCCC'
+export const AccentGreen = '#99BFAA'
+export const AccentYellow = '#BFAA99'
+
 export const breakpoints = {
   xs: '480px',
   sm: '768px',
@@ -47,16 +51,13 @@ export const mq = {
 
 export const BorderRadius = '0.5rem'
 
-export const PageContainerPaddings = {
-  horizontal: '8rem',
-  vertical: '2rem',
-}
-
-export const PageContainer = styled.div`
-  padding: ${PageContainerPaddings.vertical} ${PageContainerPaddings.horizontal};
+export const PageContainer = styled.div<{ hasBottomMargin?: boolean }>`
+  padding: 2rem 1.6rem;
   ${mq.lg} {
+    padding: 2rem 8rem;
     max-width: ${breakpoints.lg};
     margin: 0 auto;
+    margin-bottom: ${(props) => (props.hasBottomMargin ? '10rem' : undefined)};
   }
 `
 
@@ -84,7 +85,6 @@ export const ButtonWithoutDefaultStyle = styled.button`
 `
 
 export const LearningMaterialContainer = styled.div`
-  padding: 7rem 20rem;
   display: flex;
 `
 

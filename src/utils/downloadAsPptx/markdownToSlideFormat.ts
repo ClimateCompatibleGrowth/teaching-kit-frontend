@@ -2,6 +2,7 @@ import { marked } from 'marked'
 import { decode } from 'html-entities'
 import PptxGenJS from 'pptxgenjs'
 
+import { sourceIsFromS3 } from '../utils'
 import { Slide } from '../../types'
 import {
   h1Heading,
@@ -111,7 +112,7 @@ const markdownToSlideFormat = (slide: Slide) => {
             (token): token is marked.Tokens.Image => token.type === 'image'
           )
 
-          if (imageToken !== undefined) {
+          if (imageToken !== undefined && sourceIsFromS3(imageToken.href)) {
             slideAttribute.image = imageToken.href
           }
 
