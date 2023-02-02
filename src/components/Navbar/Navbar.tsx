@@ -1,8 +1,7 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import * as Styled from './styles'
 
-import logo from '../../../public/logo.png'
+import LogoIcon from '../../../public/logo.svg'
 import { useRouter } from 'next/router'
 
 export default function Navbar() {
@@ -11,7 +10,7 @@ export default function Navbar() {
     <Styled.ColorBar>
       <Styled.Navbar>
         <Styled.LogoWrapper>
-          <Image src={logo} alt='Climate Compatible Growth logotype' />
+          <LogoIcon alt='Climate Compatible Growth logotype' />
         </Styled.LogoWrapper>
         <Styled.Ul>
           <Styled.Li>

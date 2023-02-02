@@ -54,7 +54,7 @@ export const BorderRadius = '0.5rem'
 export const PageContainer = styled.div<{ hasBottomMargin?: boolean }>`
   padding: 2rem 1.6rem;
   ${mq.md} {
-    padding: 2rem 8rem;
+    padding: 8rem 8rem 2rem;
     max-width: ${breakpoints.lg};
     margin: 0 auto;
     margin-bottom: ${(props) => (props.hasBottomMargin ? '10rem' : undefined)};
