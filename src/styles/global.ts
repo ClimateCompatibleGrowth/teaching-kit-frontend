@@ -85,7 +85,6 @@ export const ButtonWithoutDefaultStyle = styled.button`
   padding: 0px;
   font: inherit;
   cursor: pointer;
-  outline: inherit;
 `
 
 export const LearningMaterialContainer = styled.div`
