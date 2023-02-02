@@ -2,7 +2,7 @@ import { marked } from 'marked'
 import { decode } from 'html-entities'
 import PptxGenJS from 'pptxgenjs'
 
-import { sourceIsFromS3 } from '../utils'
+import { sourceIsFromS3, stripBackslashN } from '../utils'
 import { Slide } from '../../types'
 import { slideHeading } from '../createPptx/pptxConfiguration/slideElements'
 import { PptxSlide } from '../../types/pptx'
@@ -18,6 +18,14 @@ import {
   h3Style,
   paragraphStyle,
 } from '../createPptx/pptxConfiguration/text'
+
+type TokenWithoutTextField =
+  | marked.Tokens.Space
+  | marked.Tokens.Table
+  | marked.Tokens.Hr
+  | marked.Tokens.List
+  | marked.Tokens.Def
+  | marked.Tokens.Br
 
 const textNodeTypes = ['paragraph', 'list', 'space']
 
@@ -49,6 +57,12 @@ const isTextElement = (type: NodeType) => textNodeTypes.includes(type)
 
 const findImageToken = (token: marked.Token): token is marked.Tokens.Image =>
   token.type === 'image'
+
+type AllTokensButSpace = Exclude<marked.Token, TokenWithoutTextField>
+const findAllTokensWithTextField = (
+  tokens: marked.Token[]
+): AllTokensButSpace[] =>
+  tokens.filter((token): token is AllTokensButSpace => 'text' in token)
 
 const getListProps = (node: marked.Token): ListStyle | undefined => {
   if (node.type === 'list') {
@@ -199,7 +213,7 @@ const markdownToSlideFormat = (slide: Slide) => {
         }
 
         if (node.type === 'list') {
-          slideAttribute.list = node.items
+          slideAttribute.list = getSubComponentsFromList(node.items)
           const styling = getDynamicStyling(
             node,
             index,
@@ -225,6 +239,35 @@ const markdownToSlideFormat = (slide: Slide) => {
   }
 
   return pptxSlide
+}
+
+// Extremely cumbersome way of adding bold items to list without breaking to new bullet.
+const getSubComponentsFromList = (
+  list: marked.Tokens.ListItem[]
+): PptxGenJS.TextProps[] => {
+  return list.reduce((finalList, listItem) => {
+    let textNodesToAdd = [] as PptxGenJS.TextProps[]
+    for (const token of listItem.tokens) {
+      if (token.type === 'text') {
+        const _token = token as marked.Tokens.Text
+        if (_token.tokens === undefined) {
+          textNodesToAdd.push({ text: stripBackslashN(_token.text) })
+        } else {
+          const innerTokens = findAllTokensWithTextField(_token.tokens)
+          const textNodes = innerTokens.map((innerToken, index) => ({
+            text: stripBackslashN(innerToken.text),
+            options: {
+              bold: innerToken.type === 'strong',
+              italic: innerToken.type === 'em',
+              ...(index === 0 && { indentLevel: 0, bullet: true }),
+            },
+          }))
+          textNodesToAdd = [...textNodesToAdd, ...textNodes]
+        }
+      }
+    }
+    return [...finalList, ...textNodesToAdd]
+  }, [] as PptxGenJS.TextProps[])
 }
 
 export default markdownToSlideFormat
