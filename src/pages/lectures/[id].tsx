@@ -9,6 +9,7 @@ import { filterOutOnlyPublishedEntriesOnLecture } from '../../shared/requests/ut
 import {
   LearningMaterialContainer,
   LearningMaterialOverview,
+  PageContainer,
 } from '../../styles/global'
 import { Data, Lecture, LectureTwoLevelsDeep } from '../../types'
 import { handleLectureDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
@@ -25,37 +26,39 @@ type Props = { lecture: Data<LectureTwoLevelsDeep> }
 
 export default function LecturePage({ lecture }: Props) {
   return (
-    <LearningMaterialContainer>
-      <LearningMaterialOverview>
-        <LearningMaterial
-          type='LECTURE'
-          title={lecture.attributes.Title}
-          abstract={lecture.attributes.Abstract}
-          learningOutcomes={lecture.attributes.LearningOutcomes}
-          acknowledgement={lecture.attributes.Acknowledgement}
-          citeAs={lecture.attributes.CiteAs}
-        />
-        <Styled.LectureContentWrapper>
-          <h2>Lecture Content</h2>
-          <CardList
-            cards={lecture.attributes.Blocks.data.map((block) => ({
-              id: block.id.toString(),
-              title: block.attributes.Title,
-              text: block.attributes.Abstract,
-              href: `/blocks/${block.id}`,
-              subTitle: <LearningMaterialBadge type='BLOCK' />,
-            }))}
+    <PageContainer>
+      <LearningMaterialContainer>
+        <LearningMaterialOverview>
+          <LearningMaterial
+            type='LECTURE'
+            title={lecture.attributes.Title}
+            abstract={lecture.attributes.Abstract}
+            learningOutcomes={lecture.attributes.LearningOutcomes}
+            acknowledgement={lecture.attributes.Acknowledgement}
+            citeAs={lecture.attributes.CiteAs}
           />
-        </Styled.LectureContentWrapper>
-      </LearningMaterialOverview>
-      <MetadataContainer
-        level={lecture.attributes.Level.data?.attributes.Level}
-        duration={summarizeDurations(lecture.attributes.Blocks.data)}
-        authors={lecture.attributes.LectureCreators}
-        downloadAsDocx={() => handleLectureDocxDownload(lecture)}
-        downloadAsPptx={() => downloadLecturePptx(lecture)}
-      />
-    </LearningMaterialContainer>
+          <Styled.LectureContentWrapper>
+            <h2>Lecture Content</h2>
+            <CardList
+              cards={lecture.attributes.Blocks.data.map((block) => ({
+                id: block.id.toString(),
+                title: block.attributes.Title,
+                text: block.attributes.Abstract,
+                href: `/blocks/${block.id}`,
+                subTitle: <LearningMaterialBadge type='BLOCK' />,
+              }))}
+            />
+          </Styled.LectureContentWrapper>
+        </LearningMaterialOverview>
+        <MetadataContainer
+          level={lecture.attributes.Level.data?.attributes.Level}
+          duration={summarizeDurations(lecture.attributes.Blocks.data)}
+          authors={lecture.attributes.LectureCreators}
+          downloadAsDocx={() => handleLectureDocxDownload(lecture)}
+          downloadAsPptx={() => downloadLecturePptx(lecture)}
+        />
+      </LearningMaterialContainer>
+    </PageContainer>
   )
 }
 
