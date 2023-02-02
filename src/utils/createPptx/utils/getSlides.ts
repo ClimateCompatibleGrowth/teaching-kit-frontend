@@ -9,11 +9,13 @@ const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
     //Headings
     contentSlide.addText(`${pptxSlide.heading}`, pptxSlide.headingStyling)
 
-    if (pptxSlide?.image !== undefined && pptxSlide?.image !== '') {
-      contentSlide.addImage({
-        path: `${pptxSlide.image}?do-not-fetch-from-cache`,
-        ...imageStyling,
-      })
+    if (pptxSlide?.images !== undefined && pptxSlide?.images.length > 0) {
+      for (const image of pptxSlide.images) {
+        contentSlide.addImage({
+          ...imageStyling,
+          ...image,
+        })
+      }
     }
 
     if (pptxSlide?.mainContent !== undefined) {

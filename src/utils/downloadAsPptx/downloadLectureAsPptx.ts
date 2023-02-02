@@ -15,30 +15,34 @@ export const downloadLecturePptx = async (
 export const lectureToPptx = async (
   lecture: Data<LectureTwoLevelsDeep>
 ): Promise<PptxGenJS> => {
-  const slides = generateLectureBlockSlides(lecture)
+  const slides = await generateLectureBlockSlides(lecture)
   const title = lecture.attributes.Title
 
   const pptx = await createLecturePptxFile(slides, title)
   return pptx
 }
 
-const generateLectureBlockSlides = (lecture: Data<LectureTwoLevelsDeep>) => {
+const generateLectureBlockSlides = async (
+  lecture: Data<LectureTwoLevelsDeep>
+) => {
   const blocks = lecture.attributes.Blocks.data
 
-  const lectureBlockSlides = blocks.map((blockSlides) => {
-    const lectureBlockSlides = blockSlides.attributes.Slides.map(
-      (slide: Slide) => {
-        slide.id = slide.id.toString()
+  const lectureBlockSlides = Promise.all(
+    blocks.map(async (blockSlides) => {
+      const lectureBlockSlides = await Promise.all(
+        blockSlides.attributes.Slides.map((slide: Slide) => {
+          slide.id = slide.id.toString()
 
-        return markdownToSlideFormat(slide)
+          return markdownToSlideFormat(slide)
+        })
+      )
+
+      return {
+        title: blockSlides.attributes.Title,
+        pptxSlides: lectureBlockSlides,
       }
-    )
-
-    return {
-      title: blockSlides.attributes.Title,
-      pptxSlides: lectureBlockSlides,
-    }
-  })
+    })
+  )
 
   return lectureBlockSlides
 }

@@ -14,19 +14,23 @@ export const downloadBlockPptx = async (block: Data<BlockOneLevelDeep>) => {
 export const blockToPptx = async (
   block: Data<BlockOneLevelDeep>
 ): Promise<PptxGenJS> => {
-  const slides = generateSlides(block)
+  const slides = await generateSlides(block)
   const title = block.attributes.Title
 
   const pptx = await createBlockPptxFile(slides, title)
   return pptx
 }
 
-const generateSlides = (block: Data<BlockOneLevelDeep>): PptxSlide[] => {
-  const pptxSlides = block.attributes.Slides.map((slide: Slide) => {
-    slide.id = slide.id.toString()
+const generateSlides = async (
+  block: Data<BlockOneLevelDeep>
+): Promise<PptxSlide[]> => {
+  const pptxSlides = Promise.all(
+    block.attributes.Slides.map(async (slide: Slide) => {
+      slide.id = slide.id.toString()
 
-    return markdownToSlideFormat(slide)
-  })
+      return await markdownToSlideFormat(slide)
+    })
+  )
 
   return pptxSlides
 }

@@ -2,7 +2,7 @@ import { marked } from 'marked'
 import { decode } from 'html-entities'
 import PptxGenJS from 'pptxgenjs'
 
-import { sourceIsFromS3, stripBackslashN } from '../utils'
+import { getImageMetadata, sourceIsFromS3, stripBackslashN } from '../utils'
 import { Slide } from '../../types'
 import { slideHeading } from '../createPptx/pptxConfiguration/slideElements'
 import { PptxSlide } from '../../types/pptx'
@@ -18,6 +18,7 @@ import {
   h3Style,
   paragraphStyle,
 } from '../createPptx/pptxConfiguration/text'
+import { getBaseImageStyling } from '../createPptx/pptxConfiguration/image'
 
 type TokenWithoutTextField =
   | marked.Tokens.Space
@@ -130,26 +131,24 @@ const getTextStyling = (type: TextNodeType): PptxGenJS.TextPropsOptions => {
   }
 }
 
-const markdownToSlideFormat = (slide: Slide) => {
-  const pptxSlide = Object.values(slide).reduce(
-    (finalSlide, slideValue, index) => {
+const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
+  let slideTitle = ''
+
+  const pptxSlidePromise = Object.values(slide).reduce(
+    async (finalSlide, slideValue, index) => {
       const slideAttribute = {} as PptxSlide
       const mainSlideContent = [] as PptxGenJS.TextProps[]
+      const images = [] as PptxGenJS.ImageProps[]
 
       // Ignore id (first index) and speaker notes (last index)
       if (index === 0 || index === Object.values(slide).length - 1) {
-        return finalSlide
+        return Promise.resolve(finalSlide)
       }
 
       // Slide title
       if (index === 1) {
-        slideAttribute.heading = slideValue ?? ''
-        slideAttribute.headingStyling = slideHeading
-        slideAttribute.title = slideValue ?? ''
-        return {
-          ...finalSlide,
-          ...slideAttribute,
-        }
+        slideTitle = slideValue ?? ''
+        return Promise.resolve(finalSlide)
       }
 
       const markdown = marked.lexer(slideValue)
@@ -175,7 +174,16 @@ const markdownToSlideFormat = (slide: Slide) => {
           const imageToken = node.tokens.find(findImageToken)
 
           if (imageToken !== undefined && sourceIsFromS3(imageToken.href)) {
-            slideAttribute.image = imageToken.href
+            const href = `${imageToken.href}?do-not-fetch-from-cache`
+            const image = await getImageMetadata(href)
+            const imageStyling = getBaseImageStyling(
+              image.naturalWidth,
+              image.naturalHeight
+            )
+            images.push({
+              path: href,
+              ...imageStyling,
+            })
           }
 
           const paragraphTokens = node.tokens.filter(
@@ -252,18 +260,25 @@ const markdownToSlideFormat = (slide: Slide) => {
       }
 
       slideAttribute.mainContent = mainSlideContent
+      slideAttribute.images = images
 
-      return {
+      return Promise.resolve({
         ...finalSlide,
         ...slideAttribute,
-      }
+      })
     },
-    {} as PptxSlide
+    {} as Promise<PptxSlide>
   )
+
+  const pptxSlide = await pptxSlidePromise
 
   if (slide) {
     pptxSlide.speakerNotes = slide.SpeakerNotes
   }
+
+  pptxSlide.heading = slideTitle ?? ''
+  pptxSlide.headingStyling = slideHeading
+  pptxSlide.title = slideTitle ?? ''
 
   return pptxSlide
 }
