@@ -6,15 +6,18 @@ import DropdownMultipleSelectables, {
 import TabGroup from '../../components/TabGroup/TabGroup'
 import { searchForAuthors } from '../../shared/requests/authors/authors'
 import { searchForKeywords } from '../../shared/requests/keywords/keywords'
-import { PageContainer } from '../../styles/global'
+import { mq, PageContainer } from '../../styles/global'
 
 // Note that Strapi's default value for page sizes currently is 25. Hence,
 // if this constant is increased to > 25, we will still only get 25 results.
 const MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN = 20
 
 const FilterGroup = styled.div`
-  display: flex;
-  gap: 3rem;
+  ${mq.sm} {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: no-wrap;
+  }
 `
 
 const H2 = styled.h2`

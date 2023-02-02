@@ -106,46 +106,44 @@ export default function DropdownSingleSelectable({
   }
 
   return (
-    <div>
-      <Styled.DropdownWrapper ref={wrapperRef}>
-        <Styled.Label htmlFor={`${label}dropdown`}>{label}</Styled.Label>
-        <Styled.InputWrapper
+    <Styled.DropdownWrapper ref={wrapperRef}>
+      <Styled.Label htmlFor={`${label}dropdown`}>{label}</Styled.Label>
+      <Styled.InputWrapper
+        onClick={
+          !enableSearch
+            ? () => setDoShowResultsList((prevState) => !prevState)
+            : () => null
+        }
+      >
+        <Styled.IconButton
           onClick={
-            !enableSearch
+            enableSearch
               ? () => setDoShowResultsList((prevState) => !prevState)
               : () => null
           }
+          isPointingDown={doShowResultsList}
+          aria-label={`${doShowResultsList ? 'Hide' : 'Show'} ${ariaLabel}`}
+          aria-pressed={doShowResultsList}
         >
-          <Styled.IconButton
-            onClick={
-              enableSearch
-                ? () => setDoShowResultsList((prevState) => !prevState)
-                : () => null
-            }
-            isPointingDown={doShowResultsList}
-            aria-label={`${doShowResultsList ? 'Hide' : 'Show'} ${ariaLabel}`}
-            aria-pressed={doShowResultsList}
-          >
-            <ExpandMoreOutlinedIcon style={{ height: '2rem', width: '2rem' }} />
-          </Styled.IconButton>
-          <Styled.DropdownInput
-            name={`${label}dropdown`}
-            placeholder={placeholder}
-            onChange={(event: React.FormEvent<HTMLInputElement>) =>
-              setSearchTerm(event.currentTarget.value)
-            }
-            disabled={!enableSearch}
-            searchIsEnabled={enableSearch}
-          />
-        </Styled.InputWrapper>
-        {doShowResultsList && (
-          <Styled.DropdownList>
-            {matchingItems.length > maxAmountOfItems
-              ? renderLimitedResults(maxAmountOfItems)
-              : renderAllResults()}
-          </Styled.DropdownList>
-        )}
-      </Styled.DropdownWrapper>
-    </div>
+          <ExpandMoreOutlinedIcon style={{ height: '2rem', width: '2rem' }} />
+        </Styled.IconButton>
+        <Styled.DropdownInput
+          name={`${label}dropdown`}
+          placeholder={placeholder}
+          onChange={(event: React.FormEvent<HTMLInputElement>) =>
+            setSearchTerm(event.currentTarget.value)
+          }
+          disabled={!enableSearch}
+          searchIsEnabled={enableSearch}
+        />
+      </Styled.InputWrapper>
+      {doShowResultsList && (
+        <Styled.DropdownList>
+          {matchingItems.length > maxAmountOfItems
+            ? renderLimitedResults(maxAmountOfItems)
+            : renderAllResults()}
+        </Styled.DropdownList>
+      )}
+    </Styled.DropdownWrapper>
   )
 }
