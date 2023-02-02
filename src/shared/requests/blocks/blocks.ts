@@ -4,6 +4,7 @@ import { ResponseArray, ResponseArrayData } from '../types'
 import {
   FilterParameters,
   getAuthorsAndKeywordsFilterString,
+  getSortString,
 } from '../utils/utils'
 
 const ENDPOINT = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/blocks`
@@ -14,10 +15,13 @@ export const filterBlockOnKeywordsAndAuthors = async ({
   authors,
   pageNumber,
   matchesPerPage,
+  sortMethod,
 }: FilterParameters): Promise<ResponseArrayData<BlockOneLevelDeep>> => {
   const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
     matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
   }`
+
+  const sort = getSortString(sortMethod)
 
   const authorsAndKeywordsFilterString = getAuthorsAndKeywordsFilterString(
     authors,
@@ -27,7 +31,7 @@ export const filterBlockOnKeywordsAndAuthors = async ({
 
   const filters = `${pagination}${authorsAndKeywordsFilterString}`
   const filterString =
-    filters.length > 0 ? `${filters}&populate=*` : '?populate=*'
+    filters.length > 0 ? `${filters}&${sort}&populate=*` : `&${sort}?populate=*`
   const response: ResponseArray<BlockOneLevelDeep> = await axios.get(
     `${ENDPOINT}${filterString}`
   )

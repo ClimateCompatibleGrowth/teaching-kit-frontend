@@ -130,12 +130,13 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
         keywords: selectedKeywords,
         authors: selectedAuthors,
         pageNumber: pageNumber,
+        sortMethod: sortMethod.id,
         matchesPerPage,
       })
 
       setLectureResults(lectureFilterResult)
     },
-    [selectedKeywords, selectedAuthors, matchesPerPage]
+    [selectedKeywords, selectedAuthors, sortMethod, matchesPerPage]
   )
 
   const onBlockChange = useCallback(
@@ -144,12 +145,13 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
         keywords: selectedKeywords,
         authors: selectedAuthors,
         pageNumber: pageNumber,
+        sortMethod: sortMethod.id,
         matchesPerPage,
       })
 
       setBlockResults(blockFilterResult)
     },
-    [selectedKeywords, selectedAuthors, matchesPerPage]
+    [selectedKeywords, selectedAuthors, sortMethod, matchesPerPage]
   )
 
   useEffect(() => {

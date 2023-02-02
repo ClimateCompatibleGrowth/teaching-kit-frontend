@@ -5,6 +5,7 @@ export type FilterParameters = {
   keywords: string[]
   authors: string[]
   pageNumber: number
+  sortMethod: SortOptionType
   matchesPerPage?: number
 }
 
