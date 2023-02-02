@@ -2,12 +2,16 @@ import styled from '@emotion/styled'
 import { montserrat } from '../../styles/fonts'
 import { OnNeutral99 } from '../../styles/global'
 
-export const Badge = styled.div<{ accentColor: string }>`
+export const Badge = styled.div<{
+  backgroundColor?: string
+  borderColor?: string
+}>`
   width: min-content;
   padding: 0.2em 0.8em;
 
-  background-color: ${(props) => props.accentColor};
+  background-color: ${(props) => props.backgroundColor};
   color: ${OnNeutral99};
+  border: 1px solid ${(props) => props.borderColor};
 
   border-radius: 100px;
 
