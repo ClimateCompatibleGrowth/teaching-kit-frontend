@@ -27,7 +27,7 @@ type TokenWithoutTextField =
   | marked.Tokens.Def
   | marked.Tokens.Br
 
-const textNodeTypes = ['paragraph', 'list', 'space']
+const textNodeTypes = ['paragraph', 'heading', 'list', 'space']
 
 const nodeTypes = [
   'paragraph',
@@ -154,7 +154,15 @@ const markdownToSlideFormat = (slide: Slide) => {
 
       const markdown = marked.lexer(slideValue)
 
-      const nodeTypesInOrderOfOccurance = markdown.map((node) => node.type)
+      const nodeTypesInOrderOfOccurance = markdown.map((node) => {
+        if (
+          node.type === 'paragraph' &&
+          node.tokens.map((token) => token.type).includes('image')
+        ) {
+          return 'image'
+        }
+        return node.type
+      })
       const slideHasImage =
         markdown.find(
           (node) =>
@@ -180,15 +188,13 @@ const markdownToSlideFormat = (slide: Slide) => {
               'paragraph'
             )
             mainSlideContent.push(textProps)
-            if (slideAttribute.mainContentStyling === undefined) {
-              const styling = getDynamicStyling(
-                node,
-                index,
-                nodeTypesInOrderOfOccurance,
-                slideHasImage
-              )
-              slideAttribute.mainContentStyling = styling
-            }
+            slideAttribute.mainContentStyling = addContentStyling(
+              slideAttribute.mainContentStyling,
+              node,
+              index,
+              nodeTypesInOrderOfOccurance,
+              slideHasImage
+            )
           }
         }
 
@@ -201,14 +207,35 @@ const markdownToSlideFormat = (slide: Slide) => {
           if (node.depth === 1) {
             const textProps = convertToTextProp(`${decode(node.text)}`, 'h1')
             mainSlideContent.push(textProps)
+            slideAttribute.mainContentStyling = addContentStyling(
+              slideAttribute.mainContentStyling,
+              node,
+              index,
+              nodeTypesInOrderOfOccurance,
+              slideHasImage
+            )
           }
           if (node.depth === 2) {
             const textProps = convertToTextProp(`${decode(node.text)}`, 'h2')
             mainSlideContent.push(textProps)
+            slideAttribute.mainContentStyling = addContentStyling(
+              slideAttribute.mainContentStyling,
+              node,
+              index,
+              nodeTypesInOrderOfOccurance,
+              slideHasImage
+            )
           }
           if (node.depth === 3) {
             const textProps = convertToTextProp(`${decode(node.text)}`, 'h3')
             mainSlideContent.push(textProps)
+            slideAttribute.mainContentStyling = addContentStyling(
+              slideAttribute.mainContentStyling,
+              node,
+              index,
+              nodeTypesInOrderOfOccurance,
+              slideHasImage
+            )
           }
         }
 
@@ -239,6 +266,25 @@ const markdownToSlideFormat = (slide: Slide) => {
   }
 
   return pptxSlide
+}
+
+const addContentStyling = (
+  contentStyling: PptxGenJS.TextPropsOptions | undefined,
+  node: marked.Token,
+  index: number,
+  nodeTypesInOrderOfOccurance: NodeType[],
+  slideHasImage: boolean
+) => {
+  if (contentStyling !== undefined) {
+    return contentStyling
+  }
+  const styling = getDynamicStyling(
+    node,
+    index,
+    nodeTypesInOrderOfOccurance,
+    slideHasImage
+  )
+  return styling
 }
 
 // Extremely cumbersome way of adding bold items to list without breaking to new bullet.
