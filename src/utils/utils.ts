@@ -68,3 +68,7 @@ export const levelToString = (level: {
   )
   return withoutNumerationPrefix
 }
+
+export const stripBackslashN = (string: string) => {
+  return string.replace(/\n/g, '')
+}
