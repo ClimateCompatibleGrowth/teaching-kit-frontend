@@ -9,8 +9,10 @@ import {
 } from '../../styles/global'
 import * as Styled from './styles'
 
+export type BadgeColor = 'brown' | 'yellow' | 'green'
+
 type Props = {
-  accentColor: 'brown' | 'yellow' | 'green'
+  accentColor: BadgeColor
   children: ReactNode
 }
 
