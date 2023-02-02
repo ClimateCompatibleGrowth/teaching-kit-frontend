@@ -1,5 +1,6 @@
+import Link from 'next/link'
 import React, { useState } from 'react'
-import { Author, Data } from '../../types'
+import { Author, CourseOneLevelDeep, Data, Lecture } from '../../types'
 import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
 import Alert from '../Alert/Alert'
 import Button from '../Button/Button'
@@ -12,6 +13,7 @@ export type Props = {
   authors?: { data: Data<Author>[] }
   downloadAsDocx: () => Promise<void | DownloadError>
   downloadAsPptx: () => void
+  parentRelations?: Data<CourseOneLevelDeep>[] | Data<Lecture>[]
 }
 
 export default function MetadataContainer({
@@ -20,6 +22,7 @@ export default function MetadataContainer({
   authors,
   downloadAsDocx,
   downloadAsPptx,
+  parentRelations,
 }: Props) {
   const [docxDownloadIsLoading, setDocxDownloadIsLoading] = useState(false)
   const [docxDowloadErrored, setDocxDownloadErrored] = useState(false)
@@ -36,54 +39,69 @@ export default function MetadataContainer({
 
   return (
     <Styled.MetadataContainer>
-      {level !== undefined ? (
+      <Styled.HeadingSet>
+        {level !== undefined && (
+          <Styled.ShortInfo>
+            <Styled.SignalStrengthIcon />
+            {level}
+          </Styled.ShortInfo>
+        )}
+        {duration !== undefined && (
+          <Styled.ShortInfo>
+            <Styled.ClockIcon />
+            {duration}
+          </Styled.ShortInfo>
+        )}
+      </Styled.HeadingSet>
+      {parentRelations && (
         <Styled.HeadingSet>
-          <h6>Level</h6>
-          <p>{level}</p>
+          <Styled.Heading>Also part of</Styled.Heading>
+          {parentRelations.map((parent) => (
+            <div key={parent.id}>
+              <Link href={`/courses/${parent.id}`}>
+                {parent.attributes.Title}
+              </Link>{' '}
+            </div>
+          ))}
         </Styled.HeadingSet>
-      ) : null}
-      {duration !== undefined ? (
+      )}
+      {authors?.data?.length !== undefined && authors?.data?.length > 0 && (
         <Styled.HeadingSet>
-          <h6>Duration</h6>
-          <p>{duration}</p>
-        </Styled.HeadingSet>
-      ) : null}
-      {authors !== undefined ? (
-        <Styled.HeadingSet>
-          <h6>Authors</h6>
+          <Styled.Heading>Authors</Styled.Heading>
           <Styled.Ul>
             {authors?.data.map((author) => (
               <Styled.Li key={author.id}>
-                {author.attributes.Name}:{' '}
+                <Styled.EmailIcon />
                 <a href={`mailto:${author.attributes.Email}`}>
-                  {author.attributes.Email}
+                  {author.attributes.Name}
                 </a>
               </Styled.Li>
             ))}
           </Styled.Ul>
         </Styled.HeadingSet>
-      ) : null}
+      )}
       <Styled.HeadingSet>
-        <h6>Download</h6>
+        <Styled.Heading>Download</Styled.Heading>
         <Styled.DownloadButtonsContainer>
-          <Button
-            onClick={() => downloadBlock()}
-            isLoading={docxDownloadIsLoading}
-          >
-            DOCX
+          <Button onClick={downloadBlock} isLoading={docxDownloadIsLoading}>
+            <Styled.DownloadIcon />
+            Docx
           </Button>
 
-          <Button onClick={() => downloadAsPptx()}>PPT</Button>
+          <Button onClick={downloadAsPptx}>
+            <Styled.DownloadIcon />
+            Powerpoint
+          </Button>
         </Styled.DownloadButtonsContainer>
-        {docxDowloadErrored === true ? (
+        {docxDowloadErrored === true && (
           <Styled.Alert>
             <Alert
               title='The download failed'
-              text='Something went wrong when trying to download the DOCX document...'
+              text='Something went wrong when trying to download the Docx document...'
               type='ERROR'
             />
           </Styled.Alert>
-        ) : null}
+        )}
       </Styled.HeadingSet>
     </Styled.MetadataContainer>
   )

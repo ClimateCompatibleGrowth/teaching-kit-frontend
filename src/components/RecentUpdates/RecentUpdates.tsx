@@ -38,14 +38,14 @@ const RecentUpdates = () => {
         {recentUpdates &&
           recentUpdates.length > updatesToShow &&
           updatesToShow < MAX_UPDATES_TO_SHOW && (
-            <Button onClick={addMoreUpdates}>
+            <Button primary={false} onClick={addMoreUpdates}>
               Load more teaching material
             </Button>
           )}
         {recentUpdates &&
           updatesToRender &&
           recentUpdates.length <= updatesToRender.length && (
-            <ButtonLink borderColor={Accent40} href='/discover'>
+            <ButtonLink primary={false} href='/discover'>
               Find and discover all material
             </ButtonLink>
           )}

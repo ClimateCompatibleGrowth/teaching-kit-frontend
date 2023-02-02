@@ -1,4 +1,3 @@
-import styled from '@emotion/styled'
 import axios from 'axios'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
@@ -6,58 +5,52 @@ import LearningMaterialBadge from '../../components/LearningMaterial/LearningMat
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnLecture } from '../../shared/requests/utils/publishedEntriesFilter'
-import {
-  LearningMaterialContainer,
-  LearningMaterialOverview,
-  PageContainer,
-} from '../../styles/global'
+import { LearningMaterialOverview, PageContainer } from '../../styles/global'
 import { Data, Lecture, LectureTwoLevelsDeep } from '../../types'
 import { handleLectureDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { downloadLecturePptx } from '../../utils/downloadAsPptx/downloadLectureAsPptx'
 import { summarizeDurations } from '../../utils/utils'
 
-const LectureContentWrapper = styled.div`
-  margin-top: 5rem;
-`
-
-const Styled = { LectureContentWrapper }
-
 type Props = { lecture: Data<LectureTwoLevelsDeep> }
 
 export default function LecturePage({ lecture }: Props) {
+  const parents = lecture.attributes.Courses?.data?.map((course) => ({
+    id: course.id,
+    title: course.attributes.Title,
+  }))
+
   return (
     <PageContainer>
-      <LearningMaterialContainer>
-        <LearningMaterialOverview>
-          <LearningMaterial
-            type='LECTURE'
-            title={lecture.attributes.Title}
-            abstract={lecture.attributes.Abstract}
-            learningOutcomes={lecture.attributes.LearningOutcomes}
-            acknowledgement={lecture.attributes.Acknowledgement}
-            citeAs={lecture.attributes.CiteAs}
-          />
-          <Styled.LectureContentWrapper>
-            <h2>Lecture Content</h2>
-            <CardList
-              cards={lecture.attributes.Blocks.data.map((block) => ({
-                id: block.id.toString(),
-                title: block.attributes.Title,
-                text: block.attributes.Abstract,
-                href: `/blocks/${block.id}`,
-                subTitle: <LearningMaterialBadge type='BLOCK' />,
-              }))}
-            />
-          </Styled.LectureContentWrapper>
-        </LearningMaterialOverview>
+      <LearningMaterialOverview>
+        <LearningMaterial
+          type='LECTURE'
+          title={lecture.attributes.Title}
+          abstract={lecture.attributes.Abstract}
+          learningOutcomes={lecture.attributes.LearningOutcomes}
+          acknowledgement={lecture.attributes.Acknowledgement}
+          citeAs={lecture.attributes.CiteAs}
+        />
         <MetadataContainer
           level={lecture.attributes.Level.data?.attributes.Level}
           duration={summarizeDurations(lecture.attributes.Blocks.data)}
           authors={lecture.attributes.LectureCreators}
           downloadAsDocx={() => handleLectureDocxDownload(lecture)}
           downloadAsPptx={() => downloadLecturePptx(lecture)}
+          parentRelations={lecture.attributes.Courses.data}
         />
-      </LearningMaterialContainer>
+        <div>
+          <h2>Lecture Content</h2>
+          <CardList
+            cards={lecture.attributes.Blocks.data.map((block) => ({
+              id: block.id.toString(),
+              title: block.attributes.Title,
+              text: block.attributes.Abstract,
+              href: `/blocks/${block.id}`,
+              subTitle: <LearningMaterialBadge type='BLOCK' />,
+            }))}
+          />
+        </div>
+      </LearningMaterialOverview>
     </PageContainer>
   )
 }
@@ -82,6 +75,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(ctx: any) {
+  const populateCourses = 'populate[Courses]=*'
   const populateBlocks = 'populate[Blocks][populate][0]=*'
   const populateLectureCreators = 'populate[LectureCreators][populate]=*'
   const populateLearningOutcomes = 'populate[LearningOutcomes][populate]=*'
@@ -90,7 +84,7 @@ export async function getStaticProps(ctx: any) {
   const populateLevel = 'populate[Level]=Level'
 
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/lectures/${ctx.params.id}?${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
+    `${process.env.STRAPI_API_URL}/lectures/${ctx.params.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
   )
   const lecture: Data<LectureTwoLevelsDeep> = res.data.data
 

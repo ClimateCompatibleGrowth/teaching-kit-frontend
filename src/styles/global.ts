@@ -13,7 +13,7 @@ export const OnNeutral40 = '#FFFFFF'
 export const Neutral90 = '#CCCCCC'
 export const OnNeutral90 = '#242424'
 
-export const Neutral99 = '#EBEBEB'
+export const Neutral99 = '#F5F5F5'
 export const OnNeutral99 = '#242424'
 
 export const SurfaceAlternative = '#FFFFFF'
@@ -84,21 +84,13 @@ export const ButtonWithoutDefaultStyle = styled.button`
   outline: inherit;
 `
 
-export const LearningMaterialContainer = styled.div`
+export const LearningMaterialOverview = styled.div`
   display: flex;
   flex-wrap: wrap;
-  column-gap: 4.6rem;
   align-items: flex-start;
-
+  row-gap: 4.6rem;
   ${mq.sm} {
-    flex-wrap: nowrap;
-  }
-`
-
-export const LearningMaterialOverview = styled.div`
-  flex: 0 0 100%;
-  ${mq.sm} {
-    flex: 0 1 78%;
+    column-gap: 4.6rem;
   }
 `
 

@@ -1,10 +1,6 @@
 import axios from 'axios'
 import { Block, BlockOneLevelDeep, Data } from '../../types'
-import {
-  LearningMaterialContainer,
-  LearningMaterialOverview,
-  PageContainer,
-} from '../../styles/global'
+import { LearningMaterialOverview, PageContainer } from '../../styles/global'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { summarizeDurations } from '../../utils/utils'
 import styled from '@emotion/styled'
@@ -15,7 +11,6 @@ import { ResponseArray } from '../../shared/requests/types'
 import { downloadBlockPptx } from '../../utils/downloadAsPptx/downloadBlockAsPptx'
 
 const BlockContentWrapper = styled.div`
-  margin-top: 5rem;
   img {
     max-width: 100%;
   }
@@ -28,25 +23,24 @@ type Props = { block: Data<BlockOneLevelDeep> }
 export default function BlockPage({ block }: Props) {
   return (
     <PageContainer>
-      <LearningMaterialContainer>
-        <LearningMaterialOverview>
-          <LearningMaterial
-            type='BLOCK'
-            title={block.attributes.Title}
-            abstract={block.attributes.Abstract}
-            learningOutcomes={block.attributes.LearningOutcomes}
-          />
-          <Styled.BlockContentWrapper>
-            <ReactMarkdown>{block.attributes.Document}</ReactMarkdown>
-          </Styled.BlockContentWrapper>
-        </LearningMaterialOverview>
+      <LearningMaterialOverview>
+        <LearningMaterial
+          type='BLOCK'
+          title={block.attributes.Title}
+          abstract={block.attributes.Abstract}
+          learningOutcomes={block.attributes.LearningOutcomes}
+        />
         <MetadataContainer
           duration={summarizeDurations([block])}
           authors={block.attributes.Authors}
           downloadAsDocx={() => handleBlockDocxDownload(block)}
           downloadAsPptx={() => downloadBlockPptx(block)}
+          parentRelations={block.attributes.Lectures.data}
         />
-      </LearningMaterialContainer>
+        <Styled.BlockContentWrapper>
+          <ReactMarkdown>{block.attributes.Document}</ReactMarkdown>
+        </Styled.BlockContentWrapper>
+      </LearningMaterialOverview>
     </PageContainer>
   )
 }
