@@ -1,72 +1,101 @@
 import PptxGenJS from 'pptxgenjs'
-import { toPercentage, startXPos, X_PADDING, Y_PADDING } from './utils'
+import { ESTIMATED_REASONABLE_IMAGE_HEIGHT, IMAGE_WIDTH } from './image'
+import {
+  toPercentage,
+  startXPos,
+  X_PADDING,
+  Y_PADDING,
+  remainingHeight,
+  remainingWidth,
+} from './utils'
 
 const PRIMARY_CONTENT_WIDTH = 65
-const ESTIMATED_SLIDE_TITLE_HEIGHT = 30
+const ESTIMATED_SLIDE_TITLE_HEIGHT = 15
+const PRIMARY_CONTENT_MARGIN_RIGHT = 2
+
+const NON_PRIMARY_CONTENT_START_X_POS =
+  X_PADDING + PRIMARY_CONTENT_WIDTH + PRIMARY_CONTENT_MARGIN_RIGHT
 
 export type ListStyle = 'UNORDERED' | 'ORDERED'
+type BulletAttribute =
+  | true
+  | {
+      readonly type: 'number'
+    }
+  | undefined
 
 export const getPrimaryContentStyling = (
-  listStyle?: ListStyle
+  listStyle: ListStyle | undefined
 ): PptxGenJS.TextPropsOptions => {
-  return getListContentStyling(primaryContentStyling, listStyle)
+  return {
+    ...primaryContentStyling,
+    bullet: getListConfig(listStyle),
+  }
 }
 
 export const getSecondaryContentStyling = (
-  listStyle?: ListStyle
+  listStyle: ListStyle | undefined,
+  slideHasImage: boolean
 ): PptxGenJS.TextPropsOptions => {
-  return getListContentStyling(secondaryContentStyling, listStyle)
+  const baseYPos = Y_PADDING + ESTIMATED_SLIDE_TITLE_HEIGHT
+
+  // TODO the following could be made more dynamic once we start implementing the images
+  const yPos = slideHasImage
+    ? toPercentage(baseYPos + ESTIMATED_REASONABLE_IMAGE_HEIGHT)
+    : toPercentage(baseYPos)
+
+  return {
+    ...secondaryContentStyling,
+    bullet: getListConfig(listStyle),
+    y: yPos,
+  }
 }
 
 export const getFallbackContentStyling = (
-  listStyle?: ListStyle
+  listStyle: ListStyle | undefined
 ): PptxGenJS.TextPropsOptions => {
-  return getListContentStyling(fallbackContentStyling, listStyle)
-}
-
-const getListContentStyling = (
-  baseStyling: PptxGenJS.TextPropsOptions,
-  listStyle?: ListStyle
-): PptxGenJS.TextPropsOptions => {
-  if (listStyle === undefined) {
-    return baseStyling
-  }
-
-  const listConfig = getListConfig(listStyle)
-
   return {
-    ...baseStyling,
-    bullet: listConfig,
+    ...fallbackContentStyling,
+    bullet: getListConfig(listStyle),
   }
 }
 
-const getListConfig = (listStyle: ListStyle) => {
+const getListConfig = (listStyle?: ListStyle): BulletAttribute => {
+  if (listStyle === undefined) {
+    return undefined
+  }
   const orderedListConfig = {
     type: 'number',
   } as const
   return listStyle === 'UNORDERED' ? true : orderedListConfig
 }
 
+const commonConfiguration = {
+  autoFit: true,
+  breakLine: true,
+  valign: 'top' as const,
+  h: toPercentage(
+    remainingHeight(2 * Y_PADDING + ESTIMATED_SLIDE_TITLE_HEIGHT)
+  ),
+}
+
 const primaryContentStyling: PptxGenJS.TextPropsOptions = {
+  ...commonConfiguration,
   x: startXPos,
   y: toPercentage(Y_PADDING + ESTIMATED_SLIDE_TITLE_HEIGHT),
   w: toPercentage(PRIMARY_CONTENT_WIDTH - X_PADDING),
-  h: 0.75,
-  autoFit: true,
 }
 
 const secondaryContentStyling: PptxGenJS.TextPropsOptions = {
-  x: '70%',
+  ...commonConfiguration,
+  x: toPercentage(NON_PRIMARY_CONTENT_START_X_POS),
   y: '50%',
-  w: '30%',
-  h: 0.5,
-  breakLine: true,
+  w: toPercentage(remainingWidth(NON_PRIMARY_CONTENT_START_X_POS + X_PADDING)),
 }
 
 const fallbackContentStyling: PptxGenJS.TextPropsOptions = {
-  x: '70%',
+  ...commonConfiguration,
+  x: toPercentage(NON_PRIMARY_CONTENT_START_X_POS),
   y: '80%',
-  w: '30%',
-  h: 0.5,
-  autoFit: true,
+  w: toPercentage(remainingWidth(NON_PRIMARY_CONTENT_START_X_POS + X_PADDING)),
 }

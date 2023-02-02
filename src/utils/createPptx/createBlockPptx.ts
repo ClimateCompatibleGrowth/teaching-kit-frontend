@@ -14,7 +14,5 @@ export const createBlockPptxFile = async (
   createTitleSlide(title, pptx)
   getSlides(pptxSlides, pptx)
 
-  console.log(pptx)
-
   return pptx
 }

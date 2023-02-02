@@ -1,0 +1,2 @@
+export const IMAGE_WIDTH = 20
+export const ESTIMATED_REASONABLE_IMAGE_HEIGHT = 40

@@ -16,9 +16,6 @@ const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
       })
     }
 
-    console.log(pptxSlide.mainContent)
-    console.log(pptxSlide.list)
-
     if (pptxSlide?.mainContent !== undefined) {
       contentSlide.addText(pptxSlide.mainContent, pptxSlide.mainContentStyling)
     }
@@ -29,8 +26,6 @@ const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
 
       contentSlide.addText(`${bulletString}`, pptxSlide.listStyling)
     }
-
-    console.log(contentSlide)
 
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)
   })
