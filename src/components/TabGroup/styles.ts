@@ -14,7 +14,7 @@ import {
 
 export const HeaderWrapper = {
   display: 'flex',
-  flexWrap: 'wrap',
+  flexWrap: 'wrap' as 'wrap',
   justifyContent: 'space-between',
   alignItems: 'end',
 
