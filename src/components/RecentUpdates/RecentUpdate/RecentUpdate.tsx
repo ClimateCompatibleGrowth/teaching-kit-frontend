@@ -17,11 +17,11 @@ const RecentUpdate = ({ recentUpdate }: Props) => {
   switch (recentUpdate.Type) {
     case 'Lecture':
       typeColor = 'green'
-      href = `/courses/${recentUpdate.Id}`
+      href = `/lectures/${recentUpdate.Id}`
       break
     case 'Course':
       typeColor = 'pink'
-      href = `/lectures/${recentUpdate.Id}`
+      href = `/courses/${recentUpdate.Id}`
       break
     case 'Block':
       typeColor = 'yellow'
