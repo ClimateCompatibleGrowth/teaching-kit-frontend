@@ -15,12 +15,12 @@ const RecentUpdate = ({ recentUpdate }: Props) => {
   let href = '/'
   let levelExplanation = 'Level is'
   switch (recentUpdate.Type) {
-    case 'Course':
+    case 'Lecture':
       typeColor = 'green'
       href = `/courses/${recentUpdate.Id}`
       break
-    case 'Lecture':
-      typeColor = 'brown'
+    case 'Course':
+      typeColor = 'pink'
       href = `/lectures/${recentUpdate.Id}`
       break
     case 'Block':

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import Link from 'next/link'
 import { montserrat, ubuntu } from '../../../styles/fonts'
-import { AccentPink, mq, Neutral90 } from '../../../styles/global'
+import { AccentPinkLighter, mq, Neutral90 } from '../../../styles/global'
 
 export const Card = styled(Link)`
   flex: 0 1 100%;
@@ -11,7 +11,7 @@ export const Card = styled(Link)`
   position: relative;
 
   &:hover {
-    background-color: ${AccentPink};
+    background-color: ${AccentPinkLighter};
   }
 
   ${mq.sm} {

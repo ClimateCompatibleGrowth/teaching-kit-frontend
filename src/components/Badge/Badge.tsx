@@ -1,15 +1,15 @@
 import React, { ReactNode } from 'react'
 import {
-  AccentBrown,
-  AccentBrownDarker,
   AccentGreen,
   AccentGreenDarker,
+  AccentPink,
+  AccentPinkDarker,
   AccentYellow,
   AccentYellowDarker,
 } from '../../styles/global'
 import * as Styled from './styles'
 
-export type BadgeColor = 'brown' | 'yellow' | 'green'
+export type BadgeColor = 'pink' | 'yellow' | 'green'
 
 type Props = {
   accentColor: BadgeColor
@@ -19,9 +19,9 @@ type Props = {
 const Badge = ({ accentColor, children }: Props) => {
   let borderColor, backgroundColor
   switch (accentColor) {
-    case 'brown':
-      backgroundColor = AccentBrown
-      borderColor = AccentBrownDarker
+    case 'pink':
+      backgroundColor = AccentPink
+      borderColor = AccentPinkDarker
       break
     case 'green':
       backgroundColor = AccentGreen

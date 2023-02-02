@@ -48,13 +48,13 @@ const LearningMaterialBadge = ({ type, elementType }: Props) => {
       )
     case 'LECTURE':
       return (
-        <Badge accentColor='brown'>
+        <Badge accentColor='green'>
           {getBadgeContent('Lecture', elementType)}
         </Badge>
       )
     case 'COURSE':
       return (
-        <Badge accentColor='green'>
+        <Badge accentColor='pink'>
           {getBadgeContent('Course', elementType)}
         </Badge>
       )
