@@ -1,19 +1,11 @@
 import styled from '@emotion/styled'
 import NextImage from 'next/image'
-import Link from 'next/link'
-import { montserrat } from '../../styles/fonts'
-import {
-  Accent40,
-  breakpoints,
-  Neutral90,
-  OnAccent40,
-} from '../../styles/global'
+import { breakpoints } from '../../styles/global'
 
 export const Wrapper = styled.div`
   max-width: 834px;
   margin: 0 auto;
   text-align: center;
-  margin-bottom: 10rem;
 `
 
 export const Paragraph = styled.p`
@@ -26,6 +18,6 @@ export const Image = styled(NextImage)`
   height: 480px;
   width: 100%;
   max-width: ${breakpoints.lg};
-  margin: 0 auto;
+  margin: 0 auto 6.4rem;
   object-fit: cover;
 `

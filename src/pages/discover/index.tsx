@@ -53,7 +53,7 @@ export default function Discover() {
   )
 
   return (
-    <PageContainer>
+    <PageContainer hasTopPadding>
       <h1>Learning Material</h1>
       <div>
         <Styled.H2>Apply filter</Styled.H2>

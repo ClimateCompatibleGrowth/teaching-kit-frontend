@@ -10,6 +10,7 @@ const defaultStyle = css`
   h5,
   h6 {
     font-family: ${ubuntu[500].style.fontFamily};
+    margin-top: 0;
   }
 
   h1 {

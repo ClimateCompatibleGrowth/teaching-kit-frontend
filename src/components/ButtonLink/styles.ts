@@ -17,7 +17,7 @@ export const ButtonLink = styled(Link)<LinkProps & ButtonLinkProps>`
   border-color: ${(props) => (props.primary ? Accent40 : 'none')};
   color: ${(props) => (props.primary ? OnAccent40 : undefined)};
 
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-family: ${montserrat[300].style.fontFamily};
 
   &:disabled {

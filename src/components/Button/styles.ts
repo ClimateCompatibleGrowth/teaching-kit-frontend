@@ -6,6 +6,7 @@ import {
   ButtonWithoutDefaultStyle,
   Neutral90,
   OnAccent40,
+  OnPrimary40,
 } from '../../styles/global'
 
 export type Props = {
@@ -21,9 +22,9 @@ export const Button = styled(ButtonWithoutDefaultStyle)<Props>`
 
   background-color: ${(props) => (props.primary ? Accent40 : Background)};
   border: 1px solid ${(props) => (props.primary ? Accent40 : Accent40)};
-  color: ${(props) => (props.primary ? OnAccent40 : undefined)};
-  font-family: ${montserrat[400].style.fontFamily};
+  color: ${(props) => (props.primary ? OnAccent40 : OnPrimary40)};
   font-size: 1.6rem;
+  font-family: ${montserrat[400].style.fontFamily};
 
   &:disabled {
     background-color: ${Neutral90};

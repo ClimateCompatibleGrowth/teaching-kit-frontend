@@ -18,7 +18,7 @@ type Props = { block: Data<BlockOneLevelDeep> }
 
 export default function BlockPage({ block }: Props) {
   return (
-    <PageContainer>
+    <PageContainer hasTopPadding>
       <LearningMaterialOverview>
         <LearningMaterial
           type='BLOCK'

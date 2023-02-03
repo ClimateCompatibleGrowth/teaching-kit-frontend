@@ -21,7 +21,7 @@ type Props = { lecture: Data<LectureTwoLevelsDeep> }
 
 export default function LecturePage({ lecture }: Props) {
   return (
-    <PageContainer>
+    <PageContainer hasTopPadding>
       <LearningMaterialOverview>
         <LearningMaterial
           type='LECTURE'
