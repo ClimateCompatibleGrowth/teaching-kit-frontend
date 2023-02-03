@@ -234,45 +234,43 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
   return (
     <div>
       <div style={Styled.HeaderWrapper}>
-        <div>
-          <Tabs
-            value={value}
-            onChange={(_event, newValue) => setValue(newValue)}
-            aria-label='Toggle between categorized filter results'
-            sx={Styled.Tabs}
-          >
-            <Tab
-              label={
-                <TabLabel
-                  type='COURSE'
-                  numberOfResults={courseResults.meta.pagination.total}
-                />
-              }
-              disableRipple
-              sx={Styled.Tab}
-            />
-            <Tab
-              label={
-                <TabLabel
-                  type='LECTURE'
-                  numberOfResults={lectureResults.meta.pagination.total}
-                />
-              }
-              disableRipple
-              sx={Styled.Tab}
-            />
-            <Tab
-              label={
-                <TabLabel
-                  type='BLOCK'
-                  numberOfResults={blockResults.meta.pagination.total}
-                />
-              }
-              disableRipple
-              sx={Styled.Tab}
-            />
-          </Tabs>
-        </div>
+        <Tabs
+          value={value}
+          onChange={(_event, newValue) => setValue(newValue)}
+          aria-label='Toggle between categorized filter results'
+          sx={Styled.Tabs}
+        >
+          <Tab
+            label={
+              <TabLabel
+                type='COURSE'
+                numberOfResults={courseResults.meta.pagination.total}
+              />
+            }
+            disableRipple
+            sx={Styled.Tab}
+          />
+          <Tab
+            label={
+              <TabLabel
+                type='LECTURE'
+                numberOfResults={lectureResults.meta.pagination.total}
+              />
+            }
+            disableRipple
+            sx={Styled.Tab}
+          />
+          <Tab
+            label={
+              <TabLabel
+                type='BLOCK'
+                numberOfResults={blockResults.meta.pagination.total}
+              />
+            }
+            disableRipple
+            sx={Styled.Tab}
+          />
+        </Tabs>
         <DropdownSingleSelectable
           selectedItem={sortMethod}
           setSelectedItem={(newSortmethod) =>

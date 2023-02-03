@@ -22,6 +22,11 @@ export const HeaderWrapper = {
 }
 
 export const Tabs = {
+  width: '100%',
+
+  [`${mq.sm}`]: {
+    width: 'auto',
+  },
   '.MuiTabs-flexContainer': {
     flexWrap: 'wrap',
     rowGap: '0.8rem',
@@ -44,9 +49,19 @@ export const Tab = {
   gap: '1rem',
 
   textTransform: 'initial',
-  [`${mq.xs}`]: {
+  [`${mq.sm}`]: {
     flex: 'auto',
     borderRadius: '0.7rem 0.7rem 0 0',
+  },
+
+  '&.MuiTab-root': {
+    minWidth: '100%',
+    flex: '0 0 100%',
+
+    [`${mq.sm}`]: {
+      minWidth: 'auto',
+      flex: 'initial',
+    },
   },
 
   '&.Mui-selected': {
