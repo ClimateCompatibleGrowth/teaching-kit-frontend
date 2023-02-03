@@ -2,27 +2,39 @@ import { marked } from 'marked'
 import { decode } from 'html-entities'
 import PptxGenJS from 'pptxgenjs'
 
-import { sourceIsFromS3 } from '../utils'
+import { getImageMetadata, sourceIsFromS3, stripBackslashN } from '../utils'
 import { Slide } from '../../types'
-import {
-  h1Heading,
-  h2Heading,
-  h3Heading,
-  slideHeading,
-} from '../createPptx/pptxConfiguration/slideElements'
+import { slideHeading } from '../createPptx/pptxConfiguration/slideElements'
 import { PptxSlide } from '../../types/pptx'
 import {
   getFallbackContentStyling,
   getPrimaryContentStyling,
   getSecondaryContentStyling,
   ListStyle,
-} from '../createPptx/pptxConfiguration/textContent'
+} from '../createPptx/pptxConfiguration/mainContent'
+import {
+  h1Style,
+  h2Style,
+  h3Style,
+  paragraphStyle,
+} from '../createPptx/pptxConfiguration/text'
+import { getBaseImageStyling } from '../createPptx/pptxConfiguration/image'
 
-const textNodeTypes = ['paragraph', 'list']
+type TokenWithoutTextField =
+  | marked.Tokens.Space
+  | marked.Tokens.Table
+  | marked.Tokens.Hr
+  | marked.Tokens.List
+  | marked.Tokens.Def
+  | marked.Tokens.Br
+
+const textNodeTypes = ['paragraph', 'heading', 'list', 'space']
+
 const nodeTypes = [
-  ...textNodeTypes,
-  'heading',
+  'paragraph',
+  'list',
   'space',
+  'heading',
   'code',
   'table',
   'hr',
@@ -44,6 +56,15 @@ type NodeType = typeof nodeTypes[number]
 
 const isTextElement = (type: NodeType) => textNodeTypes.includes(type)
 
+const findImageToken = (token: marked.Token): token is marked.Tokens.Image =>
+  token.type === 'image'
+
+type AllTokensButSpace = Exclude<marked.Token, TokenWithoutTextField>
+const findAllTokensWithTextField = (
+  tokens: marked.Token[]
+): AllTokensButSpace[] =>
+  tokens.filter((token): token is AllTokensButSpace => 'text' in token)
+
 const getListProps = (node: marked.Token): ListStyle | undefined => {
   if (node.type === 'list') {
     if (node.ordered) {
@@ -57,7 +78,8 @@ const getListProps = (node: marked.Token): ListStyle | undefined => {
 const getDynamicStyling = (
   node: marked.Token,
   index: number,
-  nodeTypes: NodeType[]
+  nodeTypes: NodeType[],
+  slideHasImage: boolean
 ): PptxGenJS.TextPropsOptions => {
   const isText = isTextElement(node.type)
   const preceedingTextElements = nodeTypes
@@ -65,7 +87,7 @@ const getDynamicStyling = (
     .filter((nodeType) => isTextElement(nodeType))
   const preceedingTextElementsOfUniqueType = [
     ...new Set(preceedingTextElements),
-  ]
+  ].filter((element) => element !== 'space')
   const listProps = getListProps(node)
 
   if (isText) {
@@ -73,47 +95,95 @@ const getDynamicStyling = (
       case 0:
         return getPrimaryContentStyling(listProps)
       case 1:
-        return getSecondaryContentStyling(listProps)
+        return getSecondaryContentStyling(listProps, slideHasImage)
     }
   }
 
   return getFallbackContentStyling(listProps)
 }
 
-const markdownToSlideFormat = (slide: Slide) => {
-  const pptxSlide = Object.values(slide).reduce(
-    (finalSlide, slideValue, index) => {
+type TextNodeType = 'paragraph' | 'h1' | 'h2' | 'h3' | 'space'
+
+const convertToTextProp = (
+  text: string,
+  type: TextNodeType
+): PptxGenJS.TextProps => {
+  return {
+    text,
+    options: getTextStyling(type),
+  }
+}
+
+const getTextStyling = (type: TextNodeType): PptxGenJS.TextPropsOptions => {
+  switch (type) {
+    case 'paragraph':
+      return paragraphStyle
+    case 'h1':
+      return h1Style
+    case 'h2':
+      return h2Style
+    case 'h3':
+      return h3Style
+    case 'space':
+      return {}
+    default:
+      return {}
+  }
+}
+
+const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
+  let slideTitle = ''
+
+  const pptxSlidePromise = Object.values(slide).reduce(
+    async (finalSlide, slideValue, index) => {
       const slideAttribute = {} as PptxSlide
-      const mainSlideContent = []
+      const mainSlideContent = [] as PptxGenJS.TextProps[]
+      const images = [] as PptxGenJS.ImageProps[]
 
       // Ignore id (first index) and speaker notes (last index)
       if (index === 0 || index === Object.values(slide).length - 1) {
-        return finalSlide
+        return Promise.resolve(finalSlide)
       }
 
       // Slide title
       if (index === 1) {
-        slideAttribute.heading = slideValue ?? ''
-        slideAttribute.headingStyling = slideHeading
-        slideAttribute.title = slideValue ?? ''
-        return {
-          ...finalSlide,
-          ...slideAttribute,
-        }
+        slideTitle = slideValue ?? ''
+        return Promise.resolve(finalSlide)
       }
 
       const markdown = marked.lexer(slideValue)
 
-      const nodeTypesInOrderOfOccurance = markdown.map((node) => node.type)
+      const nodeTypesInOrderOfOccurance = markdown.map((node) => {
+        if (
+          node.type === 'paragraph' &&
+          node.tokens.map((token) => token.type).includes('image')
+        ) {
+          return 'image'
+        }
+        return node.type
+      })
+      const slideHasImage =
+        markdown.find(
+          (node) =>
+            node.type === 'paragraph' &&
+            node.tokens.find(findImageToken) !== undefined
+        ) !== undefined
 
       for (const [index, node] of markdown.entries()) {
         if (node.type === 'paragraph') {
-          const imageToken = node.tokens.find(
-            (token): token is marked.Tokens.Image => token.type === 'image'
-          )
+          const imageToken = node.tokens.find(findImageToken)
 
           if (imageToken !== undefined && sourceIsFromS3(imageToken.href)) {
-            slideAttribute.image = imageToken.href
+            const href = `${imageToken.href}?do-not-fetch-from-cache`
+            const image = await getImageMetadata(href)
+            const imageStyling = getBaseImageStyling(
+              image.naturalWidth,
+              image.naturalHeight
+            )
+            images.push({
+              path: href,
+              ...imageStyling,
+            })
           }
 
           const paragraphTokens = node.tokens.filter(
@@ -121,63 +191,144 @@ const markdownToSlideFormat = (slide: Slide) => {
           )
 
           for (const paragraphToken of paragraphTokens) {
-            mainSlideContent.push(`${decode(paragraphToken.text)}`)
-            if (slideAttribute.mainContentStyling === undefined) {
-              const styling = getDynamicStyling(
-                node,
-                index,
-                nodeTypesInOrderOfOccurance
-              )
-              slideAttribute.mainContentStyling = styling
-            }
+            const textProps = convertToTextProp(
+              `${decode(paragraphToken.text)}`,
+              'paragraph'
+            )
+            mainSlideContent.push(textProps)
+            slideAttribute.mainContentStyling = addContentStyling(
+              slideAttribute.mainContentStyling,
+              node,
+              index,
+              nodeTypesInOrderOfOccurance,
+              slideHasImage
+            )
           }
         }
 
         if (node.type === 'space') {
-          mainSlideContent.push(node.raw)
+          const textProps = convertToTextProp(node.raw, 'space')
+          mainSlideContent.push(textProps)
         }
 
         if (node.type === 'heading') {
           if (node.depth === 1) {
-            slideAttribute.heading = decode(node.text)
-            slideAttribute.headingStyling = h1Heading
+            const textProps = convertToTextProp(`${decode(node.text)}`, 'h1')
+            mainSlideContent.push(textProps)
+            slideAttribute.mainContentStyling = addContentStyling(
+              slideAttribute.mainContentStyling,
+              node,
+              index,
+              nodeTypesInOrderOfOccurance,
+              slideHasImage
+            )
           }
           if (node.depth === 2) {
-            slideAttribute.heading = decode(node.text)
-            slideAttribute.headingStyling = h2Heading
+            const textProps = convertToTextProp(`${decode(node.text)}`, 'h2')
+            mainSlideContent.push(textProps)
+            slideAttribute.mainContentStyling = addContentStyling(
+              slideAttribute.mainContentStyling,
+              node,
+              index,
+              nodeTypesInOrderOfOccurance,
+              slideHasImage
+            )
           }
           if (node.depth === 3) {
-            slideAttribute.heading = decode(node.text)
-            slideAttribute.headingStyling = h3Heading
+            const textProps = convertToTextProp(`${decode(node.text)}`, 'h3')
+            mainSlideContent.push(textProps)
+            slideAttribute.mainContentStyling = addContentStyling(
+              slideAttribute.mainContentStyling,
+              node,
+              index,
+              nodeTypesInOrderOfOccurance,
+              slideHasImage
+            )
           }
         }
 
         if (node.type === 'list') {
-          slideAttribute.list = node.items
+          slideAttribute.list = getSubComponentsFromList(node.items)
           const styling = getDynamicStyling(
             node,
             index,
-            nodeTypesInOrderOfOccurance
+            nodeTypesInOrderOfOccurance,
+            slideHasImage
           )
           slideAttribute.listStyling = styling
         }
       }
 
       slideAttribute.mainContent = mainSlideContent
+      slideAttribute.images = images
 
-      return {
+      return Promise.resolve({
         ...finalSlide,
         ...slideAttribute,
-      }
+      })
     },
-    {} as PptxSlide
+    {} as Promise<PptxSlide>
   )
+
+  const pptxSlide = await pptxSlidePromise
 
   if (slide) {
     pptxSlide.speakerNotes = slide.SpeakerNotes
   }
 
+  pptxSlide.heading = slideTitle ?? ''
+  pptxSlide.headingStyling = slideHeading
+  pptxSlide.title = slideTitle ?? ''
+
   return pptxSlide
+}
+
+const addContentStyling = (
+  contentStyling: PptxGenJS.TextPropsOptions | undefined,
+  node: marked.Token,
+  index: number,
+  nodeTypesInOrderOfOccurance: NodeType[],
+  slideHasImage: boolean
+) => {
+  if (contentStyling !== undefined) {
+    return contentStyling
+  }
+  const styling = getDynamicStyling(
+    node,
+    index,
+    nodeTypesInOrderOfOccurance,
+    slideHasImage
+  )
+  return styling
+}
+
+// Extremely cumbersome way of adding bold items to list without breaking to new bullet.
+const getSubComponentsFromList = (
+  list: marked.Tokens.ListItem[]
+): PptxGenJS.TextProps[] => {
+  return list.reduce((finalList, listItem) => {
+    let textNodesToAdd = [] as PptxGenJS.TextProps[]
+    for (const token of listItem.tokens) {
+      if (token.type === 'text') {
+        const _token = token as marked.Tokens.Text
+        if (_token.tokens === undefined) {
+          textNodesToAdd.push({ text: stripBackslashN(_token.text) })
+        } else {
+          const innerTokens = findAllTokensWithTextField(_token.tokens)
+          const textNodes = innerTokens.map((innerToken, index) => ({
+            text: stripBackslashN(innerToken.text),
+            options: {
+              bold: innerToken.type === 'strong',
+              italic: innerToken.type === 'em',
+              ...(index === 0 && { indentLevel: 0, bullet: true }),
+            },
+          }))
+          textNodesToAdd = [...textNodesToAdd, ...textNodes]
+        }
+      }
+    }
+    return [...finalList, ...textNodesToAdd]
+  }, [] as PptxGenJS.TextProps[])
 }
 
 export default markdownToSlideFormat

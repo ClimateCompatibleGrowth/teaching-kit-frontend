@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import {
   Accent40,
+  mq,
   Neutral40,
   Neutral99,
   OnAccent40,
@@ -13,6 +14,7 @@ import {
 
 export const HeaderWrapper = {
   display: 'flex',
+  flexWrap: 'wrap' as 'wrap',
   justifyContent: 'space-between',
   alignItems: 'end',
 
@@ -20,6 +22,10 @@ export const HeaderWrapper = {
 }
 
 export const Tabs = {
+  '.MuiTabs-flexContainer': {
+    flexWrap: 'wrap',
+    rowGap: '0.8rem',
+  },
   '.MuiTabs-indicator': {
     display: 'none',
   },
@@ -27,6 +33,7 @@ export const Tabs = {
 
 export const Tab = {
   margin: 0,
+  flex: '0 0 100%',
 
   display: 'flex',
   flexDirection: 'row',
@@ -37,7 +44,10 @@ export const Tab = {
   gap: '1rem',
 
   textTransform: 'initial',
-  borderRadius: '0.7rem 0.7rem 0 0',
+  [`${mq.xs}`]: {
+    flex: 'auto',
+    borderRadius: '0.7rem 0.7rem 0 0',
+  },
 
   '&.Mui-selected': {
     color: OnAccent40,

@@ -25,11 +25,7 @@ export default function Hero({ image, title, body, action }: Props) {
           <h1>{title}</h1>
           <Styled.Paragraph>{body}</Styled.Paragraph>
           {action && (
-            <ButtonLink
-              backgroundColor={Accent40}
-              color={OnAccent40}
-              href={action.href}
-            >
+            <ButtonLink primary={false} href={action.href}>
               {action.label}
             </ButtonLink>
           )}

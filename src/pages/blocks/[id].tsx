@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { Block, BlockOneLevelDeep, Data } from '../../types'
 import {
-  LearningMaterialContainer,
+  BlockContentWrapper,
   LearningMaterialOverview,
+  PageContainer,
 } from '../../styles/global'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { summarizeDurations } from '../../utils/utils'
@@ -13,17 +14,11 @@ import { handleBlockDocxDownload } from '../../utils/downloadAsDocx/downloadAsDo
 import { ResponseArray } from '../../shared/requests/types'
 import { downloadBlockPptx } from '../../utils/downloadAsPptx/downloadBlockAsPptx'
 
-const BlockContentWrapper = styled.div`
-  margin-top: 5rem;
-`
-
-const Styled = { BlockContentWrapper }
-
 type Props = { block: Data<BlockOneLevelDeep> }
 
 export default function BlockPage({ block }: Props) {
   return (
-    <LearningMaterialContainer>
+    <PageContainer>
       <LearningMaterialOverview>
         <LearningMaterial
           type='BLOCK'
@@ -31,17 +26,21 @@ export default function BlockPage({ block }: Props) {
           abstract={block.attributes.Abstract}
           learningOutcomes={block.attributes.LearningOutcomes}
         />
-        <Styled.BlockContentWrapper>
+        <MetadataContainer
+          duration={summarizeDurations([block])}
+          authors={block.attributes.Authors}
+          downloadAsDocx={() => handleBlockDocxDownload(block)}
+          downloadAsPptx={() => downloadBlockPptx(block)}
+          parentRelations={{
+            type: 'lectures',
+            parents: block.attributes.Lectures.data,
+          }}
+        />
+        <BlockContentWrapper>
           <ReactMarkdown>{block.attributes.Document}</ReactMarkdown>
-        </Styled.BlockContentWrapper>
+        </BlockContentWrapper>
       </LearningMaterialOverview>
-      <MetadataContainer
-        duration={summarizeDurations([block])}
-        authors={block.attributes.Authors}
-        downloadAsDocx={() => handleBlockDocxDownload(block)}
-        downloadAsPptx={() => downloadBlockPptx(block)}
-      />
-    </LearningMaterialContainer>
+    </PageContainer>
   )
 }
 

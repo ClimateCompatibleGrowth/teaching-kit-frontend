@@ -7,11 +7,17 @@ type Props = {
   children: ReactNode
   onClick: () => void
   isLoading?: boolean
-}
+  primary?: boolean
+} & Styled.Props
 
-const Button = ({ children, onClick, isLoading }: Props) => {
+const Button = ({ children, onClick, isLoading, primary = true }: Props) => {
   return (
-    <Styled.Button onClick={onClick} aria-live='polite' aria-busy={isLoading}>
+    <Styled.Button
+      primary={primary}
+      onClick={onClick}
+      aria-live='polite'
+      aria-busy={isLoading}
+    >
       {isLoading === true ? <Loader /> : children}
     </Styled.Button>
   )

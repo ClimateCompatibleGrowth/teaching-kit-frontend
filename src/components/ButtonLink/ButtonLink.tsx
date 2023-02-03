@@ -6,5 +6,9 @@ export default function ButtonLink({
   children,
   ...props
 }: PropsWithChildren<LinkProps & Styled.ButtonLinkProps>) {
-  return <Styled.ButtonLink {...props}>{children}</Styled.ButtonLink>
+  return (
+    <Styled.ButtonLink primary {...props}>
+      {children}
+    </Styled.ButtonLink>
+  )
 }

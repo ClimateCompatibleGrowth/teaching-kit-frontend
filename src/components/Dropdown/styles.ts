@@ -3,6 +3,7 @@ import {
   Accent40,
   Background,
   ButtonWithoutDefaultStyle,
+  mq,
   UlWithoutDefaultStyle,
 } from '../../styles/global'
 
@@ -14,14 +15,23 @@ type DropdownInputProps = {
   searchIsEnabled: boolean
 }
 
-const dropdownWrapperWidth = 20
+export const Wrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  ${mq.sm} {
+    flex-direction: column;
+  }
+`
 
 export const DropdownWrapper = styled.div`
-  width: ${dropdownWrapperWidth}rem;
+  flex: 0 0 100%;
+  position: relative;
+  ${mq.sm} {
+    flex: 0 0 auto;
+  }
 `
 
 export const SelectedItemsWrapper = styled(UlWithoutDefaultStyle)`
-  width: ${dropdownWrapperWidth}rem;
   min-height: 3.5rem;
 
   margin: 1.7rem 0;
@@ -37,9 +47,13 @@ export const SelectedItem = styled.li`
 `
 
 export const InputWrapper = styled.div`
+  display: flex;
   margin: 0.4rem 0;
-
+  width: 100%;
   position: relative;
+  ${mq.sm} {
+    width: auto;
+  }
 `
 
 export const Label = styled.label`
@@ -47,17 +61,17 @@ export const Label = styled.label`
 `
 
 export const DropdownInput = styled.input<DropdownInputProps>`
-  width: 100%;
-  height: 4rem;
-
-  padding-left: 1.3rem;
-
+  flex: 0 0 100%;
+  padding: 1.1rem;
   font-size: 1.5rem;
-
   border: 1px solid ${Accent40};
 
   &:hover {
     ${(props) => (!props.searchIsEnabled ? 'cursor: pointer;' : null)}
+  }
+
+  ${mq.sm} {
+    flex: 0 0 auto;
   }
 `
 
@@ -72,7 +86,7 @@ export const IconButton = styled(ButtonWithoutDefaultStyle)<IconButtonProps>`
 
 export const DropdownList = styled(UlWithoutDefaultStyle)`
   height: 150px;
-  width: inherit;
+  width: 100%;
 
   position: absolute;
 

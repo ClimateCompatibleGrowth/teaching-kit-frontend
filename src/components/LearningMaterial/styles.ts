@@ -1,7 +1,12 @@
 import styled from '@emotion/styled'
-import { Neutral40 } from '../../styles/global'
+import { mq, Neutral40 } from '../../styles/global'
 
-export const Wrapper = styled.div``
+export const Wrapper = styled.div`
+  flex: 0 0 100%;
+  ${mq.sm} {
+    flex: 0 1 calc(75% - 4.6rem);
+  }
+`
 
 export const H1 = styled.h1`
   margin-top: 3.5rem;

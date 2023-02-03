@@ -13,7 +13,7 @@ export const OnNeutral40 = '#FFFFFF'
 export const Neutral90 = '#CCCCCC'
 export const OnNeutral90 = '#242424'
 
-export const Neutral99 = '#EBEBEB'
+export const Neutral99 = '#F5F5F5'
 export const OnNeutral99 = '#242424'
 
 export const SurfaceAlternative = '#FFFFFF'
@@ -32,9 +32,13 @@ export const Error99 = '#FFDAD7'
 export const OnError99 = '#242424'
 // End of design tokens
 
+export const AccentPinkLighter = '#F9F0F0'
 export const AccentPink = '#EACCCC'
-export const AccentGreen = '#99BFAA'
-export const AccentYellow = '#BFAA99'
+export const AccentPinkDarker = '#AD4848'
+export const AccentGreen = '#D4EACC'
+export const AccentGreenDarker = '#43742F'
+export const AccentYellow = '#F3F5B4'
+export const AccentYellowDarker = '#6E7113'
 
 export const breakpoints = {
   xs: '480px',
@@ -51,10 +55,24 @@ export const mq = {
 
 export const BorderRadius = '0.5rem'
 
+export const BlockContentWrapper = styled.div`
+  flex: 0 0 100%;
+  img {
+    max-width: 100%;
+  }
+
+  ${mq.sm} {
+    flex: 0 0 calc(75% - 4.6rem);
+  }
+`
+
 export const PageContainer = styled.div<{ hasBottomMargin?: boolean }>`
   padding: 2rem 1.6rem;
-  ${mq.lg} {
-    padding: 2rem 8rem;
+  ${mq.sm} {
+    padding: 8rem 2rem 2rem;
+  }
+  ${mq.md} {
+    padding: 8rem 8rem 2rem;
     max-width: ${breakpoints.lg};
     margin: 0 auto;
     margin-bottom: ${(props) => (props.hasBottomMargin ? '10rem' : undefined)};
@@ -81,15 +99,16 @@ export const ButtonWithoutDefaultStyle = styled.button`
   padding: 0px;
   font: inherit;
   cursor: pointer;
-  outline: inherit;
-`
-
-export const LearningMaterialContainer = styled.div`
-  display: flex;
 `
 
 export const LearningMaterialOverview = styled.div`
-  width: 80%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  row-gap: 4.6rem;
+  ${mq.sm} {
+    column-gap: 4.6rem;
+  }
 `
 
 export const LearningMaterialList = styled.ul`

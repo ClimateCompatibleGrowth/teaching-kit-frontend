@@ -1,5 +1,5 @@
 import PptxGenJS from 'pptxgenjs'
-import { Author } from '../../../../types'
+import { Author, Data } from '../../../../types'
 import {
   descriptionSlideAuthor,
   descriptionTitle,
@@ -8,7 +8,7 @@ import {
 const createTitleSlide = (
   lectureTitle: string,
   pptx: PptxGenJS,
-  authors?: Author[]
+  authors?: Data<Author>[]
 ) => {
   const descriptionSlide = pptx.addSlide()
   descriptionSlide.addText(`${lectureTitle}`, descriptionTitle)

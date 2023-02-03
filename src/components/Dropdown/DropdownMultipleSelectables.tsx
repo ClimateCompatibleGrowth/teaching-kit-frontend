@@ -116,7 +116,7 @@ export default function DropdownMultipleSelectables({
   }
 
   return (
-    <div>
+    <Styled.Wrapper>
       <Styled.DropdownWrapper ref={wrapperRef}>
         <Styled.Label htmlFor={`${label}dropdown`}>{label}</Styled.Label>
         <Styled.InputWrapper>
@@ -156,6 +156,6 @@ export default function DropdownMultipleSelectables({
           </Styled.SelectedItem>
         ))}
       </Styled.SelectedItemsWrapper>
-    </div>
+    </Styled.Wrapper>
   )
 }

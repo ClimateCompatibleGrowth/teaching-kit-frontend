@@ -1,4 +1,3 @@
-import styled from '@emotion/styled'
 import axios from 'axios'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
@@ -7,25 +6,20 @@ import MetadataContainer from '../../components/MetadataContainer/MetadataContai
 import { ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnCourse } from '../../shared/requests/utils/publishedEntriesFilter'
 import {
-  LearningMaterialContainer,
+  BlockContentWrapper,
   LearningMaterialOverview,
+  PageContainer,
 } from '../../styles/global'
 import { Course, CourseThreeLevelsDeep, Data } from '../../types'
 import { handleCourseDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import downloadCoursePptx from '../../utils/downloadAsPptx/downloadCourseAsPptx'
 import { levelToString, summarizeDurations } from '../../utils/utils'
 
-const CourseContentWrapper = styled.div`
-  margin-top: 5rem;
-`
-
-const Styled = { CourseContentWrapper }
-
 type Props = { course: Data<CourseThreeLevelsDeep> }
 
 export default function CoursePage({ course }: Props) {
   return (
-    <LearningMaterialContainer>
+    <PageContainer>
       <LearningMaterialOverview>
         <LearningMaterial
           type='COURSE'
@@ -36,7 +30,20 @@ export default function CoursePage({ course }: Props) {
           acknowledgement={course.attributes.Acknowledgement}
           citeAs={course.attributes.CiteAs}
         />
-        <Styled.CourseContentWrapper>
+        <MetadataContainer
+          level={levelToString(course.attributes.Level)}
+          duration={summarizeDurations(
+            course.attributes.Lectures.data
+              .map((lecture) =>
+                lecture.attributes.Blocks.data.map((block) => block)
+              )
+              .flat()
+          )}
+          authors={course.attributes.CourseCreators}
+          downloadAsDocx={() => handleCourseDocxDownload(course)}
+          downloadAsPptx={() => downloadCoursePptx(course)}
+        />
+        <BlockContentWrapper>
           <h2>Course Content</h2>
           <CardList
             cards={course.attributes.Lectures.data.map((lecture) => ({
@@ -47,22 +54,9 @@ export default function CoursePage({ course }: Props) {
               subTitle: <LearningMaterialBadge type={'LECTURE'} />,
             }))}
           />
-        </Styled.CourseContentWrapper>
+        </BlockContentWrapper>
       </LearningMaterialOverview>
-      <MetadataContainer
-        level={levelToString(course.attributes.Level)}
-        duration={summarizeDurations(
-          course.attributes.Lectures.data
-            .map((lecture) =>
-              lecture.attributes.Blocks.data.map((block) => block)
-            )
-            .flat()
-        )}
-        authors={course.attributes.CourseCreators}
-        downloadAsDocx={() => handleCourseDocxDownload(course)}
-        downloadAsPptx={() => downloadCoursePptx(course)}
-      />
-    </LearningMaterialContainer>
+    </PageContainer>
   )
 }
 

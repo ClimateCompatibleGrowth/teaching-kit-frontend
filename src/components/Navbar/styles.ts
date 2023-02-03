@@ -10,7 +10,6 @@ export const ColorBar = styled.div`
 
 export const Navbar = styled.nav`
   display: flex;
-  height: ${navHeight};
   max-width: ${breakpoints.lg};
   margin: 0 auto;
   padding: 0 1.6rem;
@@ -23,11 +22,20 @@ export const Navbar = styled.nav`
 `
 
 export const LogoWrapper = styled.div`
-  height: ${navHeight};
+  height: 6rem;
 
-  img {
+  ${mq.sm} {
+    height: 10rem;
+  }
+
+  svg {
     height: 100%;
     width: auto;
+
+    ${mq.sm} {
+      height: 140px;
+      position: absolute;
+    }
   }
 `
 

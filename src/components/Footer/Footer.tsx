@@ -1,15 +1,14 @@
-import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import * as Styled from './styles'
 
-import logo from '../../../public/logo.png'
+import LogoIcon from '../../../public/logo.svg'
 
 export default function Navbar() {
   return (
     <Styled.ColorBar>
       <Styled.Footer>
         <Styled.LogoWrapper>
-          <Image src={logo} alt='Climate Compatible Growth logotype' />
+          <LogoIcon alt='Climate Compatible Growth logotype' />
           <p>
             {`Copyright © Climate Compatible Growth ${new Date().getUTCFullYear()}. All rights reserved.`}
           </p>

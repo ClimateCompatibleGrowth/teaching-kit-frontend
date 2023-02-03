@@ -82,14 +82,16 @@ export default function LearningMaterial({
       <Styled.H1>{title}</Styled.H1>
       <Styled.H2>{`${typeToText(type)} description`}</Styled.H2>
       <ReactMarkdown>{abstract}</ReactMarkdown>
-      <AccordionGroup
-        accordions={getAccordions(
-          learningOutcomes,
-          prerequisites,
-          acknowledgement,
-          citeAs
-        )}
-      />
+      {learningOutcomes && learningOutcomes.length > 0 && (
+        <AccordionGroup
+          accordions={getAccordions(
+            learningOutcomes,
+            prerequisites,
+            acknowledgement,
+            citeAs
+          )}
+        />
+      )}
     </Styled.Wrapper>
   )
 }

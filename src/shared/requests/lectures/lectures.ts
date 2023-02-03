@@ -4,6 +4,7 @@ import { ResponseArray, ResponseArrayData } from '../types'
 import {
   FilterParameters,
   getAuthorsAndKeywordsFilterString,
+  getSortString,
 } from '../utils/utils'
 
 const ENDPOINT = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/lectures`
@@ -22,10 +23,13 @@ export const filterLectureOnKeywordsAndAuthors = async ({
   authors,
   pageNumber,
   matchesPerPage,
+  sortMethod,
 }: FilterParameters): Promise<ResponseArrayData<LectureTwoLevelsDeep>> => {
   const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
     matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
   }`
+
+  const sort = getSortString(sortMethod)
 
   const authorsAndKeywordsFilterString = getAuthorsAndKeywordsFilterString(
     authors,
@@ -37,7 +41,9 @@ export const filterLectureOnKeywordsAndAuthors = async ({
 
   const filters = `${pagination}${authorsAndKeywordsFilterString}`
   const filterString =
-    filters.length > 0 ? `${filters}&${populate}` : `?${populate}`
+    filters.length > 0
+      ? `${filters}&${populate}&${sort}`
+      : `?${populate}&${sort}`
   const response: ResponseArray<LectureTwoLevelsDeep> = await axios.get(
     `${ENDPOINT}${filterString}`
   )
@@ -47,7 +53,8 @@ export const filterLectureOnKeywordsAndAuthors = async ({
 export const getRecentLectures = async (limit = 30) => {
   const pagination = `pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
   const populate = `populate[Level][populate]=Level&populate[Blocks][populate]=DurationInMinutes`
-  const response: ResponseArray<Partial<LectureTwoLevelsDeep>> =
-    await axios.get(`${ENDPOINT}?${pagination}&${populate}`)
+  const response: ResponseArray<LectureTwoLevelsDeep> = await axios.get(
+    `${ENDPOINT}?${pagination}&${populate}`
+  )
   return response.data.data
 }

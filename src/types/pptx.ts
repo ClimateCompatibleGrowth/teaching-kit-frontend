@@ -1,24 +1,20 @@
 import PptxGenJS from 'pptxgenjs'
-import { Author } from '.'
-
-type PptxSlideListContent = {
-  text: string
-}
+import { Author, Data } from '.'
 
 export type PptxSlide = {
   title: string
   heading: string
-  mainContent?: string[]
+  mainContent: PptxGenJS.TextProps[]
   mainContentStyling?: PptxGenJS.TextPropsOptions
   speakerNotes?: string
-  image?: string
+  images?: PptxGenJS.ImageProps[]
   headingStyling?: {}
   listStyling?: PptxGenJS.TextPropsOptions
-  list?: PptxSlideListContent[]
+  list?: PptxGenJS.TextProps[]
 }
 
 export type LectureBlock = {
   title: string
   pptxSlides: PptxSlide[]
-  authors: Author[]
+  authors: Data<Author>[]
 }

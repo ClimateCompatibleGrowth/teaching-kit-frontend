@@ -9,25 +9,22 @@ const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
     //Headings
     contentSlide.addText(`${pptxSlide.heading}`, pptxSlide.headingStyling)
 
-    if (pptxSlide?.image !== undefined && pptxSlide?.image !== '') {
-      contentSlide.addImage({
-        path: `${pptxSlide.image}?do-not-fetch-from-cache`,
-        ...imageStyling,
-      })
+    if (pptxSlide?.images !== undefined && pptxSlide?.images.length > 0) {
+      for (const image of pptxSlide.images) {
+        contentSlide.addImage({
+          ...imageStyling,
+          ...image,
+        })
+      }
     }
 
     if (pptxSlide?.mainContent !== undefined) {
-      contentSlide.addText(
-        pptxSlide?.mainContent?.join(''),
-        pptxSlide.mainContentStyling
-      )
+      contentSlide.addText(pptxSlide.mainContent, pptxSlide.mainContentStyling)
     }
 
     //Bullet points
     if (pptxSlide.list) {
-      const bulletString = pptxSlide.list.map((item) => item.text).join('\n')
-
-      contentSlide.addText(`${bulletString}`, pptxSlide.listStyling)
+      contentSlide.addText(pptxSlide.list, pptxSlide.listStyling)
     }
 
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)

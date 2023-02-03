@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react'
-import { AccentPink, AccentGreen, AccentYellow } from '../../../styles/global'
 import { LearningMaterialType } from '../../../types'
 import Badge from '../../Badge/Badge'
 
@@ -8,12 +7,6 @@ type ElementType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 type Props = {
   type: LearningMaterialType
   elementType?: ElementType
-}
-
-const learningMaterialColors = {
-  course: AccentPink,
-  lecture: AccentGreen,
-  block: AccentYellow,
 }
 
 const LearningMaterialBadge = ({ type, elementType }: Props) => {
@@ -42,19 +35,19 @@ const LearningMaterialBadge = ({ type, elementType }: Props) => {
   switch (type) {
     case 'BLOCK':
       return (
-        <Badge accentColor={learningMaterialColors.block}>
+        <Badge accentColor='yellow'>
           {getBadgeContent('Lecture block', elementType)}
         </Badge>
       )
     case 'LECTURE':
       return (
-        <Badge accentColor={learningMaterialColors.lecture}>
+        <Badge accentColor='green'>
           {getBadgeContent('Lecture', elementType)}
         </Badge>
       )
     case 'COURSE':
       return (
-        <Badge accentColor={learningMaterialColors.course}>
+        <Badge accentColor='pink'>
           {getBadgeContent('Course', elementType)}
         </Badge>
       )
