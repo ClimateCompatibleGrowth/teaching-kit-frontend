@@ -13,7 +13,7 @@ import {
 import { Course, CourseThreeLevelsDeep, Data } from '../../types'
 import { handleCourseDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import downloadCoursePptx from '../../utils/downloadAsPptx/downloadCourseAsPptx'
-import { levelToString, summarizeDurations } from '../../utils/utils'
+import { summarizeDurations } from '../../utils/utils'
 
 type Props = { course: Data<CourseThreeLevelsDeep> }
 

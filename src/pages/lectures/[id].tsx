@@ -1,5 +1,4 @@
 import axios from 'axios'
-import styled from '@emotion/styled'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
 import LearningMaterialBadge from '../../components/LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
@@ -9,7 +8,6 @@ import { filterOutOnlyPublishedEntriesOnLecture } from '../../shared/requests/ut
 import {
   BlockContentWrapper,
   LearningMaterialOverview,
-  mq,
   PageContainer,
 } from '../../styles/global'
 import { Data, Lecture, LectureTwoLevelsDeep } from '../../types'
