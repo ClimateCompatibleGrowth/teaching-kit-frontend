@@ -16,6 +16,7 @@ import {
   h1Style,
   h2Style,
   h3Style,
+  listItemStyle,
   paragraphStyle,
 } from '../createPptx/pptxConfiguration/text'
 import { getBaseImageStyling } from '../createPptx/pptxConfiguration/image'
@@ -162,6 +163,7 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
         }
         return node.type
       })
+
       const slideHasImage =
         markdown.find(
           (node) =>
@@ -207,13 +209,19 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
         }
 
         if (node.type === 'space') {
-          const textProps = convertToTextProp(node.raw, 'space')
-          mainSlideContent.push(textProps)
+          // Beware! The following logic might be tempting, but it screws up lists (and heading+lists)
+          //
+          // const textProps = convertToTextProp(node.raw, 'space')
+          // mainSlideContent.push(textProps)
         }
 
         if (node.type === 'heading') {
+          const newLine = index === 0 ? '' : '\n\n'
           if (node.depth === 1) {
-            const textProps = convertToTextProp(`${decode(node.text)}`, 'h1')
+            const textProps = convertToTextProp(
+              `${newLine}${decode(node.text)}`,
+              'h1'
+            )
             mainSlideContent.push(textProps)
             slideAttribute.mainContentStyling = addContentStyling(
               slideAttribute.mainContentStyling,
@@ -224,7 +232,10 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
             )
           }
           if (node.depth === 2) {
-            const textProps = convertToTextProp(`${decode(node.text)}`, 'h2')
+            const textProps = convertToTextProp(
+              `${newLine}${decode(node.text)}`,
+              'h2'
+            )
             mainSlideContent.push(textProps)
             slideAttribute.mainContentStyling = addContentStyling(
               slideAttribute.mainContentStyling,
@@ -235,7 +246,10 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
             )
           }
           if (node.depth === 3) {
-            const textProps = convertToTextProp(`${decode(node.text)}`, 'h3')
+            const textProps = convertToTextProp(
+              `${newLine}${decode(node.text)}`,
+              'h3'
+            )
             mainSlideContent.push(textProps)
             slideAttribute.mainContentStyling = addContentStyling(
               slideAttribute.mainContentStyling,
@@ -248,8 +262,15 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
         }
 
         if (node.type === 'list') {
-          slideAttribute.list = getSubComponentsFromList(node.items)
+          mainSlideContent.push(...getSubComponentsFromList(node.items))
           const styling = getDynamicStyling(
+            node,
+            index,
+            nodeTypesInOrderOfOccurance,
+            slideHasImage
+          )
+          slideAttribute.mainContentStyling = addContentStyling(
+            slideAttribute.mainContentStyling,
             node,
             index,
             nodeTypesInOrderOfOccurance,
@@ -318,6 +339,7 @@ const getSubComponentsFromList = (
           const textNodes = innerTokens.map((innerToken, index) => ({
             text: stripBackslashN(innerToken.text),
             options: {
+              ...listItemStyle,
               bold: innerToken.type === 'strong',
               italic: innerToken.type === 'em',
               ...(index === 0 && { indentLevel: 0, bullet: true }),
