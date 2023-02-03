@@ -69,8 +69,10 @@ export async function getStaticProps(ctx: any) {
     `${process.env.STRAPI_API_URL}/blocks/${ctx.params.id}?populate=*`
   )
   const block = res.data.data
+  const onceEveryTwoHours = 2 * 60 * 60
 
   return {
     props: { block },
+    revalidate: onceEveryTwoHours,
   }
 }

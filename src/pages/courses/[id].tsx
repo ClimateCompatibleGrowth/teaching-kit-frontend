@@ -94,8 +94,10 @@ export async function getStaticProps(ctx: any) {
     `${process.env.STRAPI_API_URL}/courses/${ctx.params.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
   )
   const course: Data<CourseThreeLevelsDeep> = res.data.data
+  const onceEveryTwoHours = 2 * 60 * 60
 
   return {
     props: { course: filterOutOnlyPublishedEntriesOnCourse(course) },
+    revalidate: onceEveryTwoHours,
   }
 }
