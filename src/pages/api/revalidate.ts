@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-
-type ContentType = 'block' | 'lecture' | 'course'
+import { LearningMaterialType } from '../../types'
 
 type StrapiWebhookRequest = NextApiRequest & {
   body: {
@@ -22,12 +21,10 @@ export default async function handler(
   const pathToPurge = getPathToPurge(req.body.model, req.body.entry.id)
 
   if (pathToPurge === undefined) {
-    return res
-      .status(204)
-      .json({
-        message:
-          'The change was not made in a block/lecture/course. Such change will be reflected after the next scheduled purge instead.',
-      })
+    return res.status(204).json({
+      message:
+        'The change was not made in a block/lecture/course. Such change will be reflected after the next scheduled purge instead.',
+    })
   }
 
   try {
@@ -38,8 +35,8 @@ export default async function handler(
   }
 }
 
-const getPathToPurge = (contentType: ContentType, id: number) => {
-  switch (contentType) {
+const getPathToPurge = (contentType: LearningMaterialType, id: number) => {
+  switch (contentType.toLowerCase()) {
     case 'course':
       return `/courses/${id}`
     case 'lecture':

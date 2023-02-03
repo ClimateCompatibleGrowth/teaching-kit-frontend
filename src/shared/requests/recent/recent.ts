@@ -1,7 +1,7 @@
 import { getRecentLectures } from '../lectures/lectures'
 import { getRecentBlocks } from '../blocks/blocks'
 import { getRecentCourses } from '../courses/courses'
-import { Block, Data, Level, LevelName } from '../../../types'
+import { Block, Data, LearningMaterialType, LevelName } from '../../../types'
 import { summarizeDurations } from '../../../utils/utils'
 
 export type RecentUpdateType = {
@@ -9,7 +9,7 @@ export type RecentUpdateType = {
   UpdatedAt: string
   Title?: string
   Abstract?: string
-  Type: 'Lecture' | 'Course' | 'Block'
+  Type: LearningMaterialType
   Level?: LevelName
   Duration?: number | string
 }
@@ -28,7 +28,7 @@ export const getRecentUpdates = async () => {
     UpdatedAt: course.attributes.updatedAt || nowStamp,
     Title: course.attributes.Title,
     Abstract: course.attributes.Abstract,
-    Type: 'Course',
+    Type: 'COURSE',
     Level: course.attributes.Level?.data?.attributes.Level,
     Duration: summarizeDurations(
       course.attributes.Lectures.data.reduce<Data<Block>[]>(
@@ -43,7 +43,7 @@ export const getRecentUpdates = async () => {
     UpdatedAt: lecture.attributes.updatedAt || nowStamp,
     Title: lecture.attributes.Title,
     Abstract: lecture.attributes.Abstract,
-    Type: 'Lecture',
+    Type: 'LECTURE',
     Level: lecture.attributes.Level?.data?.attributes.Level,
     Duration: summarizeDurations(lecture.attributes.Blocks?.data || []),
   }))
@@ -53,7 +53,7 @@ export const getRecentUpdates = async () => {
     UpdatedAt: block.attributes.updatedAt || nowStamp,
     Title: block.attributes.Title,
     Abstract: block.attributes.Abstract,
-    Type: 'Block',
+    Type: 'BLOCK',
     Duration: summarizeDurations([block]),
   }))
 
