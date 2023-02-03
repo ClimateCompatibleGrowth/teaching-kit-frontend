@@ -5,6 +5,7 @@ import Badge, { BadgeColor } from '../../Badge/Badge'
 import ClockIcon from '../../../../public/icons/clock.svg'
 import SignalStrengthIcon from '../../../../public/icons/signal-strength.svg'
 import * as Styled from './styles'
+import { levelToString } from '../../../utils/utils'
 
 type Props = {
   recentUpdate: RecentUpdateType
@@ -46,7 +47,7 @@ const RecentUpdate = ({ recentUpdate }: Props) => {
           <Styled.MetaInformation>
             <>
               <SignalStrengthIcon aria-label={levelExplanation} />
-              {recentUpdate.Level}
+              {levelToString(recentUpdate.Level)}
             </>
           </Styled.MetaInformation>
         )}

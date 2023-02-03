@@ -55,8 +55,22 @@ export const mq = {
 
 export const BorderRadius = '0.5rem'
 
+export const BlockContentWrapper = styled.div`
+  flex: 0 0 100%;
+  img {
+    max-width: 100%;
+  }
+
+  ${mq.sm} {
+    flex: 0 0 calc(75% - 4.6rem);
+  }
+`
+
 export const PageContainer = styled.div<{ hasBottomMargin?: boolean }>`
   padding: 2rem 1.6rem;
+  ${mq.sm} {
+    padding: 8rem 2rem 2rem;
+  }
   ${mq.md} {
     padding: 8rem 8rem 2rem;
     max-width: ${breakpoints.lg};

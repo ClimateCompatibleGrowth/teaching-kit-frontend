@@ -13,7 +13,10 @@ export type Props = {
   authors?: { data: Data<Author>[] }
   downloadAsDocx: () => Promise<void | DownloadError>
   downloadAsPptx: () => void
-  parentRelations?: Data<CourseOneLevelDeep>[] | Data<Lecture>[]
+  parentRelations?: {
+    type: 'lectures' | 'courses'
+    parents: Data<CourseOneLevelDeep>[] | Data<Lecture>[]
+  }
 }
 
 export default function MetadataContainer({
@@ -56,9 +59,9 @@ export default function MetadataContainer({
       {parentRelations && (
         <Styled.HeadingSet>
           <Styled.Heading>Also part of</Styled.Heading>
-          {parentRelations.map((parent) => (
+          {parentRelations.parents.map((parent) => (
             <div key={parent.id}>
-              <Link href={`/courses/${parent.id}`}>
+              <Link href={`/${parentRelations.type}/${parent.id}`}>
                 {parent.attributes.Title}
               </Link>{' '}
             </div>
