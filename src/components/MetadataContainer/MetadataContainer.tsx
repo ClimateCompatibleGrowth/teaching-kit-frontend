@@ -1,14 +1,15 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { Author, CourseOneLevelDeep, Data, Lecture } from '../../types'
+import { Author, CourseOneLevelDeep, Data, Lecture, Level } from '../../types'
 import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
+import { levelToString } from '../../utils/utils'
 import Alert from '../Alert/Alert'
 import Button from '../Button/Button'
 
 import * as Styled from './styles'
 
 export type Props = {
-  level?: string
+  level?: { data?: Data<Level> }
   duration?: string
   authors?: { data: Data<Author>[] }
   downloadAsDocx: () => Promise<void | DownloadError>
@@ -46,7 +47,7 @@ export default function MetadataContainer({
         {level !== undefined && (
           <Styled.ShortInfo>
             <Styled.SignalStrengthIcon />
-            {level}
+            {levelToString(level)}
           </Styled.ShortInfo>
         )}
         {duration !== undefined && (

@@ -31,7 +31,7 @@ export default function CoursePage({ course }: Props) {
           citeAs={course.attributes.CiteAs}
         />
         <MetadataContainer
-          level={levelToString(course.attributes.Level)}
+          level={course.attributes.Level}
           duration={summarizeDurations(
             course.attributes.Lectures.data
               .map((lecture) =>

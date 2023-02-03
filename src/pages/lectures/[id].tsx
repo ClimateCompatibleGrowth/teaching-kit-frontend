@@ -32,7 +32,7 @@ export default function LecturePage({ lecture }: Props) {
           citeAs={lecture.attributes.CiteAs}
         />
         <MetadataContainer
-          level={lecture.attributes.Level.data?.attributes.Level}
+          level={lecture.attributes.Level}
           duration={summarizeDurations(lecture.attributes.Blocks.data)}
           authors={lecture.attributes.LectureCreators}
           downloadAsDocx={() => handleLectureDocxDownload(lecture)}
