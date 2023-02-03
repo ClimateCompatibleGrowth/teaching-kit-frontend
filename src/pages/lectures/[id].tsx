@@ -1,11 +1,17 @@
 import axios from 'axios'
+import styled from '@emotion/styled'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
 import LearningMaterialBadge from '../../components/LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnLecture } from '../../shared/requests/utils/publishedEntriesFilter'
-import { LearningMaterialOverview, PageContainer } from '../../styles/global'
+import {
+  BlockContentWrapper,
+  LearningMaterialOverview,
+  mq,
+  PageContainer,
+} from '../../styles/global'
 import { Data, Lecture, LectureTwoLevelsDeep } from '../../types'
 import { handleLectureDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { downloadLecturePptx } from '../../utils/downloadAsPptx/downloadLectureAsPptx'
@@ -14,11 +20,6 @@ import { summarizeDurations } from '../../utils/utils'
 type Props = { lecture: Data<LectureTwoLevelsDeep> }
 
 export default function LecturePage({ lecture }: Props) {
-  const parents = lecture.attributes.Courses?.data?.map((course) => ({
-    id: course.id,
-    title: course.attributes.Title,
-  }))
-
   return (
     <PageContainer>
       <LearningMaterialOverview>
@@ -36,9 +37,12 @@ export default function LecturePage({ lecture }: Props) {
           authors={lecture.attributes.LectureCreators}
           downloadAsDocx={() => handleLectureDocxDownload(lecture)}
           downloadAsPptx={() => downloadLecturePptx(lecture)}
-          parentRelations={lecture.attributes.Courses.data}
+          parentRelations={{
+            type: 'courses',
+            parents: lecture.attributes.Courses.data,
+          }}
         />
-        <div>
+        <BlockContentWrapper>
           <h2>Lecture Content</h2>
           <CardList
             cards={lecture.attributes.Blocks.data.map((block) => ({
@@ -49,7 +53,7 @@ export default function LecturePage({ lecture }: Props) {
               subTitle: <LearningMaterialBadge type='BLOCK' />,
             }))}
           />
-        </div>
+        </BlockContentWrapper>
       </LearningMaterialOverview>
     </PageContainer>
   )

@@ -5,7 +5,11 @@ import LearningMaterialBadge from '../../components/LearningMaterial/LearningMat
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnCourse } from '../../shared/requests/utils/publishedEntriesFilter'
-import { LearningMaterialOverview, PageContainer } from '../../styles/global'
+import {
+  BlockContentWrapper,
+  LearningMaterialOverview,
+  PageContainer,
+} from '../../styles/global'
 import { Course, CourseThreeLevelsDeep, Data } from '../../types'
 import { handleCourseDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import downloadCoursePptx from '../../utils/downloadAsPptx/downloadCourseAsPptx'
@@ -39,7 +43,7 @@ export default function CoursePage({ course }: Props) {
           downloadAsDocx={() => handleCourseDocxDownload(course)}
           downloadAsPptx={() => downloadCoursePptx(course)}
         />
-        <div>
+        <BlockContentWrapper>
           <h2>Course Content</h2>
           <CardList
             cards={course.attributes.Lectures.data.map((lecture) => ({
@@ -50,7 +54,7 @@ export default function CoursePage({ course }: Props) {
               subTitle: <LearningMaterialBadge type={'LECTURE'} />,
             }))}
           />
-        </div>
+        </BlockContentWrapper>
       </LearningMaterialOverview>
     </PageContainer>
   )
