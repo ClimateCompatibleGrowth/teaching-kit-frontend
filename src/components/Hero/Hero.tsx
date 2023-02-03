@@ -20,7 +20,7 @@ export default function Hero({ image, title, body, action }: Props) {
   return (
     <>
       <Styled.Image alt={image.alt} src={image.src} />
-      <PageContainer hasBottomPadding noTopPadding>
+      <PageContainer hasBottomPadding>
         <Styled.Wrapper>
           <h1>{title}</h1>
           <Styled.Paragraph>{body}</Styled.Paragraph>
