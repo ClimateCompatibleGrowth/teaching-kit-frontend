@@ -3,10 +3,8 @@ import { LearningMaterialType } from '../../types'
 
 type StrapiWebhookRequest = NextApiRequest & {
   body: {
-    model: string
-    entry: {
-      id: number
-    }
+    model?: LearningMaterialType
+    entry?: { id?: number }
   }
 }
 
@@ -18,21 +16,27 @@ export default async function handler(
     return res.status(401).json({ message: 'Invalid token' })
   }
 
-  const pathToPurge = getPathToPurge(req.body.model, req.body.entry.id)
+  const body = req.body
 
-  if (pathToPurge === undefined) {
-    return res.status(204).json({
-      message:
-        'The change was not made in a block/lecture/course. Such change will be reflected after the next scheduled purge instead.',
-    })
+  if (body.model && body.entry?.id) {
+    const pathToPurge = getPathToPurge(body.model, body.entry.id)
+    try {
+      if (!pathToPurge) {
+        throw new Error(
+          `Could not purge path, seems invalid: ${body.model}, ${body.entry.id}`
+        )
+      }
+      await res.revalidate(pathToPurge)
+      return res.json({ revalidated: true })
+    } catch (err) {
+      return res.status(500).send('Error revalidating')
+    }
   }
 
-  try {
-    await res.revalidate(pathToPurge)
-    return res.json({ revalidated: true })
-  } catch (err) {
-    return res.status(500).send('Error revalidating')
-  }
+  return res.status(200).json({
+    message:
+      'The change was not made in a block/lecture/course. Such change will be reflected after the next scheduled purge instead.',
+  })
 }
 
 const getPathToPurge = (contentType: LearningMaterialType, id: number) => {
