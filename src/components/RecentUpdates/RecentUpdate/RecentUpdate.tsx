@@ -5,7 +5,7 @@ import Badge, { BadgeColor } from '../../Badge/Badge'
 import ClockIcon from '../../../../public/icons/clock.svg'
 import SignalStrengthIcon from '../../../../public/icons/signal-strength.svg'
 import * as Styled from './styles'
-import { levelToString } from '../../../utils/utils'
+import { typeToText, levelToString } from '../../../utils/utils'
 
 type Props = {
   recentUpdate: RecentUpdateType
@@ -31,9 +31,12 @@ const RecentUpdate = ({ recentUpdate }: Props) => {
     default:
       break
   }
+
   return (
     <Styled.Card href={href}>
-      <Badge accentColor={typeColor}>{recentUpdate.Type}</Badge>
+      <Badge accentColor={typeColor}>
+        {typeToText(recentUpdate.Type)}
+      </Badge>
       <Styled.Title>{recentUpdate.Title}</Styled.Title>
       {recentUpdate.Abstract && (
         <Styled.Markdown>

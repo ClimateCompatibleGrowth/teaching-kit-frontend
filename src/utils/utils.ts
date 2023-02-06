@@ -7,7 +7,7 @@ export const typeToText = (type: LearningMaterialType) => {
     case 'LECTURE':
       return 'Lecture'
     case 'BLOCK':
-      return 'Block'
+      return 'Lecture block'
   }
 }
 

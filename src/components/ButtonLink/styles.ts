@@ -7,7 +7,9 @@ export type ButtonLinkProps = {
   primary?: boolean
 }
 
-export const ButtonLink = styled(Link)<LinkProps & ButtonLinkProps>`
+export const ButtonLink = styled(Link, {
+  shouldForwardProp: (prop) => prop !== 'primary',
+})<LinkProps & ButtonLinkProps>`
   display: inline-block;
   padding: 7px 24px;
 
