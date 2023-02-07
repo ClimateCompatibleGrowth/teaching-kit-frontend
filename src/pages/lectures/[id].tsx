@@ -92,7 +92,9 @@ export async function getStaticProps(ctx: any) {
   const onceEveryTwoHours = 2 * 60 * 60
 
   return {
-    props: { lecture: filterOutOnlyPublishedEntriesOnLecture(lecture) },
+    props: {
+      lecture: filterOutOnlyPublishedEntriesOnLecture(lecture),
+    },
     revalidate: onceEveryTwoHours,
   }
 }

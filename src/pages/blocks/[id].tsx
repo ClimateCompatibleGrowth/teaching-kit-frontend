@@ -12,6 +12,7 @@ import { ReactMarkdown } from 'react-markdown/lib/react-markdown'
 import { handleBlockDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { ResponseArray } from '../../shared/requests/types'
 import { downloadBlockPptx } from '../../utils/downloadAsPptx/downloadBlockAsPptx'
+import { filterOutOnlyPublishedEntriesOnBlock } from '../../shared/requests/utils/publishedEntriesFilter'
 
 type Props = { block: Data<BlockOneLevelDeep> }
 
@@ -70,7 +71,7 @@ export async function getStaticProps(ctx: any) {
   const onceEveryTwoHours = 2 * 60 * 60
 
   return {
-    props: { block },
+    props: { block: filterOutOnlyPublishedEntriesOnBlock(block) },
     revalidate: onceEveryTwoHours,
   }
 }
