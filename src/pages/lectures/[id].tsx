@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { GetStaticPropsContext } from 'next/types'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
 import LearningMaterialBadge from '../../components/LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
@@ -76,7 +77,7 @@ export async function getStaticPaths() {
   return { paths, fallback: false }
 }
 
-export async function getStaticProps(ctx: any) {
+export async function getStaticProps(ctx: GetStaticPropsContext) {
   const populateCourses = 'populate[Courses]=*'
   const populateBlocks = 'populate[Blocks][populate][0]=*'
   const populateLectureCreators = 'populate[LectureCreators][populate]=*'
@@ -86,7 +87,7 @@ export async function getStaticProps(ctx: any) {
   const populateLevel = 'populate[Level]=Level'
 
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/lectures/${ctx.params.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
+    `${process.env.STRAPI_API_URL}/lectures/${ctx.params?.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
   )
   const lecture: Data<LectureTwoLevelsDeep> = res.data.data
   const onceEveryTwoHours = 2 * 60 * 60

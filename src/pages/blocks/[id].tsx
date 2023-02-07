@@ -13,6 +13,7 @@ import { handleBlockDocxDownload } from '../../utils/downloadAsDocx/downloadAsDo
 import { ResponseArray } from '../../shared/requests/types'
 import { downloadBlockPptx } from '../../utils/downloadAsPptx/downloadBlockAsPptx'
 import { filterOutOnlyPublishedEntriesOnBlock } from '../../shared/requests/utils/publishedEntriesFilter'
+import { GetStaticPropsContext } from 'next/types'
 
 type Props = { block: Data<BlockOneLevelDeep> }
 
@@ -63,9 +64,9 @@ export async function getStaticPaths() {
   return { paths, fallback: false }
 }
 
-export async function getStaticProps(ctx: any) {
+export async function getStaticProps(ctx: GetStaticPropsContext) {
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/blocks/${ctx.params.id}?populate=*`
+    `${process.env.STRAPI_API_URL}/blocks/${ctx.params?.id}?populate=*`
   )
   const block = res.data.data
   const onceEveryTwoHours = 2 * 60 * 60
