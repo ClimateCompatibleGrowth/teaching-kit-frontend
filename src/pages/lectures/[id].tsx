@@ -59,7 +59,6 @@ export default function LecturePage({ lecture }: Props) {
 }
 
 export async function getStaticPaths() {
-  console.log('Getting static paths for lectures...')
   if (process.env.SKIP_BUILD_STATIC_GENERATION) {
     return {
       paths: [],
@@ -70,10 +69,6 @@ export async function getStaticPaths() {
   const lectures: ResponseArray<Lecture> = await axios.get(
     `${process.env.STRAPI_API_URL}/lectures`
   )
-
-  for (const lecture of lectures.data.data) {
-    console.log(lecture)
-  }
 
   const paths = lectures.data.data.map((lecture) => ({
     params: { id: `${lecture.id}` },
@@ -97,12 +92,10 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     `${process.env.STRAPI_API_URL}/lectures/${ctx.params?.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
   )
   const lecture: Data<LectureTwoLevelsDeep> = res.data.data
-  const onceEveryTwoHours = 2 * 60 * 60
 
   return {
     props: {
       lecture: filterOutOnlyPublishedEntriesOnLecture(lecture),
     },
-    revalidate: onceEveryTwoHours,
   }
 }

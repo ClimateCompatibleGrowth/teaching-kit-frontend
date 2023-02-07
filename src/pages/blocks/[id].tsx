@@ -46,7 +46,6 @@ export default function BlockPage({ block }: Props) {
 }
 
 export async function getStaticPaths() {
-  console.log('Getting static paths for blocks...')
   if (process.env.SKIP_BUILD_STATIC_GENERATION) {
     return {
       paths: [],
@@ -57,10 +56,6 @@ export async function getStaticPaths() {
   const blocks: ResponseArray<Block> = await axios.get(
     `${process.env.STRAPI_API_URL}/blocks`
   )
-
-  for (const block of blocks.data.data) {
-    console.log(block)
-  }
 
   const paths = blocks.data.data.map((block) => ({
     params: { id: `${block.id}` },
@@ -76,10 +71,8 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     `${process.env.STRAPI_API_URL}/blocks/${ctx.params?.id}?populate=*`
   )
   const block = res.data.data
-  const onceEveryTwoHours = 2 * 60 * 60
 
   return {
     props: { block: filterOutOnlyPublishedEntriesOnBlock(block) },
-    revalidate: onceEveryTwoHours,
   }
 }
