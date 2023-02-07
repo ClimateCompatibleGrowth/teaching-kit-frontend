@@ -62,6 +62,7 @@ export default function CoursePage({ course }: Props) {
 }
 
 export async function getStaticPaths() {
+  console.log('Getting static paths for courses...')
   if (process.env.SKIP_BUILD_STATIC_GENERATION === 'true') {
     return {
       paths: [],
@@ -73,11 +74,18 @@ export async function getStaticPaths() {
     `${process.env.STRAPI_API_URL}/courses`
   )
 
+  for (const course of courses.data.data) {
+    console.log(course)
+  }
+
   const paths = courses.data.data.map((course) => {
     return {
       params: { id: `${course.id}` },
     }
   })
+
+  console.log(paths)
+
   return { paths, fallback: false }
 }
 

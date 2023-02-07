@@ -59,6 +59,7 @@ export default function LecturePage({ lecture }: Props) {
 }
 
 export async function getStaticPaths() {
+  console.log('Getting static paths for lectures...')
   if (process.env.SKIP_BUILD_STATIC_GENERATION) {
     return {
       paths: [],
@@ -70,9 +71,15 @@ export async function getStaticPaths() {
     `${process.env.STRAPI_API_URL}/lectures`
   )
 
+  for (const lecture of lectures.data.data) {
+    console.log(lecture)
+  }
+
   const paths = lectures.data.data.map((lecture) => ({
     params: { id: `${lecture.id}` },
   }))
+
+  console.log(paths)
 
   return { paths, fallback: false }
 }
