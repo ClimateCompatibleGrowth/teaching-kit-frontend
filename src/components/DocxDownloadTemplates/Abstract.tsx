@@ -1,7 +1,7 @@
 import React from 'react'
 import { LearningMaterialType } from '../../types'
+import Markdown from '../Markdown/Markdown'
 import SubHeading from './SubHeading'
-import Document from './Document'
 
 type Props = {
   markdown: string
@@ -12,7 +12,7 @@ const Abstract = ({ markdown, downloadedAs }: Props) => {
   return (
     <>
       <SubHeading downloadedAs={downloadedAs}>Abstract</SubHeading>
-      <Document markdown={markdown} />
+      <Markdown>{markdown}</Markdown>
     </>
   )
 }

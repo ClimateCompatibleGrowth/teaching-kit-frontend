@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import ReactMarkdown from 'react-markdown'
+import Markdown from '../../Markdown/Markdown'
 import * as Styled from './styles'
 
 export type PosterType = {
@@ -24,7 +24,7 @@ const Poster = ({ poster }: Props) => {
       {typeof poster.subTitle === 'object' && poster.subTitle}
       <Styled.Title>{poster.title}</Styled.Title>
       <Styled.Markdown>
-        <ReactMarkdown>{poster.text}</ReactMarkdown>
+        <Markdown>{poster.text}</Markdown>
       </Styled.Markdown>
       <Styled.Metadata>{poster.metadata}</Styled.Metadata>
       {poster.subComponent && (

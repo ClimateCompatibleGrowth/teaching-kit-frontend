@@ -1,6 +1,6 @@
 import { css } from '@emotion/react'
 import { ubuntu, montserrat } from './fonts'
-import { Background, mq } from './global'
+import { Background, mq, Neutral99, OnNeutral99 } from './global'
 
 const defaultStyle = css`
   h1,
@@ -52,6 +52,25 @@ const defaultStyle = css`
 
     font-size: 1.6rem;
     font-family: ${montserrat[400].style.fontFamily};
+  }
+
+  table {
+    font-size: 1.6rem;
+    font-family: ${montserrat[400].style.fontFamily};
+    border-collapse: collapse;
+    th {
+      background-color: ${Neutral99};
+      color: ${OnNeutral99};
+    }
+    th,
+    td {
+      border: 1px solid ${OnNeutral99};
+      padding: 0.5rem;
+    }
+    tr:nth-of-type(even) {
+      background-color: ${Neutral99};
+      color: ${OnNeutral99};
+    }
   }
 
   label {

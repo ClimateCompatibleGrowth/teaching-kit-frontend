@@ -1,11 +1,11 @@
 import React from 'react'
-import ReactMarkdown from 'react-markdown'
 import { RecentUpdateType } from '../../../shared/requests/recent/recent'
 import Badge, { BadgeColor } from '../../Badge/Badge'
 import ClockIcon from '../../../../public/icons/clock.svg'
 import SignalStrengthIcon from '../../../../public/icons/signal-strength.svg'
 import * as Styled from './styles'
 import { typeToText, levelToString } from '../../../utils/utils'
+import Markdown from '../../Markdown/Markdown'
 
 type Props = {
   recentUpdate: RecentUpdateType
@@ -34,15 +34,11 @@ const RecentUpdate = ({ recentUpdate }: Props) => {
 
   return (
     <Styled.Card href={href}>
-      <Badge accentColor={typeColor}>
-        {typeToText(recentUpdate.Type)}
-      </Badge>
+      <Badge accentColor={typeColor}>{typeToText(recentUpdate.Type)}</Badge>
       <Styled.Title>{recentUpdate.Title}</Styled.Title>
       {recentUpdate.Abstract && (
         <Styled.Markdown>
-          <ReactMarkdown allowedElements={['p']}>
-            {recentUpdate.Abstract}
-          </ReactMarkdown>
+          <Markdown allowedElements={['p']}>{recentUpdate.Abstract}</Markdown>
         </Styled.Markdown>
       )}
       <Styled.MetaWrapper>

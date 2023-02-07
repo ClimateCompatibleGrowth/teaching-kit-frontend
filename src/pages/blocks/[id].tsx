@@ -8,12 +8,12 @@ import {
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { summarizeDurations } from '../../utils/utils'
 import LearningMaterial from '../../components/LearningMaterial'
-import { ReactMarkdown } from 'react-markdown/lib/react-markdown'
 import { handleBlockDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { ResponseArray } from '../../shared/requests/types'
 import { downloadBlockPptx } from '../../utils/downloadAsPptx/downloadBlockAsPptx'
 import { filterOutOnlyPublishedEntriesOnBlock } from '../../shared/requests/utils/publishedEntriesFilter'
 import { GetStaticPropsContext } from 'next/types'
+import Markdown from '../../components/Markdown/Markdown'
 
 type Props = { block: Data<BlockOneLevelDeep> }
 
@@ -38,7 +38,7 @@ export default function BlockPage({ block }: Props) {
           }}
         />
         <BlockContentWrapper>
-          <ReactMarkdown>{block.attributes.Document}</ReactMarkdown>
+          <Markdown>{block.attributes.Document}</Markdown>
         </BlockContentWrapper>
       </LearningMaterialOverview>
     </PageContainer>
