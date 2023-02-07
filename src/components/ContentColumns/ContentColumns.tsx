@@ -13,7 +13,7 @@ type Props = {
 
 const ContentColumns = ({ columns }: Props) => {
   return (
-    <PageContainer>
+    <PageContainer hasSmallSidePadding>
       <Styled.Wrapper>
         {columns.map(({ content }) => (
           <Styled.Column key={content}>

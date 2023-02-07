@@ -20,7 +20,7 @@ const RecentUpdates = () => {
   const updatesToRender = recentUpdates?.slice(0, updatesToShow)
 
   return (
-    <PageContainer hasBottomPadding>
+    <PageContainer hasBottomPadding hasSmallSidePadding>
       <Styled.CenterWrapper>
         <h2>Recently added content</h2>
       </Styled.CenterWrapper>

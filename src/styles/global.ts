@@ -69,6 +69,7 @@ export const BlockContentWrapper = styled.div`
 export const PageContainer = styled.div<{
   hasBottomPadding?: boolean
   hasTopPadding?: boolean
+  hasSmallSidePadding?: boolean
 }>`
   padding: ${(props) => (props.hasTopPadding ? '2rem' : 0)} 1.6rem
     ${(props) => (props.hasBottomPadding ? '8rem' : 0)};
@@ -83,6 +84,12 @@ export const PageContainer = styled.div<{
       ${(props) => (props.hasBottomPadding ? '14rem' : 0)};
     max-width: ${breakpoints.lg};
     margin: 0 auto;
+  }
+
+  ${mq.lg} {
+    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)}
+      ${(props) => (props.hasSmallSidePadding ? '8rem' : '19.6rem')}
+      ${(props) => (props.hasBottomPadding ? '14rem' : 0)};
   }
 `
 

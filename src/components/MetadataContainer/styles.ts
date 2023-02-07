@@ -31,7 +31,7 @@ export const MetadataContainer = styled.div`
   }
 
   ${mq.sm} {
-    flex: 0 1 25%;
+    flex: 0 1 26%;
   }
 `
 

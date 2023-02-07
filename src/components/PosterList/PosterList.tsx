@@ -10,7 +10,7 @@ type Props = {
 
 const PosterList = ({ posters, title }: Props) => {
   return (
-    <PageContainer hasBottomPadding>
+    <PageContainer hasBottomPadding hasSmallSidePadding>
       <Styled.PosterHeading>{title}</Styled.PosterHeading>
       <Styled.PosterList>
         {posters.map((poster) => (

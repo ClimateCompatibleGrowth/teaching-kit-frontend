@@ -15,7 +15,7 @@ type Props = {
 
 const TextImage = ({ image, title, body }: Props) => {
   return (
-    <PageContainer hasBottomPadding>
+    <PageContainer hasBottomPadding hasSmallSidePadding>
       <Styled.Wrapper>
         <Styled.Portion mobileOrder={1}>
           <Styled.TextContainer>
