@@ -2,6 +2,7 @@ import axios from 'axios'
 import { Block, BlockOneLevelDeep, Data } from '../../types'
 import {
   BlockContentWrapper,
+  LearningMaterialCourseHeading,
   LearningMaterialOverview,
   PageContainer,
 } from '../../styles/global'
@@ -38,6 +39,9 @@ export default function BlockPage({ block }: Props) {
           }}
         />
         <BlockContentWrapper>
+          <LearningMaterialCourseHeading>
+            Lecture Block Content
+          </LearningMaterialCourseHeading>
           <Markdown>{block.attributes.Document}</Markdown>
         </BlockContentWrapper>
       </LearningMaterialOverview>

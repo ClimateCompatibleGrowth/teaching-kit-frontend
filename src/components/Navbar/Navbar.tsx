@@ -23,7 +23,7 @@ export default function Navbar() {
               aria-current={pathname === '/discover' ? 'page' : undefined}
               href='/discover'
             >
-              Discover
+              Teaching Material
             </Link>
           </Styled.Li>
         </Styled.Ul>

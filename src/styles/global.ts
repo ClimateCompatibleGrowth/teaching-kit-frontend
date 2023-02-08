@@ -71,7 +71,7 @@ export const PageContainer = styled.div<{
   hasTopPadding?: boolean
   hasSmallSidePadding?: boolean
 }>`
-  padding: ${(props) => (props.hasTopPadding ? '2rem' : 0)} 1.6rem
+  padding: ${(props) => (props.hasTopPadding ? '4rem' : 0)} 1.6rem
     ${(props) => (props.hasBottomPadding ? '8rem' : 0)};
 
   ${mq.sm} {
@@ -122,6 +122,13 @@ export const LearningMaterialOverview = styled.div`
   row-gap: 4.6rem;
   ${mq.sm} {
     column-gap: 4.6rem;
+  }
+`
+
+export const LearningMaterialCourseHeading = styled.h2`
+  font-size: 2rem;
+  ${mq.sm} {
+    font-size: 2.4rem;
   }
 `
 

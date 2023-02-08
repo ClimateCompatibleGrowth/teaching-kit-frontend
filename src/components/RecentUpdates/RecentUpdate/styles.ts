@@ -38,7 +38,7 @@ export const Markdown = styled.div`
 `
 
 export const Title = styled.h3`
-  margin-top: 2.6rem;
+  margin-top: 2.4rem;
   font-family: ${ubuntu[700].style.fontFamily};
   font-size: 1.8rem;
 `

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { montserrat } from '../../styles/fonts'
 import {
   Accent40,
   mq,
@@ -19,6 +20,11 @@ export const HeaderWrapper = {
   alignItems: 'end',
 
   borderBottom: `1px solid ${Neutral40}`,
+  paddingBottom: '0.8rem',
+
+  [`${mq.sm}`]: {
+    paddingBottom: 0,
+  },
 }
 
 export const Tabs = {
@@ -30,6 +36,11 @@ export const Tabs = {
   '.MuiTabs-flexContainer': {
     flexWrap: 'wrap',
     rowGap: '0.8rem',
+    marginBottom: '0.8rem',
+
+    [`${mq.sm}`]: {
+      marginBottom: 0,
+    },
   },
   '.MuiTabs-indicator': {
     display: 'none',
@@ -51,12 +62,20 @@ export const Tab = {
   textTransform: 'initial',
   [`${mq.sm}`]: {
     flex: 'auto',
-    borderRadius: '0.7rem 0.7rem 0 0',
+  },
+
+  '& + &': {
+    [`${mq.sm}`]: {
+      'margin-left': '4px',
+    },
   },
 
   '&.MuiTab-root': {
+    padding: '10px 14px',
     minWidth: '100%',
     flex: '0 0 100%',
+    fontWeight: 400, // TODO FIX FONT BOLDNESS
+    fontFamily: `${montserrat[400].style.fontFamily}`,
 
     [`${mq.sm}`]: {
       minWidth: 'auto',

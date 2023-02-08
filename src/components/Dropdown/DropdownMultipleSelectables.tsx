@@ -2,7 +2,7 @@ import React, { createRef, RefObject, useEffect, useState } from 'react'
 import useDebounce from '../../hooks/useDebouce'
 import Chip from '../Chip/Chip'
 
-import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandLessOutlined'
+import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined'
 
 import * as Styled from './styles'
 import useOutsideClickAlerter from '../../hooks/useOutsideClickAlerter'

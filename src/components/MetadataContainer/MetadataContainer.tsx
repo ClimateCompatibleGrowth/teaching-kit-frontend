@@ -85,7 +85,14 @@ export default function MetadataContainer({
         </Styled.HeadingSet>
       )}
       <Styled.HeadingSet>
-        <Styled.Heading>Download</Styled.Heading>
+        <Styled.Heading>
+          Download
+          {
+            // TODO FIX Download course content
+            // TODO FIX Download lecture content
+            // TODO FIX Download lecture block
+          }
+        </Styled.Heading>
         <Styled.DownloadButtonsContainer>
           <Button onClick={downloadBlock} isLoading={docxDownloadIsLoading}>
             <Styled.DownloadIcon />

@@ -22,7 +22,7 @@ const Poster = ({ poster }: Props) => {
         <Styled.SubTitle>{poster.subTitle}</Styled.SubTitle>
       )}
       {typeof poster.subTitle === 'object' && poster.subTitle}
-      <Styled.Title>{poster.title}</Styled.Title>
+      <h4>{poster.title}</h4>
       <Styled.Markdown>
         <Markdown>{poster.text}</Markdown>
       </Styled.Markdown>

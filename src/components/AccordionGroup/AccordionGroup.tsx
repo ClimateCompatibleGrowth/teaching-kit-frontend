@@ -3,6 +3,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import * as Styled from './styles'
+import { Accent40 } from '../../styles/global'
 
 type Props = {
   accordions: AccordionType[]
@@ -25,7 +26,11 @@ const AccordionGroup = ({ accordions }: Props) => {
           sx={Styled.Accordion}
         >
           <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
+            expandIcon={
+              <ExpandMoreIcon
+                style={{ height: 22, width: 22, color: Accent40 }}
+              />
+            }
             aria-controls={`panel${index + 1}-content`}
             id={`panel${index + 1}-header`}
           >

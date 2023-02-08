@@ -11,7 +11,7 @@ export const ButtonLink = styled(Link, {
   shouldForwardProp: (prop) => prop !== 'primary',
 })<LinkProps & ButtonLinkProps>`
   display: inline-block;
-  padding: 7px 24px;
+  padding: 11px 24px;
 
   background-color: ${(props) => (props.primary ? Accent40 : undefined)};
   border-width: 1px;

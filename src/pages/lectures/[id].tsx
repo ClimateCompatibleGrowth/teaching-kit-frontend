@@ -8,6 +8,7 @@ import { ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnLecture } from '../../shared/requests/utils/publishedEntriesFilter'
 import {
   BlockContentWrapper,
+  LearningMaterialCourseHeading,
   LearningMaterialOverview,
   PageContainer,
 } from '../../styles/global'
@@ -42,7 +43,9 @@ export default function LecturePage({ lecture }: Props) {
           }}
         />
         <BlockContentWrapper>
-          <h2>Lecture Content</h2>
+          <LearningMaterialCourseHeading>
+            Lecture Content
+          </LearningMaterialCourseHeading>
           <CardList
             cards={lecture.attributes.Blocks.data.map((block) => ({
               id: block.id.toString(),

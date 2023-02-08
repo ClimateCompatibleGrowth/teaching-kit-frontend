@@ -1,6 +1,10 @@
 import styled from '@emotion/styled'
 import {
+  Accent40,
   ButtonWithoutDefaultStyle,
+  Neutral40,
+  OnAccent40,
+  OnNeutral40,
   UlWithoutDefaultStyle,
 } from '../../styles/global'
 
@@ -18,13 +22,17 @@ export const PaginationController = styled(UlWithoutDefaultStyle)`
   display: flex;
   justify-content: center;
 
-  gap: 1.5rem;
+  gap: 1rem;
 `
 
 export const PaginationPageButton = styled.li``
 
 export const Button = styled(ButtonWithoutDefaultStyle)<ButtonProps>`
-  text-decoration: ${(props) => (props.isActive ? 'underline' : 'none')};
+  color: ${(props) => (props.isActive ? OnAccent40 : Neutral40)};
+  background-color: ${(props) => (props.isActive ? Accent40 : undefined)};
+  border-radius: ${(props) => (props.isActive ? '100%' : 'none')};
+  min-height: 26px;
+  min-width: 26px;
 `
 
 const ChevronButton = styled(ButtonWithoutDefaultStyle)<ChevronButtonProps>`

@@ -9,6 +9,7 @@ import { filterOutOnlyPublishedEntriesOnCourse } from '../../shared/requests/uti
 import {
   BlockContentWrapper,
   LearningMaterialOverview,
+  LearningMaterialCourseHeading,
   PageContainer,
 } from '../../styles/global'
 import { Course, CourseThreeLevelsDeep, Data } from '../../types'
@@ -45,7 +46,9 @@ export default function CoursePage({ course }: Props) {
           downloadAsPptx={() => downloadCoursePptx(course)}
         />
         <BlockContentWrapper>
-          <h2>Course Content</h2>
+          <LearningMaterialCourseHeading>
+            Course Content
+          </LearningMaterialCourseHeading>
           <CardList
             cards={course.attributes.Lectures.data.map((lecture) => ({
               id: lecture.id.toString(),

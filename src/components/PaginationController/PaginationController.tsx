@@ -1,7 +1,8 @@
 import React from 'react'
 import * as Styled from './styles'
 
-import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandLessOutlined'
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined'
+import { Accent40 } from '../../styles/global'
 
 type Props = {
   amountOfPages: number
@@ -23,7 +24,9 @@ const PaginationController = ({
           currentPageNumber - 1
         }`}
       >
-        <ExpandMoreOutlinedIcon />
+        <ExpandLessOutlinedIcon
+          style={{ height: 20, width: 20, color: Accent40 }}
+        />
       </Styled.PreviousButton>
       {[...Array(amountOfPages).keys()].map((index) => {
         const pageNumber = index + 1
@@ -44,7 +47,9 @@ const PaginationController = ({
         isVisible={currentPageNumber !== amountOfPages}
         aria-label={`Go to next page - page number ${currentPageNumber + 1}`}
       >
-        <ExpandMoreOutlinedIcon />
+        <ExpandLessOutlinedIcon
+          style={{ height: 20, width: 20, color: Accent40 }}
+        />
       </Styled.NextButton>
     </Styled.PaginationController>
   )

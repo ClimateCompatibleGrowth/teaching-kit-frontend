@@ -14,7 +14,7 @@ export type Props = {
 }
 
 export const Button = styled(ButtonWithoutDefaultStyle)<Props>`
-  padding: 0.8rem 1.6rem;
+  padding: 1.1rem 1.6rem;
 
   display: flex;
   justify-content: center;

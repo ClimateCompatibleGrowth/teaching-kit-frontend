@@ -19,7 +19,7 @@ type Props = {
 const Card = ({ card }: Props) => {
   return (
     <LinkWrapper card={card}>
-      <Styled.Card isInteractive={card.href !== undefined}>
+      <Styled.Card isInteractive={!!card.href}>
         {typeof card.subTitle === 'string' ? (
           <Styled.SubTitle>{card.subTitle}</Styled.SubTitle>
         ) : null}

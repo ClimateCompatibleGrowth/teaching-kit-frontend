@@ -2,11 +2,11 @@ import styled from '@emotion/styled'
 import Link from 'next/link'
 import { montserrat, ubuntu } from '../../../styles/fonts'
 import {
+  AccentPinkLighter,
   Background,
   BorderRadius,
   Neutral90,
   OnPrimary90,
-  Primary90,
   Surface,
 } from '../../../styles/global'
 
@@ -21,7 +21,7 @@ export const NextLink = styled(Link)`
 export const Card = styled.div<CardProps>`
   width: 100%;
 
-  padding: 3.2rem 2.4rem;
+  padding: 2.4rem;
 
   background-color: ${(props) => (props.isInteractive ? Background : Surface)};
   color: ${OnPrimary90};
@@ -31,7 +31,8 @@ export const Card = styled.div<CardProps>`
   border-radius: ${BorderRadius};
 
   &:hover {
-    background-color: ${(props) => (props.isInteractive ? Primary90 : Surface)};
+    background-color: ${(props) =>
+      props.isInteractive ? AccentPinkLighter : AccentPinkLighter};
   }
 `
 
@@ -60,7 +61,7 @@ export const Markdown = styled.div`
 
 export const Title = styled.h4`
   font-family: ${ubuntu[700].style.fontFamily};
-  font-size: 2.4rem;
+  font-size: 1.8rem;
 `
 
 export const SubTitle = styled.h5`
@@ -72,7 +73,7 @@ export const SubTitle = styled.h5`
 `
 
 export const SubTitleNode = styled.div`
-  margin-bottom: 3rem;
+  margin-bottom: 2.4rem;
 `
 
 export const SubComponentWrapper = styled.div`

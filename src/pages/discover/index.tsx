@@ -13,18 +13,31 @@ import { mq, PageContainer } from '../../styles/global'
 const MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN = 20
 
 const FilterGroup = styled.div`
+  margin-bottom: 4rem;
   ${mq.sm} {
+    margin-bottom: 0;
     display: flex;
-    gap: 3rem;
+    gap: 1.6rem;
     flex-wrap: no-wrap;
   }
 `
 
-const H2 = styled.h2`
-  font-size: 2.8rem;
+const H1 = styled.h1`
+  margin-bottom: 4rem;
+  ${mq.sm} {
+    margin-bottom: 6.4rem;
+  }
 `
 
-const Styled = { FilterGroup, H2 }
+const H2 = styled.h2`
+  font-size: 2rem;
+
+  ${mq.sm} {
+    font-size: 2.8rem;
+  }
+`
+
+const Styled = { FilterGroup, H1, H2 }
 
 export default function Discover() {
   const [selectedKeywords, setSelectedKeywords] = useState<Item[]>([])
@@ -53,8 +66,8 @@ export default function Discover() {
   )
 
   return (
-    <PageContainer hasTopPadding>
-      <h1>Learning Material</h1>
+    <PageContainer hasTopPadding hasBottomPadding>
+      <Styled.H1>Teaching Material</Styled.H1>
       <div>
         <Styled.H2>Apply filter</Styled.H2>
         <Styled.FilterGroup>
@@ -78,7 +91,7 @@ export default function Discover() {
           />
         </Styled.FilterGroup>
       </div>
-      <Styled.H2>All Learning Material</Styled.H2>
+      <Styled.H2>All Teaching Material</Styled.H2>
       <div>
         <TabGroup
           selectedKeywords={selectedKeywords.map(

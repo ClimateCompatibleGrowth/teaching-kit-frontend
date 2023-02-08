@@ -10,6 +10,7 @@ type MontserratFont = {
   300: NextFont
   400: NextFont
   500: NextFont
+  600: NextFont
   700: NextFont
 }
 
@@ -43,6 +44,12 @@ const Montserrat500 = Montserrat({
   weight: '500',
 })
 
+const Montserrat600 = Montserrat({
+  subsets: ['latin'],
+  style: ['normal'],
+  weight: '600',
+})
+
 const Montserrat700 = Montserrat({
   subsets: ['latin'],
   style: ['normal'],
@@ -58,5 +65,6 @@ export const montserrat: MontserratFont = {
   300: Montserrat300,
   400: Montserrat400,
   500: Montserrat500,
+  600: Montserrat600,
   700: Montserrat700,
 }
