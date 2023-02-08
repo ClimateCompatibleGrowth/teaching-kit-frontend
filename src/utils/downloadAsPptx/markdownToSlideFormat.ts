@@ -258,6 +258,35 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
           )
           slideAttribute.listStyling = styling
         }
+
+        if (node.type === 'table') {
+          if (
+            !slideAttribute.tables ||
+            slideAttribute.tables.length === 0 ||
+            !slideAttribute.tableStyling ||
+            slideAttribute.tableStyling.length === 0
+          ) {
+            slideAttribute.tables = []
+            slideAttribute.tableStyling = []
+          }
+          slideAttribute.tables.push([
+            node.header.map((h) =>
+              convertToTextProp(decode(h.text), 'paragraph')
+            ),
+            ...node.rows.map((row) =>
+              row.map((c) => convertToTextProp(decode(c.text), 'paragraph'))
+            ),
+          ])
+          slideAttribute.tableStyling.push({
+            y: '25%',
+            autoPage: true,
+            colW: Math.max(10 / node.header.length),
+            rowH: 0.5,
+            border: { color: '#242424' },
+            // align: 'left',
+            // fontFace: 'Arial',
+          })
+        }
       }
 
       slideAttribute.mainContent = mainSlideContent

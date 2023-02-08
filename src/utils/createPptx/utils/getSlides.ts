@@ -4,7 +4,8 @@ import { PptxSlide } from '../../../types/pptx'
 
 const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
   return blockSlides.map((pptxSlide) => {
-    const contentSlide = pptx.addSlide()
+    let contentSlide = pptx.addSlide()
+    console.log('pptx', pptxSlide)
 
     //Headings
     contentSlide.addText(`${pptxSlide.heading}`, pptxSlide.headingStyling)
@@ -25,6 +26,25 @@ const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
     //Bullet points
     if (pptxSlide.list) {
       contentSlide.addText(pptxSlide.list, pptxSlide.listStyling)
+    }
+
+    // Tables
+    if (pptxSlide.tables) {
+      let index = 0
+      for (const table of pptxSlide.tables) {
+        contentSlide.addTable(
+          table,
+          pptxSlide.tableStyling ? pptxSlide.tableStyling[index] : {}
+        )
+        if (
+          pptxSlide.tables.length > 1 &&
+          index !== pptxSlide.tables.length - 1
+        ) {
+          contentSlide = pptx.addSlide()
+          contentSlide.addText(`${pptxSlide.heading}`, pptxSlide.headingStyling)
+        }
+        index += 1
+      }
     }
 
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)
