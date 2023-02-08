@@ -32,3 +32,8 @@ export const H4 = styled.h4`
   font-size: 2.4rem;
   color: ${Neutral40};
 `
+
+export const DateInformation = styled.div`
+  color: ${Neutral40};
+  font-size: 1.4rem;
+`

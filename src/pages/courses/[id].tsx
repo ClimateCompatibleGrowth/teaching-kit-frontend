@@ -31,6 +31,8 @@ export default function CoursePage({ course }: Props) {
           prerequisites={course.attributes.Prerequisites}
           acknowledgement={course.attributes.Acknowledgement}
           citeAs={course.attributes.CiteAs}
+          publishedAt={course.attributes.publishedAt}
+          updatedAt={course.attributes.updatedAt}
         />
         <MetadataContainer
           level={course.attributes.Level}

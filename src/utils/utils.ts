@@ -38,6 +38,16 @@ export const summarizeDurations = (
   return `${minutesToFormattedHourString(durationInMinutes)}`
 }
 
+export const formatDate = (date: Date | string): string => {
+  let dateObj
+  if (typeof date === 'string') {
+    dateObj = new Date(date)
+  } else {
+    dateObj = date
+  }
+  return dateObj.toLocaleDateString('sv-SE')
+}
+
 export const isValidUrl = (string: string): boolean => {
   let url
   try {

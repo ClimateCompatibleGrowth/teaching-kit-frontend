@@ -30,6 +30,8 @@ export default function LecturePage({ lecture }: Props) {
           learningOutcomes={lecture.attributes.LearningOutcomes}
           acknowledgement={lecture.attributes.Acknowledgement}
           citeAs={lecture.attributes.CiteAs}
+          publishedAt={lecture.attributes.publishedAt}
+          updatedAt={lecture.attributes.updatedAt}
         />
         <MetadataContainer
           level={lecture.attributes.Level}

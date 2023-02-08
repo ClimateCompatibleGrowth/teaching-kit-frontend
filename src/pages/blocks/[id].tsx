@@ -27,6 +27,8 @@ export default function BlockPage({ block }: Props) {
           title={block.attributes.Title}
           abstract={block.attributes.Abstract}
           learningOutcomes={block.attributes.LearningOutcomes}
+          publishedAt={block.attributes.publishedAt}
+          updatedAt={block.attributes.updatedAt}
         />
         <MetadataContainer
           duration={summarizeDurations([block])}
