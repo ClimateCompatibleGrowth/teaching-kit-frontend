@@ -1,16 +1,11 @@
 import styled from '@emotion/styled'
-import { montserrat } from '../../styles/fonts'
 import {
   Accent40,
   mq,
   Neutral40,
-  Neutral99,
   OnAccent40,
-  OnNeutral99,
   OnPrimary90,
-  OnSurfaceAlternative,
   Primary90,
-  SurfaceAlternative,
 } from '../../styles/global'
 
 export const HeaderWrapper = {
@@ -74,8 +69,6 @@ export const Tab = {
     padding: '10px 14px',
     minWidth: '100%',
     flex: '0 0 100%',
-    fontWeight: 400, // TODO FIX FONT BOLDNESS
-    fontFamily: `${montserrat[400].style.fontFamily}`,
 
     [`${mq.sm}`]: {
       minWidth: 'auto',
@@ -86,29 +79,7 @@ export const Tab = {
   '&.Mui-selected': {
     color: OnAccent40,
     backgroundColor: Accent40,
-
-    '.NumberOfMatchesWrapper': {
-      backgroundColor: Neutral99,
-      color: OnNeutral99,
-    },
   },
-
-  '.NumberOfMatchesWrapper': {
-    padding: '0.4rem 1rem',
-
-    backgroundColor: SurfaceAlternative,
-
-    borderRadius: '1.5rem',
-  },
-}
-
-export const NumberOfMatchesWrapper = {
-  padding: '0.4rem 1rem',
-
-  backgroundColor: SurfaceAlternative,
-  color: OnSurfaceAlternative,
-
-  borderRadius: '1.5rem',
 }
 
 export const LinkWrapper = styled.p`

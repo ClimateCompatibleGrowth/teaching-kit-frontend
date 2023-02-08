@@ -36,13 +36,18 @@ export const Card = styled.div<CardProps>`
   }
 `
 
-export const Metadata = styled.p`
+export const MetaData = styled.p`
+  display: flex;
   margin-top: 2rem;
+  align-items: center;
+  font-size: 1.4rem;
+
+  & + & {
+    margin-left: 1.6rem;
+  }
 `
 
 export const Markdown = styled.div`
-  max-height: 10rem;
-
   text-overflow: ellipsis;
   overflow: hidden;
   display: -webkit-box !important;
@@ -75,7 +80,10 @@ export const SubTitle = styled.h5`
 export const SubTitleNode = styled.div`
   margin-bottom: 2.4rem;
 `
-
+export const MetaInformation = styled.div`
+  display: flex;
+  align-items: center;
+`
 export const SubComponentWrapper = styled.div`
   width: 95%;
   margin-top: 2rem;
