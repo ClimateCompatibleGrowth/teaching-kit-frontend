@@ -43,6 +43,7 @@ export default function LecturePage({ lecture }: Props) {
             type: 'courses',
             parents: lecture.attributes.Courses.data,
           }}
+          type='LECTURE'
         />
         <BlockContentWrapper>
           <LearningMaterialCourseHeading>

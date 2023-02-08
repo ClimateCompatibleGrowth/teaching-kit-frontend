@@ -1,8 +1,15 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { Author, CourseOneLevelDeep, Data, Lecture, Level } from '../../types'
+import {
+  Author,
+  CourseOneLevelDeep,
+  Data,
+  LearningMaterialType,
+  Lecture,
+  Level,
+} from '../../types'
 import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
-import { levelToString } from '../../utils/utils'
+import { levelToString, typeToDownloadLabel } from '../../utils/utils'
 import Alert from '../Alert/Alert'
 import Button from '../Button/Button'
 
@@ -18,6 +25,7 @@ export type Props = {
     type: 'lectures' | 'courses'
     parents: Data<CourseOneLevelDeep>[] | Data<Lecture>[]
   }
+  type: LearningMaterialType
 }
 
 export default function MetadataContainer({
@@ -27,6 +35,7 @@ export default function MetadataContainer({
   downloadAsDocx,
   downloadAsPptx,
   parentRelations,
+  type,
 }: Props) {
   const [docxDownloadIsLoading, setDocxDownloadIsLoading] = useState(false)
   const [docxDowloadErrored, setDocxDownloadErrored] = useState(false)
@@ -85,14 +94,7 @@ export default function MetadataContainer({
         </Styled.HeadingSet>
       )}
       <Styled.HeadingSet>
-        <Styled.Heading>
-          Download
-          {
-            // TODO FIX Download course content
-            // TODO FIX Download lecture content
-            // TODO FIX Download lecture block
-          }
-        </Styled.Heading>
+        <Styled.Heading>{typeToDownloadLabel(type)}</Styled.Heading>
         <Styled.DownloadButtonsContainer>
           <Button onClick={downloadBlock} isLoading={docxDownloadIsLoading}>
             <Styled.DownloadIcon />

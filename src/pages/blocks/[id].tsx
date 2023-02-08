@@ -39,6 +39,7 @@ export default function BlockPage({ block }: Props) {
             type: 'lectures',
             parents: block.attributes.Lectures.data,
           }}
+          type='BLOCK'
         />
         <BlockContentWrapper>
           <LearningMaterialCourseHeading>

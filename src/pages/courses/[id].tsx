@@ -46,6 +46,7 @@ export default function CoursePage({ course }: Props) {
           authors={course.attributes.CourseCreators}
           downloadAsDocx={() => handleCourseDocxDownload(course)}
           downloadAsPptx={() => downloadCoursePptx(course)}
+          type='COURSE'
         />
         <BlockContentWrapper>
           <LearningMaterialCourseHeading>
