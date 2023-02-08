@@ -24,13 +24,8 @@ type BulletAttribute =
     }
   | undefined
 
-export const getPrimaryContentStyling = (
-  listStyle: ListStyle | undefined
-): PptxGenJS.TextPropsOptions => {
-  return {
-    ...primaryContentStyling,
-    bullet: getListConfig(listStyle),
-  }
+export const getPrimaryContentStyling = (): PptxGenJS.TextPropsOptions => {
+  return primaryContentStyling
 }
 
 export const getSecondaryContentStyling = (

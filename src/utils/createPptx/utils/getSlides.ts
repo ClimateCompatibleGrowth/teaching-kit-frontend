@@ -22,11 +22,6 @@ const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
       contentSlide.addText(pptxSlide.mainContent, pptxSlide.mainContentStyling)
     }
 
-    //Bullet points
-    if (pptxSlide.list) {
-      contentSlide.addText(pptxSlide.list, pptxSlide.listStyling)
-    }
-
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)
   })
 }
