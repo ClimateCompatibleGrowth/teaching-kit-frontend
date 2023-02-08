@@ -45,7 +45,7 @@ const RecentUpdates = () => {
         {recentUpdates &&
           updatesToRender &&
           recentUpdates.length <= updatesToRender.length && (
-            <ButtonLink primary={false} href='/discover'>
+            <ButtonLink primary={false} href='/teaching-material'>
               Find and discover all material
             </ButtonLink>
           )}

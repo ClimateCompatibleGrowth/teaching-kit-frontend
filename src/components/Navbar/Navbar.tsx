@@ -20,8 +20,10 @@ export default function Navbar() {
           </Styled.Li>
           <Styled.Li>
             <Link
-              aria-current={pathname === '/discover' ? 'page' : undefined}
-              href='/discover'
+              aria-current={
+                pathname === '/teaching-material' ? 'page' : undefined
+              }
+              href='/teaching-material'
             >
               Teaching Material
             </Link>
