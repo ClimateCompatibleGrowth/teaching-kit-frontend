@@ -71,3 +71,27 @@ export const citeAsStyling: PptxGenJS.TextPropsOptions = {
   fontSize: 12,
   w: '30%',
 }
+
+export const descriptionSlideAuthor: PptxGenJS.TextPropsOptions = {
+  x: startXPos,
+  y: 6.5,
+  w: 5.5,
+  h: 0.75,
+}
+
+export const descriptionTitle: PptxGenJS.TextPropsOptions = {
+  x: startXPos,
+  y: startYPos,
+  fontSize: 36,
+  w: toPercentage(remainingWidth(2 * X_PADDING)),
+  h: 0.75,
+  breakLine: true,
+}
+
+export const descriptionSlideRec: any = {
+  x: 0.0,
+  y: 6.5,
+  w: '100%',
+  h: 0.75,
+  fill: { color: 'F1F1F1' },
+}

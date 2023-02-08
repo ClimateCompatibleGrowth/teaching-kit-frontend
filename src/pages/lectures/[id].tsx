@@ -1,11 +1,16 @@
 import axios from 'axios'
+import { GetStaticPropsContext } from 'next/types'
 import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
 import LearningMaterialBadge from '../../components/LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnLecture } from '../../shared/requests/utils/publishedEntriesFilter'
-import { LearningMaterialOverview, PageContainer } from '../../styles/global'
+import {
+  BlockContentWrapper,
+  LearningMaterialOverview,
+  PageContainer,
+} from '../../styles/global'
 import { Data, Lecture, LectureTwoLevelsDeep } from '../../types'
 import { handleLectureDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { downloadLecturePptx } from '../../utils/downloadAsPptx/downloadLectureAsPptx'
@@ -14,13 +19,8 @@ import { summarizeDurations } from '../../utils/utils'
 type Props = { lecture: Data<LectureTwoLevelsDeep> }
 
 export default function LecturePage({ lecture }: Props) {
-  const parents = lecture.attributes.Courses?.data?.map((course) => ({
-    id: course.id,
-    title: course.attributes.Title,
-  }))
-
   return (
-    <PageContainer>
+    <PageContainer hasTopPadding hasBottomPadding>
       <LearningMaterialOverview>
         <LearningMaterial
           type='LECTURE'
@@ -31,14 +31,17 @@ export default function LecturePage({ lecture }: Props) {
           citeAs={lecture.attributes.CiteAs}
         />
         <MetadataContainer
-          level={lecture.attributes.Level.data?.attributes.Level}
+          level={lecture.attributes.Level}
           duration={summarizeDurations(lecture.attributes.Blocks.data)}
           authors={lecture.attributes.LectureCreators}
           downloadAsDocx={() => handleLectureDocxDownload(lecture)}
           downloadAsPptx={() => downloadLecturePptx(lecture)}
-          parentRelations={lecture.attributes.Courses.data}
+          parentRelations={{
+            type: 'courses',
+            parents: lecture.attributes.Courses.data,
+          }}
         />
-        <div>
+        <BlockContentWrapper>
           <h2>Lecture Content</h2>
           <CardList
             cards={lecture.attributes.Blocks.data.map((block) => ({
@@ -49,7 +52,7 @@ export default function LecturePage({ lecture }: Props) {
               subTitle: <LearningMaterialBadge type='BLOCK' />,
             }))}
           />
-        </div>
+        </BlockContentWrapper>
       </LearningMaterialOverview>
     </PageContainer>
   )
@@ -71,10 +74,12 @@ export async function getStaticPaths() {
     params: { id: `${lecture.id}` },
   }))
 
+  console.log(paths)
+
   return { paths, fallback: false }
 }
 
-export async function getStaticProps(ctx: any) {
+export async function getStaticProps(ctx: GetStaticPropsContext) {
   const populateCourses = 'populate[Courses]=*'
   const populateBlocks = 'populate[Blocks][populate][0]=*'
   const populateLectureCreators = 'populate[LectureCreators][populate]=*'
@@ -84,11 +89,13 @@ export async function getStaticProps(ctx: any) {
   const populateLevel = 'populate[Level]=Level'
 
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/lectures/${ctx.params.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
+    `${process.env.STRAPI_API_URL}/lectures/${ctx.params?.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
   )
   const lecture: Data<LectureTwoLevelsDeep> = res.data.data
 
   return {
-    props: { lecture: filterOutOnlyPublishedEntriesOnLecture(lecture) },
+    props: {
+      lecture: filterOutOnlyPublishedEntriesOnLecture(lecture),
+    },
   }
 }

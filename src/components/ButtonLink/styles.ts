@@ -7,7 +7,9 @@ export type ButtonLinkProps = {
   primary?: boolean
 }
 
-export const ButtonLink = styled(Link)<LinkProps & ButtonLinkProps>`
+export const ButtonLink = styled(Link, {
+  shouldForwardProp: (prop) => prop !== 'primary',
+})<LinkProps & ButtonLinkProps>`
   display: inline-block;
   padding: 7px 24px;
 
@@ -17,7 +19,7 @@ export const ButtonLink = styled(Link)<LinkProps & ButtonLinkProps>`
   border-color: ${(props) => (props.primary ? Accent40 : 'none')};
   color: ${(props) => (props.primary ? OnAccent40 : undefined)};
 
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-family: ${montserrat[300].style.fontFamily};
 
   &:disabled {

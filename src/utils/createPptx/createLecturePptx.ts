@@ -3,28 +3,25 @@ import { LectureBlock } from '../../types/pptx'
 import getSlides from './utils/getSlides'
 
 import createTitleSlide from './utils/generalSlides/titleSlide'
-import {
-  descriptionTitle,
-  masterDescriptionSlide,
-} from './pptxConfiguration/masterSlide'
+
+import { descriptionTitle } from './pptxConfiguration/slideElements'
 
 export const createLecturePptxFile = async (
   lectureBlocks: LectureBlock[],
   lectureTitle: string
 ) => {
   const pptx = new PptxGenJS()
+  const descriptionSlide = pptx.addSlide()
+
   pptx.layout = 'LAYOUT_WIDE'
 
-  createTitleSlide(lectureTitle, pptx)
+  descriptionSlide.addText(lectureTitle, descriptionTitle)
 
   lectureBlocks.map((block) => {
-    pptx.defineSlideMaster(masterDescriptionSlide)
-    const masterContentSlide = masterDescriptionSlide.title
+    const authors = block.authors
+    const title = block.title
 
-    let descriptionSlide = pptx.addSlide({
-      masterName: `${masterContentSlide}`,
-    })
-    descriptionSlide.addText(`${block.title}`, descriptionTitle)
+    createTitleSlide(title, pptx, authors)
 
     return getSlides(block.pptxSlides, pptx)
   })

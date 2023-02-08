@@ -8,7 +8,7 @@ export default function Navbar() {
   const { pathname } = useRouter()
   return (
     <Styled.ColorBar>
-      <Styled.Navbar>
+      <Styled.Wrapper>
         <Styled.LogoWrapper>
           <LogoIcon alt='Climate Compatible Growth logotype' />
         </Styled.LogoWrapper>
@@ -27,7 +27,7 @@ export default function Navbar() {
             </Link>
           </Styled.Li>
         </Styled.Ul>
-      </Styled.Navbar>
+      </Styled.Wrapper>
     </Styled.ColorBar>
   )
 }

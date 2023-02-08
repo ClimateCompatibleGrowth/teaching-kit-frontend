@@ -55,13 +55,41 @@ export const mq = {
 
 export const BorderRadius = '0.5rem'
 
-export const PageContainer = styled.div<{ hasBottomMargin?: boolean }>`
-  padding: 2rem 1.6rem;
+export const BlockContentWrapper = styled.div`
+  flex: 0 0 100%;
+  img {
+    max-width: 100%;
+  }
+
+  ${mq.sm} {
+    flex: 0 0 calc(75% - 4.6rem);
+  }
+`
+
+export const PageContainer = styled.div<{
+  hasBottomPadding?: boolean
+  hasTopPadding?: boolean
+  hasSmallSidePadding?: boolean
+}>`
+  padding: ${(props) => (props.hasTopPadding ? '2rem' : 0)} 1.6rem
+    ${(props) => (props.hasBottomPadding ? '8rem' : 0)};
+
+  ${mq.sm} {
+    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)} 2rem
+      ${(props) => (props.hasBottomPadding ? '8rem' : 0)};
+  }
+
   ${mq.md} {
-    padding: 8rem 8rem 2rem;
+    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)} 8rem
+      ${(props) => (props.hasBottomPadding ? '14rem' : 0)};
     max-width: ${breakpoints.lg};
     margin: 0 auto;
-    margin-bottom: ${(props) => (props.hasBottomMargin ? '10rem' : undefined)};
+  }
+
+  ${mq.lg} {
+    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)}
+      ${(props) => (props.hasSmallSidePadding ? '8rem' : '19.6rem')}
+      ${(props) => (props.hasBottomPadding ? '14rem' : 0)};
   }
 `
 

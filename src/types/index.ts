@@ -114,7 +114,7 @@ export type Course = {
 }
 
 export type CourseOneLevelDeep = Course & {
-  Lectures: { data: Data<Lecture> }
+  Lectures: { data: Data<Lecture>[] }
   CourseCreators: { data: Data<Author>[] }
   LearningOutcomes: LearningOutcome[]
   Prerequisites: Prerequisite[]

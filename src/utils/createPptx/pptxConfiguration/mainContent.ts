@@ -1,5 +1,5 @@
 import PptxGenJS from 'pptxgenjs'
-import { ESTIMATED_REASONABLE_IMAGE_HEIGHT, IMAGE_WIDTH } from './image'
+import { ESTIMATED_REASONABLE_IMAGE_HEIGHT } from './image'
 import {
   toPercentage,
   startXPos,

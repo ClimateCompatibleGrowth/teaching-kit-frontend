@@ -130,12 +130,13 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
         keywords: selectedKeywords,
         authors: selectedAuthors,
         pageNumber: pageNumber,
+        sortMethod: sortMethod.id,
         matchesPerPage,
       })
 
       setLectureResults(lectureFilterResult)
     },
-    [selectedKeywords, selectedAuthors, matchesPerPage]
+    [selectedKeywords, selectedAuthors, sortMethod, matchesPerPage]
   )
 
   const onBlockChange = useCallback(
@@ -144,12 +145,13 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
         keywords: selectedKeywords,
         authors: selectedAuthors,
         pageNumber: pageNumber,
+        sortMethod: sortMethod.id,
         matchesPerPage,
       })
 
       setBlockResults(blockFilterResult)
     },
-    [selectedKeywords, selectedAuthors, matchesPerPage]
+    [selectedKeywords, selectedAuthors, sortMethod, matchesPerPage]
   )
 
   useEffect(() => {
@@ -232,45 +234,43 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
   return (
     <div>
       <div style={Styled.HeaderWrapper}>
-        <div>
-          <Tabs
-            value={value}
-            onChange={(_event, newValue) => setValue(newValue)}
-            aria-label='Toggle between categorized filter results'
-            sx={Styled.Tabs}
-          >
-            <Tab
-              label={
-                <TabLabel
-                  type='COURSE'
-                  numberOfResults={courseResults.meta.pagination.total}
-                />
-              }
-              disableRipple
-              sx={Styled.Tab}
-            />
-            <Tab
-              label={
-                <TabLabel
-                  type='LECTURE'
-                  numberOfResults={lectureResults.meta.pagination.total}
-                />
-              }
-              disableRipple
-              sx={Styled.Tab}
-            />
-            <Tab
-              label={
-                <TabLabel
-                  type='BLOCK'
-                  numberOfResults={blockResults.meta.pagination.total}
-                />
-              }
-              disableRipple
-              sx={Styled.Tab}
-            />
-          </Tabs>
-        </div>
+        <Tabs
+          value={value}
+          onChange={(_event, newValue) => setValue(newValue)}
+          aria-label='Toggle between categorized filter results'
+          sx={Styled.Tabs}
+        >
+          <Tab
+            label={
+              <TabLabel
+                type='COURSE'
+                numberOfResults={courseResults.meta.pagination.total}
+              />
+            }
+            disableRipple
+            sx={Styled.Tab}
+          />
+          <Tab
+            label={
+              <TabLabel
+                type='LECTURE'
+                numberOfResults={lectureResults.meta.pagination.total}
+              />
+            }
+            disableRipple
+            sx={Styled.Tab}
+          />
+          <Tab
+            label={
+              <TabLabel
+                type='BLOCK'
+                numberOfResults={blockResults.meta.pagination.total}
+              />
+            }
+            disableRipple
+            sx={Styled.Tab}
+          />
+        </Tabs>
         <DropdownSingleSelectable
           selectedItem={sortMethod}
           setSelectedItem={(newSortmethod) =>

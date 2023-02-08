@@ -8,7 +8,6 @@ export const PosterList = styled.div`
   gap: 2%;
 
   margin: 2rem 0;
-  margin-bottom: 10rem;
 
   display: flex;
   flex-wrap: wrap;

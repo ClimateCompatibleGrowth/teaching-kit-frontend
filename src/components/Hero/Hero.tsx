@@ -20,12 +20,12 @@ export default function Hero({ image, title, body, action }: Props) {
   return (
     <>
       <Styled.Image alt={image.alt} src={image.src} />
-      <PageContainer>
+      <PageContainer hasBottomPadding>
         <Styled.Wrapper>
           <h1>{title}</h1>
           <Styled.Paragraph>{body}</Styled.Paragraph>
           {action && (
-            <ButtonLink primary={false} href={action.href}>
+            <ButtonLink primary href={action.href}>
               {action.label}
             </ButtonLink>
           )}

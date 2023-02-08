@@ -1,6 +1,6 @@
 import React from 'react'
-import ReactMarkdown from 'react-markdown'
 import { PageContainer } from '../../styles/global'
+import Markdown from '../Markdown/Markdown'
 import * as Styled from './styles'
 
 type Column = {
@@ -13,11 +13,11 @@ type Props = {
 
 const ContentColumns = ({ columns }: Props) => {
   return (
-    <PageContainer>
+    <PageContainer hasSmallSidePadding>
       <Styled.Wrapper>
         {columns.map(({ content }) => (
           <Styled.Column key={content}>
-            <ReactMarkdown>{content}</ReactMarkdown>
+            <Markdown>{content}</Markdown>
           </Styled.Column>
         ))}
       </Styled.Wrapper>

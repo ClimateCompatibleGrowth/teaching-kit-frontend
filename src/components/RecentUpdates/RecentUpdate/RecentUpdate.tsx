@@ -1,10 +1,11 @@
 import React from 'react'
-import ReactMarkdown from 'react-markdown'
 import { RecentUpdateType } from '../../../shared/requests/recent/recent'
 import Badge, { BadgeColor } from '../../Badge/Badge'
 import ClockIcon from '../../../../public/icons/clock.svg'
 import SignalStrengthIcon from '../../../../public/icons/signal-strength.svg'
 import * as Styled from './styles'
+import { typeToText, levelToString } from '../../../utils/utils'
+import Markdown from '../../Markdown/Markdown'
 
 type Props = {
   recentUpdate: RecentUpdateType
@@ -15,30 +16,29 @@ const RecentUpdate = ({ recentUpdate }: Props) => {
   let href = '/'
   let levelExplanation = 'Level is'
   switch (recentUpdate.Type) {
-    case 'Lecture':
+    case 'LECTURE':
       typeColor = 'green'
       href = `/lectures/${recentUpdate.Id}`
       break
-    case 'Course':
+    case 'COURSE':
       typeColor = 'pink'
       href = `/courses/${recentUpdate.Id}`
       break
-    case 'Block':
+    case 'BLOCK':
       typeColor = 'yellow'
       href = `/blocks/${recentUpdate.Id}`
       break
     default:
       break
   }
+
   return (
     <Styled.Card href={href}>
-      <Badge accentColor={typeColor}>{recentUpdate.Type}</Badge>
+      <Badge accentColor={typeColor}>{typeToText(recentUpdate.Type)}</Badge>
       <Styled.Title>{recentUpdate.Title}</Styled.Title>
       {recentUpdate.Abstract && (
         <Styled.Markdown>
-          <ReactMarkdown allowedElements={['p']}>
-            {recentUpdate.Abstract}
-          </ReactMarkdown>
+          <Markdown allowedElements={['p']}>{recentUpdate.Abstract}</Markdown>
         </Styled.Markdown>
       )}
       <Styled.MetaWrapper>
@@ -46,7 +46,7 @@ const RecentUpdate = ({ recentUpdate }: Props) => {
           <Styled.MetaInformation>
             <>
               <SignalStrengthIcon aria-label={levelExplanation} />
-              {recentUpdate.Level}
+              {levelToString(recentUpdate.Level)}
             </>
           </Styled.MetaInformation>
         )}

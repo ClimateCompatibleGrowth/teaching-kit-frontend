@@ -1,4 +1,4 @@
-import { BlockOneLevelDeep, Data, Slide } from '../../types'
+import { Author, BlockOneLevelDeep, Data, Slide } from '../../types'
 import { PptxSlide } from '../../types/pptx'
 import { createBlockPptxFile } from '../createPptx/createBlockPptx'
 import PptxGenJS from 'pptxgenjs'
@@ -16,8 +16,9 @@ export const blockToPptx = async (
 ): Promise<PptxGenJS> => {
   const slides = await generateSlides(block)
   const title = block.attributes.Title
+  const authors: Data<Author>[] = block.attributes.Authors.data
 
-  const pptx = await createBlockPptxFile(slides, title)
+  const pptx = await createBlockPptxFile(slides, title, authors)
   return pptx
 }
 

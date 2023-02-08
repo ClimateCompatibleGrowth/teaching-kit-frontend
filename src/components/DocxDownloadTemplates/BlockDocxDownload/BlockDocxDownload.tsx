@@ -1,8 +1,8 @@
 import React from 'react'
 import { BlockOneLevelDeep, Data } from '../../../types'
+import Markdown from '../../Markdown/Markdown'
 import Abstract from '../Abstract'
 import Authors from '../Authors'
-import Document from '../Document'
 import Duration from '../Duration'
 import Heading from '../Heading'
 import LearningOutcomes from '../LearningOutcomes'
@@ -22,7 +22,7 @@ const BlockDocxDownload = ({ block }: Props) => {
       <Duration blocks={[block]} />
       <Abstract downloadedAs={TYPE} markdown={block.attributes.Abstract} />
       <LearningOutcomes learningOutcomes={block.attributes.LearningOutcomes} />
-      <Document markdown={block.attributes.Document} />
+      <Markdown>{block.attributes.Document}</Markdown>
       <References
         references={block.attributes.References}
         downloadedAs={TYPE}

@@ -1,7 +1,7 @@
-import ReactMarkdown from 'react-markdown'
 import * as Styled from './styles'
 
 import LogoIcon from '../../../public/logo.svg'
+import Markdown from '../Markdown/Markdown'
 
 export default function Navbar() {
   return (
@@ -14,7 +14,7 @@ export default function Navbar() {
           </p>
         </Styled.LogoWrapper>
         <Styled.ContactWrapper>
-          <ReactMarkdown>{footerContent}</ReactMarkdown>
+          <Markdown>{footerContent}</Markdown>
         </Styled.ContactWrapper>
       </Styled.Footer>
     </Styled.ColorBar>

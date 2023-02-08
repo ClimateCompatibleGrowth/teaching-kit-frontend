@@ -9,6 +9,7 @@ export const downloadLecturePptx = async (
 ) => {
   const title = lecture.attributes.Title
   const pptx = await lectureToPptx(lecture)
+
   pptx.writeFile({ fileName: `${title}.pptx` })
 }
 
@@ -39,6 +40,7 @@ const generateLectureBlockSlides = async (
 
       return {
         title: blockSlides.attributes.Title,
+        authors: blockSlides.attributes.Authors.data,
         pptxSlides: lectureBlockSlides,
       }
     })

@@ -1,12 +1,12 @@
 import axios from 'axios'
 import Link from 'next/link'
-import ReactMarkdown from 'react-markdown'
 import { Block, Data } from '../../types'
 import {
   LearningMaterialList,
   LearningMaterialListItem,
   PageContainer,
 } from '../../styles/global'
+import Markdown from '../../components/Markdown/Markdown'
 
 type props = { blocks: Data<Block>[] }
 
@@ -19,7 +19,7 @@ export default function Blocks({ blocks }: props) {
           <LearningMaterialListItem key={block.id}>
             <Link href={`/blocks/${encodeURIComponent(block.id)}`}>
               <h2>{block.attributes.Title}</h2>
-              <ReactMarkdown>{block.attributes.Abstract}</ReactMarkdown>
+              <Markdown>{block.attributes.Abstract}</Markdown>
             </Link>
           </LearningMaterialListItem>
         ))}

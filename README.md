@@ -1,50 +1,24 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 # Introduction
-This is the frontend part of the Teaching Kit!
 
+This is the consumer site for the Teaching Kit. The data displayed is kept on a Strapi service with [this source code](https://github.com/Frank-Digital-Experiences/kth-teaching-kit-backend).
 
-## Environment variables for local run
-First, run the development server:
+## Initial setup
+
+First, create an `.env`-file with the keys specified in .env.example. Get the value for each key by someone knowledgeable of the service. It is of course of utter importance that this file remains in the `.gitignore`.
+
+After having set the environment variables, run:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+... and the service should be up and running on http://localhost:3000.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+In order for the service to run as expected, it needs data which are supposed to be fetched from Strapi on http://localhost:1337. You can pull the source code for the Strapi project from [here](https://github.com/Frank-Digital-Experiences/kth-teaching-kit-backend).
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Styling
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-
-# Style Guide
-
-## Types
-
-- if you use a type/interface in more than one place it goes into the ~src/types/index.d.ts file
-- if you extend/use a type/interface, it can be declared locally, but as long as it doesn't get used more than once
-
-## Styles
-We use ... in this project.
-
-- The local styles for a component should be placed in the same directory.
-- Styles used over multiple components should be placed inside /src/styles/
+We use [@emotion/styled-components](https://emotion.sh/docs/styled) for styling in this project. In some rare cases we use regular in-line CSS-in-JS in order to adjust external components from e.g Material-UI. In these cases we stick to the CSS-in-JS throughout the whole component.

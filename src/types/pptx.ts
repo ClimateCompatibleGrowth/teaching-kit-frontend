@@ -1,4 +1,5 @@
 import PptxGenJS from 'pptxgenjs'
+import { Author, Data } from '.'
 
 export type PptxSlide = {
   title: string
@@ -15,4 +16,5 @@ export type PptxSlide = {
 export type LectureBlock = {
   title: string
   pptxSlides: PptxSlide[]
+  authors: Data<Author>[]
 }

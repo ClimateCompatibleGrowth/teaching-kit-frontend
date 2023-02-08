@@ -184,6 +184,7 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
             )
             images.push({
               path: href,
+              altText: imageToken.text,
               ...imageStyling,
             })
           }

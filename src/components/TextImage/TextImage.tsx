@@ -1,8 +1,8 @@
 import React from 'react'
-import ReactMarkdown from 'react-markdown'
 import { StaticImageData } from 'next/image'
 import { PageContainer } from '../../styles/global'
 import * as Styled from './styles'
+import Markdown from '../Markdown/Markdown'
 
 type Props = {
   image: {
@@ -15,12 +15,12 @@ type Props = {
 
 const TextImage = ({ image, title, body }: Props) => {
   return (
-    <PageContainer>
+    <PageContainer hasBottomPadding hasSmallSidePadding>
       <Styled.Wrapper>
         <Styled.Portion mobileOrder={1}>
           <Styled.TextContainer>
             <h3>{title}</h3>
-            <ReactMarkdown>{body}</ReactMarkdown>
+            <Markdown>{body}</Markdown>
           </Styled.TextContainer>
         </Styled.Portion>
         <Styled.Portion>
