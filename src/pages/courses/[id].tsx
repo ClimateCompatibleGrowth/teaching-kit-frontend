@@ -103,12 +103,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
   )
   const course: Data<CourseThreeLevelsDeep> = res.data.data
 
-  const onceEveryTwoHours = 2 * 60 * 60
-
   return {
-    props: {
-      course: filterOutOnlyPublishedEntriesOnCourse(course),
-    },
-    revalidate: onceEveryTwoHours,
+    props: { course: filterOutOnlyPublishedEntriesOnCourse(course) },
   }
 }

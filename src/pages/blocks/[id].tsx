@@ -72,12 +72,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
   )
   const block = res.data.data
 
-  const onceEveryTwoHours = 2 * 60 * 60
-
   return {
-    props: {
-      block: filterOutOnlyPublishedEntriesOnBlock(block),
-    },
-    revalidate: onceEveryTwoHours,
+    props: { block: filterOutOnlyPublishedEntriesOnBlock(block) },
   }
 }
