@@ -67,8 +67,8 @@ export const imageStyling: PptxGenJS.ImageProps = {
 
 export const citeAsStyling: PptxGenJS.TextPropsOptions = {
   x: '70%',
-  y: '85%',
-  fontSize: 12,
+  y: '90%',
+  fontSize: 7,
   w: '30%',
 }
 
