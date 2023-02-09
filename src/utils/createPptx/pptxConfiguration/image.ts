@@ -1,6 +1,6 @@
 import PptxGenJS from 'pptxgenjs'
+import { getSlideHeadingWidth } from './slideElements'
 
-import { SLIDE_HEADING_WIDTH } from './slideElements'
 import {
   remainingHeight,
   SLIDE_WIDTH_HEIGHT_RATIO,
@@ -63,7 +63,9 @@ const generateImageProps = (images: Image[]): PptxGenJS.ImageProps[] => {
     return {
       altText: image.altText,
       path: image.path,
-      x: toPercentage(X_PADDING + SLIDE_HEADING_WIDTH + IMAGE_MARGIN_LEFT),
+      x: toPercentage(
+        X_PADDING + getSlideHeadingWidth(true) + IMAGE_MARGIN_LEFT
+      ),
       y: toPercentage(yPosition),
       w: toPercentage(image.dimensions.w),
       h: toPercentage(image.dimensions.h),

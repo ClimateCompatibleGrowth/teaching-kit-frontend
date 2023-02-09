@@ -1,13 +1,17 @@
 import PptxGenJS from 'pptxgenjs'
+import { IMAGE_MARGIN_LEFT, IMAGE_WIDTH } from './image'
 import {
   toPercentage,
   startXPos,
   X_PADDING,
   Y_PADDING,
   remainingHeight,
+  remainingWidth,
 } from './utils'
 
-const PRIMARY_CONTENT_WIDTH = 65
+const PRIMARY_CONTENT_WIDTH = remainingWidth(
+  2 * X_PADDING + IMAGE_WIDTH + IMAGE_MARGIN_LEFT
+)
 const ESTIMATED_SLIDE_TITLE_HEIGHT = 15
 export const PRIMARY_CONTENT_MARGIN_RIGHT = 2
 
@@ -30,5 +34,5 @@ const primaryContentStyling: PptxGenJS.TextPropsOptions = {
   ...commonConfiguration,
   x: startXPos,
   y: toPercentage(Y_PADDING + ESTIMATED_SLIDE_TITLE_HEIGHT),
-  w: toPercentage(PRIMARY_CONTENT_WIDTH - X_PADDING),
+  w: toPercentage(PRIMARY_CONTENT_WIDTH),
 }

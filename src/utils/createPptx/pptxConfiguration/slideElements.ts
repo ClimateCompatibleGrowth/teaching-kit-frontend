@@ -8,11 +8,27 @@ import {
   startYPos,
 } from './utils'
 
-export const SLIDE_HEADING_WIDTH = remainingWidth(
+const SLIDE_HEADING_WIDTH = remainingWidth(
   2 * X_PADDING + IMAGE_WIDTH + IMAGE_MARGIN_LEFT
 )
 
-export const slideHeading: PptxGenJS.TextPropsOptions = {
+export const getSlideHeadingWidth = (slideContainsImage: boolean) => {
+  return slideContainsImage
+    ? remainingWidth(2 * X_PADDING + IMAGE_WIDTH + IMAGE_MARGIN_LEFT)
+    : remainingWidth(2 * X_PADDING)
+}
+
+export const getSlideHeading = (
+  slideContainsImage: boolean
+): PptxGenJS.TextPropsOptions => {
+  const headingWidth = getSlideHeadingWidth(slideContainsImage)
+  return {
+    ...slideHeading,
+    w: toPercentage(headingWidth),
+  }
+}
+
+const slideHeading: PptxGenJS.TextPropsOptions = {
   x: startXPos,
   y: startYPos,
   fontSize: 36,

@@ -4,7 +4,7 @@ import PptxGenJS from 'pptxgenjs'
 
 import { getImageMetadata, sourceIsFromS3, stripBackslashN } from '../utils'
 import { Slide } from '../../types'
-import { slideHeading } from '../createPptx/pptxConfiguration/slideElements'
+import { getSlideHeading } from '../createPptx/pptxConfiguration/slideElements'
 import { PptxSlide } from '../../types/pptx'
 import { getPrimaryContentStyling } from '../createPptx/pptxConfiguration/mainContent'
 import {
@@ -180,7 +180,9 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
   }
 
   pptxSlide.heading = slideTitle ?? ''
-  pptxSlide.headingStyling = slideHeading
+  pptxSlide.headingStyling = getSlideHeading(
+    pptxSlide.images !== undefined && pptxSlide.images.length > 0
+  )
   pptxSlide.title = slideTitle ?? ''
 
   return pptxSlide
