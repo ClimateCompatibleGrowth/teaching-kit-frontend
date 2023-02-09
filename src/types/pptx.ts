@@ -11,6 +11,8 @@ export type PptxSlide = {
   headingStyling?: {}
   listStyling?: PptxGenJS.TextPropsOptions
   list?: PptxGenJS.TextProps[]
+  citeAs?: string
+  citeAsStyling?: PptxGenJS.TextPropsOptions
 }
 
 export type LectureBlock = {
