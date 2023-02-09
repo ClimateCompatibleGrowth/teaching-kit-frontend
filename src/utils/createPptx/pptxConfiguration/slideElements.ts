@@ -6,7 +6,16 @@ import {
   startXPos,
   X_PADDING,
   startYPos,
+  Y_PADDING,
+  remainingHeight,
 } from './utils'
+import {
+  CONTENT_HEIGHT,
+  PRIMARY_CONTENT_WIDTH,
+  ESTIMATED_SLIDE_TITLE_HEIGHT,
+} from './mainContent'
+
+export const CITE_AS_Y_MARGIN = 5
 
 const SLIDE_HEADING_WIDTH = remainingWidth(
   2 * X_PADDING + IMAGE_WIDTH + IMAGE_MARGIN_LEFT
@@ -65,10 +74,20 @@ export const h3Heading: PptxGenJS.TextPropsOptions = {
 }
 
 export const citeAsStyling: PptxGenJS.TextPropsOptions = {
-  x: '70%',
-  y: '85%',
-  fontSize: 12,
-  w: '30%',
+  x: startXPos,
+  y: toPercentage(
+    Y_PADDING + CONTENT_HEIGHT + ESTIMATED_SLIDE_TITLE_HEIGHT + CITE_AS_Y_MARGIN
+  ),
+  fontSize: 9,
+  w: toPercentage(PRIMARY_CONTENT_WIDTH),
+  h: toPercentage(
+    remainingHeight(
+      Y_PADDING +
+        CONTENT_HEIGHT +
+        ESTIMATED_SLIDE_TITLE_HEIGHT +
+        CITE_AS_Y_MARGIN * 2
+    )
+  ),
 }
 
 export const descriptionSlideAuthor: PptxGenJS.TextPropsOptions = {

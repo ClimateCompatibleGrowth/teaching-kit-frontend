@@ -9,11 +9,15 @@ import {
   remainingWidth,
 } from './utils'
 
-const PRIMARY_CONTENT_WIDTH = remainingWidth(
+export const PRIMARY_CONTENT_WIDTH = remainingWidth(
   2 * X_PADDING + IMAGE_WIDTH + IMAGE_MARGIN_LEFT
 )
-const ESTIMATED_SLIDE_TITLE_HEIGHT = 15
+export const ESTIMATED_SLIDE_TITLE_HEIGHT = 15
 export const PRIMARY_CONTENT_MARGIN_RIGHT = 2
+
+export const CONTENT_HEIGHT = remainingHeight(
+  2 * Y_PADDING + ESTIMATED_SLIDE_TITLE_HEIGHT
+)
 
 export type ListStyle = 'UNORDERED' | 'ORDERED'
 

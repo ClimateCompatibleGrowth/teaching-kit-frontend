@@ -27,6 +27,7 @@ const generateLectureBlockSlides = async (
   lecture: Data<LectureTwoLevelsDeep>
 ) => {
   const blocks = lecture.attributes.Blocks.data
+  const citeAs = lecture.attributes.CiteAs
 
   const lectureBlockSlides = Promise.all(
     blocks.map(async (blockSlides) => {
@@ -34,7 +35,7 @@ const generateLectureBlockSlides = async (
         blockSlides.attributes.Slides.map((slide: Slide) => {
           slide.id = slide.id.toString()
 
-          return markdownToSlideFormat(slide)
+          return markdownToSlideFormat(slide, citeAs)
         })
       )
 

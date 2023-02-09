@@ -18,6 +18,10 @@ const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
     }
 
     contentSlide.addNotes(`${pptxSlide.speakerNotes}`)
+
+    if (pptxSlide?.citeAs !== undefined) {
+      contentSlide.addText(`${pptxSlide.citeAs}`, pptxSlide.citeAsStyling)
+    }
   })
 }
 

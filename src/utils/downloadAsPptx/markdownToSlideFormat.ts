@@ -5,6 +5,7 @@ import PptxGenJS from 'pptxgenjs'
 import { getImageMetadata, sourceIsFromS3, stripBackslashN } from '../utils'
 import { Slide } from '../../types'
 import { getSlideHeading } from '../createPptx/pptxConfiguration/slideElements'
+import { citeAsStyling } from '../createPptx/pptxConfiguration/slideElements'
 import { PptxSlide } from '../../types/pptx'
 import { getPrimaryContentStyling } from '../createPptx/pptxConfiguration/mainContent'
 import {
@@ -66,7 +67,10 @@ const getTextStyling = (type: TextNodeType): PptxGenJS.TextPropsOptions => {
   }
 }
 
-const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
+const markdownToSlideFormat = async (
+  slide: Slide,
+  citeAs?: string
+): Promise<PptxSlide> => {
   let slideTitle = ''
 
   const pptxSlidePromise = Object.values(slide).reduce(
@@ -177,6 +181,11 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
 
   if (slide) {
     pptxSlide.speakerNotes = slide.SpeakerNotes
+  }
+
+  if (citeAs !== undefined) {
+    pptxSlide.citeAs = citeAs
+    pptxSlide.citeAsStyling = citeAsStyling
   }
 
   pptxSlide.heading = slideTitle ?? ''
