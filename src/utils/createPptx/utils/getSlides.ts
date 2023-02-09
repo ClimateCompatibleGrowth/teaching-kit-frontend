@@ -1,20 +1,15 @@
 import PptxGenJS from 'pptxgenjs'
-import { imageStyling } from '../pptxConfiguration/slideElements'
 import { PptxSlide } from '../../../types/pptx'
 
 const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
   return blockSlides.map((pptxSlide) => {
     const contentSlide = pptx.addSlide()
 
-    //Headings
     contentSlide.addText(`${pptxSlide.heading}`, pptxSlide.headingStyling)
 
     if (pptxSlide?.images !== undefined && pptxSlide?.images.length > 0) {
       for (const image of pptxSlide.images) {
-        contentSlide.addImage({
-          ...imageStyling,
-          ...image,
-        })
+        contentSlide.addImage(image)
       }
     }
 

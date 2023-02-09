@@ -14,7 +14,11 @@ import {
   listItemStyle,
   paragraphStyle,
 } from '../createPptx/pptxConfiguration/text'
-import { getBaseImageStyling } from '../createPptx/pptxConfiguration/image'
+import {
+  Image,
+  getImageDimensions,
+  getImageStyling,
+} from '../createPptx/pptxConfiguration/image'
 
 type TokenWithoutTextField =
   | marked.Tokens.Space
@@ -69,7 +73,7 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
     async (finalSlide, slideValue, index) => {
       const slideAttribute = {} as PptxSlide
       const mainSlideContent = [] as PptxGenJS.TextProps[]
-      const images = [] as PptxGenJS.ImageProps[]
+      const images = [] as Image[]
 
       // Ignore id (first index) and speaker notes (last index)
       if (index === 0 || index === Object.values(slide).length - 1) {
@@ -92,14 +96,14 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
           if (imageToken !== undefined && sourceIsFromS3(imageToken.href)) {
             const href = `${imageToken.href}?do-not-fetch-from-cache`
             const image = await getImageMetadata(href)
-            const imageStyling = getBaseImageStyling(
+            const imageDimensions = getImageDimensions(
               image.naturalWidth,
               image.naturalHeight
             )
             images.push({
+              dimensions: imageDimensions,
               path: href,
               altText: imageToken.text,
-              ...imageStyling,
             })
           }
 
@@ -159,7 +163,7 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
       }
 
       slideAttribute.mainContent = mainSlideContent
-      slideAttribute.images = images
+      slideAttribute.images = getImageStyling(images)
 
       return Promise.resolve({
         ...finalSlide,
