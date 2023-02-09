@@ -9,12 +9,16 @@ import {
   remainingWidth,
 } from './utils'
 
-const PRIMARY_CONTENT_WIDTH = 65
-const ESTIMATED_SLIDE_TITLE_HEIGHT = 15
+export const PRIMARY_CONTENT_WIDTH = 65
+export const ESTIMATED_SLIDE_TITLE_HEIGHT = 15
 const PRIMARY_CONTENT_MARGIN_RIGHT = 2
 
 const NON_PRIMARY_CONTENT_START_X_POS =
   X_PADDING + PRIMARY_CONTENT_WIDTH + PRIMARY_CONTENT_MARGIN_RIGHT
+
+export const CONTENT_HEIGHT = remainingHeight(
+  2 * Y_PADDING + ESTIMATED_SLIDE_TITLE_HEIGHT
+)
 
 export type ListStyle = 'UNORDERED' | 'ORDERED'
 type BulletAttribute =
@@ -65,7 +69,7 @@ const getListConfig = (listStyle?: ListStyle): BulletAttribute => {
   return listStyle === 'UNORDERED' ? true : orderedListConfig
 }
 
-const commonConfiguration = {
+export const commonConfiguration = {
   autoFit: true,
   breakLine: true,
   valign: 'top' as const,
