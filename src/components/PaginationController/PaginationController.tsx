@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import * as Styled from './styles'
 
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined'
@@ -15,8 +15,18 @@ const PaginationController = ({
   currentPageNumber,
   setCurrentPage,
 }: Props) => {
+  const pages = [...Array(amountOfPages).keys()]
+  useEffect(() => {
+    const currentPageElementInList = document.getElementById(
+      `page-number-list-item-${currentPageNumber}`
+    )
+    if (typeof window !== 'undefined' && currentPageElementInList) {
+      currentPageElementInList.scrollIntoView({ inline: 'center' })
+    }
+  }, [currentPageNumber])
+
   return (
-    <Styled.PaginationController>
+    <Styled.PaginationWrapper>
       <Styled.PreviousButton
         onClick={() => setCurrentPage(currentPageNumber - 1)}
         isVisible={currentPageNumber !== 1}
@@ -25,33 +35,37 @@ const PaginationController = ({
         }`}
       >
         <ExpandLessOutlinedIcon
-          style={{ height: 20, width: 20, color: Accent40 }}
+          style={{ height: 28, width: 28, color: Accent40 }}
         />
       </Styled.PreviousButton>
-      {[...Array(amountOfPages).keys()].map((index) => {
-        const pageNumber = index + 1
-        return (
-          <Styled.PaginationPageButton key={index}>
-            <Styled.Button
-              isActive={pageNumber === currentPageNumber}
-              onClick={() => setCurrentPage(pageNumber)}
-              aria-label={`Change page number to ${pageNumber}`}
-            >
-              {pageNumber}
-            </Styled.Button>
-          </Styled.PaginationPageButton>
-        )
-      })}
+      <Styled.PaginationController>
+        {pages.map((index) => {
+          const pageNumber = index + 1
+          return (
+            <Styled.PaginationPageButton key={index}>
+              <Styled.Button
+                id={`page-number-list-item-${pageNumber}`}
+                disabled={pageNumber === currentPageNumber}
+                isActive={pageNumber === currentPageNumber}
+                onClick={() => setCurrentPage(pageNumber)}
+                aria-label={`Change page number to ${pageNumber}`}
+              >
+                {pageNumber}
+              </Styled.Button>
+            </Styled.PaginationPageButton>
+          )
+        })}
+      </Styled.PaginationController>
       <Styled.NextButton
         onClick={() => setCurrentPage(currentPageNumber + 1)}
         isVisible={currentPageNumber !== amountOfPages}
         aria-label={`Go to next page - page number ${currentPageNumber + 1}`}
       >
         <ExpandLessOutlinedIcon
-          style={{ height: 20, width: 20, color: Accent40 }}
+          style={{ height: 28, width: 28, color: Accent40 }}
         />
       </Styled.NextButton>
-    </Styled.PaginationController>
+    </Styled.PaginationWrapper>
   )
 }
 

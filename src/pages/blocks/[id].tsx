@@ -68,8 +68,6 @@ export async function getStaticPaths() {
     params: { id: `${block.id}` },
   }))
 
-  console.log(paths)
-
   return { paths, fallback: false }
 }
 

@@ -80,8 +80,6 @@ export async function getStaticPaths() {
     params: { id: `${lecture.id}` },
   }))
 
-  console.log(paths)
-
   return { paths, fallback: false }
 }
 

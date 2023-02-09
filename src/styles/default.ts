@@ -48,7 +48,7 @@ const defaultStyle = css`
     margin: 0;
 
     font-size: 1.6rem;
-    font-family: ${montserrat['400'].style.fontFamily};
+    font-family: ${montserrat[400].style.fontFamily};
   }
 
   h6 {

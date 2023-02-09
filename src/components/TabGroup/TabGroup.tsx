@@ -248,8 +248,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
     currentPage: number,
     setCurrentPageNumber: (newPageNumber: number) => void
   ) => {
-    // return metaData.pagination.pageCount > 1 ? (
-    return true ? (
+    return metaData.pagination.pageCount > 1 ? (
       <PaginationController
         amountOfPages={metaData.pagination.pageCount}
         currentPageNumber={currentPage}
