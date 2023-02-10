@@ -4,21 +4,22 @@ import PptxGenJS from 'pptxgenjs'
 
 import { getImageMetadata, sourceIsFromS3, stripBackslashN } from '../utils'
 import { Slide } from '../../types'
-import { slideHeading } from '../createPptx/pptxConfiguration/slideElements'
+import { getSlideHeading } from '../createPptx/pptxConfiguration/slideElements'
+import { citeAsStyling } from '../createPptx/pptxConfiguration/slideElements'
 import { PptxSlide } from '../../types/pptx'
-import {
-  getFallbackContentStyling,
-  getPrimaryContentStyling,
-  getSecondaryContentStyling,
-  ListStyle,
-} from '../createPptx/pptxConfiguration/mainContent'
+import { getPrimaryContentStyling } from '../createPptx/pptxConfiguration/mainContent'
 import {
   h1Style,
   h2Style,
   h3Style,
+  listItemStyle,
   paragraphStyle,
 } from '../createPptx/pptxConfiguration/text'
-import { getBaseImageStyling } from '../createPptx/pptxConfiguration/image'
+import {
+  Image,
+  getImageDimensions,
+  getImageStyling,
+} from '../createPptx/pptxConfiguration/image'
 
 type TokenWithoutTextField =
   | marked.Tokens.Space
@@ -28,34 +29,6 @@ type TokenWithoutTextField =
   | marked.Tokens.Def
   | marked.Tokens.Br
 
-const textNodeTypes = ['paragraph', 'heading', 'list', 'space']
-
-const nodeTypes = [
-  'paragraph',
-  'list',
-  'space',
-  'heading',
-  'code',
-  'table',
-  'hr',
-  'blockquote',
-  'list_item',
-  'html',
-  'text',
-  'def',
-  'escape',
-  'image',
-  'link',
-  'strong',
-  'em',
-  'codespan',
-  'br',
-  'del',
-] as const
-type NodeType = typeof nodeTypes[number]
-
-const isTextElement = (type: NodeType) => textNodeTypes.includes(type)
-
 const findImageToken = (token: marked.Token): token is marked.Tokens.Image =>
   token.type === 'image'
 
@@ -64,43 +37,6 @@ const findAllTokensWithTextField = (
   tokens: marked.Token[]
 ): AllTokensButSpace[] =>
   tokens.filter((token): token is AllTokensButSpace => 'text' in token)
-
-const getListProps = (node: marked.Token): ListStyle | undefined => {
-  if (node.type === 'list') {
-    if (node.ordered) {
-      return 'ORDERED'
-    }
-    return 'UNORDERED'
-  }
-  return undefined
-}
-
-const getDynamicStyling = (
-  node: marked.Token,
-  index: number,
-  nodeTypes: NodeType[],
-  slideHasImage: boolean
-): PptxGenJS.TextPropsOptions => {
-  const isText = isTextElement(node.type)
-  const preceedingTextElements = nodeTypes
-    .slice(0, index)
-    .filter((nodeType) => isTextElement(nodeType))
-  const preceedingTextElementsOfUniqueType = [
-    ...new Set(preceedingTextElements),
-  ].filter((element) => element !== 'space')
-  const listProps = getListProps(node)
-
-  if (isText) {
-    switch (preceedingTextElementsOfUniqueType.length) {
-      case 0:
-        return getPrimaryContentStyling(listProps)
-      case 1:
-        return getSecondaryContentStyling(listProps, slideHasImage)
-    }
-  }
-
-  return getFallbackContentStyling(listProps)
-}
 
 type TextNodeType = 'paragraph' | 'h1' | 'h2' | 'h3' | 'space'
 
@@ -131,14 +67,17 @@ const getTextStyling = (type: TextNodeType): PptxGenJS.TextPropsOptions => {
   }
 }
 
-const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
+const markdownToSlideFormat = async (
+  slide: Slide,
+  citeAs?: string
+): Promise<PptxSlide> => {
   let slideTitle = ''
 
   const pptxSlidePromise = Object.values(slide).reduce(
     async (finalSlide, slideValue, index) => {
       const slideAttribute = {} as PptxSlide
       const mainSlideContent = [] as PptxGenJS.TextProps[]
-      const images = [] as PptxGenJS.ImageProps[]
+      const images = [] as Image[]
 
       // Ignore id (first index) and speaker notes (last index)
       if (index === 0 || index === Object.values(slide).length - 1) {
@@ -153,37 +92,22 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
 
       const markdown = marked.lexer(slideValue)
 
-      const nodeTypesInOrderOfOccurance = markdown.map((node) => {
-        if (
-          node.type === 'paragraph' &&
-          node.tokens.map((token) => token.type).includes('image')
-        ) {
-          return 'image'
-        }
-        return node.type
-      })
-      const slideHasImage =
-        markdown.find(
-          (node) =>
-            node.type === 'paragraph' &&
-            node.tokens.find(findImageToken) !== undefined
-        ) !== undefined
-
       for (const [index, node] of markdown.entries()) {
+        const style = slideAttribute.mainContentStyling
         if (node.type === 'paragraph') {
           const imageToken = node.tokens.find(findImageToken)
 
           if (imageToken !== undefined && sourceIsFromS3(imageToken.href)) {
             const href = `${imageToken.href}?do-not-fetch-from-cache`
             const image = await getImageMetadata(href)
-            const imageStyling = getBaseImageStyling(
+            const imageDimensions = getImageDimensions(
               image.naturalWidth,
               image.naturalHeight
             )
             images.push({
+              dimensions: imageDimensions,
               path: href,
               altText: imageToken.text,
-              ...imageStyling,
             })
           }
 
@@ -197,66 +121,48 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
               'paragraph'
             )
             mainSlideContent.push(textProps)
-            slideAttribute.mainContentStyling = addContentStyling(
-              slideAttribute.mainContentStyling,
-              node,
-              index,
-              nodeTypesInOrderOfOccurance,
-              slideHasImage
-            )
+            slideAttribute.mainContentStyling = addContentStyling(style)
           }
         }
 
         if (node.type === 'space') {
-          const textProps = convertToTextProp(node.raw, 'space')
-          mainSlideContent.push(textProps)
+          // Beware! The following logic might be tempting, but it screws up lists (and heading+lists)
+          //
+          // const textProps = convertToTextProp(node.raw, 'space')
+          // mainSlideContent.push(textProps)
         }
 
         if (node.type === 'heading') {
+          const newLine = index === 0 ? '' : '\n\n'
           if (node.depth === 1) {
-            const textProps = convertToTextProp(`${decode(node.text)}`, 'h1')
-            mainSlideContent.push(textProps)
-            slideAttribute.mainContentStyling = addContentStyling(
-              slideAttribute.mainContentStyling,
-              node,
-              index,
-              nodeTypesInOrderOfOccurance,
-              slideHasImage
+            const textProps = convertToTextProp(
+              `${newLine}${decode(node.text)}`,
+              'h1'
             )
+            mainSlideContent.push(textProps)
+            slideAttribute.mainContentStyling = addContentStyling(style)
           }
           if (node.depth === 2) {
-            const textProps = convertToTextProp(`${decode(node.text)}`, 'h2')
-            mainSlideContent.push(textProps)
-            slideAttribute.mainContentStyling = addContentStyling(
-              slideAttribute.mainContentStyling,
-              node,
-              index,
-              nodeTypesInOrderOfOccurance,
-              slideHasImage
+            const textProps = convertToTextProp(
+              `${newLine}${decode(node.text)}`,
+              'h2'
             )
+            mainSlideContent.push(textProps)
+            slideAttribute.mainContentStyling = addContentStyling(style)
           }
           if (node.depth === 3) {
-            const textProps = convertToTextProp(`${decode(node.text)}`, 'h3')
-            mainSlideContent.push(textProps)
-            slideAttribute.mainContentStyling = addContentStyling(
-              slideAttribute.mainContentStyling,
-              node,
-              index,
-              nodeTypesInOrderOfOccurance,
-              slideHasImage
+            const textProps = convertToTextProp(
+              `${newLine}${decode(node.text)}`,
+              'h3'
             )
+            mainSlideContent.push(textProps)
+            slideAttribute.mainContentStyling = addContentStyling(style)
           }
         }
 
         if (node.type === 'list') {
-          slideAttribute.list = getSubComponentsFromList(node.items)
-          const styling = getDynamicStyling(
-            node,
-            index,
-            nodeTypesInOrderOfOccurance,
-            slideHasImage
-          )
-          slideAttribute.listStyling = styling
+          mainSlideContent.push(...getSubComponentsFromList(node.items))
+          slideAttribute.mainContentStyling = addContentStyling(style)
         }
 
         if (node.type === 'table') {
@@ -283,14 +189,12 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
             colW: Math.max(10 / node.header.length),
             rowH: 0.5,
             border: { color: '#242424' },
-            // align: 'left',
-            // fontFace: 'Arial',
           })
         }
       }
 
       slideAttribute.mainContent = mainSlideContent
-      slideAttribute.images = images
+      slideAttribute.images = getImageStyling(images)
 
       return Promise.resolve({
         ...finalSlide,
@@ -306,30 +210,28 @@ const markdownToSlideFormat = async (slide: Slide): Promise<PptxSlide> => {
     pptxSlide.speakerNotes = slide.SpeakerNotes
   }
 
+  if (citeAs !== undefined) {
+    pptxSlide.citeAs = citeAs
+    pptxSlide.citeAsStyling = citeAsStyling
+  }
+
   pptxSlide.heading = slideTitle ?? ''
-  pptxSlide.headingStyling = slideHeading
+  pptxSlide.headingStyling = getSlideHeading(
+    pptxSlide.images !== undefined && pptxSlide.images.length > 0
+  )
   pptxSlide.title = slideTitle ?? ''
 
   return pptxSlide
 }
 
 const addContentStyling = (
-  contentStyling: PptxGenJS.TextPropsOptions | undefined,
-  node: marked.Token,
-  index: number,
-  nodeTypesInOrderOfOccurance: NodeType[],
-  slideHasImage: boolean
+  contentStyling: PptxGenJS.TextPropsOptions | undefined
 ) => {
   if (contentStyling !== undefined) {
     return contentStyling
   }
-  const styling = getDynamicStyling(
-    node,
-    index,
-    nodeTypesInOrderOfOccurance,
-    slideHasImage
-  )
-  return styling
+
+  return getPrimaryContentStyling()
 }
 
 // Extremely cumbersome way of adding bold items to list without breaking to new bullet.
@@ -348,6 +250,7 @@ const getSubComponentsFromList = (
           const textNodes = innerTokens.map((innerToken, index) => ({
             text: stripBackslashN(innerToken.text),
             options: {
+              ...listItemStyle,
               bold: innerToken.type === 'strong',
               italic: innerToken.type === 'em',
               ...(index === 0 && { indentLevel: 0, bullet: true }),

@@ -13,6 +13,8 @@ export type PptxSlide = {
   list?: PptxGenJS.TextProps[]
   tables?: PptxGenJS.TableRow[][]
   tableStyling?: PptxGenJS.TableProps[]
+  citeAs?: string
+  citeAsStyling?: PptxGenJS.TextPropsOptions
 }
 
 export type LectureBlock = {
