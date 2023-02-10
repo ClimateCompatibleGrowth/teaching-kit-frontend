@@ -234,7 +234,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       title: learningMaterial.attributes.Title,
       id: learningMaterial.id.toString(),
       text: learningMaterial.attributes.Abstract,
-      level: (
+      level: level && (
         <React.Fragment>
           <SignalStrengthIcon style={{ marginRight: 8 }} />
           {level}

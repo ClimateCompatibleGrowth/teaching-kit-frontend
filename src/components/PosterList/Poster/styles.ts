@@ -10,13 +10,13 @@ export const Card = styled.div`
 
   ${mq.sm} {
     flex: 0 1 48%;
-    &:nth-child(n) {
+    &:nth-of-type(n) {
       margin-bottom: 1.6rem;
     }
   }
   ${mq.md} {
     flex: 0 1 32%;
-    &:nth-child(n) {
+    &:nth-of-type(n) {
       margin-bottom: 0;
     }
   }

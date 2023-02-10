@@ -4,7 +4,10 @@ import styled from '@emotion/styled'
 export const Background = '#FFFFFF'
 export const Surface = '#F1F1F1'
 
+export const Accent20 = '#011138'
+export const OnAccent20 = '#FFFFFF'
 export const Accent40 = '#012169'
+export const Accent90 = '#6C99FE'
 export const OnAccent40 = '#FFFFFF'
 
 export const Neutral40 = '#757575'

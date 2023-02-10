@@ -84,6 +84,8 @@ export const handleBlockDocxDownload = async (
       downloadConfiguration,
       footer
     )
+    console.log(blob.size)
+
     saveAs(blob, `${block.attributes.Title}.docx`)
   } catch (error) {
     console.error(`Download of block docx failed with error: ${error}`)

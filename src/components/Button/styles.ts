@@ -1,10 +1,13 @@
 import styled from '@emotion/styled'
 import { montserrat } from '../../styles/fonts'
 import {
+  Accent20,
   Accent40,
+  Accent90,
   Background,
   ButtonWithoutDefaultStyle,
   Neutral90,
+  OnAccent20,
   OnAccent40,
   OnPrimary40,
 } from '../../styles/global'
@@ -32,5 +35,14 @@ export const Button = styled(ButtonWithoutDefaultStyle)<Props>`
     &:hover {
       cursor: default;
     }
+  }
+
+  &:hover {
+    background-color: ${(props) => (props.primary ? Accent90 : Neutral90)};
+  }
+
+  &:active {
+    background-color: ${(props) => (props.primary ? Accent20 : Accent20)};
+    color: ${(props) => (props.primary ? Accent20 : OnAccent20)};
   }
 `

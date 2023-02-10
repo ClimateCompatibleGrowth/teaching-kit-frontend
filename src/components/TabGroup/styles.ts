@@ -1,6 +1,8 @@
 import styled from '@emotion/styled'
 import {
+  Accent20,
   Accent40,
+  Accent90,
   mq,
   Neutral40,
   OnAccent40,
@@ -61,7 +63,7 @@ export const Tab = {
 
   '& + &': {
     [`${mq.sm}`]: {
-      'margin-left': '4px',
+      marginLeft: '4px',
     },
   },
 
@@ -73,6 +75,12 @@ export const Tab = {
     [`${mq.sm}`]: {
       minWidth: 'auto',
       flex: 'initial',
+    },
+    [`&:active`]: {
+      backgroundColor: Accent20,
+    },
+    [`&:hover`]: {
+      backgroundColor: Accent90,
     },
   },
 

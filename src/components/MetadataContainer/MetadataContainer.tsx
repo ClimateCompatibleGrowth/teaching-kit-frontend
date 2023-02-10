@@ -53,7 +53,7 @@ export default function MetadataContainer({
   return (
     <Styled.MetadataContainer>
       <Styled.HeadingSet>
-        {level !== undefined && (
+        {!!level?.data && (
           <Styled.ShortInfo>
             <Styled.SignalStrengthIcon />
             {levelToString(level)}
