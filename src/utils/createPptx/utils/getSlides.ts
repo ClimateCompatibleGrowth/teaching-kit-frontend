@@ -28,21 +28,18 @@ const getSlides = (blockSlides: PptxSlide[], pptx: PptxGenJS) => {
       contentSlide.addText(pptxSlide.list, pptxSlide.listStyling)
     }
 
-    // Tables
     if (pptxSlide.tables) {
       let index = 0
       for (const table of pptxSlide.tables) {
-        contentSlide.addTable(
+        let slide = contentSlide
+        if (index !== 0 || pptxSlide?.mainContent !== undefined) {
+          slide = pptx.addSlide()
+        }
+        slide.addText(`${pptxSlide.heading}`, pptxSlide.headingStyling)
+        slide.addTable(
           table,
           pptxSlide.tableStyling ? pptxSlide.tableStyling[index] : {}
         )
-        if (
-          pptxSlide.tables.length > 1 &&
-          index !== pptxSlide.tables.length - 1
-        ) {
-          contentSlide = pptx.addSlide()
-          contentSlide.addText(`${pptxSlide.heading}`, pptxSlide.headingStyling)
-        }
         index += 1
       }
     }
