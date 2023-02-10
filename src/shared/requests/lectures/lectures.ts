@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { SortOptionType } from '../../../components/TabGroup/TabGroup'
 import { LectureTwoLevelsDeep } from '../../../types'
 import { ResponseArray, ResponseArrayData } from '../types'
 import {
@@ -24,7 +25,9 @@ export const filterLectureOnKeywordsAndAuthors = async ({
   pageNumber,
   matchesPerPage,
   sortMethod,
-}: FilterParameters): Promise<ResponseArrayData<LectureTwoLevelsDeep>> => {
+}: FilterParameters<SortOptionType>): Promise<
+  ResponseArrayData<LectureTwoLevelsDeep>
+> => {
   const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
     matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
   }`

@@ -1,11 +1,11 @@
 import { SortOptionType } from '../../../components/TabGroup/TabGroup'
 import { LearningMaterialType } from '../../../types'
 
-export type FilterParameters = {
+export type FilterParameters<SortType> = {
   keywords: string[]
   authors: string[]
   pageNumber: number
-  sortMethod: SortOptionType
+  sortMethod: SortType
   matchesPerPage?: number
 }
 
