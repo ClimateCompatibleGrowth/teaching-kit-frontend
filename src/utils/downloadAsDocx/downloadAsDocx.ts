@@ -84,7 +84,6 @@ export const handleBlockDocxDownload = async (
       downloadConfiguration,
       footer
     )
-    console.log(blob.size)
 
     saveAs(blob, `${block.attributes.Title}.docx`)
   } catch (error) {

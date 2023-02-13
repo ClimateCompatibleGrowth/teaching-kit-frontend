@@ -12,8 +12,10 @@ import {
   h1Style,
   h2Style,
   h3Style,
+  italicStyle,
   listItemStyle,
   paragraphStyle,
+  strongStyle,
 } from '../createPptx/pptxConfiguration/text'
 import {
   Image,
@@ -38,7 +40,15 @@ const findAllTokensWithTextField = (
 ): AllTokensButSpace[] =>
   tokens.filter((token): token is AllTokensButSpace => 'text' in token)
 
-type TextNodeType = 'paragraph' | 'h1' | 'h2' | 'h3' | 'space'
+type TextNodeType =
+  | 'paragraph'
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'space'
+  | 'text'
+  | 'strong'
+  | 'em'
 
 const convertToTextProp = (
   text: string,
@@ -53,6 +63,7 @@ const convertToTextProp = (
 const getTextStyling = (type: TextNodeType): PptxGenJS.TextPropsOptions => {
   switch (type) {
     case 'paragraph':
+    case 'text':
       return paragraphStyle
     case 'h1':
       return h1Style
@@ -60,12 +71,21 @@ const getTextStyling = (type: TextNodeType): PptxGenJS.TextPropsOptions => {
       return h2Style
     case 'h3':
       return h3Style
+    case 'strong':
+      return strongStyle
+    case 'em':
+      return italicStyle
     case 'space':
       return {}
     default:
       return {}
   }
 }
+
+const isKnownParagraphType = (
+  token: marked.Token
+): token is marked.Tokens.Text | marked.Tokens.Strong | marked.Tokens.Em =>
+  token.type === 'text' || token.type === 'strong' || token.type === 'em'
 
 const markdownToSlideFormat = async (
   slide: Slide,
@@ -111,14 +131,12 @@ const markdownToSlideFormat = async (
             })
           }
 
-          const paragraphTokens = node.tokens.filter(
-            (token): token is marked.Tokens.Text => token.type === 'text'
-          )
+          const paragraphTokens = node.tokens.filter(isKnownParagraphType)
 
           for (const paragraphToken of paragraphTokens) {
             const textProps = convertToTextProp(
               `${decode(paragraphToken.text)}`,
-              'paragraph'
+              paragraphToken.type
             )
             mainSlideContent.push(textProps)
             slideAttribute.mainContentStyling = addContentStyling(style)
