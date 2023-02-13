@@ -1,5 +1,6 @@
 export const X_PADDING = 3
 export const Y_PADDING = 10
+export const DISCLAIMER_Y_PADDING = 12
 
 export const remainingWidth = (width: number): number => {
   return hundredRemains(width)

@@ -2,6 +2,7 @@ import * as Styled from './styles'
 
 import LogoIcon from '../../../public/logo.svg'
 import Markdown from '../Markdown/Markdown'
+import Image from 'next/image'
 
 export default function Navbar() {
   return (
@@ -15,6 +16,23 @@ export default function Navbar() {
         </Styled.LogoWrapper>
         <Styled.ContactWrapper>
           <Markdown>{footerContent}</Markdown>
+          <br />
+          <p>
+            These teaching materials are based on content provided by Climate
+            Compatible Growth as part of their FCDO-funded activities. As this
+            content can be adapted by other institutions, the opinions expressed
+            here may not reflect those of CCG or its funders.
+          </p>
+          <a rel='license' href='http://creativecommons.org/licenses/by/4.0/'>
+            <Image
+              src={'https://i.creativecommons.org/l/by/4.0/88x31.png'}
+              alt='Creative Commons Licence'
+              width={88}
+              height={31}
+            />
+          </a>
+          <br />
+          <br />
         </Styled.ContactWrapper>
       </Styled.Footer>
     </Styled.ColorBar>
