@@ -1,4 +1,8 @@
 import React from 'react'
+import {
+  OnSurfaceAlternative,
+  SurfaceAlternative,
+} from '../../../styles/global'
 import { LearningMaterialType } from '../../../types'
 
 type Props = {
@@ -19,14 +23,20 @@ const TabLabel = ({ type, numberOfResults }: Props) => {
   }
 
   return (
-    <>
-      <h5>{getTabLabel(type)}</h5>
-      <div className='NumberOfMatchesWrapper'>
-        <h5 aria-label={`${numberOfResults} matching results`}>
-          {numberOfResults}
-        </h5>
-      </div>
-    </>
+    <h5 style={{ fontWeight: 300 }}>
+      {`${getTabLabel(type)} `}
+      <span
+        aria-label={`${numberOfResults} results`}
+        style={{
+          padding: '0.4rem 1rem',
+          backgroundColor: SurfaceAlternative,
+          color: OnSurfaceAlternative,
+          borderRadius: '1.5rem',
+        }}
+      >
+        {numberOfResults}
+      </span>
+    </h5>
   )
 }
 

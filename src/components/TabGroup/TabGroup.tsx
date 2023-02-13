@@ -22,8 +22,10 @@ import TabLabel from './TabLabel/TabLabel'
 import DropdownSingleSelectable, {
   Item,
 } from '../Dropdown/DropdownSingleSelectable'
-import { levelToString } from '../../utils/utils'
+import { levelToString, summarizeDurations } from '../../utils/utils'
 import LearningMaterialBadge from '../LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
+import SignalStrengthIcon from '../../../public/icons/signal-strength.svg'
+import ClockIcon from '../../../public/icons/clock.svg'
 
 type Props = {
   selectedKeywords: string[]
@@ -175,6 +177,12 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       text: block.attributes.Abstract,
       href: `/blocks/${block.id}`,
       subTitle: <LearningMaterialBadge type='BLOCK' />,
+      duration: (
+        <>
+          <ClockIcon style={{ marginRight: 8 }} />
+          {summarizeDurations([block])}
+        </>
+      ),
     }))
   }
 
@@ -184,6 +192,12 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       ...baseCard,
       href: `/lectures/${data.id}`,
       subTitle: <LearningMaterialBadge type='LECTURE' />,
+      duration: (
+        <>
+          <ClockIcon style={{ marginRight: 8 }} />
+          {summarizeDurations(data.attributes.Blocks.data)}
+        </>
+      ),
     }
   }
 
@@ -195,6 +209,20 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       ...baseCard,
       href: `/courses/${data.id}`,
       subTitle: <LearningMaterialBadge type='COURSE' />,
+      duration: (
+        <>
+          <ClockIcon style={{ marginRight: 8 }} />
+          {summarizeDurations(
+            data.attributes.Lectures.data.reduce(
+              (blocks, lecture) => [
+                ...blocks,
+                ...lecture.attributes.Blocks.data,
+              ],
+              [] as Data<Pick<BlockOneLevelDeep, 'DurationInMinutes'>>[]
+            )
+          )}
+        </>
+      ),
     }
   }
 
@@ -206,7 +234,12 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       title: learningMaterial.attributes.Title,
       id: learningMaterial.id.toString(),
       text: learningMaterial.attributes.Abstract,
-      metadata: level !== undefined ? `Level: ${level}` : undefined,
+      level: level && (
+        <React.Fragment>
+          <SignalStrengthIcon style={{ marginRight: 8 }} />
+          {level}
+        </React.Fragment>
+      ),
     }
   }
 

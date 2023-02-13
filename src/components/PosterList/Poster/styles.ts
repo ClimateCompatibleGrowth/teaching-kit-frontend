@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { montserrat, ubuntu } from '../../../styles/fonts'
+import { montserrat } from '../../../styles/fonts'
 import { mq, Neutral99, OnNeutral99, OnPrimary90 } from '../../../styles/global'
 
 export const Card = styled.div`
@@ -7,16 +7,16 @@ export const Card = styled.div`
   padding: 3.2rem 2.4rem;
   background-color: ${Neutral99};
   color: ${OnNeutral99};
-  &:nth-child(n) {
-    margin-bottom: 2%;
-  }
 
   ${mq.sm} {
     flex: 0 1 48%;
+    &:nth-of-type(n) {
+      margin-bottom: 1.6rem;
+    }
   }
   ${mq.md} {
     flex: 0 1 32%;
-    &:nth-child(n) {
+    &:nth-of-type(n) {
       margin-bottom: 0;
     }
   }
@@ -34,11 +34,6 @@ export const Markdown = styled.div`
       font-family: ${montserrat[500].style.fontFamily};
     }
   }
-`
-
-export const Title = styled.h4`
-  font-family: ${ubuntu[700].style.fontFamily};
-  font-size: 2.4rem;
 `
 
 export const SubTitle = styled.h5`

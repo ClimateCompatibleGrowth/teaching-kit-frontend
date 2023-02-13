@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import NextImage from 'next/image'
+import { ubuntu } from '../../styles/fonts'
 import { Accent40, mq, Neutral99, OnNeutral99 } from '../../styles/global'
 
 type PortionProps = {
@@ -28,11 +29,15 @@ export const Portion = styled.div<PortionProps>`
 `
 
 export const TextContainer = styled.div`
-  padding: 5.4rem 2.4rem;
+  padding: 2.4rem 2.4rem;
   word-break: break-word;
   a {
     color: ${Accent40};
     text-decoration: underline;
+  }
+
+  ${mq.sm} {
+    padding: 5.4rem 2.4rem;
   }
 `
 

@@ -8,8 +8,9 @@ export type CardType = {
   text: string
   href?: string
   subTitle?: ReactNode
-  metadata?: string
   subComponent?: ReactNode
+  duration?: ReactNode
+  level?: ReactNode
 }
 
 type Props = {
@@ -19,7 +20,7 @@ type Props = {
 const Card = ({ card }: Props) => {
   return (
     <LinkWrapper card={card}>
-      <Styled.Card isInteractive={card.href !== undefined}>
+      <Styled.Card isInteractive={!!card.href}>
         {typeof card.subTitle === 'string' ? (
           <Styled.SubTitle>{card.subTitle}</Styled.SubTitle>
         ) : null}
@@ -28,11 +29,12 @@ const Card = ({ card }: Props) => {
         )}
         <Styled.Title>{card.title}</Styled.Title>
         <Styled.Markdown>
-          <Markdown>{card.text}</Markdown>
+          <Markdown allowedElements={['p']}>{card.text}</Markdown>
         </Styled.Markdown>
-        {card.metadata !== undefined ? (
-          <Styled.Metadata>{card.metadata}</Styled.Metadata>
-        ) : null}
+        <Styled.MetaInformation>
+          {card.level && <Styled.MetaData>{card.level}</Styled.MetaData>}
+          {card.duration && <Styled.MetaData>{card.duration}</Styled.MetaData>}
+        </Styled.MetaInformation>
         {card.subComponent !== undefined ? (
           <Styled.SubComponentWrapper>
             <hr />

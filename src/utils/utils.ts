@@ -38,6 +38,16 @@ export const summarizeDurations = (
   return `${minutesToFormattedHourString(durationInMinutes)}`
 }
 
+export const formatDate = (date: Date | string): string => {
+  let dateObj
+  if (typeof date === 'string') {
+    dateObj = new Date(date)
+  } else {
+    dateObj = date
+  }
+  return dateObj.toLocaleDateString('sv-SE')
+}
+
 export const isValidUrl = (string: string): boolean => {
   let url
   try {
@@ -67,6 +77,19 @@ export const levelToString = (level: {
     ''
   )
   return withoutNumerationPrefix
+}
+
+export const typeToDownloadLabel = (type: LearningMaterialType): string => {
+  switch (type) {
+    case 'COURSE':
+      return 'Download course content'
+    case 'LECTURE':
+      return 'Download lecture content'
+    case 'BLOCK':
+      return 'Download lecture block'
+    default:
+      return 'Download'
+  }
 }
 
 export const stripBackslashN = (string: string) => {

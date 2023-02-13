@@ -9,12 +9,21 @@ export const Wrapper = styled.div`
 `
 
 export const H1 = styled.h1`
-  margin-top: 3.5rem;
-  margin-bottom: 5rem;
+  font-size: 2.4rem;
+  margin-top: 2.4rem;
+  margin-bottom: 3.2rem;
+  ${mq.sm} {
+    font-size: 3.2rem;
+    margin-top: 2.4rem;
+    margin-bottom: 3.2rem;
+  }
 `
 
 export const H2 = styled.h2`
-  font-size: 2.4rem;
+  font-size: 1.6rem;
+  ${mq.sm} {
+    font-size: 1.8rem;
+  }
 `
 
 export const H4 = styled.h4`
@@ -22,4 +31,9 @@ export const H4 = styled.h4`
 
   font-size: 2.4rem;
   color: ${Neutral40};
+`
+
+export const DateInformation = styled.div`
+  color: ${Neutral40};
+  font-size: 1.4rem;
 `

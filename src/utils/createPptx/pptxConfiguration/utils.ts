@@ -2,6 +2,12 @@ export const X_PADDING = 3
 export const Y_PADDING = 10
 export const DISCLAIMER_Y_PADDING = 12
 
+// https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options/#standard-slide-layouts
+const SLIDE_WIDTH_IN_INCHES = 10
+const SLIDE_HEIGHT_IN_INCHES = 5.625
+export const SLIDE_WIDTH_HEIGHT_RATIO =
+  SLIDE_WIDTH_IN_INCHES / SLIDE_HEIGHT_IN_INCHES
+
 export const remainingWidth = (width: number): number => {
   return hundredRemains(width)
 }

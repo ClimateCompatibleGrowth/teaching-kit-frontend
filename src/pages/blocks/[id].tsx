@@ -2,6 +2,7 @@ import axios from 'axios'
 import { Block, BlockOneLevelDeep, Data } from '../../types'
 import {
   BlockContentWrapper,
+  LearningMaterialCourseHeading,
   LearningMaterialOverview,
   PageContainer,
 } from '../../styles/global'
@@ -26,6 +27,8 @@ export default function BlockPage({ block }: Props) {
           title={block.attributes.Title}
           abstract={block.attributes.Abstract}
           learningOutcomes={block.attributes.LearningOutcomes}
+          publishedAt={block.attributes.publishedAt}
+          updatedAt={block.attributes.updatedAt}
         />
         <MetadataContainer
           duration={summarizeDurations([block])}
@@ -36,8 +39,12 @@ export default function BlockPage({ block }: Props) {
             type: 'lectures',
             parents: block.attributes.Lectures.data,
           }}
+          type='BLOCK'
         />
         <BlockContentWrapper>
+          <LearningMaterialCourseHeading>
+            Lecture Block Content
+          </LearningMaterialCourseHeading>
           <Markdown>{block.attributes.Document}</Markdown>
         </BlockContentWrapper>
       </LearningMaterialOverview>
@@ -60,8 +67,6 @@ export async function getStaticPaths() {
   const paths = blocks.data.data.map((block) => ({
     params: { id: `${block.id}` },
   }))
-
-  console.log(paths)
 
   return { paths, fallback: false }
 }

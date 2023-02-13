@@ -38,7 +38,7 @@ const heroProps = {
   title: 'Let your teaching material come alive',
   body: 'Our mission is to enable teachers and trainers to use, co-create and share open-licensed teaching and learning material anywhere in the world for delivery online and in the classroom',
   action: {
-    href: '/discover',
+    href: '/teaching-material',
     label: 'Find teaching material',
   },
 }

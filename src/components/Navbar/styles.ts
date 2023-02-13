@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { montserrat } from '../../styles/fonts'
-import { breakpoints, mq, Primary40 } from '../../styles/global'
+import { Accent40, breakpoints, mq, Primary40 } from '../../styles/global'
 
 export const ColorBar = styled.nav`
   background-color: ${Primary40};
@@ -51,10 +51,22 @@ export const Li = styled.li`
 
   margin: auto 0;
 
-  font-size: 1.8rem;
+  color: ${Accent40};
+  font-size: 1.4rem;
+
+  ${mq.sm} {
+    font-size: 1.8rem;
+  }
+
+  a {
+    padding: 1rem;
+    ${mq.sm} {
+      padding: 0;
+    }
+  }
 
   a[aria-current='page'] {
-    font-family: ${montserrat[700].style.fontFamily};
+    font-family: ${montserrat[600].style.fontFamily};
   }
 
   a:hover {
@@ -62,6 +74,10 @@ export const Li = styled.li`
   }
 
   & + & {
-    margin-left: 2.4rem;
+    margin-left: 0rem;
+
+    ${mq.sm} {
+      margin-left: 2.4rem;
+    }
   }
 `

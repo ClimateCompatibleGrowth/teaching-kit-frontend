@@ -9,6 +9,7 @@ import { filterOutOnlyPublishedEntriesOnCourse } from '../../shared/requests/uti
 import {
   BlockContentWrapper,
   LearningMaterialOverview,
+  LearningMaterialCourseHeading,
   PageContainer,
 } from '../../styles/global'
 import { Course, CourseThreeLevelsDeep, Data } from '../../types'
@@ -30,6 +31,8 @@ export default function CoursePage({ course }: Props) {
           prerequisites={course.attributes.Prerequisites}
           acknowledgement={course.attributes.Acknowledgement}
           citeAs={course.attributes.CiteAs}
+          publishedAt={course.attributes.publishedAt}
+          updatedAt={course.attributes.updatedAt}
         />
         <MetadataContainer
           level={course.attributes.Level}
@@ -43,9 +46,12 @@ export default function CoursePage({ course }: Props) {
           authors={course.attributes.CourseCreators}
           downloadAsDocx={() => handleCourseDocxDownload(course)}
           downloadAsPptx={() => downloadCoursePptx(course)}
+          type='COURSE'
         />
         <BlockContentWrapper>
-          <h2>Course Content</h2>
+          <LearningMaterialCourseHeading>
+            Course Content
+          </LearningMaterialCourseHeading>
           <CardList
             cards={course.attributes.Lectures.data.map((lecture) => ({
               id: lecture.id.toString(),
@@ -78,8 +84,6 @@ export async function getStaticPaths() {
       params: { id: `${course.id}` },
     }
   })
-
-  console.log(paths)
 
   return { paths, fallback: false }
 }

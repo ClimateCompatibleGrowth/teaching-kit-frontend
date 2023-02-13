@@ -4,10 +4,8 @@ import PptxGenJS from 'pptxgenjs'
 
 import { getImageMetadata, sourceIsFromS3, stripBackslashN } from '../utils'
 import { Slide } from '../../types'
-import {
-  citeAsStyling,
-  slideHeading,
-} from '../createPptx/pptxConfiguration/slideElements'
+import { getSlideHeading } from '../createPptx/pptxConfiguration/slideElements'
+import { citeAsStyling } from '../createPptx/pptxConfiguration/slideElements'
 import { PptxSlide } from '../../types/pptx'
 import { getPrimaryContentStyling } from '../createPptx/pptxConfiguration/mainContent'
 import {
@@ -17,7 +15,11 @@ import {
   listItemStyle,
   paragraphStyle,
 } from '../createPptx/pptxConfiguration/text'
-import { getBaseImageStyling } from '../createPptx/pptxConfiguration/image'
+import {
+  Image,
+  getImageDimensions,
+  getImageStyling,
+} from '../createPptx/pptxConfiguration/image'
 
 type TokenWithoutTextField =
   | marked.Tokens.Space
@@ -75,7 +77,7 @@ const markdownToSlideFormat = async (
     async (finalSlide, slideValue, index) => {
       const slideAttribute = {} as PptxSlide
       const mainSlideContent = [] as PptxGenJS.TextProps[]
-      const images = [] as PptxGenJS.ImageProps[]
+      const images = [] as Image[]
 
       // Ignore id (first index) and speaker notes (last index)
       if (index === 0 || index === Object.values(slide).length - 1) {
@@ -98,14 +100,14 @@ const markdownToSlideFormat = async (
           if (imageToken !== undefined && sourceIsFromS3(imageToken.href)) {
             const href = `${imageToken.href}?do-not-fetch-from-cache`
             const image = await getImageMetadata(href)
-            const imageStyling = getBaseImageStyling(
+            const imageDimensions = getImageDimensions(
               image.naturalWidth,
               image.naturalHeight
             )
             images.push({
+              dimensions: imageDimensions,
               path: href,
               altText: imageToken.text,
-              ...imageStyling,
             })
           }
 
@@ -162,10 +164,37 @@ const markdownToSlideFormat = async (
           mainSlideContent.push(...getSubComponentsFromList(node.items))
           slideAttribute.mainContentStyling = addContentStyling(style)
         }
+
+        if (node.type === 'table') {
+          if (
+            !slideAttribute.tables ||
+            slideAttribute.tables.length === 0 ||
+            !slideAttribute.tableStyling ||
+            slideAttribute.tableStyling.length === 0
+          ) {
+            slideAttribute.tables = []
+            slideAttribute.tableStyling = []
+          }
+          slideAttribute.tables.push([
+            node.header.map((h) =>
+              convertToTextProp(decode(h.text), 'paragraph')
+            ),
+            ...node.rows.map((row) =>
+              row.map((c) => convertToTextProp(decode(c.text), 'paragraph'))
+            ),
+          ])
+          slideAttribute.tableStyling.push({
+            y: '25%',
+            autoPage: true,
+            colW: Math.max(10 / node.header.length),
+            rowH: 0.5,
+            border: { color: '#242424' },
+          })
+        }
       }
 
       slideAttribute.mainContent = mainSlideContent
-      slideAttribute.images = images
+      slideAttribute.images = getImageStyling(images)
 
       return Promise.resolve({
         ...finalSlide,
@@ -187,7 +216,9 @@ const markdownToSlideFormat = async (
   }
 
   pptxSlide.heading = slideTitle ?? ''
-  pptxSlide.headingStyling = slideHeading
+  pptxSlide.headingStyling = getSlideHeading(
+    pptxSlide.images !== undefined && pptxSlide.images.length > 0
+  )
   pptxSlide.title = slideTitle ?? ''
 
   return pptxSlide

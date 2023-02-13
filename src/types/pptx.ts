@@ -11,6 +11,8 @@ export type PptxSlide = {
   headingStyling?: {}
   listStyling?: PptxGenJS.TextPropsOptions
   list?: PptxGenJS.TextProps[]
+  tables?: PptxGenJS.TableRow[][]
+  tableStyling?: PptxGenJS.TableProps[]
   citeAs?: string
   citeAsStyling?: PptxGenJS.TextPropsOptions
 }

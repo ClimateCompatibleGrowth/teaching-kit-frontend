@@ -1,15 +1,13 @@
 import styled from '@emotion/styled'
 import {
+  Accent20,
   Accent40,
+  Accent90,
   mq,
   Neutral40,
-  Neutral99,
   OnAccent40,
-  OnNeutral99,
   OnPrimary90,
-  OnSurfaceAlternative,
   Primary90,
-  SurfaceAlternative,
 } from '../../styles/global'
 
 export const HeaderWrapper = {
@@ -19,6 +17,11 @@ export const HeaderWrapper = {
   alignItems: 'end',
 
   borderBottom: `1px solid ${Neutral40}`,
+  paddingBottom: '0.8rem',
+
+  [`${mq.sm}`]: {
+    paddingBottom: 0,
+  },
 }
 
 export const Tabs = {
@@ -30,6 +33,11 @@ export const Tabs = {
   '.MuiTabs-flexContainer': {
     flexWrap: 'wrap',
     rowGap: '0.8rem',
+    marginBottom: '0.8rem',
+
+    [`${mq.sm}`]: {
+      marginBottom: 0,
+    },
   },
   '.MuiTabs-indicator': {
     display: 'none',
@@ -51,10 +59,16 @@ export const Tab = {
   textTransform: 'initial',
   [`${mq.sm}`]: {
     flex: 'auto',
-    borderRadius: '0.7rem 0.7rem 0 0',
+  },
+
+  '& + &': {
+    [`${mq.sm}`]: {
+      marginLeft: '4px',
+    },
   },
 
   '&.MuiTab-root': {
+    padding: '10px 14px',
     minWidth: '100%',
     flex: '0 0 100%',
 
@@ -62,34 +76,18 @@ export const Tab = {
       minWidth: 'auto',
       flex: 'initial',
     },
+    [`&:active`]: {
+      backgroundColor: Accent20,
+    },
+    [`&:hover`]: {
+      backgroundColor: Accent90,
+    },
   },
 
   '&.Mui-selected': {
     color: OnAccent40,
     backgroundColor: Accent40,
-
-    '.NumberOfMatchesWrapper': {
-      backgroundColor: Neutral99,
-      color: OnNeutral99,
-    },
   },
-
-  '.NumberOfMatchesWrapper': {
-    padding: '0.4rem 1rem',
-
-    backgroundColor: SurfaceAlternative,
-
-    borderRadius: '1.5rem',
-  },
-}
-
-export const NumberOfMatchesWrapper = {
-  padding: '0.4rem 1rem',
-
-  backgroundColor: SurfaceAlternative,
-  color: OnSurfaceAlternative,
-
-  borderRadius: '1.5rem',
 }
 
 export const LinkWrapper = styled.p`

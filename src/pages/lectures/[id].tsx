@@ -8,6 +8,7 @@ import { ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnLecture } from '../../shared/requests/utils/publishedEntriesFilter'
 import {
   BlockContentWrapper,
+  LearningMaterialCourseHeading,
   LearningMaterialOverview,
   PageContainer,
 } from '../../styles/global'
@@ -29,6 +30,8 @@ export default function LecturePage({ lecture }: Props) {
           learningOutcomes={lecture.attributes.LearningOutcomes}
           acknowledgement={lecture.attributes.Acknowledgement}
           citeAs={lecture.attributes.CiteAs}
+          publishedAt={lecture.attributes.publishedAt}
+          updatedAt={lecture.attributes.updatedAt}
         />
         <MetadataContainer
           level={lecture.attributes.Level}
@@ -40,9 +43,12 @@ export default function LecturePage({ lecture }: Props) {
             type: 'courses',
             parents: lecture.attributes.Courses.data,
           }}
+          type='LECTURE'
         />
         <BlockContentWrapper>
-          <h2>Lecture Content</h2>
+          <LearningMaterialCourseHeading>
+            Lecture Content
+          </LearningMaterialCourseHeading>
           <CardList
             cards={lecture.attributes.Blocks.data.map((block) => ({
               id: block.id.toString(),
@@ -73,8 +79,6 @@ export async function getStaticPaths() {
   const paths = lectures.data.data.map((lecture) => ({
     params: { id: `${lecture.id}` },
   }))
-
-  console.log(paths)
 
   return { paths, fallback: false }
 }

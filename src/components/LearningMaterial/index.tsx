@@ -8,7 +8,7 @@ import AccordionGroup from '../AccordionGroup/AccordionGroup'
 import UnorderedList, { Content } from './UnorderedList/UnorderedList'
 
 import * as Styled from './styles'
-import { typeToText } from '../../utils/utils'
+import { formatDate, typeToText } from '../../utils/utils'
 import LearningMaterialBadge from './LearningMaterialBadge/LearningMaterialBadge'
 import Markdown from '../Markdown/Markdown'
 
@@ -20,6 +20,8 @@ export type Props = {
   prerequisites?: Prerequisite[]
   acknowledgement?: string
   citeAs?: string
+  publishedAt?: string
+  updatedAt?: string
 }
 
 export default function LearningMaterial({
@@ -30,7 +32,11 @@ export default function LearningMaterial({
   prerequisites,
   acknowledgement,
   citeAs,
+  publishedAt,
+  updatedAt,
 }: Props) {
+  const updatedText = updatedAt ? `Updated at ${formatDate(updatedAt)} ` : ''
+  const createdText = publishedAt ? `Created at ${formatDate(publishedAt)}` : ''
   const getUnorderedListAccordion = (label: string, listItems?: Content[]) => {
     return listItems !== undefined
       ? [{ label, content: <UnorderedList listOfContent={listItems} /> }]
@@ -82,6 +88,9 @@ export default function LearningMaterial({
       <Styled.H1>{title}</Styled.H1>
       <Styled.H2>{`${typeToText(type)} description`}</Styled.H2>
       <Markdown>{abstract}</Markdown>
+      <Styled.DateInformation>
+        {`${updatedText}${createdText}`}
+      </Styled.DateInformation>
       {learningOutcomes && learningOutcomes.length > 0 && (
         <AccordionGroup
           accordions={getAccordions(

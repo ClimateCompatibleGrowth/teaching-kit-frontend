@@ -1,9 +1,5 @@
 import PptxGenJS from 'pptxgenjs'
-import {
-  ESTIMATED_REASONABLE_IMAGE_HEIGHT,
-  IMAGE_MARGIN_LEFT,
-  IMAGE_WIDTH,
-} from './image'
+import { IMAGE_MARGIN_LEFT, IMAGE_WIDTH } from './image'
 import {
   remainingWidth,
   toPercentage,
@@ -15,7 +11,6 @@ import {
   DISCLAIMER_Y_PADDING,
 } from './utils'
 import {
-  commonConfiguration,
   CONTENT_HEIGHT,
   PRIMARY_CONTENT_WIDTH,
   ESTIMATED_SLIDE_TITLE_HEIGHT,
@@ -28,7 +23,23 @@ const SLIDE_HEADING_WIDTH = remainingWidth(
   2 * X_PADDING + IMAGE_WIDTH + IMAGE_MARGIN_LEFT
 )
 
-export const slideHeading: PptxGenJS.TextPropsOptions = {
+export const getSlideHeadingWidth = (slideContainsImage: boolean) => {
+  return slideContainsImage
+    ? remainingWidth(2 * X_PADDING + IMAGE_WIDTH + IMAGE_MARGIN_LEFT)
+    : remainingWidth(2 * X_PADDING)
+}
+
+export const getSlideHeading = (
+  slideContainsImage: boolean
+): PptxGenJS.TextPropsOptions => {
+  const headingWidth = getSlideHeadingWidth(slideContainsImage)
+  return {
+    ...slideHeading,
+    w: toPercentage(headingWidth),
+  }
+}
+
+const slideHeading: PptxGenJS.TextPropsOptions = {
   x: startXPos,
   y: startYPos,
   fontSize: 36,
@@ -62,18 +73,6 @@ export const h3Heading: PptxGenJS.TextPropsOptions = {
   w: '90%',
   h: 0.75,
   autoFit: true,
-}
-
-export const imageStyling: PptxGenJS.ImageProps = {
-  x: toPercentage(X_PADDING + SLIDE_HEADING_WIDTH),
-  y: startYPos,
-  w: '25%',
-  h: '30%',
-  sizing: {
-    type: 'contain',
-    w: toPercentage(remainingWidth(X_PADDING * 2 + SLIDE_HEADING_WIDTH)),
-    h: toPercentage(Y_PADDING + ESTIMATED_REASONABLE_IMAGE_HEIGHT),
-  },
 }
 
 export const citeAsStyling: PptxGenJS.TextPropsOptions = {

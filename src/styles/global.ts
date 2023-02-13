@@ -4,7 +4,10 @@ import styled from '@emotion/styled'
 export const Background = '#FFFFFF'
 export const Surface = '#F1F1F1'
 
+export const Accent20 = '#011138'
+export const OnAccent20 = '#FFFFFF'
 export const Accent40 = '#012169'
+export const Accent90 = '#6C99FE'
 export const OnAccent40 = '#FFFFFF'
 
 export const Neutral40 = '#757575'
@@ -71,7 +74,7 @@ export const PageContainer = styled.div<{
   hasTopPadding?: boolean
   hasSmallSidePadding?: boolean
 }>`
-  padding: ${(props) => (props.hasTopPadding ? '2rem' : 0)} 1.6rem
+  padding: ${(props) => (props.hasTopPadding ? '4rem' : 0)} 1.6rem
     ${(props) => (props.hasBottomPadding ? '8rem' : 0)};
 
   ${mq.sm} {
@@ -122,6 +125,13 @@ export const LearningMaterialOverview = styled.div`
   row-gap: 4.6rem;
   ${mq.sm} {
     column-gap: 4.6rem;
+  }
+`
+
+export const LearningMaterialCourseHeading = styled.h2`
+  font-size: 2rem;
+  ${mq.sm} {
+    font-size: 2.4rem;
   }
 `
 

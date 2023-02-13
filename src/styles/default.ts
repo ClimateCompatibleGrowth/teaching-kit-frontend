@@ -9,34 +9,46 @@ const defaultStyle = css`
   h4,
   h5,
   h6 {
-    font-family: ${ubuntu[500].style.fontFamily};
+    font-family: ${ubuntu[700].style.fontFamily};
     margin-top: 0;
   }
 
   h1 {
-    font-size: 4rem;
+    font-size: 3.2rem;
+    ${mq.sm} {
+      font-size: 4rem;
+    }
   }
 
   h2 {
-    font-size: 3.2rem;
+    font-size: 2.4rem;
+    ${mq.sm} {
+      font-size: 3.2rem;
+    }
   }
 
   h3 {
     margin: 1rem 0;
 
     font-size: 2rem;
+    ${mq.sm} {
+      font-size: 2.8rem;
+    }
   }
 
   h4 {
     margin: 1rem 0;
-    font-size: 1.9rem;
+    font-size: 1.8rem;
+    ${mq.sm} {
+      font-size: 2.4rem;
+    }
   }
 
   h5 {
     margin: 0;
 
-    font-size: 1.5rem;
-    font-family: ${montserrat['400'].style.fontFamily};
+    font-size: 1.6rem;
+    font-family: ${montserrat[400].style.fontFamily};
   }
 
   h6 {
@@ -58,6 +70,7 @@ const defaultStyle = css`
     font-size: 1.6rem;
     font-family: ${montserrat[400].style.fontFamily};
     border-collapse: collapse;
+    margin-bottom: 1.6rem;
     th {
       background-color: ${Neutral99};
       color: ${OnNeutral99};
@@ -102,8 +115,8 @@ const defaultStyle = css`
   main {
     background-image: url('/icons/three-lines.svg');
     background-repeat: no-repeat;
-    background-position: bottom -150px right;
-    background-size: 75%;
+    background-position: bottom -150px right -40px;
+    background-size: 90%;
     ${mq.sm} {
       background-position: bottom -300px right;
       background-size: initial;

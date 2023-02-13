@@ -2,7 +2,7 @@ import { getRecentLectures } from '../lectures/lectures'
 import { getRecentBlocks } from '../blocks/blocks'
 import { getRecentCourses } from '../courses/courses'
 import { Block, Data, LearningMaterialType, Level } from '../../../types'
-import { summarizeDurations } from '../../../utils/utils'
+import { formatDate, summarizeDurations } from '../../../utils/utils'
 
 export type RecentUpdateType = {
   Id: number
@@ -21,7 +21,7 @@ export const getRecentUpdates = async () => {
     getRecentBlocks(),
   ])
   const now = new Date()
-  const nowStamp = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`
+  const nowStamp = formatDate(now)
 
   const refinedCourses: RecentUpdateType[] = courses.map((course) => ({
     Id: course.id,
