@@ -27,6 +27,13 @@ export const italicStyle: TextProps = {
   italic: true,
 }
 
+export const underlineStyle: TextProps = {
+  ...commonParagraphConfiguration,
+  underline: {
+    style: 'heavy',
+  },
+}
+
 export const listItemStyle: TextProps = {
   fontSize: 18,
 }
