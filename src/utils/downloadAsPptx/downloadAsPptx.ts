@@ -21,21 +21,31 @@ import {
 } from '../../types/checkers'
 import JSZip from 'jszip'
 import markdownToSlideFormat from './markdownToSlideFormat'
+import { DownloadError } from '../downloadAsDocx/downloadAsDocx'
 
-export const handlePptxDownload = async (data: Data<DownloadableContent>) => {
-  const { pptx, fileType } = await createPptxFile(data)
+export const handlePptxDownload = async (
+  data: Data<DownloadableContent>
+): Promise<void | DownloadError> => {
+  try {
+    const { pptx, fileType } = await createPptxFile(data)
 
-  if (fileType === 'zip' && Array.isArray(pptx)) {
-    const zip = new JSZip()
-    for (const [index, file] of pptx.entries()) {
-      const blob = file.write()
-      zip.file(`${index + 1}. ${file.title}.pptx`, blob)
+    if (fileType === 'zip' && Array.isArray(pptx)) {
+      const zip = new JSZip()
+      for (const [index, file] of pptx.entries()) {
+        const blob = file.write()
+        zip.file(`${index + 1}. ${file.title}.pptx`, blob)
+      }
+      const generatedZip = await zip.generateAsync({ type: 'blob' })
+
+      saveAs(generatedZip, `${data.attributes.Title}.zip`)
+    } else if (fileType === 'pptx' && !Array.isArray(pptx)) {
+      pptx.writeFile({ fileName: `${data.attributes.Title}.pptx` })
     }
-    const generatedZip = await zip.generateAsync({ type: 'blob' })
-
-    saveAs(generatedZip, `${data.attributes.Title}.zip`)
-  } else if (fileType === 'pptx' && !Array.isArray(pptx)) {
-    pptx.writeFile({ fileName: `${data.attributes.Title}.pptx` })
+  } catch (error) {
+    console.error(`Download of pptx failed with error: ${error}`)
+    return {
+      hasError: true,
+    }
   }
 }
 

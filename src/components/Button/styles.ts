@@ -14,10 +14,12 @@ import {
 
 export type Props = {
   primary?: boolean
+  isLoading?: boolean
 }
 
 export const Button = styled(ButtonWithoutDefaultStyle)<Props>`
   padding: 1.1rem 1.6rem;
+  min-width: ${(props) => (props.isLoading ? '14rem' : undefined)};
 
   display: flex;
   justify-content: center;
