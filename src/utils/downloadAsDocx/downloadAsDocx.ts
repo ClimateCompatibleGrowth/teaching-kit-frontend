@@ -5,11 +5,10 @@ import saveAs from 'file-saver'
 import HTMLtoDOCX from 'html-to-docx'
 
 import { Data, DownloadableContent } from '../../types'
+import { isCourseThreeLevelsDeep } from '../../types/checkers'
 import { BaseError, processHTMLString } from './utils'
 import JSZip from 'jszip'
-import DocxDownload, {
-  isCourseThreeLevelsDeep,
-} from '../../components/DocxDownloadTemplates/DocxDownloadTemplate'
+import DocxDownload from '../../components/DocxDownloadTemplates/DocxDownloadTemplate'
 
 export type DownloadError = BaseError & {}
 

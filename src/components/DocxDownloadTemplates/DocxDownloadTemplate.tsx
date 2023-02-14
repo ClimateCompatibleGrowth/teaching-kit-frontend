@@ -1,10 +1,10 @@
+import React from 'react'
+import { Data, DownloadableContent } from '../../types'
 import {
-  Data,
-  BlockOneLevelDeep,
-  LectureTwoLevelsDeep,
-  CourseThreeLevelsDeep,
-  DownloadableContent,
-} from '../../types'
+  isBlockOneLevelDeep,
+  isLectureTwoLevelsDeep,
+  isCourseThreeLevelsDeep,
+} from '../../types/checkers'
 import Markdown from '../Markdown/Markdown'
 import Abstract from './Abstract'
 import Authors from './Authors'
@@ -15,20 +15,6 @@ import LearningOutcomes from './LearningOutcomes'
 import Level from './Level'
 import References from './References'
 
-export const isBlockOneLevelDeep = (
-  data: Data<DownloadableContent>
-): data is Data<BlockOneLevelDeep> =>
-  !!(data as Data<BlockOneLevelDeep>).attributes.Document
-export const isLectureTwoLevelsDeep = (
-  data: Data<DownloadableContent>
-): data is Data<LectureTwoLevelsDeep> =>
-  !!(data as Data<LectureTwoLevelsDeep>).attributes.Blocks
-export const isCourseThreeLevelsDeep = (
-  data: Data<DownloadableContent>
-): data is Data<CourseThreeLevelsDeep> =>
-  !!(data as Data<CourseThreeLevelsDeep>).attributes.Lectures &&
-  !!(data as Data<CourseThreeLevelsDeep>).attributes.CourseCreators
-
 export type Props = {
   data: Data<DownloadableContent>
 }
@@ -36,7 +22,7 @@ export type Props = {
 const DocxDownload = ({ data }: Props): JSX.Element => {
   if (isBlockOneLevelDeep(data)) {
     return (
-      <div>
+      <div key={data.attributes.Title}>
         <Heading downloadedAs={'BLOCK'}>{data.attributes.Title}</Heading>
         <Authors authors={data.attributes?.Authors?.data} />
         <Duration blocks={[data]} />
@@ -52,7 +38,7 @@ const DocxDownload = ({ data }: Props): JSX.Element => {
   }
   if (isLectureTwoLevelsDeep(data)) {
     return (
-      <div>
+      <div key={data.attributes.Title}>
         <Heading downloadedAs={'LECTURE'}>{data.attributes.Title}</Heading>
         {data.attributes.Level?.data?.attributes.Level !== undefined ? (
           <Level level={data.attributes.Level.data.attributes.Level} />
@@ -65,18 +51,18 @@ const DocxDownload = ({ data }: Props): JSX.Element => {
         />
         <LearningOutcomes learningOutcomes={data.attributes.LearningOutcomes} />
         <CiteAs downloadedAs={'LECTURE'} citeAs={data.attributes.CiteAs} />
-        {data.attributes.Blocks.data.map((block) =>
-          DocxDownload({ data: block })
-        )}
+        {data.attributes.Blocks.data.map((block) => (
+          <DocxDownload key={block.attributes.Title} data={block} />
+        ))}
       </div>
     )
   }
   if (isCourseThreeLevelsDeep(data)) {
     return (
       <>
-        {data.attributes.Lectures.data.map((lecture) =>
-          DocxDownload({ data: lecture })
-        )}
+        {data.attributes.Lectures.data.map((lecture) => (
+          <DocxDownload key={lecture.attributes.Title} data={lecture} />
+        ))}
       </>
     )
   }

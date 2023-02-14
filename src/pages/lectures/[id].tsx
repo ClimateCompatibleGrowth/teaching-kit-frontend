@@ -13,14 +13,18 @@ import {
   PageContainer,
 } from '../../styles/global'
 import { Data, Lecture, LectureTwoLevelsDeep } from '../../types'
+import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
-import { downloadLecturePptx } from '../../utils/downloadAsPptx/downloadLectureAsPptx'
+import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { summarizeDurations } from '../../utils/utils'
 
 type Props = { lecture: Data<LectureTwoLevelsDeep> }
 
 export default function LecturePage({ lecture }: Props) {
+  const hasSomePptxSlides = lecture.attributes.Blocks.data.some(
+    (block) => block.attributes.Slides.length > 0
+  )
   return (
     <PageContainer hasTopPadding hasBottomPadding>
       <LearningMaterialOverview>
@@ -39,8 +43,11 @@ export default function LecturePage({ lecture }: Props) {
           duration={summarizeDurations(lecture.attributes.Blocks.data)}
           authors={lecture.attributes.LectureCreators}
           docxFileSize={useDocxFileSize(lecture)}
+          pptxFileSize={usePptxFileSize(lecture)}
           downloadAsDocx={() => handleDocxDownload(lecture)}
-          downloadAsPptx={() => downloadLecturePptx(lecture)}
+          downloadAsPptx={
+            hasSomePptxSlides ? () => handlePptxDownload(lecture) : undefined
+          }
           parentRelations={{
             type: 'courses',
             parents: lecture.attributes.Courses.data,

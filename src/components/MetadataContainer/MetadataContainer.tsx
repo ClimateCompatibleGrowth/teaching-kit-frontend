@@ -20,8 +20,9 @@ export type Props = {
   duration?: string
   authors?: { data: Data<Author>[] }
   docxFileSize: string
+  pptxFileSize?: string
   downloadAsDocx: () => Promise<void | DownloadError>
-  downloadAsPptx: () => void
+  downloadAsPptx?: () => void
   parentRelations?: {
     type: 'lectures' | 'courses'
     parents: Data<CourseOneLevelDeep>[] | Data<Lecture>[]
@@ -34,6 +35,7 @@ export default function MetadataContainer({
   duration,
   authors,
   docxFileSize,
+  pptxFileSize,
   downloadAsDocx,
   downloadAsPptx,
   parentRelations,
@@ -104,10 +106,15 @@ export default function MetadataContainer({
           </Button>
           <Styled.DownloadSize>{`Docx file size is ${docxFileSize}`}</Styled.DownloadSize>
 
-          <Button onClick={downloadAsPptx}>
-            <Styled.DownloadIcon />
-            Powerpoint
-          </Button>
+          {downloadAsPptx && (
+            <>
+              <Button onClick={downloadAsPptx}>
+                <Styled.DownloadIcon />
+                Powerpoint
+              </Button>
+              <Styled.DownloadSize>{`Powerpoint file size is ${pptxFileSize}`}</Styled.DownloadSize>
+            </>
+          )}
         </Styled.DownloadButtonsContainer>
         {docxDowloadErrored === true && (
           <Styled.Alert>

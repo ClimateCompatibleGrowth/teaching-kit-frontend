@@ -13,9 +13,10 @@ import {
   PageContainer,
 } from '../../styles/global'
 import { Course, CourseThreeLevelsDeep, Data } from '../../types'
+import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
-import downloadCoursePptx from '../../utils/downloadAsPptx/downloadCourseAsPptx'
+import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { summarizeDurations } from '../../utils/utils'
 
 type Props = { course: Data<CourseThreeLevelsDeep> }
@@ -46,8 +47,9 @@ export default function CoursePage({ course }: Props) {
           )}
           authors={course.attributes.CourseCreators}
           docxFileSize={useDocxFileSize(course)}
+          pptxFileSize={usePptxFileSize(course)}
           downloadAsDocx={() => handleDocxDownload(course)}
-          downloadAsPptx={() => downloadCoursePptx(course)}
+          downloadAsPptx={() => handlePptxDownload(course)}
           type='COURSE'
         />
         <BlockContentWrapper>

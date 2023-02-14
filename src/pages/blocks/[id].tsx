@@ -11,15 +11,17 @@ import { summarizeDurations } from '../../utils/utils'
 import LearningMaterial from '../../components/LearningMaterial'
 import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { ResponseArray } from '../../shared/requests/types'
-import { downloadBlockPptx } from '../../utils/downloadAsPptx/downloadBlockAsPptx'
 import { filterOutOnlyPublishedEntriesOnBlock } from '../../shared/requests/utils/publishedEntriesFilter'
 import { GetStaticPropsContext } from 'next/types'
 import Markdown from '../../components/Markdown/Markdown'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
+import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
+import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 
 type Props = { block: Data<BlockOneLevelDeep> }
 
 export default function BlockPage({ block }: Props) {
+  const blockHasSlides = block.attributes.Slides.length > 0
   return (
     <PageContainer hasTopPadding hasBottomPadding>
       <LearningMaterialOverview>
@@ -35,8 +37,11 @@ export default function BlockPage({ block }: Props) {
           duration={summarizeDurations([block])}
           authors={block.attributes.Authors}
           docxFileSize={useDocxFileSize(block)}
+          pptxFileSize={usePptxFileSize(block)}
           downloadAsDocx={() => handleDocxDownload(block)}
-          downloadAsPptx={() => downloadBlockPptx(block)}
+          downloadAsPptx={
+            blockHasSlides ? () => handlePptxDownload(block) : undefined
+          }
           parentRelations={{
             type: 'lectures',
             parents: block.attributes.Lectures.data,
