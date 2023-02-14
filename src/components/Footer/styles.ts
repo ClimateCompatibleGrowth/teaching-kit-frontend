@@ -53,3 +53,12 @@ export const ContactWrapper = styled.div`
     margin-bottom: 0;
   }
 `
+
+export const VercelBanner = styled.div`
+  margin-top: 5rem;
+
+  svg {
+    height: 4.5rem;
+    width: 22rem;
+  }
+`
