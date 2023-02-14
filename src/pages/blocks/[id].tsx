@@ -9,12 +9,13 @@ import {
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { summarizeDurations } from '../../utils/utils'
 import LearningMaterial from '../../components/LearningMaterial'
-import { handleBlockDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
+import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { ResponseArray } from '../../shared/requests/types'
 import { downloadBlockPptx } from '../../utils/downloadAsPptx/downloadBlockAsPptx'
 import { filterOutOnlyPublishedEntriesOnBlock } from '../../shared/requests/utils/publishedEntriesFilter'
 import { GetStaticPropsContext } from 'next/types'
 import Markdown from '../../components/Markdown/Markdown'
+import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 
 type Props = { block: Data<BlockOneLevelDeep> }
 
@@ -33,7 +34,8 @@ export default function BlockPage({ block }: Props) {
         <MetadataContainer
           duration={summarizeDurations([block])}
           authors={block.attributes.Authors}
-          downloadAsDocx={() => handleBlockDocxDownload(block)}
+          docxFileSize={useDocxFileSize(block)}
+          downloadAsDocx={() => handleDocxDownload(block)}
           downloadAsPptx={() => downloadBlockPptx(block)}
           parentRelations={{
             type: 'lectures',

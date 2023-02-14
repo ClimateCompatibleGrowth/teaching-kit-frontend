@@ -137,3 +137,8 @@ export type CourseThreeLevelsDeep = Modify<
     Lectures: { data: Data<LectureTwoLevelsDeep>[] }
   }
 >
+
+export type DownloadableContent =
+  | BlockOneLevelDeep
+  | LectureTwoLevelsDeep
+  | CourseThreeLevelsDeep

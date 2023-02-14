@@ -19,6 +19,7 @@ export type Props = {
   level?: { data?: Data<Level> }
   duration?: string
   authors?: { data: Data<Author>[] }
+  docxFileSize: string
   downloadAsDocx: () => Promise<void | DownloadError>
   downloadAsPptx: () => void
   parentRelations?: {
@@ -32,6 +33,7 @@ export default function MetadataContainer({
   level,
   duration,
   authors,
+  docxFileSize,
   downloadAsDocx,
   downloadAsPptx,
   parentRelations,
@@ -100,6 +102,7 @@ export default function MetadataContainer({
             <Styled.DownloadIcon />
             Docx
           </Button>
+          <Styled.DownloadSize>{`Docx file size is ${docxFileSize}`}</Styled.DownloadSize>
 
           <Button onClick={downloadAsPptx}>
             <Styled.DownloadIcon />
