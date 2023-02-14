@@ -13,7 +13,8 @@ import {
   PageContainer,
 } from '../../styles/global'
 import { Course, CourseThreeLevelsDeep, Data } from '../../types'
-import { handleCourseDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
+import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
+import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import downloadCoursePptx from '../../utils/downloadAsPptx/downloadCourseAsPptx'
 import { summarizeDurations } from '../../utils/utils'
 
@@ -44,7 +45,8 @@ export default function CoursePage({ course }: Props) {
               .flat()
           )}
           authors={course.attributes.CourseCreators}
-          downloadAsDocx={() => handleCourseDocxDownload(course)}
+          docxFileSize={useDocxFileSize(course)}
+          downloadAsDocx={() => handleDocxDownload(course)}
           downloadAsPptx={() => downloadCoursePptx(course)}
           type='COURSE'
         />

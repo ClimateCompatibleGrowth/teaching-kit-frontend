@@ -13,7 +13,8 @@ import {
   PageContainer,
 } from '../../styles/global'
 import { Data, Lecture, LectureTwoLevelsDeep } from '../../types'
-import { handleLectureDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
+import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
+import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { downloadLecturePptx } from '../../utils/downloadAsPptx/downloadLectureAsPptx'
 import { summarizeDurations } from '../../utils/utils'
 
@@ -37,7 +38,8 @@ export default function LecturePage({ lecture }: Props) {
           level={lecture.attributes.Level}
           duration={summarizeDurations(lecture.attributes.Blocks.data)}
           authors={lecture.attributes.LectureCreators}
-          downloadAsDocx={() => handleLectureDocxDownload(lecture)}
+          docxFileSize={useDocxFileSize(lecture)}
+          downloadAsDocx={() => handleDocxDownload(lecture)}
           downloadAsPptx={() => downloadLecturePptx(lecture)}
           parentRelations={{
             type: 'courses',
