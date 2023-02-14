@@ -8,6 +8,7 @@ import {
   startYPos,
   Y_PADDING,
   remainingHeight,
+  DISCLAIMER_Y_PADDING,
 } from './utils'
 import {
   CONTENT_HEIGHT,
@@ -16,6 +17,7 @@ import {
 } from './mainContent'
 
 export const CITE_AS_Y_MARGIN = 5
+export const DISCLAIMER_Y_MARGIN = 5
 
 const SLIDE_HEADING_WIDTH = remainingWidth(
   2 * X_PADDING + IMAGE_WIDTH + IMAGE_MARGIN_LEFT
@@ -86,6 +88,26 @@ export const citeAsStyling: PptxGenJS.TextPropsOptions = {
         CONTENT_HEIGHT +
         ESTIMATED_SLIDE_TITLE_HEIGHT +
         CITE_AS_Y_MARGIN * 2
+    )
+  ),
+}
+
+export const disclaimerStyling: PptxGenJS.TextPropsOptions = {
+  x: startXPos,
+  y: toPercentage(
+    DISCLAIMER_Y_PADDING +
+      CONTENT_HEIGHT +
+      ESTIMATED_SLIDE_TITLE_HEIGHT +
+      DISCLAIMER_Y_MARGIN
+  ),
+  fontSize: 9,
+  w: toPercentage(PRIMARY_CONTENT_WIDTH),
+  h: toPercentage(
+    remainingHeight(
+      DISCLAIMER_Y_PADDING +
+        CONTENT_HEIGHT +
+        ESTIMATED_SLIDE_TITLE_HEIGHT +
+        DISCLAIMER_Y_MARGIN * 2
     )
   ),
 }

@@ -21,6 +21,16 @@ const nextConfig = {
     })
     return config
   },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'i.creativecommons.org',
+      },
+    ],
+    minimumCacheTTL: 1500000,
+  },
 }
 
 module.exports = withBundleAnalyzer(nextConfig)

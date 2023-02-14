@@ -24,6 +24,7 @@ export const Footer = styled.footer`
 `
 
 export const LogoWrapper = styled.div`
+  position: relative;
   flex: 0 0 100%;
   order: 1;
   text-align: center;
@@ -36,6 +37,11 @@ export const LogoWrapper = styled.div`
     order: 0;
     text-align: left;
   }
+`
+export const LogoInnerWrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  padding-bottom: 3rem;
 `
 
 export const ContactWrapper = styled.div`

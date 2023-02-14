@@ -12,7 +12,7 @@ import DocxDownload from '../../components/DocxDownloadTemplates/DocxDownloadTem
 
 export type DownloadError = BaseError & {}
 
-const footer = `<div><span style="text-align: center;"></span><p style="font-size: 8pt">This material was exported from the teaching kit and is available for re-use under a CC-BY-4.0 license</p><br></div>`
+const footer = `<div><span style="text-align: center;"></span><p style="font-size: 8pt">These teaching materials are based on content provided by Climate Compatible Growth as part of their FCDO-funded activities. As this content can be adapted by other institutions, the opinions expressed here may not reflect those of CCG or its funders.</p><br></div>`
 const downloadConfiguration = {
   footer: true,
   pageNumber: true,
