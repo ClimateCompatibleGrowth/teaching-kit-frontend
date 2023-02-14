@@ -3,7 +3,7 @@ import { decode } from 'html-entities'
 import PptxGenJS from 'pptxgenjs'
 
 import { getImageMetadata, sourceIsFromS3, stripBackslashN } from '../utils'
-import { Slide } from '../../types'
+import { Modify, Slide } from '../../types'
 import { getSlideHeading } from '../createPptx/pptxConfiguration/slideElements'
 import { citeAsStyling } from '../createPptx/pptxConfiguration/slideElements'
 import { PptxSlide } from '../../types/pptx'
@@ -12,8 +12,11 @@ import {
   h1Style,
   h2Style,
   h3Style,
+  italicStyle,
   listItemStyle,
   paragraphStyle,
+  strongStyle,
+  underlineStyle,
 } from '../createPptx/pptxConfiguration/text'
 import {
   Image,
@@ -21,6 +24,17 @@ import {
   getImageStyling,
 } from '../createPptx/pptxConfiguration/image'
 
+type ExtendedParagraphToken = Modify<
+  marked.Token,
+  {
+    type: marked.Token['type'] | 'underline'
+  }
+>
+type UnderlineToken = {
+  text: string
+  raw: string
+  type: 'underline'
+}
 type TokenWithoutTextField =
   | marked.Tokens.Space
   | marked.Tokens.Table
@@ -28,17 +42,25 @@ type TokenWithoutTextField =
   | marked.Tokens.List
   | marked.Tokens.Def
   | marked.Tokens.Br
+type AllTokensButSpace = Exclude<marked.Token, TokenWithoutTextField>
+type TextNodeType =
+  | 'paragraph'
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'space'
+  | 'text'
+  | 'strong'
+  | 'em'
+  | 'underline'
 
 const findImageToken = (token: marked.Token): token is marked.Tokens.Image =>
   token.type === 'image'
 
-type AllTokensButSpace = Exclude<marked.Token, TokenWithoutTextField>
 const findAllTokensWithTextField = (
   tokens: marked.Token[]
 ): AllTokensButSpace[] =>
   tokens.filter((token): token is AllTokensButSpace => 'text' in token)
-
-type TextNodeType = 'paragraph' | 'h1' | 'h2' | 'h3' | 'space'
 
 const convertToTextProp = (
   text: string,
@@ -53,6 +75,7 @@ const convertToTextProp = (
 const getTextStyling = (type: TextNodeType): PptxGenJS.TextPropsOptions => {
   switch (type) {
     case 'paragraph':
+    case 'text':
       return paragraphStyle
     case 'h1':
       return h1Style
@@ -60,11 +83,74 @@ const getTextStyling = (type: TextNodeType): PptxGenJS.TextPropsOptions => {
       return h2Style
     case 'h3':
       return h3Style
+    case 'strong':
+      return strongStyle
+    case 'em':
+      return italicStyle
+    case 'underline':
+      return underlineStyle
     case 'space':
       return {}
     default:
       return {}
   }
+}
+
+const isKnownParagraphType = (
+  token: marked.Token
+): token is
+  | marked.Tokens.Text
+  | marked.Tokens.Strong
+  | marked.Tokens.Em
+  | marked.Tokens.HTML =>
+  token.type === 'text' ||
+  token.type === 'strong' ||
+  token.type === 'em' ||
+  token.type === 'html'
+
+type RelevantParagraphToken =
+  | marked.Tokens.Text
+  | marked.Tokens.Strong
+  | marked.Tokens.Em
+  | UnderlineToken
+
+const relevantParagraphNodes = ['text', 'strong', 'em', 'underline']
+
+const tokenIsOfRelevantParagraphType = (
+  token: ExtendedParagraphToken
+): token is RelevantParagraphToken =>
+  relevantParagraphNodes.includes(token.type)
+
+const convertRelevantParagraphTokens = (
+  tokens: marked.Token[]
+): RelevantParagraphToken[] => {
+  return tokens
+    .reduce((convertedTokens, token, index) => {
+      const lastToken = tokens[index - 1]
+      const nextToken = tokens[index + 1]
+
+      if (
+        token.type === 'text' &&
+        lastToken?.type === 'html' &&
+        lastToken?.text === '<u>' &&
+        nextToken?.type === 'html' &&
+        nextToken?.text === '</u>'
+      ) {
+        return [
+          ...convertedTokens,
+          {
+            text: token.text,
+            raw: token.raw,
+            type: 'underline',
+          } as ExtendedParagraphToken,
+        ]
+      }
+      if (!tokenIsOfRelevantParagraphType(token)) {
+        return convertedTokens
+      }
+      return [...convertedTokens, token]
+    }, [] as ExtendedParagraphToken[])
+    .filter(tokenIsOfRelevantParagraphType)
 }
 
 const markdownToSlideFormat = async (
@@ -111,14 +197,14 @@ const markdownToSlideFormat = async (
             })
           }
 
-          const paragraphTokens = node.tokens.filter(
-            (token): token is marked.Tokens.Text => token.type === 'text'
-          )
+          const paragraphTokens = node.tokens.filter(isKnownParagraphType)
+          const relevantParagraphNodes =
+            convertRelevantParagraphTokens(paragraphTokens)
 
-          for (const paragraphToken of paragraphTokens) {
+          for (const paragraphToken of relevantParagraphNodes) {
             const textProps = convertToTextProp(
               `${decode(paragraphToken.text)}`,
-              'paragraph'
+              paragraphToken.type
             )
             mainSlideContent.push(textProps)
             slideAttribute.mainContentStyling = addContentStyling(style)
