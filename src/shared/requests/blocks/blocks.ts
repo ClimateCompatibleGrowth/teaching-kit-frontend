@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { BlockSortOptionType } from '../../../components/TabGroup/TabGroup'
 import { BlockOneLevelDeep } from '../../../types'
 import { ResponseArray, ResponseArrayData } from '../types'
 import {
@@ -16,7 +17,9 @@ export const filterBlockOnKeywordsAndAuthors = async ({
   pageNumber,
   matchesPerPage,
   sortMethod,
-}: FilterParameters): Promise<ResponseArrayData<BlockOneLevelDeep>> => {
+}: FilterParameters<BlockSortOptionType>): Promise<
+  ResponseArrayData<BlockOneLevelDeep>
+> => {
   const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
     matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
   }`

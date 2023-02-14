@@ -17,7 +17,7 @@ const LectureDocxDownload = ({ lecture }: Props) => {
   return (
     <div>
       <Heading downloadedAs={TYPE}>{lecture.attributes.Title}</Heading>
-      {lecture.attributes.Level.data?.attributes.Level !== undefined ? (
+      {lecture.attributes.Level?.data?.attributes.Level !== undefined ? (
         <Level level={lecture.attributes.Level.data.attributes.Level} />
       ) : null}
       <Authors authors={lecture.attributes.LectureCreators.data} />

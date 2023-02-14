@@ -27,7 +27,6 @@ export const getPrimaryContentStyling = (): PptxGenJS.TextPropsOptions => {
 
 const commonConfiguration = {
   autoFit: true,
-  breakLine: true,
   valign: 'top' as const,
   h: toPercentage(
     remainingHeight(2 * Y_PADDING + ESTIMATED_SLIDE_TITLE_HEIGHT)

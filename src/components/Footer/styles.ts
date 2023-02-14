@@ -41,7 +41,7 @@ export const LogoWrapper = styled.div`
 export const LogoInnerWrapper = styled.div`
   position: absolute;
   bottom: 0;
-  padding-bottom: 1.3rem;
+  padding-bottom: 3rem;
 `
 
 export const ContactWrapper = styled.div`

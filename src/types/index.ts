@@ -1,7 +1,7 @@
 // if you use a type/interface in more than one place it goes into the ~src/types/index.d.ts file
 // if you extend a type/interface, it can be declared locally, but as long as it doesn't get used more than once
 
-type Modify<T, R> = Omit<T, keyof R> & R
+export type Modify<T, R> = Omit<T, keyof R> & R
 
 export type Data<T> = {
   id: number

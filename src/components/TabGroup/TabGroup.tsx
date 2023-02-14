@@ -49,11 +49,16 @@ const defaultFilterResult: ResponseArrayData<any> = {
   },
 }
 
-export type SortOptionType =
-  | 'ALPHABETICAL_ASC'
-  | 'ALPHABETICAL_DESC'
-  | 'LEVEL_ASC'
-  | 'LEVEL_DESC'
+const blockSortOptionTypes = ['ALPHABETICAL_ASC', 'ALPHABETICAL_DESC'] as const
+export type BlockSortOptionType = typeof blockSortOptionTypes[number]
+const isBlockSortOptionType = (
+  sortOptionType: SortOptionType
+): sortOptionType is BlockSortOptionType =>
+  blockSortOptionTypes.some(
+    (blockSortOptionType) => blockSortOptionType === sortOptionType
+  )
+
+export type SortOptionType = BlockSortOptionType | 'LEVEL_ASC' | 'LEVEL_DESC'
 
 type SortOption = Item & {
   id: SortOptionType
@@ -147,7 +152,9 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
         keywords: selectedKeywords,
         authors: selectedAuthors,
         pageNumber: pageNumber,
-        sortMethod: sortMethod.id,
+        sortMethod: isBlockSortOptionType(sortMethod.id)
+          ? sortMethod.id
+          : 'ALPHABETICAL_ASC',
         matchesPerPage,
       })
 
