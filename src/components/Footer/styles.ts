@@ -39,9 +39,11 @@ export const LogoWrapper = styled.div`
   }
 `
 export const LogoInnerWrapper = styled.div`
-  position: absolute;
-  bottom: 0;
-  padding-bottom: 3rem;
+  ${mq.sm} {
+    position: absolute;
+    bottom: 0;
+    padding-bottom: 3rem;
+  }
 `
 
 export const ContactWrapper = styled.div`
