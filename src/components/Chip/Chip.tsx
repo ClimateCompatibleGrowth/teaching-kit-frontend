@@ -10,7 +10,7 @@ type Props = {
 const Chip = ({ label, id, onDelete }: Props) => {
   return (
     <Styled.Chip>
-      <p>{label}</p>
+      <span>{label}</span>
       {onDelete !== undefined ? (
         <Styled.RemoveButton
           onClick={() => onDelete(id)}

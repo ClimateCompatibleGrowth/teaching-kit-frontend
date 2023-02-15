@@ -19,6 +19,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   ${mq.sm} {
+    flex: 0 1 50%;
     flex-direction: column;
   }
 `
@@ -71,7 +72,7 @@ export const DropdownInput = styled.input<DropdownInputProps>`
   }
 
   ${mq.sm} {
-    flex: 0 0 auto;
+    flex: 1 0 auto;
   }
 `
 

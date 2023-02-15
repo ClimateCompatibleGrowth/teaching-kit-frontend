@@ -6,9 +6,7 @@ import {
 } from '../../styles/global'
 
 export const Chip = styled.div`
-  height: 3.2rem;
-
-  padding: 0px 1.4rem;
+  padding: 0px 0.4rem 0 1.4rem;
 
   display: flex;
   align-items: center;
@@ -20,5 +18,5 @@ export const Chip = styled.div`
 export const RemoveButton = styled(ButtonWithoutDefaultStyle)`
   height: inherit;
 
-  margin-left: 1rem;
+  padding: 0.5rem 1rem;
 `

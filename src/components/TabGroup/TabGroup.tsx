@@ -98,7 +98,7 @@ const sortOptions: SortOptions = {
 }
 
 const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
-  const [value, setValue] = React.useState(0)
+  const [tabIndex, setTabIndex] = React.useState(0)
   const [courseResults, setCourseResults] =
     useState<ResponseArrayData<CourseThreeLevelsDeep>>(defaultFilterResult)
   const [lectureResults, setLectureResults] =
@@ -275,8 +275,8 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
     <div>
       <div style={Styled.HeaderWrapper}>
         <Tabs
-          value={value}
-          onChange={(_event, newValue) => setValue(newValue)}
+          value={tabIndex}
+          onChange={(_event, newIndex) => setTabIndex(newIndex)}
           aria-label='Toggle between categorized filter results'
           sx={Styled.Tabs}
         >
@@ -320,10 +320,12 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
           placeholder={sortMethod.label}
           ariaLabel='Sort options to pick from'
           enableSearch={false}
-          getItems={() => Promise.resolve(Object.values(getSortOptions(value)))}
+          getItems={() =>
+            Promise.resolve(Object.values(getSortOptions(tabIndex)))
+          }
         />
       </div>
-      <TabPanel value={value} index={0}>
+      <TabPanel value={tabIndex} index={0}>
         <CardList
           cards={courseResults.data.map((result) =>
             courseDataToCardFormat(result)
@@ -335,7 +337,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
           setCurrentCoursePageNumber
         )}
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={tabIndex} index={1}>
         <CardList
           cards={lectureResults.data.map((result) =>
             lectureDataToCardFormat(result)
@@ -347,7 +349,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
           setCurrentLecturePageNumber
         )}
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      <TabPanel value={tabIndex} index={2}>
         <CardList cards={blockDataToCardFormat(blockResults.data)} />
         {getPaginationController(
           blockResults.meta,
