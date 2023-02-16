@@ -1,13 +1,13 @@
 import { BlockOneLevelDeep, Data, LearningMaterialType, Level } from '../types'
 
-export const typeToText = (type: LearningMaterialType) => {
+export const typeToText = (type: LearningMaterialType, lowerCase?: boolean) => {
   switch (type) {
     case 'COURSE':
-      return 'Course'
+      return lowerCase ? 'course' : 'Course'
     case 'LECTURE':
-      return 'Lecture'
+      return lowerCase ? 'lecture' : 'Lecture'
     case 'BLOCK':
-      return 'Lecture block'
+      return lowerCase ? 'lecture block' : 'Lecture block'
   }
 }
 

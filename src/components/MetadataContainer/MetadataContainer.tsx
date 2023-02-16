@@ -9,7 +9,11 @@ import {
   Level,
 } from '../../types'
 import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
-import { levelToString, typeToDownloadLabel } from '../../utils/utils'
+import {
+  levelToString,
+  typeToDownloadLabel,
+  typeToText,
+} from '../../utils/utils'
 import Alert from '../Alert/Alert'
 import Button from '../Button/Button'
 
@@ -117,15 +121,6 @@ export default function MetadataContainer({
       <Styled.HeadingSet>
         <Styled.Heading>{typeToDownloadLabel(type)}</Styled.Heading>
         <Styled.DownloadButtonsContainer>
-          <Button
-            onClick={docxDownloadHandler}
-            isLoading={isDocxDownloadLoading}
-          >
-            <Styled.DownloadIcon />
-            Docx
-          </Button>
-          <Styled.DownloadSize>{`Docx file size is ${docxFileSize}`}</Styled.DownloadSize>
-
           {downloadAsPptx && (
             <>
               <Button
@@ -135,9 +130,21 @@ export default function MetadataContainer({
                 <Styled.DownloadIcon />
                 Powerpoint
               </Button>
-              <Styled.DownloadSize>{`Powerpoint file size is ${pptxFileSize}`}</Styled.DownloadSize>
+              <Styled.DownloadSize>{`PowerPoint slides with speaker notes (${pptxFileSize})`}</Styled.DownloadSize>
             </>
           )}
+
+          <Button
+            onClick={docxDownloadHandler}
+            isLoading={isDocxDownloadLoading}
+          >
+            <Styled.DownloadIcon />
+            Docx
+          </Button>
+          <Styled.DownloadSize>{`Document with ${typeToText(
+            type,
+            true
+          )} content (${docxFileSize})`}</Styled.DownloadSize>
         </Styled.DownloadButtonsContainer>
         {(docxDowloadError || pptxDowloadError) && (
           <Styled.Alert>
