@@ -10,12 +10,10 @@ type Props = {
 const Loader = ({ loadingText }: Props) => {
   return (
     <Styled.Spinner>
-      {loadingText !== undefined ? (
+      {loadingText !== undefined && (
         <Styled.LoaderInfo>{loadingText}</Styled.LoaderInfo>
-      ) : null}
-      <div>
-        <CircularProgress size={15} />
-      </div>
+      )}
+      <CircularProgress color='inherit' size={21} />
     </Styled.Spinner>
   )
 }
