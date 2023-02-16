@@ -20,6 +20,24 @@ export default function Home() {
           content='KTH dESA Teaching kit Platform, view courses online and download them as a powerpoint'
         />
         <link rel='icon' href='/favicon.ico' />
+        <link
+          rel='apple-touch-icon'
+          sizes='180x180'
+          href='/apple-touch-icon.png'
+        />
+        <link
+          rel='icon'
+          type='image/png'
+          sizes='32x32'
+          href='/favicon-32x32.png'
+        />
+        <link
+          rel='icon'
+          type='image/png'
+          sizes='16x16'
+          href='/favicon-16x16.png'
+        />
+        <link rel='manifest' href='/favicon/site.webmanifest' />
       </Head>
       <Hero {...heroProps} />
       <PosterList {...posterProps} />
