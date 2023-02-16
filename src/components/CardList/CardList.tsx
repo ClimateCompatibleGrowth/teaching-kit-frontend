@@ -12,6 +12,7 @@ const CardList = ({ cards }: Props) => {
       {cards.map((card) => (
         <Card card={card} key={card.id} />
       ))}
+      {cards.length === 0 && <p>No results for the current filter.</p>}
     </Styled.CardList>
   )
 }

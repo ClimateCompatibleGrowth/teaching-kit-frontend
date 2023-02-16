@@ -18,7 +18,7 @@ const TabLabel = ({ type, numberOfResults }: Props) => {
       case 'LECTURE':
         return 'Lectures'
       case 'BLOCK':
-        return 'Blocks'
+        return 'Lecture blocks'
     }
   }
 
