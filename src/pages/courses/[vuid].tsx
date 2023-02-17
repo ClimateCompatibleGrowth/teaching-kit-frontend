@@ -61,7 +61,7 @@ export default function CoursePage({ course }: Props) {
               id: lecture.id.toString(),
               title: lecture.attributes.Title,
               text: lecture.attributes.Abstract,
-              href: `/lectures/${lecture.id}`,
+              href: `/lectures/${lecture.attributes.vuid}`,
               subTitle: <LearningMaterialBadge type={'LECTURE'} />,
             }))}
           />
@@ -83,16 +83,24 @@ export async function getStaticPaths() {
     `${process.env.STRAPI_API_URL}/courses`
   )
 
-  const paths = courses.data.data.map((course) => {
-    return {
-      params: { id: `${course.id}` },
-    }
-  })
+  console.log(courses.data.data)
+
+  const paths = courses.data.data
+    .filter((course) => course.attributes.vuid !== null)
+    .map((course) => {
+      return {
+        params: { vuid: `${course.attributes.vuid}` },
+      }
+    })
 
   return { paths, fallback: false }
 }
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
+  const blockVuid = await axios.get(
+    `${process.env.STRAPI_API_URL}/courseByVuid/${ctx.params?.vuid}`
+  )
+
   const populateBlocks = 'populate[Lectures][populate][0]=Blocks'
   const populateCourseCreators = 'populate=CourseCreators'
   const populateLectureCreators =
@@ -107,7 +115,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
   const populateLectureLevel = 'populate[Lectures][populate][Level]=*'
 
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses/${ctx.params?.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
+    `${process.env.STRAPI_API_URL}/courses/${blockVuid.data?.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
   )
   const course: Data<CourseThreeLevelsDeep> = res.data.data
 

@@ -17,7 +17,7 @@ export default function Blocks({ blocks }: props) {
       <LearningMaterialList>
         {blocks.map((block) => (
           <LearningMaterialListItem key={block.id}>
-            <Link href={`/blocks/${encodeURIComponent(block.id)}`}>
+            <Link href={`/blocks/${encodeURIComponent(block.attributes.vuid)}`}>
               <h2>{block.attributes.Title}</h2>
               <Markdown>{block.attributes.Abstract}</Markdown>
             </Link>

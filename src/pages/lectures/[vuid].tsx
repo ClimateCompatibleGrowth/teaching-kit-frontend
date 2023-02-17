@@ -63,7 +63,7 @@ export default function LecturePage({ lecture }: Props) {
               id: block.id.toString(),
               title: block.attributes.Title,
               text: block.attributes.Abstract,
-              href: `/blocks/${block.id}`,
+              href: `/blocks/${block.attributes.vuid}`,
               subTitle: <LearningMaterialBadge type='BLOCK' />,
             }))}
           />
@@ -85,14 +85,20 @@ export async function getStaticPaths() {
     `${process.env.STRAPI_API_URL}/lectures`
   )
 
-  const paths = lectures.data.data.map((lecture) => ({
-    params: { id: `${lecture.id}` },
-  }))
+  const paths = lectures.data.data
+    .filter((lecture) => lecture.attributes.vuid !== null)
+    .map((lecture) => ({
+      params: { vuid: `${lecture.attributes.vuid}` },
+    }))
 
   return { paths, fallback: false }
 }
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
+  const lectureVuid = await axios.get(
+    `${process.env.STRAPI_API_URL}/lectureByVuid/${ctx.params?.vuid}`
+  )
+
   const populateCourses = 'populate[Courses]=*'
   const populateBlocks = 'populate[Blocks][populate][0]=*'
   const populateLectureCreators = 'populate[LectureCreators][populate]=*'
@@ -102,7 +108,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
   const populateLevel = 'populate[Level]=Level'
 
   const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/lectures/${ctx.params?.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
+    `${process.env.STRAPI_API_URL}/lectures/${lectureVuid.data?.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
   )
   const lecture: Data<LectureTwoLevelsDeep> = res.data.data
 

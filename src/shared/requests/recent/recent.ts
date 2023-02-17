@@ -6,6 +6,7 @@ import { formatDate, summarizeDurations } from '../../../utils/utils'
 
 export type RecentUpdateType = {
   Id: number
+  Vuid: string
   UpdatedAt: string
   Title?: string
   Abstract?: string
@@ -25,6 +26,7 @@ export const getRecentUpdates = async () => {
 
   const refinedCourses: RecentUpdateType[] = courses.map((course) => ({
     Id: course.id,
+    Vuid: course.attributes.vuid,
     UpdatedAt: course.attributes.updatedAt || nowStamp,
     Title: course.attributes.Title,
     Abstract: course.attributes.Abstract,
@@ -40,6 +42,7 @@ export const getRecentUpdates = async () => {
 
   const refinedLectures: RecentUpdateType[] = lectures.map((lecture) => ({
     Id: lecture.id,
+    Vuid: lecture.attributes.vuid,
     UpdatedAt: lecture.attributes.updatedAt || nowStamp,
     Title: lecture.attributes.Title,
     Abstract: lecture.attributes.Abstract,
@@ -50,6 +53,7 @@ export const getRecentUpdates = async () => {
 
   const refinedBlocks: RecentUpdateType[] = blocks.map((block) => ({
     Id: block.id,
+    Vuid: block.attributes.vuid,
     UpdatedAt: block.attributes.updatedAt || nowStamp,
     Title: block.attributes.Title,
     Abstract: block.attributes.Abstract,

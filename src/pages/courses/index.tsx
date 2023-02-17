@@ -16,7 +16,9 @@ export default function Courses({ courses }: props) {
       <LearningMaterialList>
         {courses.map((course) => (
           <LearningMaterialListItem key={course.id}>
-            <Link href={`/courses/${encodeURIComponent(course.id)}`}>
+            <Link
+              href={`/courses/${encodeURIComponent(course.attributes.vuid)}`}
+            >
               <h2>{course.attributes.Title}</h2>
             </Link>
           </LearningMaterialListItem>

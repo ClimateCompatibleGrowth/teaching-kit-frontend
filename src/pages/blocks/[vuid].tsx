@@ -71,18 +71,23 @@ export async function getStaticPaths() {
     `${process.env.STRAPI_API_URL}/blocks`
   )
 
-  const paths = blocks.data.data.map((block) => ({
-    params: { id: `${block.id}` },
-  }))
+  const paths = blocks.data.data
+    .filter((block) => block.attributes.vuid !== null)
+    .map((block) => ({
+      params: { vuid: `${block.attributes.vuid}` },
+    }))
 
   return { paths, fallback: false }
 }
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
-  const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/blocks/${ctx.params?.id}?populate=*`
+  const blockVuid = await axios.get(
+    `${process.env.STRAPI_API_URL}/blockByVuid/${ctx.params?.vuid}`
   )
-  const block = res.data.data
+  const blockResponse = await axios.get(
+    `${process.env.STRAPI_API_URL}/blocks/${blockVuid.data?.id}?populate=*`
+  )
+  const block = blockResponse.data.data
 
   return {
     props: { block: filterOutOnlyPublishedEntriesOnBlock(block) },
