@@ -77,19 +77,31 @@ export async function getStaticPaths() {
       params: { vuid: `${block.attributes.vuid}` },
     }))
 
-  return { paths, fallback: false }
+  return { paths, fallback: 'blocking' }
 }
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
-  const blockVuid = await axios.get(
-    `${process.env.STRAPI_API_URL}/blockByVuid/${ctx.params?.vuid}`
-  )
-  const blockResponse = await axios.get(
-    `${process.env.STRAPI_API_URL}/blocks/${blockVuid.data?.id}?populate=*`
-  )
-  const block = blockResponse.data.data
+  try {
+    const blockVuid = await axios.get(
+      `${process.env.STRAPI_API_URL}/blockByVuid/${ctx.params?.vuid}`
+    )
+    const blockResponse = await axios.get(
+      `${process.env.STRAPI_API_URL}/blocks/${blockVuid.data?.id}?populate=*`
+    )
+    const block = blockResponse.data.data
 
-  return {
-    props: { block: filterOutOnlyPublishedEntriesOnBlock(block) },
+    if (!block) {
+      return {
+        notFound: true,
+      }
+    }
+
+    return {
+      props: { block: filterOutOnlyPublishedEntriesOnBlock(block) },
+    }
+  } catch (error) {
+    return {
+      notFound: true,
+    }
   }
 }

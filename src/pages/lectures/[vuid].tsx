@@ -91,30 +91,36 @@ export async function getStaticPaths() {
       params: { vuid: `${lecture.attributes.vuid}` },
     }))
 
-  return { paths, fallback: false }
+  return { paths, fallback: 'blocking' }
 }
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
-  const lectureVuid = await axios.get(
-    `${process.env.STRAPI_API_URL}/lectureByVuid/${ctx.params?.vuid}`
-  )
+  try {
+    const lectureVuid = await axios.get(
+      `${process.env.STRAPI_API_URL}/lectureByVuid/${ctx.params?.vuid}`
+    )
 
-  const populateCourses = 'populate[Courses]=*'
-  const populateBlocks = 'populate[Blocks][populate][0]=*'
-  const populateLectureCreators = 'populate[LectureCreators][populate]=*'
-  const populateLearningOutcomes = 'populate[LearningOutcomes][populate]=*'
-  const populateBlockAuthors = 'populate[Blocks][populate][Authors]=*'
-  const populateBlockSlides = 'populate[Blocks][populate][Slides]=*'
-  const populateLevel = 'populate[Level]=Level'
+    const populateCourses = 'populate[Courses]=*'
+    const populateBlocks = 'populate[Blocks][populate][0]=*'
+    const populateLectureCreators = 'populate[LectureCreators][populate]=*'
+    const populateLearningOutcomes = 'populate[LearningOutcomes][populate]=*'
+    const populateBlockAuthors = 'populate[Blocks][populate][Authors]=*'
+    const populateBlockSlides = 'populate[Blocks][populate][Slides]=*'
+    const populateLevel = 'populate[Level]=Level'
 
-  const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/lectures/${lectureVuid.data?.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
-  )
-  const lecture: Data<LectureTwoLevelsDeep> = res.data.data
+    const res = await axios.get(
+      `${process.env.STRAPI_API_URL}/lectures/${lectureVuid.data?.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
+    )
+    const lecture: Data<LectureTwoLevelsDeep> = res.data.data
 
-  return {
-    props: {
-      lecture: filterOutOnlyPublishedEntriesOnLecture(lecture),
-    },
+    return {
+      props: {
+        lecture: filterOutOnlyPublishedEntriesOnLecture(lecture),
+      },
+    }
+  } catch (error) {
+    return {
+      notFound: true,
+    }
   }
 }
