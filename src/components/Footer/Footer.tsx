@@ -19,6 +19,14 @@ export default function Navbar() {
         <Styled.ContactWrapper>
           <Markdown>{footerContent}</Markdown>
           <br />
+          <a href={'https://creativecommons.org/licenses/by/4.0/'}>
+            <Image
+              width={88}
+              height={31}
+              alt='Creative commons BY 4.0 license icon'
+              src='https://licensebuttons.net/l/by/4.0/88x31.png'
+            ></Image>
+          </a>
         </Styled.ContactWrapper>
       </Styled.Footer>
     </Styled.ColorBar>
@@ -26,4 +34,4 @@ export default function Navbar() {
 }
 
 const footerContent =
-  '#### Contacts\n\nTo enquire about access to the teaching kit website to develop and share your own material, please e-mail [teaching@climatecompatiblegrowth.com](mailto:teaching@climatecompatiblegrowth.com)\n\nTo provide feedback on the teaching kit website, please e-mail [platform@climatecompatiblegrowth.com](mailto:platform@climatecompatiblegrowth.com)\n\n These teaching materials are based on content provided by Climate Compatible Growth as part of their FCDO-funded activities. As this content can be adapted by other institutions, the opinions expressed here may not reflect those of CCG or its funders.\n\n [![http://creativecommons.org](https://i.creativecommons.org/l/by/4.0/88x31.png)](http://creativecommons.org/licenses/by/4.0/)'
+  '#### Contacts\n\nTo enquire about access to the teaching kit website to develop and share your own material, please e-mail [teaching@climatecompatiblegrowth.com](mailto:teaching@climatecompatiblegrowth.com)\n\nTo provide feedback on the teaching kit website, please e-mail [platform@climatecompatiblegrowth.com](mailto:platform@climatecompatiblegrowth.com)\n\n These teaching materials are based on content provided by Climate Compatible Growth as part of their FCDO-funded activities. As this content can be adapted by other institutions, the opinions expressed here may not reflect those of CCG or its funders.'

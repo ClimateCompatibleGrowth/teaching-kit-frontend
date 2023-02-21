@@ -32,10 +32,11 @@ const convertImagesToBase64 = async (HTMLDiv: HTMLDivElement) => {
   for (let i = 0; i < images.length; i++) {
     const imageSource = images[i].src
     if (sourceIsFromS3(imageSource)) {
-      // Dummy parameter to avoid cache (CORS): https://www.hacksoft.io/blog/handle-images-cors-error-in-chrome#solution
+      // Dummy parameter to avoid cache (CORS) on chrome: https://www.hacksoft.io/blog/handle-images-cors-error-in-chrome#solution
       const base64 = await imageToBase64(
-        `${imageSource}?do-not-fetch-from-cache`
+        `${imageSource}?${new Date().getTime()}`
       )
+      images[i].crossOrigin = 'anonymous' //https://stackoverflow.com/a/47359958/5837635
       images[i].src = `data:image/png;base64,${base64}`
       const parentNode = images[i].parentNode as HTMLElement | undefined
       parentNode?.replaceWith(images[i])
