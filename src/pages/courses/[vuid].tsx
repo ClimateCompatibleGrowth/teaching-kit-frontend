@@ -79,15 +79,21 @@ export async function getStaticPaths() {
     }
   }
 
-  const courses: ResponseArray<Course> = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses`
+  const englishCourses: ResponseArray<Course> = await axios.get(
+    `${process.env.STRAPI_API_URL}/lectures?locale=en`
+  )
+  const spanishCourses: ResponseArray<Course> = await axios.get(
+    `${process.env.STRAPI_API_URL}/lectures?locale=es-ES`
   )
 
-  const paths = courses.data.data
+  const allCourses = [...englishCourses.data.data, ...spanishCourses.data.data]
+
+  const paths = allCourses
     .filter((course) => course.attributes.vuid !== null)
     .map((course) => {
       return {
         params: { vuid: `${course.attributes.vuid}` },
+        locale: course.attributes.locale,
       }
     })
 

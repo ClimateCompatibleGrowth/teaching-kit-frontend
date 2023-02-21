@@ -31,6 +31,11 @@ const nextConfig = {
     ],
     minimumCacheTTL: 1500000,
   },
+
+  i18n: {
+    locales: ['en', 'es-ES'],
+    defaultLocale: 'en',
+  },
 }
 
 module.exports = withBundleAnalyzer(nextConfig)
