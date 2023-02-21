@@ -66,6 +66,7 @@ export type Block = {
   createdAt: string
   updatedAt: string
   publishedAt: string
+  vuid: string
 }
 
 export type BlockOneLevelDeep = Block & {
@@ -84,6 +85,7 @@ export type Lecture = {
   createdAt: string
   updatedAt: string
   publishedAt: string
+  vuid: string
 }
 
 export type LectureOneLevelDeep = Lecture & {
@@ -111,6 +113,7 @@ export type Course = {
   createdAt: string
   updatedAt: string
   publishedAt: string
+  vuid: string
 }
 
 export type CourseOneLevelDeep = Course & {

@@ -4,7 +4,7 @@ import { LearningMaterialType } from '../../types'
 type StrapiWebhookRequest = NextApiRequest & {
   body: {
     model?: LearningMaterialType
-    entry?: { id?: number }
+    entry?: { vuid?: string }
   }
 }
 
@@ -18,12 +18,12 @@ export default async function handler(
 
   const body = req.body
 
-  if (body.model && body.entry?.id) {
-    const pathToPurge = getPathToPurge(body.model, body.entry.id)
+  if (body.model && body.entry?.vuid) {
+    const pathToPurge = getPathToPurge(body.model, body.entry.vuid)
     try {
       if (!pathToPurge) {
         throw new Error(
-          `Could not purge path, seems invalid: ${body.model}, ${body.entry.id}`
+          `Could not purge path, seems invalid: ${body.model}, ${body.entry.vuid}`
         )
       }
       await res.revalidate(pathToPurge)
@@ -39,14 +39,14 @@ export default async function handler(
   })
 }
 
-const getPathToPurge = (contentType: LearningMaterialType, id: number) => {
+const getPathToPurge = (contentType: LearningMaterialType, vuid: number) => {
   switch (contentType.toLowerCase()) {
     case 'course':
-      return `/courses/${id}`
+      return `/courses/${vuid}`
     case 'lecture':
-      return `/lectures/${id}`
+      return `/lectures/${vuid}`
     case 'block':
-      return `/blocks/${id}`
+      return `/blocks/${vuid}`
     default:
       return undefined
   }

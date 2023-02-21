@@ -96,7 +96,7 @@ export default function MetadataContainer({
           <Styled.Heading>Also part of</Styled.Heading>
           {parentRelations.parents.map((parent) => (
             <div key={parent.id}>
-              <Link href={`/${parentRelations.type}/${parent.id}`}>
+              <Link href={`/${parentRelations.type}/${parent.attributes.vuid}`}>
                 {parent.attributes.Title}
               </Link>{' '}
             </div>
