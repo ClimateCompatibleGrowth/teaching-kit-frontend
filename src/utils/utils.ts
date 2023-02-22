@@ -98,6 +98,7 @@ export const stripBackslashN = (string: string) => {
 
 export const getImageMetadata = async (url: string) => {
   const img = new Image()
+  img.crossOrigin = 'anonymous' //https://stackoverflow.com/a/47359958/5837635
   img.src = url
   await img.decode()
   return img
