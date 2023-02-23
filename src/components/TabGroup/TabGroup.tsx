@@ -22,7 +22,6 @@ import SignalStrengthIcon from '../../../public/icons/signal-strength.svg'
 import ClockIcon from '../../../public/icons/clock.svg'
 import Dropdown from '../Dropdown/Dropdown'
 import { blockSortOptions, SortOption, sortOptions } from '../../types/filters'
-import { DEFAULT_PAGE_NUMBER } from '../../pages/teaching-material'
 
 type Props = {
   controls: string

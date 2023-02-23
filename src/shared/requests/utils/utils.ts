@@ -1,5 +1,5 @@
-import { SortOptionType } from '../../../components/TabGroup/TabGroup'
 import { LearningMaterialType } from '../../../types'
+import { SortOptionType } from '../../../types/filters'
 
 export type FilterParameters<SortType> = {
   keywords: string[]
