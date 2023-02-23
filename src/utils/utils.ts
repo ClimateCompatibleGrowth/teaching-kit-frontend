@@ -1,4 +1,10 @@
-import { BlockOneLevelDeep, Data, LearningMaterialType, Level } from '../types'
+import {
+  BlockOneLevelDeep,
+  Data,
+  LearningMaterialType,
+  Level,
+  Locale,
+} from '../types'
 
 export const typeToText = (type: LearningMaterialType, lowerCase?: boolean) => {
   switch (type) {
@@ -101,4 +107,13 @@ export const getImageMetadata = async (url: string) => {
   img.src = url
   await img.decode()
   return img
+}
+
+export const localeToLanguage = (locale: Locale) => {
+  switch (locale) {
+    case 'en':
+      return 'English'
+    case 'es-ES':
+      return 'Spanish'
+  }
 }

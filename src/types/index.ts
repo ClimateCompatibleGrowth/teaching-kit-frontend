@@ -149,8 +149,8 @@ export type DownloadableContent =
   | LectureTwoLevelsDeep
   | CourseThreeLevelsDeep
 
-const locales = ['en', 'es-ES'] as const
-type Locale = typeof locales[number]
+export const locales = ['en', 'es-ES'] as const
+export type Locale = typeof locales[number]
 
 export type Path = {
   params: {
