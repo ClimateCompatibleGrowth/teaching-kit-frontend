@@ -1,10 +1,15 @@
-import styled from "@emotion/styled";
-import { ButtonWithoutDefaultStyle, Surface } from "../../../styles/global";
+import styled from '@emotion/styled'
+import {
+  ButtonWithoutDefaultStyle,
+  Neutral99,
+  Surface,
+} from '../../../styles/global'
 
-export const ListItem = styled.li`
+export const ListItem = styled.li<{ isFocused?: boolean }>`
   width: 100%;
 
   margin: 0;
+  background-color: ${(props) => (props.isFocused ? Neutral99 : undefined)};
 `
 
 export const ClickableListItem = styled(ButtonWithoutDefaultStyle)`

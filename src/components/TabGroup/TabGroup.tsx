@@ -1,9 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
-import { filterCourseOnKeywordsAndAuthors } from '../../shared/requests/courses/courses'
-import { filterLectureOnKeywordsAndAuthors } from '../../shared/requests/lectures/lectures'
 import {
   BlockOneLevelDeep,
   CourseThreeLevelsDeep,
@@ -17,163 +15,47 @@ import { CardType } from '../CardList/Card/Card'
 import TabPanel from './TabPanel/TabPanel'
 
 import * as Styled from './styles'
-import { filterBlockOnKeywordsAndAuthors } from '../../shared/requests/blocks/blocks'
 import TabLabel from './TabLabel/TabLabel'
-import DropdownSingleSelectable, {
-  Item,
-} from '../Dropdown/DropdownSingleSelectable'
 import { levelToString, summarizeDurations } from '../../utils/utils'
 import LearningMaterialBadge from '../LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
 import SignalStrengthIcon from '../../../public/icons/signal-strength.svg'
 import ClockIcon from '../../../public/icons/clock.svg'
+import Dropdown from '../Dropdown/Dropdown'
+import { blockSortOptions, SortOption, sortOptions } from '../../types/filters'
+import { DEFAULT_PAGE_NUMBER } from '../../pages/teaching-material'
 
 type Props = {
+  controls: string
   selectedKeywords: string[]
   selectedAuthors: string[]
+  selectedSort: SortOption
+  setSelectedSort: (newSort: SortOption) => void
+  courseResults: ResponseArrayData<CourseThreeLevelsDeep>
+  lectureResults: ResponseArrayData<LectureTwoLevelsDeep>
+  blockResults: ResponseArrayData<BlockOneLevelDeep>
+  currentCoursePageNumber: number
+  setCurrentCoursePageNumber: Dispatch<SetStateAction<number>>
+  currentLecturePageNumber: number
+  setCurrentLecturePageNumber: Dispatch<SetStateAction<number>>
+  currentBlockPageNumber: number
+  setCurrentBlockPageNumber: Dispatch<SetStateAction<number>>
 }
 
-const DEFAULT_PAGE_NUMBER = 1
-const DEFAULT_MATCHES_PER_PAGE = 10
-
-const defaultPagination = {
-  page: DEFAULT_PAGE_NUMBER,
-  pageSize: DEFAULT_MATCHES_PER_PAGE,
-  pageCount: 1,
-  total: 0,
-}
-
-const defaultFilterResult: ResponseArrayData<any> = {
-  data: [],
-  meta: {
-    pagination: defaultPagination,
-  },
-}
-
-const blockSortOptionTypes = ['ALPHABETICAL_ASC', 'ALPHABETICAL_DESC'] as const
-export type BlockSortOptionType = typeof blockSortOptionTypes[number]
-const isBlockSortOptionType = (
-  sortOptionType: SortOptionType
-): sortOptionType is BlockSortOptionType =>
-  blockSortOptionTypes.some(
-    (blockSortOptionType) => blockSortOptionType === sortOptionType
-  )
-
-export type SortOptionType = BlockSortOptionType | 'LEVEL_ASC' | 'LEVEL_DESC'
-
-type SortOption = Item & {
-  id: SortOptionType
-}
-
-type BlockSortOptions = {
-  alphabeticalASC: SortOption
-  alphabeticalDESC: SortOption
-}
-
-type SortOptions = BlockSortOptions & {
-  levelASC: SortOption
-  levelDESC: SortOption
-}
-
-const blockSortOptions: BlockSortOptions = {
-  alphabeticalASC: {
-    id: 'ALPHABETICAL_ASC',
-    label: 'A - Z',
-  },
-  alphabeticalDESC: {
-    id: 'ALPHABETICAL_DESC',
-    label: 'Z - A',
-  },
-}
-
-const sortOptions: SortOptions = {
-  ...blockSortOptions,
-  levelASC: {
-    id: 'LEVEL_ASC',
-    label: 'Beginner - Expert',
-  },
-  levelDESC: {
-    id: 'LEVEL_DESC',
-    label: 'Expert - Beginner',
-  },
-}
-
-const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
+const TabGroup = ({
+  controls,
+  selectedSort,
+  setSelectedSort,
+  courseResults,
+  lectureResults,
+  blockResults,
+  currentCoursePageNumber,
+  setCurrentCoursePageNumber,
+  currentLecturePageNumber,
+  setCurrentLecturePageNumber,
+  currentBlockPageNumber,
+  setCurrentBlockPageNumber,
+}: Props) => {
   const [tabIndex, setTabIndex] = React.useState(0)
-  const [courseResults, setCourseResults] =
-    useState<ResponseArrayData<CourseThreeLevelsDeep>>(defaultFilterResult)
-  const [lectureResults, setLectureResults] =
-    useState<ResponseArrayData<LectureTwoLevelsDeep>>(defaultFilterResult)
-  const [blockResults, setBlockResults] =
-    useState<ResponseArrayData<BlockOneLevelDeep>>(defaultFilterResult)
-  const [currentCoursePageNumber, setCurrentCoursePageNumber] =
-    useState(DEFAULT_PAGE_NUMBER)
-  const [currentLecturePageNumber, setCurrentLecturePageNumber] =
-    useState(DEFAULT_PAGE_NUMBER)
-  const [currentBlockPageNumber, setCurrentBlockPageNumber] =
-    useState(DEFAULT_PAGE_NUMBER)
-  const [matchesPerPage, setMatchesPerPage] = useState(DEFAULT_MATCHES_PER_PAGE)
-  const [sortMethod, setSortMethod] = useState<SortOption>(
-    sortOptions.alphabeticalASC
-  )
-
-  const onCourseChange = useCallback(
-    async (pageNumber: number) => {
-      const courseFilterResult = await filterCourseOnKeywordsAndAuthors(
-        selectedKeywords,
-        selectedAuthors,
-        pageNumber,
-        sortMethod.id,
-        matchesPerPage
-      )
-
-      setCourseResults(courseFilterResult)
-    },
-    [selectedKeywords, selectedAuthors, sortMethod, matchesPerPage]
-  )
-
-  const onLectureChange = useCallback(
-    async (pageNumber: number) => {
-      const lectureFilterResult = await filterLectureOnKeywordsAndAuthors({
-        keywords: selectedKeywords,
-        authors: selectedAuthors,
-        pageNumber: pageNumber,
-        sortMethod: sortMethod.id,
-        matchesPerPage,
-      })
-
-      setLectureResults(lectureFilterResult)
-    },
-    [selectedKeywords, selectedAuthors, sortMethod, matchesPerPage]
-  )
-
-  const onBlockChange = useCallback(
-    async (pageNumber: number) => {
-      const blockFilterResult = await filterBlockOnKeywordsAndAuthors({
-        keywords: selectedKeywords,
-        authors: selectedAuthors,
-        pageNumber: pageNumber,
-        sortMethod: isBlockSortOptionType(sortMethod.id)
-          ? sortMethod.id
-          : 'ALPHABETICAL_ASC',
-        matchesPerPage,
-      })
-
-      setBlockResults(blockFilterResult)
-    },
-    [selectedKeywords, selectedAuthors, sortMethod, matchesPerPage]
-  )
-
-  useEffect(() => {
-    onCourseChange(currentCoursePageNumber)
-  }, [currentCoursePageNumber, onCourseChange])
-
-  useEffect(() => {
-    onLectureChange(currentLecturePageNumber)
-  }, [currentLecturePageNumber, onLectureChange])
-
-  useEffect(() => {
-    onBlockChange(currentBlockPageNumber)
-  }, [currentBlockPageNumber, onBlockChange])
 
   const blockDataToCardFormat = (
     data: Data<BlockOneLevelDeep>[]
@@ -311,13 +193,16 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
             sx={Styled.Tab}
           />
         </Tabs>
-        <DropdownSingleSelectable
-          selectedItem={sortMethod}
-          setSelectedItem={(newSortmethod) =>
-            setSortMethod(newSortmethod as SortOption)
-          }
+        <Dropdown
+          controls={controls}
+          id='sort-options'
+          isSingleSelectable
+          selectedItems={[selectedSort]}
+          setSelectedItems={(newSelectedSort) => {
+            setSelectedSort(newSelectedSort[0] as SortOption)
+          }}
           label='Sort'
-          placeholder={sortMethod.label}
+          placeholder={selectedSort.label}
           ariaLabel='Sort options to pick from'
           enableSearch={false}
           getItems={() =>
@@ -325,38 +210,40 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
           }
         />
       </div>
-      <TabPanel value={tabIndex} index={0}>
-        <CardList
-          cards={courseResults.data.map((result) =>
-            courseDataToCardFormat(result)
+      <div>
+        <TabPanel value={tabIndex} index={0}>
+          <CardList
+            cards={courseResults.data.map((result) =>
+              courseDataToCardFormat(result)
+            )}
+          />
+          {getPaginationController(
+            courseResults.meta,
+            currentCoursePageNumber,
+            setCurrentCoursePageNumber
           )}
-        />
-        {getPaginationController(
-          courseResults.meta,
-          currentCoursePageNumber,
-          setCurrentCoursePageNumber
-        )}
-      </TabPanel>
-      <TabPanel value={tabIndex} index={1}>
-        <CardList
-          cards={lectureResults.data.map((result) =>
-            lectureDataToCardFormat(result)
+        </TabPanel>
+        <TabPanel value={tabIndex} index={1}>
+          <CardList
+            cards={lectureResults.data.map((result) =>
+              lectureDataToCardFormat(result)
+            )}
+          />
+          {getPaginationController(
+            lectureResults.meta,
+            currentLecturePageNumber,
+            setCurrentLecturePageNumber
           )}
-        />
-        {getPaginationController(
-          lectureResults.meta,
-          currentLecturePageNumber,
-          setCurrentLecturePageNumber
-        )}
-      </TabPanel>
-      <TabPanel value={tabIndex} index={2}>
-        <CardList cards={blockDataToCardFormat(blockResults.data)} />
-        {getPaginationController(
-          blockResults.meta,
-          currentBlockPageNumber,
-          setCurrentBlockPageNumber
-        )}
-      </TabPanel>
+        </TabPanel>
+        <TabPanel value={tabIndex} index={2}>
+          <CardList cards={blockDataToCardFormat(blockResults.data)} />
+          {getPaginationController(
+            blockResults.meta,
+            currentBlockPageNumber,
+            setCurrentBlockPageNumber
+          )}
+        </TabPanel>
+      </div>
     </div>
   )
 }

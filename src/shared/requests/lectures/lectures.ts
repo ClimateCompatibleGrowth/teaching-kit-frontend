@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { SortOptionType } from '../../../components/TabGroup/TabGroup'
 import { LectureTwoLevelsDeep } from '../../../types'
+import { SortOptionType } from '../../../types/filters'
 import { ResponseArray, ResponseArrayData } from '../types'
 import {
   FilterParameters,

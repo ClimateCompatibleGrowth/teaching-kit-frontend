@@ -14,7 +14,7 @@ const Chip = ({ label, id, onDelete }: Props) => {
       {onDelete !== undefined ? (
         <Styled.RemoveButton
           onClick={() => onDelete(id)}
-          aria-label={`Remove chip ${label}`}
+          aria-label={`Remove filter '${label}'`}
         >
           x
         </Styled.RemoveButton>
