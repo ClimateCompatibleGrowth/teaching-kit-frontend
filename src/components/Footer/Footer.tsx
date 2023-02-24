@@ -2,7 +2,6 @@ import * as Styled from './styles'
 
 import LogoIcon from '../../../public/logo.svg'
 import Markdown from '../Markdown/Markdown'
-import Image from 'next/image'
 
 export default function Navbar() {
   return (

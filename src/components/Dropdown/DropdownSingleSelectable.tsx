@@ -23,7 +23,7 @@ type Props = {
   placeholder: string
   ariaLabel: string
   getItems: (searchTerm: string) => Promise<Item[]>
-  enableSearch: boolean
+  enableSearch?: boolean
   maxAmountOfItems?: number
 }
 
@@ -34,7 +34,7 @@ export default function DropdownSingleSelectable({
   placeholder,
   ariaLabel,
   getItems,
-  enableSearch,
+  enableSearch = false,
   maxAmountOfItems = 20,
 }: Props) {
   const wrapperRef: RefObject<HTMLDivElement> = createRef()
