@@ -5,7 +5,7 @@ import {
 } from '../utils/utils'
 import { CourseThreeLevelsDeep, CourseTwoLevelsDeep } from '../../../types'
 import { ResponseArray } from '../types'
-import { SortOptionType } from '../../../components/TabGroup/TabGroup'
+import { SortOptionType } from '../../../types/filters'
 
 const ENDPOINT = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/courses`
 const DEFAULT_MATCHES_PER_PAGE = 10

@@ -47,43 +47,38 @@ export const Tabs = {
 export const Tab = {
   margin: 0,
   flex: '0 0 100%',
-
   display: 'flex',
   flexDirection: 'row',
-
   backgroundColor: Primary90,
   color: OnPrimary90,
-
   gap: '1rem',
-
   textTransform: 'initial',
   [`${mq.sm}`]: {
     flex: 'auto',
   },
-
   '& + &': {
     [`${mq.sm}`]: {
       marginLeft: '4px',
     },
   },
-
   '&.MuiTab-root': {
-    padding: '10px 14px',
+    padding: '1rem 1.4rem',
     minWidth: '100%',
     flex: '0 0 100%',
-
     [`${mq.sm}`]: {
       minWidth: 'auto',
       flex: 'initial',
     },
-    [`&:active`]: {
+    ['&:focus']: {
+      backgroundColor: Accent90,
+    },
+    ['&:active']: {
       backgroundColor: Accent20,
     },
-    [`&:hover`]: {
+    ['&:hover']: {
       backgroundColor: Accent90,
     },
   },
-
   '&.Mui-selected': {
     color: OnAccent40,
     backgroundColor: Accent40,

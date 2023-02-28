@@ -3,7 +3,7 @@ import * as Styled from './styles'
 
 import LogoIcon from '../../../public/logo.svg'
 import { useRouter } from 'next/router'
-import DropdownSingleSelectable from '../Dropdown/DropdownSingleSelectable'
+import Dropdown from '../Dropdown/Dropdown'
 import { LocaleContext } from '../../contexts/LocaleContext'
 import { useContext } from 'react'
 import { localeToLanguage } from '../../utils/utils'
@@ -37,9 +37,14 @@ export default function Navbar() {
           </Styled.Li>
           <Styled.LanguageSelector>
             {setLocale !== undefined && !isLoading ? (
-              <DropdownSingleSelectable
-                selectedItem={{ id: locale, label: localeToLanguage(locale) }}
-                setSelectedItem={(item) => setLocale(item.id as Locale)}
+              <Dropdown
+                id='locale-selector'
+                enableSearch={false}
+                isSingleSelectable
+                selectedItems={[
+                  { id: locale, label: localeToLanguage(locale) },
+                ]}
+                setSelectedItems={(item) => setLocale(item[0].id as Locale)}
                 label='Choose language'
                 placeholder={localeToLanguage(locale)}
                 ariaLabel='Languages to pick from'

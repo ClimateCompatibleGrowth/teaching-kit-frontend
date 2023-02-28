@@ -1,22 +1,38 @@
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 
-import { ClickableListItem, ListItem } from './styles'
+import * as Styled from './styles'
 
 type Props = {
   label: string
   onClick: () => void
   icon?: JSX.Element
+  isFocused?: boolean
+  ariaLabel?: string
   ariaPressed: boolean
-}
+} & HTMLAttributes<HTMLLIElement>
 
-const DropdownListItem = ({ label, onClick, icon, ariaPressed }: Props) => {
+const DropdownListItem = ({
+  id,
+  label,
+  onClick,
+  icon,
+  isFocused,
+  ariaLabel,
+  ariaPressed,
+}: Props) => {
   return (
-    <ListItem>
-      <ClickableListItem onClick={onClick} aria-pressed={ariaPressed}>
+    <Styled.ListItem isFocused={isFocused}>
+      <Styled.ClickableListItem
+        tabIndex={-1}
+        id={id}
+        onClick={onClick}
+        aria-pressed={ariaPressed}
+        aria-label={ariaLabel}
+      >
         {icon}
         {label}
-      </ClickableListItem>
-    </ListItem>
+      </Styled.ClickableListItem>
+    </Styled.ListItem>
   )
 }
 
