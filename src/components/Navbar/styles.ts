@@ -81,3 +81,8 @@ export const Li = styled.li`
     }
   }
 `
+
+export const LanguageSelector = styled.div`
+  margin: auto 0;
+  margin-left: 10rem;
+`

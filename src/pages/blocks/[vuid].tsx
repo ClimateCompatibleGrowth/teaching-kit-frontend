@@ -67,14 +67,20 @@ export async function getStaticPaths() {
     }
   }
 
-  const blocks: ResponseArray<Block> = await axios.get(
-    `${process.env.STRAPI_API_URL}/blocks`
+  const englishBlocks: ResponseArray<Block> = await axios.get(
+    `${process.env.STRAPI_API_URL}/blocks?locale=en`
+  )
+  const spanishBlocks: ResponseArray<Block> = await axios.get(
+    `${process.env.STRAPI_API_URL}/blocks?locale=es-ES`
   )
 
-  const paths = blocks.data.data
+  const allBlocks = [...englishBlocks.data.data, ...spanishBlocks.data.data]
+
+  const paths = allBlocks
     .filter((block) => block.attributes.vuid !== null)
     .map((block) => ({
       params: { vuid: `${block.attributes.vuid}` },
+      locale: block.attributes.locale,
     }))
 
   return { paths, fallback: 'blocking' }
@@ -83,7 +89,9 @@ export async function getStaticPaths() {
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
     const blockVuid = await axios.get(
-      `${process.env.STRAPI_API_URL}/blockByVuid/${ctx.params?.vuid}`
+      `${process.env.STRAPI_API_URL}/blockByVuid/${ctx.params?.vuid}?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }`
     )
     const blockResponse = await axios.get(
       `${process.env.STRAPI_API_URL}/blocks/${blockVuid.data?.id}?populate=*`

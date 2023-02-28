@@ -81,14 +81,23 @@ export async function getStaticPaths() {
     }
   }
 
-  const lectures: ResponseArray<Lecture> = await axios.get(
-    `${process.env.STRAPI_API_URL}/lectures`
+  const englishLectures: ResponseArray<Lecture> = await axios.get(
+    `${process.env.STRAPI_API_URL}/lectures?locale=en`
+  )
+  const spanishLectures: ResponseArray<Lecture> = await axios.get(
+    `${process.env.STRAPI_API_URL}/lectures?locale=es-ES`
   )
 
-  const paths = lectures.data.data
+  const allLectures = [
+    ...englishLectures.data.data,
+    ...spanishLectures.data.data,
+  ]
+
+  const paths = allLectures
     .filter((lecture) => lecture.attributes.vuid !== null)
     .map((lecture) => ({
       params: { vuid: `${lecture.attributes.vuid}` },
+      locale: lecture.attributes.locale,
     }))
 
   return { paths, fallback: 'blocking' }
@@ -97,7 +106,9 @@ export async function getStaticPaths() {
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
     const lectureVuid = await axios.get(
-      `${process.env.STRAPI_API_URL}/lectureByVuid/${ctx.params?.vuid}`
+      `${process.env.STRAPI_API_URL}/lectureByVuid/${ctx.params?.vuid}?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }`
     )
 
     const populateCourses = 'populate[Courses]=*'
