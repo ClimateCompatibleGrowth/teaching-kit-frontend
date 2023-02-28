@@ -61,7 +61,7 @@ export default function CoursePage({ course }: Props) {
               id: lecture.id.toString(),
               title: lecture.attributes.Title,
               text: lecture.attributes.Abstract,
-              href: `/lectures/${lecture.id}`,
+              href: `/lectures/${lecture.attributes.vuid}`,
               subTitle: <LearningMaterialBadge type={'LECTURE'} />,
             }))}
           />
@@ -79,39 +79,57 @@ export async function getStaticPaths() {
     }
   }
 
-  const courses: ResponseArray<Course> = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses`
+  const englishCourses: ResponseArray<Course> = await axios.get(
+    `${process.env.STRAPI_API_URL}/lectures?locale=en`
+  )
+  const spanishCourses: ResponseArray<Course> = await axios.get(
+    `${process.env.STRAPI_API_URL}/lectures?locale=es-ES`
   )
 
-  const paths = courses.data.data.map((course) => {
-    return {
-      params: { id: `${course.id}` },
-    }
-  })
+  const allCourses = [...englishCourses.data.data, ...spanishCourses.data.data]
 
-  return { paths, fallback: false }
+  const paths = allCourses
+    .filter((course) => course.attributes.vuid !== null)
+    .map((course) => {
+      return {
+        params: { vuid: `${course.attributes.vuid}` },
+        locale: course.attributes.locale,
+      }
+    })
+
+  return { paths, fallback: 'blocking' }
 }
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
-  const populateBlocks = 'populate[Lectures][populate][0]=Blocks'
-  const populateCourseCreators = 'populate=CourseCreators'
-  const populateLectureCreators =
-    'populate[Lectures][populate][LectureCreators]=*'
-  const populateLearningOutcomes =
-    'populate[Lectures][populate][LearningOutcomes]=*'
-  const populateBlockAuthors =
-    'populate[Lectures][populate][Blocks][populate][Authors]=*'
-  const populateBlockSlides =
-    'populate[Lectures][populate][Blocks][populate][Slides]=*'
-  const populateLevel = 'populate[Level]=*'
-  const populateLectureLevel = 'populate[Lectures][populate][Level]=*'
+  try {
+    const blockVuid = await axios.get(
+      `${process.env.STRAPI_API_URL}/courseByVuid/${ctx.params?.vuid}`
+    )
 
-  const res = await axios.get(
-    `${process.env.STRAPI_API_URL}/courses/${ctx.params?.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
-  )
-  const course: Data<CourseThreeLevelsDeep> = res.data.data
+    const populateBlocks = 'populate[Lectures][populate][0]=Blocks'
+    const populateCourseCreators = 'populate=CourseCreators'
+    const populateLectureCreators =
+      'populate[Lectures][populate][LectureCreators]=*'
+    const populateLearningOutcomes =
+      'populate[Lectures][populate][LearningOutcomes]=*'
+    const populateBlockAuthors =
+      'populate[Lectures][populate][Blocks][populate][Authors]=*'
+    const populateBlockSlides =
+      'populate[Lectures][populate][Blocks][populate][Slides]=*'
+    const populateLevel = 'populate[Level]=*'
+    const populateLectureLevel = 'populate[Lectures][populate][Level]=*'
 
-  return {
-    props: { course: filterOutOnlyPublishedEntriesOnCourse(course) },
+    const res = await axios.get(
+      `${process.env.STRAPI_API_URL}/courses/${blockVuid.data?.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
+    )
+    const course: Data<CourseThreeLevelsDeep> = res.data.data
+
+    return {
+      props: { course: filterOutOnlyPublishedEntriesOnCourse(course) },
+    }
+  } catch (error) {
+    return {
+      notFound: true,
+    }
   }
 }

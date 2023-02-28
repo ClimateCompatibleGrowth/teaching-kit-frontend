@@ -9,7 +9,7 @@ import {
 export const isBlockOneLevelDeep = (
   data: Data<DownloadableContent>
 ): data is Data<BlockOneLevelDeep> =>
-  !!(data as Data<BlockOneLevelDeep>).attributes.Document
+  !!(data as Data<BlockOneLevelDeep>).attributes.Slides
 export const isLectureTwoLevelsDeep = (
   data: Data<DownloadableContent>
 ): data is Data<LectureTwoLevelsDeep> =>

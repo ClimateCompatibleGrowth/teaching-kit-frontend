@@ -182,7 +182,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
       title: block.attributes.Title,
       id: block.id.toString(),
       text: block.attributes.Abstract,
-      href: `/blocks/${block.id}`,
+      href: `/blocks/${block.attributes.vuid}`,
       subTitle: <LearningMaterialBadge type='BLOCK' />,
       duration: (
         <>
@@ -197,7 +197,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
     const baseCard = dataToCardFormat(data)
     return {
       ...baseCard,
-      href: `/lectures/${data.id}`,
+      href: `/lectures/${data.attributes.vuid}`,
       subTitle: <LearningMaterialBadge type='LECTURE' />,
       duration: (
         <>
@@ -214,7 +214,7 @@ const TabGroup = ({ selectedKeywords, selectedAuthors }: Props) => {
     const baseCard = dataToCardFormat(data)
     return {
       ...baseCard,
-      href: `/courses/${data.id}`,
+      href: `/courses/${data.attributes.vuid}`,
       subTitle: <LearningMaterialBadge type='COURSE' />,
       duration: (
         <>

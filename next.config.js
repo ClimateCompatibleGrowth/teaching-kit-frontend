@@ -26,10 +26,15 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'i.creativecommons.org',
+        hostname: 'licensebuttons.net',
       },
     ],
     minimumCacheTTL: 1500000,
+  },
+
+  i18n: {
+    locales: ['en', 'es-ES'],
+    defaultLocale: 'en',
   },
 }
 

@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model zenodo_entry {
+  id                   String        @id @default(uuid())
+  strapi_entry_id      String        @default(uuid())
+  strapi_entry_version Int
+  created_on_zenodo    DateTime?
+  published_on_zenodo  DateTime?
+  error                String?
+  zenodo_files         zenodo_file[]
+
+  @@unique([strapi_entry_id, strapi_entry_version], name: "entry_identifier")
+}
+
+model zenodo_file {
+  id                    String       @id @default(uuid())
+  successfully_uploaded DateTime?
+  tries                 Int?
+  zenodo_entry          String       @default(uuid())
+  error                 String?
+  entry                 zenodo_entry @relation(fields: [zenodo_entry], references: [id])
+}

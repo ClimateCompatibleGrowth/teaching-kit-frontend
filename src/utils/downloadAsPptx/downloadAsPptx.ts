@@ -70,8 +70,10 @@ export const getContentSize = async (
       pptx.map(async (p) => ((await p.write()) as Blob).size)
     )
     size = blobSizes.reduce((total, blob) => total + blob, 0)
-  } else {
+  } else if (pptx) {
     size = ((await pptx?.write()) as Blob).size
+  } else {
+    return ''
   }
 
   const isBig = size > 10 ** 6
