@@ -207,6 +207,7 @@ export default function Dropdown({
                 label={selectedItem.label}
                 id={selectedItem.id.toString()}
                 onDelete={() => deselectItem(selectedItem)}
+                type='filter'
               />
             </Styled.SelectedItem>
           ))}

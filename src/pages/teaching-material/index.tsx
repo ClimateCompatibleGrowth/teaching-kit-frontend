@@ -69,8 +69,9 @@ const defaultFilterResult: ResponseArrayData<any> = {
   },
 }
 
-export default function Discover() {
-  // return null
+export default function TeachingMaterial() {
+  const [hasAnyChangeHappened, setHasAnyChangeHappened] =
+    useState<boolean>(false)
   const [selectedKeywords, setSelectedKeywords] = useState<Item[]>([])
   const [selectedAuthors, setSelectedAuthors] = useState<Item[]>([])
   const [selectedSort, setSelectedSort] = useState<SortOption>(
@@ -93,12 +94,6 @@ export default function Discover() {
     lectures: defaultFilterResult,
     blocks: defaultFilterResult,
   })
-  const [courseResults, setCourseResults] =
-    useState<ResponseArrayData<CourseThreeLevelsDeep>>(defaultFilterResult)
-  const [lectureResults, setLectureResults] =
-    useState<ResponseArrayData<LectureTwoLevelsDeep>>(defaultFilterResult)
-  const [blockResults, setBlockResults] =
-    useState<ResponseArrayData<BlockOneLevelDeep>>(defaultFilterResult)
 
   const summaryId = 'content-results-summary'
 
@@ -124,12 +119,21 @@ export default function Discover() {
     []
   )
 
-  const getResultsSummary = useCallback(() => {
-    const dataResults = `showing ${results.courses.data.length} courses, ${results.lectures.data.length} lectures, and ${results.blocks.data.length} lecture blocks.`
+  const getResultsSummary = () => {
+    if (!hasAnyChangeHappened) {
+      return ''
+    }
+    const dataResults = `showing ${results.courses.data.length} course${
+      results.courses.data.length > 1 ? 's' : ''
+    }, ${results.lectures.data.length} lecture${
+      results.lectures.data.length > 1 ? 's' : ''
+    }, and ${results.blocks.data.length} lecture block${
+      results.blocks.data.length > 1 ? 's' : ''
+    }.`
     const authorPart =
       selectedAuthors.length !== 0
-        ? `${selectedAuthors.length} ${
-            selectedAuthors.length > 1 ? 'authors' : 'author'
+        ? `${selectedAuthors.length} author${
+            selectedAuthors.length > 1 ? 's' : ''
           }.`
         : ''
     const keywordPart =
@@ -137,20 +141,14 @@ export default function Discover() {
         ? `${selectedKeywords.map((k) => k.ariaLabel || k.label).join(', ')}`
         : ''
     const isFiltered = keywordPart || authorPart
+    const sortedByPart = `Sorted ${selectedSort.ariaLabel}`
     const fullSummary = `${dataResults} ${
       isFiltered ? 'Filtered by' : ''
-    } ${keywordPart} ${authorPart ? 'and' : ''} ${authorPart}`
+    } ${keywordPart} ${
+      keywordPart && authorPart ? 'and' : ''
+    } ${authorPart} ${sortedByPart}`
     return fullSummary
-  }, [
-    // courseResults,
-    // lectureResults,
-    // blockResults,
-    results.courses.data.length,
-    results.lectures.data.length,
-    results.blocks.data.length,
-    selectedAuthors,
-    selectedKeywords,
-  ])
+  }
 
   const onChange = useCallback(async () => {
     const keywords = selectedKeywords.map((keyword) => keyword.label)
@@ -190,13 +188,12 @@ export default function Discover() {
       lectures: lectureFilterResult,
       blocks: blockFilterResult,
     })
-
-    // setLectureResults(lectureFilterResult)
-    // setCourseResults(courseFilterResult)
-    // setBlockResults(blockFilterResult)
   }, [selectedKeywords, selectedAuthors, selectedSort])
 
   useEffect(() => {
+    if (selectedKeywords.length > 1 || selectedAuthors.length > 1) {
+      setHasAnyChangeHappened(true)
+    }
     onChange()
   }, [
     selectedKeywords.length,
@@ -236,8 +233,10 @@ export default function Discover() {
         </Styled.FilterGroup>
       </div>
       <Styled.H2>All Teaching Material</Styled.H2>
-      <VisuallyHidden id={summaryId} aria-live='polite'>
-        {getResultsSummary()}
+      <VisuallyHidden>
+        <p id={summaryId} aria-live='polite'>
+          {getResultsSummary()}
+        </p>
       </VisuallyHidden>
       <div>
         <TabGroup
