@@ -16,7 +16,7 @@ import { VisuallyHidden } from '../../styles/global'
 import { Item } from '../../types/filters'
 
 type Props = {
-  controls: string
+  controls?: string
   id: string
   isSingleSelectable?: boolean
   selectedItems: Item[]
@@ -161,7 +161,7 @@ export default function Dropdown({
             onClick={() => {
               setDoShowResultsList(!doShowResultsList)
             }}
-            aria-controls={`${id} ${controls}`}
+            aria-controls={`${id} ${controls || ''}`}
             aria-describedby={`${id}-help`}
             searchIsEnabled={enableSearch}
             role='combobox'
