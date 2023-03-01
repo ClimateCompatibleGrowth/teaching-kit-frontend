@@ -34,7 +34,8 @@ export type DeepAffiliation = Affiliation & {
 }
 
 export type Author = {
-  Name: string
+  FirstName: string
+  LastName: string
   Email?: string
   ORCID?: string
 }

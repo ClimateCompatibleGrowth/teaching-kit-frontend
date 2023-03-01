@@ -23,13 +23,16 @@ const createTitleSlide = (
   })
   if (authors && authors?.length > 1) {
     const authorsString = `Authors: ${authors
-      ?.map((author) => author.attributes.Name)
+      ?.map(
+        (author) =>
+          `${author.attributes.FirstName} ${author.attributes.LastName}`
+      )
       .join(', ')}`
 
     descriptionSlide.addText(authorsString, descriptionSlideAuthor)
   } else if (authors && authors?.length === 1) {
     const authorsString = `Author: ${authors?.map(
-      (author) => author.attributes.Name
+      (author) => `${author.attributes.FirstName} ${author.attributes.LastName}`
     )}`
     descriptionSlide.addText(authorsString, descriptionSlideAuthor)
   } else {
