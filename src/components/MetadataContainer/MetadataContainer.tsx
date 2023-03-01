@@ -111,7 +111,7 @@ export default function MetadataContainer({
               <Styled.Li key={author.id}>
                 <Styled.EmailIcon />
                 <a href={`mailto:${author.attributes.Email}`}>
-                  {author.attributes.Name}
+                  {author.attributes.FirstName} {author.attributes.LastName}
                 </a>
               </Styled.Li>
             ))}
