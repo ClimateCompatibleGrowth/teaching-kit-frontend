@@ -8,8 +8,10 @@ type StrapiWebhookRequest = NextApiRequest & {
   body: StrapiWebhookBody
 }
 
-type StrapiWebhookBody = {
-  model?: LearningMaterialType
+type StrapiModel = 'course' | 'lecture' | 'block'
+
+export type StrapiWebhookBody = {
+  model?: StrapiModel
   entry?: { id: number; vuid?: string; version: number }
 }
 
@@ -25,7 +27,7 @@ export default async function postHandler(
   let webhookBody: StrapiWebhookBody = {}
 
   try {
-    throw new InternalApiError('API endpoint not yet implemented')
+    // throw new InternalApiError('API endpoint not yet implemented')
     webhookBody = req.body.body
     const zenodoPublishResponse = await publishZenodoEntry(webhookBody)
     return res.status(200).json(zenodoPublishResponse)

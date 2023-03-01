@@ -79,6 +79,13 @@ export type BlockOneLevelDeep = Block & {
   Keywords: { data: Data<Keyword>[] }
 }
 
+export type BlockTwoLevelsDeep = Modify<
+  BlockOneLevelDeep,
+  {
+    Authors: { data: Data<AuthorOneLevelDeep>[] }
+  }
+>
+
 export type Lecture = {
   Title: string
   Abstract: string

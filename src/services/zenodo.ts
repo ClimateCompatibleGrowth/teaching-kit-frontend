@@ -1,16 +1,18 @@
 import axios from 'axios'
 import fs from 'fs'
+import { StrapiWebhookBody } from '../pages/api/zenodo'
 import { getBlock } from '../repositories/strapi'
-import { createZenodoEntry } from '../repositories/zenodo'
+import { createZenodoEntry } from '../repositories/zenodo/zenodo'
 import * as database from '../repositories/zenodo-database'
 import { InternalApiError } from '../shared/error/internal-api-error'
 import { NotImplementedError } from '../shared/error/not-implemented-error'
-import { Author, Data, LearningMaterialType } from '../types'
-
-type StrapiWebhookBody = {
-  model?: LearningMaterialType
-  entry?: { id: number; vuid?: string; version: number }
-}
+import {
+  AuthorOneLevelDeep,
+  BlockTwoLevelsDeep,
+  Data,
+  LearningMaterialType,
+} from '../types'
+import { ZenodoBody, ZenodoCreator } from '../repositories/zenodo/types'
 
 export const publishZenodoEntry = async (webhookBody: StrapiWebhookBody) => {
   const config = {
@@ -31,16 +33,11 @@ export const publishZenodoEntry = async (webhookBody: StrapiWebhookBody) => {
     )
 
     const strapiContent = await getStrapiContent(
-      webhookBody.model,
+      webhookBody.model.toUpperCase() as LearningMaterialType,
       webhookBody.entry.id
     )
 
-    const body = {
-      metadata: {
-        upload_type: 'lesson',
-        // creators: strapiContent.Authors.data.map((author) => ({ name:  }))
-      },
-    }
+    const body = generateZenodoBody(strapiContent)
 
     const zenodoCreationResponse = await createZenodoEntry(body, config)
 
@@ -60,11 +57,24 @@ export const publishZenodoEntry = async (webhookBody: StrapiWebhookBody) => {
   }
 }
 
-// const formatAuthor = (author: Data<Author>) => {
-//   return {
-//     name: `${author.attributes.}`
-//   }
-// }
+const generateZenodoBody = (data: Data<BlockTwoLevelsDeep>): ZenodoBody => {
+  return {
+    metadata: {
+      title: data.attributes.Title,
+      description: data.attributes.Abstract,
+      upload_type: 'lesson',
+      creators: data.attributes.Authors.data.map(formatCreator),
+    },
+  }
+}
+
+const formatCreator = (author: Data<AuthorOneLevelDeep>): ZenodoCreator => {
+  return {
+    name: `${author.attributes.LastName}, ${author.attributes.FirstName}`,
+    affiliation: author.attributes.Affiliation.attributes?.Affiliation,
+    orcid: author.attributes.ORCID,
+  }
+}
 
 const getStrapiContent = async (type: LearningMaterialType, id: number) => {
   switch (type) {
