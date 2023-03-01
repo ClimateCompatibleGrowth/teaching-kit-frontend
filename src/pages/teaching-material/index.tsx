@@ -113,7 +113,7 @@ export default function TeachingMaterial() {
       const matchingAuthors = await searchForAuthors(searchTerm)
       return matchingAuthors.map((matchingAuthor) => ({
         id: matchingAuthor.id.toString(),
-        label: matchingAuthor.attributes.Name,
+        label: `${matchingAuthor.attributes.FirstName} ${matchingAuthor.attributes.LastName}`,
       }))
     },
     []
