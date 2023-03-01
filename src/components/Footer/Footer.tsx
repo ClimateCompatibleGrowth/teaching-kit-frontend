@@ -1,6 +1,7 @@
 import * as Styled from './styles'
 
 import LogoIcon from '../../../public/logo.svg'
+import VercelBanner from '../../../public/vercel-banner.svg'
 import Markdown from '../Markdown/Markdown'
 
 import Image from 'next/image'
@@ -15,6 +16,9 @@ export default function Navbar() {
             <p>
               {`Copyright © Climate Compatible Growth ${new Date().getUTCFullYear()}. All rights reserved.`}
             </p>
+            <Styled.VercelBanner>
+              <VercelBanner alt='Powered on Vercel' width='67' height='22' />
+            </Styled.VercelBanner>
           </Styled.LogoInnerWrapper>
         </Styled.LogoWrapper>
         <Styled.ContactWrapper>

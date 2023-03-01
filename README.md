@@ -22,3 +22,7 @@ In order for the service to run as expected, it needs data which are supposed to
 ## Styling
 
 We use [@emotion/styled-components](https://emotion.sh/docs/styled) for styling in this project. In some rare cases we use regular in-line CSS-in-JS in order to adjust external components from e.g Material-UI. In these cases we stick to the CSS-in-JS throughout the whole component.
+
+## Hosting
+
+The site is deployed on [Vercel](https://vercel.com/?utm_source=teaching-kit&utm_campaign=oss).
