@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { LearningMaterialType } from '../../types'
 import { Prisma } from '@prisma/client'
 import { publishZenodoEntry } from '../../services/zenodo'
-import { InternalApiError } from '../../shared/error/InternalApiError'
+import { InternalApiError } from '../../shared/error/internal-api-error'
 
 type StrapiWebhookRequest = NextApiRequest & {
   body: StrapiWebhookBody
