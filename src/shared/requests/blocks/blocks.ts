@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { BlockSortOptionType } from '../../../components/TabGroup/TabGroup'
 import { BlockOneLevelDeep } from '../../../types'
+import { BlockSortOptionType } from '../../../types/filters'
 import { ResponseArray, ResponseArrayData } from '../types'
 import {
   FilterParameters,

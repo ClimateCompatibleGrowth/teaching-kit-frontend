@@ -3,6 +3,7 @@ import { Author, Data } from '../../../../types'
 import {
   descriptionSlideAuthor,
   descriptionTitle,
+  disclaimerStyling,
 } from '../../pptxConfiguration/slideElements'
 
 const createTitleSlide = (
@@ -17,14 +18,27 @@ const createTitleSlide = (
     x: 0.0,
     y: 6.5,
     w: '100%',
-    h: 0.75,
+    h: 0.85,
     fill: { color: 'F1F1F1' },
   })
+  if (authors && authors?.length > 1) {
+    const authorsString = `Authors: ${authors
+      ?.map((author) => author.attributes.Name)
+      .join(', ')}`
 
-  const authorsString = `Authors: ${authors
-    ?.map((author) => author.attributes.Name)
-    .join(', ')}`
+    descriptionSlide.addText(authorsString, descriptionSlideAuthor)
+  } else if (authors && authors?.length === 1) {
+    const authorsString = `Author: ${authors?.map(
+      (author) => author.attributes.Name
+    )}`
+    descriptionSlide.addText(authorsString, descriptionSlideAuthor)
+  } else {
+    return
+  }
 
-  descriptionSlide.addText(authorsString, descriptionSlideAuthor)
+  const disclaimertext =
+    'These teaching materials are based on content provided by Climate Compatible Growth as part of their FCDO-funded activities. As this content can be adapted by other institutions, the opinions expressed here may not reflect those of CCG or its funders.'
+
+  descriptionSlide.addText(disclaimertext, disclaimerStyling)
 }
 export default createTitleSlide

@@ -9,7 +9,11 @@ import {
   Level,
 } from '../../types'
 import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
-import { levelToString, typeToDownloadLabel } from '../../utils/utils'
+import {
+  levelToString,
+  typeToDownloadLabel,
+  typeToText,
+} from '../../utils/utils'
 import Alert from '../Alert/Alert'
 import Button from '../Button/Button'
 
@@ -19,8 +23,10 @@ export type Props = {
   level?: { data?: Data<Level> }
   duration?: string
   authors?: { data: Data<Author>[] }
+  docxFileSize: string
+  pptxFileSize?: string
   downloadAsDocx: () => Promise<void | DownloadError>
-  downloadAsPptx: () => void
+  downloadAsPptx?: () => Promise<void | DownloadError>
   parentRelations?: {
     type: 'lectures' | 'courses'
     parents: Data<CourseOneLevelDeep>[] | Data<Lecture>[]
@@ -32,22 +38,41 @@ export default function MetadataContainer({
   level,
   duration,
   authors,
+  docxFileSize,
+  pptxFileSize,
   downloadAsDocx,
   downloadAsPptx,
   parentRelations,
   type,
 }: Props) {
-  const [docxDownloadIsLoading, setDocxDownloadIsLoading] = useState(false)
-  const [docxDowloadErrored, setDocxDownloadErrored] = useState(false)
+  const [isDocxDownloadLoading, setIsDocxDownloadLoading] = useState(false)
+  const [docxDowloadError, setDocxDownloadError] = useState(false)
+  const [isPptxDownloadLoading, setIsPptxDownloadLoading] = useState(false)
+  const [pptxDowloadError, setPptxDownloadError] = useState(false)
 
-  const downloadBlock = async () => {
-    const delayedLoading = setTimeout(() => setDocxDownloadIsLoading(true), 300)
+  const docxDownloadHandler = async () => {
+    const delayedLoading = setTimeout(() => setIsDocxDownloadLoading(true), 300)
     const download = await downloadAsDocx()
     if (download?.hasError) {
-      setDocxDownloadErrored(true)
+      setDocxDownloadError(true)
     }
     clearTimeout(delayedLoading)
-    setDocxDownloadIsLoading(false)
+    setIsDocxDownloadLoading(false)
+  }
+
+  const pptxDownloadHandler = async () => {
+    if (downloadAsPptx) {
+      const delayedLoading = setTimeout(
+        () => setIsPptxDownloadLoading(true),
+        300
+      )
+      const download = await downloadAsPptx()
+      if (download?.hasError) {
+        setPptxDownloadError(true)
+      }
+      clearTimeout(delayedLoading)
+      setIsPptxDownloadLoading(false)
+    }
   }
 
   return (
@@ -71,7 +96,7 @@ export default function MetadataContainer({
           <Styled.Heading>Also part of</Styled.Heading>
           {parentRelations.parents.map((parent) => (
             <div key={parent.id}>
-              <Link href={`/${parentRelations.type}/${parent.id}`}>
+              <Link href={`/${parentRelations.type}/${parent.attributes.vuid}`}>
                 {parent.attributes.Title}
               </Link>{' '}
             </div>
@@ -96,21 +121,38 @@ export default function MetadataContainer({
       <Styled.HeadingSet>
         <Styled.Heading>{typeToDownloadLabel(type)}</Styled.Heading>
         <Styled.DownloadButtonsContainer>
-          <Button onClick={downloadBlock} isLoading={docxDownloadIsLoading}>
+          {downloadAsPptx && (
+            <>
+              <Button
+                onClick={pptxDownloadHandler}
+                isLoading={isPptxDownloadLoading}
+              >
+                <Styled.DownloadIcon />
+                Powerpoint
+              </Button>
+              <Styled.DownloadSize>{`PowerPoint slides with speaker notes (${pptxFileSize})`}</Styled.DownloadSize>
+            </>
+          )}
+
+          <Button
+            onClick={docxDownloadHandler}
+            isLoading={isDocxDownloadLoading}
+          >
             <Styled.DownloadIcon />
             Docx
           </Button>
-
-          <Button onClick={downloadAsPptx}>
-            <Styled.DownloadIcon />
-            Powerpoint
-          </Button>
+          <Styled.DownloadSize>{`Document with ${typeToText(
+            type,
+            true
+          )} content (${docxFileSize})`}</Styled.DownloadSize>
         </Styled.DownloadButtonsContainer>
-        {docxDowloadErrored === true && (
+        {(docxDowloadError || pptxDowloadError) && (
           <Styled.Alert>
             <Alert
               title='The download failed'
-              text='Something went wrong when trying to download the Docx document...'
+              text={`Something went wrong when trying to download the ${
+                docxDowloadError ? 'Docx' : 'powerpoint'
+              } document...`}
               type='ERROR'
             />
           </Styled.Alert>

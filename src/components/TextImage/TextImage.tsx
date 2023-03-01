@@ -25,7 +25,7 @@ const TextImage = ({ image, title, body }: Props) => {
         </Styled.Portion>
         <Styled.Portion>
           {image.src && image.alt && (
-            <Styled.Image src={image.src} alt={image.alt} />
+            <Styled.Image src={image.src} alt={image.alt} width={640} />
           )}
         </Styled.Portion>
       </Styled.Wrapper>

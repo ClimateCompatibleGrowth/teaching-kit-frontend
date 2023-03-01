@@ -1,5 +1,5 @@
 import { StaticImageData } from 'next/image'
-import { Accent40, OnAccent40, PageContainer } from '../../styles/global'
+import { PageContainer } from '../../styles/global'
 import ButtonLink from '../ButtonLink/ButtonLink'
 import * as Styled from './styles'
 
@@ -19,7 +19,7 @@ interface Props {
 export default function Hero({ image, title, body, action }: Props) {
   return (
     <>
-      <Styled.Image alt={image.alt} src={image.src} />
+      <Styled.Image alt={image.alt} src={image.src} width={1440} />
       <PageContainer hasBottomPadding>
         <Styled.Wrapper>
           <h1>{title}</h1>

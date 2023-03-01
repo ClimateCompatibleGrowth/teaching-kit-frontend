@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import PosterList from '../components/PosterList/PosterList'
 import Hero from '../components/Hero/Hero'
-import hero from '/public/images/hero.png'
-import handsTogether from '/public/images/hands-together.png'
+import campus from '/public/images/campus-students.jpeg'
+import students from '/public/images/lesson-students.jpeg'
 import DocumentIcon from '/public/icons/document.svg'
 import ReuseIcon from '/public/icons/reuse.svg'
 import GroupIcon from '/public/icons/group.svg'
@@ -20,6 +20,24 @@ export default function Home() {
           content='KTH dESA Teaching kit Platform, view courses online and download them as a powerpoint'
         />
         <link rel='icon' href='/favicon.ico' />
+        <link
+          rel='apple-touch-icon'
+          sizes='180x180'
+          href='/apple-touch-icon.png'
+        />
+        <link
+          rel='icon'
+          type='image/png'
+          sizes='32x32'
+          href='/favicon-32x32.png'
+        />
+        <link
+          rel='icon'
+          type='image/png'
+          sizes='16x16'
+          href='/favicon-16x16.png'
+        />
+        <link rel='manifest' href='/site.webmanifest' />
       </Head>
       <Hero {...heroProps} />
       <PosterList {...posterProps} />
@@ -32,8 +50,8 @@ export default function Home() {
 
 const heroProps = {
   image: {
-    alt: 'Students sitting in chairs gathered around a table with notepads, pens, and a laptop in the middle',
-    src: hero,
+    alt: 'Five students sitting outside taking notes',
+    src: campus,
   },
   title: 'Let your teaching material come alive',
   body: 'Our mission is to enable teachers and trainers to use, co-create and share open-licensed teaching and learning material anywhere in the world for delivery online and in the classroom',
@@ -69,8 +87,8 @@ const posterProps = {
 
 const textImageProps = {
   image: {
-    alt: 'Overhead view of hands from various people coming in from a circle towards the center',
-    src: handsTogether,
+    alt: 'Four students gathered around a laptop',
+    src: students,
   },
   title: 'Want to develop learning material or provide feedback?',
   body: 'Global collaboration on course material means that it is always up to date – especially important in cutting edge fields of research such as energy.\n\nTo enquire about access to the teaching kit website to develop and share your own material, please e-mail [teaching@climatecompatiblegrowth.com](mailto:teaching@climatecompatiblegrowth.com)\n\nTo provide feedback on the teaching kit website, please e-mail [platform@climatecompatiblegrowth.com](mailto:platform@climatecompatiblegrowth.com)',

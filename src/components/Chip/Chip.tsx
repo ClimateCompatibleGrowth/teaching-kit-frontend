@@ -5,16 +5,17 @@ type Props = {
   label: string
   id: string
   onDelete?: (id: string) => void
+  type?: string
 }
 
-const Chip = ({ label, id, onDelete }: Props) => {
+const Chip = ({ label, id, onDelete, type = 'chip' }: Props) => {
   return (
     <Styled.Chip>
-      <p>{label}</p>
+      <span>{label}</span>
       {onDelete !== undefined ? (
         <Styled.RemoveButton
           onClick={() => onDelete(id)}
-          aria-label={`Remove chip ${label}`}
+          aria-label={`Remove ${type || ''} '${label}'`}
         >
           x
         </Styled.RemoveButton>

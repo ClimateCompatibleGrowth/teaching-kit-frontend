@@ -67,6 +67,12 @@ export const Alert = styled.div`
   margin-top: 2.5rem;
 `
 
+export const DownloadSize = styled.p`
+  &:not(:last-child) {
+    margin-bottom: 1.6rem;
+  }
+`
+
 export const ClockIcon = styled(Clock)`
   margin-right: 0.8rem;
   vertical-align: bottom;

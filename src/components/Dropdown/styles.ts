@@ -1,4 +1,6 @@
 import styled from '@emotion/styled'
+import { InputHTMLAttributes } from 'react'
+import { ubuntu } from '../../styles/fonts'
 import {
   Accent40,
   Background,
@@ -13,12 +15,14 @@ type IconButtonProps = {
 
 type DropdownInputProps = {
   searchIsEnabled: boolean
-}
+} & InputHTMLAttributes<HTMLInputElement>
 
 export const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
+  flex: 0 1 100%;
   ${mq.sm} {
+    flex: 0 1 auto;
     flex-direction: column;
   }
 `
@@ -27,6 +31,7 @@ export const DropdownWrapper = styled.div`
   flex: 0 0 100%;
   position: relative;
   ${mq.sm} {
+    max-width: 240px;
     flex: 0 0 auto;
   }
 `
@@ -56,7 +61,9 @@ export const InputWrapper = styled.div`
   }
 `
 
-export const Label = styled.label`
+export const Label = styled.span`
+  font-size: 1.4rem;
+  font-family: ${ubuntu[500].style.fontFamily};
   margin-bottom: 0.2rem;
 `
 
@@ -66,39 +73,26 @@ export const DropdownInput = styled.input<DropdownInputProps>`
   font-size: 1.5rem;
   border: 1px solid ${Accent40};
 
+  caret-color: ${(props) =>
+    props.searchIsEnabled ? undefined : 'transparent'};
+
   &:hover {
-    ${(props) => (!props.searchIsEnabled ? 'cursor: pointer;' : null)}
+    ${(props) => (props.searchIsEnabled ? null : 'cursor: pointer;')}
   }
 
   ${mq.sm} {
-    flex: 0 0 auto;
+    flex: 1 0 auto;
   }
 `
 
-export const IconButton = styled(ButtonWithoutDefaultStyle)<IconButtonProps>`
+export const IconButton = styled.span<IconButtonProps>`
   position: absolute;
 
   right: 1rem;
   top: 1rem;
 
   transform: rotate(${(props) => (props.isPointingDown ? '180deg' : '0deg')});
-`
-
-export const DropdownList = styled(UlWithoutDefaultStyle)`
-  height: 150px;
-  width: 100%;
-
-  position: absolute;
-
-  display: flex;
-  flex-direction: column;
-
-  overflow: scroll;
-  border: 1px solid gray;
-  border-radius: 2px;
-  z-index: 10;
-
-  background-color: ${Background};
+  cursor: pointer;
 `
 
 export const MoreResultsInformation = styled.li`

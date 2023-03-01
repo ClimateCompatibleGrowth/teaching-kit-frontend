@@ -66,6 +66,8 @@ export type Block = {
   createdAt: string
   updatedAt: string
   publishedAt: string
+  vuid: string
+  locale: Locale
 }
 
 export type BlockOneLevelDeep = Block & {
@@ -84,6 +86,8 @@ export type Lecture = {
   createdAt: string
   updatedAt: string
   publishedAt: string
+  vuid: string
+  locale: Locale
 }
 
 export type LectureOneLevelDeep = Lecture & {
@@ -111,6 +115,8 @@ export type Course = {
   createdAt: string
   updatedAt: string
   publishedAt: string
+  vuid: string
+  locale: Locale
 }
 
 export type CourseOneLevelDeep = Course & {
@@ -137,3 +143,18 @@ export type CourseThreeLevelsDeep = Modify<
     Lectures: { data: Data<LectureTwoLevelsDeep>[] }
   }
 >
+
+export type DownloadableContent =
+  | BlockOneLevelDeep
+  | LectureTwoLevelsDeep
+  | CourseThreeLevelsDeep
+
+export const locales = ['en', 'es-ES'] as const
+export type Locale = typeof locales[number]
+
+export type Path = {
+  params: {
+    vuid: string
+  }
+  locale?: string
+}

@@ -21,6 +21,21 @@ const nextConfig = {
     })
     return config
   },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'licensebuttons.net',
+      },
+    ],
+    minimumCacheTTL: 1500000,
+  },
+
+  i18n: {
+    locales: ['en', 'es-ES'],
+    defaultLocale: 'en',
+  },
 }
 
 module.exports = withBundleAnalyzer(nextConfig)

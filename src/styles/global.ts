@@ -96,6 +96,29 @@ export const PageContainer = styled.div<{
   }
 `
 
+export const VisuallyHidden = styled.div`
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+`
+
+export const OlWithoutDefaultStyle = styled.ol`
+  padding: 0;
+  margin: 0;
+
+  list-style-type: none;
+
+  a {
+    &:hover {
+      color: darkblue;
+    }
+  }
+`
+
 export const UlWithoutDefaultStyle = styled.ul`
   padding: 0;
   margin: 0;

@@ -184,7 +184,8 @@ const markdownToSlideFormat = async (
           const imageToken = node.tokens.find(findImageToken)
 
           if (imageToken !== undefined && sourceIsFromS3(imageToken.href)) {
-            const href = `${imageToken.href}?do-not-fetch-from-cache`
+            // Dummy parameter to avoid cache (CORS) on chrome: https://www.hacksoft.io/blog/handle-images-cors-error-in-chrome#solution
+            const href = `${imageToken.href}?${new Date().getTime()}`
             const image = await getImageMetadata(href)
             const imageDimensions = getImageDimensions(
               image.naturalWidth,

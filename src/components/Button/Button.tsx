@@ -17,8 +17,9 @@ const Button = ({ children, onClick, isLoading, primary = true }: Props) => {
       onClick={onClick}
       aria-live='polite'
       aria-busy={isLoading}
+      isLoading={isLoading}
     >
-      {isLoading === true ? <Loader /> : children}
+      {isLoading ? <Loader /> : children}
     </Styled.Button>
   )
 }
