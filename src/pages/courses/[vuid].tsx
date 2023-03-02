@@ -103,7 +103,9 @@ export async function getStaticPaths() {
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
     const blockVuid = await axios.get(
-      `${process.env.STRAPI_API_URL}/courseByVuid/${ctx.params?.vuid}`
+      `${process.env.STRAPI_API_URL}/courseByVuid/${ctx.params?.vuid}?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }&fallbackToDefaultLocale=true`
     )
 
     const populateBlocks = 'populate[Lectures][populate][0]=Blocks'
@@ -126,6 +128,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
     return {
       props: { course: filterOutOnlyPublishedEntriesOnCourse(course) },
+      revalidate: 60,
     }
   } catch (error) {
     return {

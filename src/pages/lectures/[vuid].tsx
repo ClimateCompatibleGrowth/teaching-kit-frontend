@@ -108,7 +108,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const lectureVuid = await axios.get(
       `${process.env.STRAPI_API_URL}/lectureByVuid/${ctx.params?.vuid}?locale=${
         ctx.locale ?? ctx.defaultLocale
-      }`
+      }&fallbackToDefaultLocale=true`
     )
 
     const populateCourses = 'populate[Courses]=*'
@@ -128,6 +128,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
       props: {
         lecture: filterOutOnlyPublishedEntriesOnLecture(lecture),
       },
+      revalidate: 60,
     }
   } catch (error) {
     return {

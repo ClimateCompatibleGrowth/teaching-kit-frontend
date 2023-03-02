@@ -91,8 +91,9 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const blockVuid = await axios.get(
       `${process.env.STRAPI_API_URL}/blockByVuid/${ctx.params?.vuid}?locale=${
         ctx.locale ?? ctx.defaultLocale
-      }`
+      }&fallbackToDefaultLocale=true`
     )
+
     const blockResponse = await axios.get(
       `${process.env.STRAPI_API_URL}/blocks/${blockVuid.data?.id}?populate=*`
     )
@@ -106,6 +107,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
     return {
       props: { block: filterOutOnlyPublishedEntriesOnBlock(block) },
+      revalidate: 60,
     }
   } catch (error) {
     return {
