@@ -35,30 +35,32 @@ export default function Navbar() {
               Teaching Material
             </Link>
           </Styled.Li>
-          <Styled.LanguageSelector>
-            {setLocale !== undefined && !isLoading ? (
-              <Dropdown
-                id='locale-selector'
-                enableSearch={false}
-                isSingleSelectable
-                selectedItems={[
-                  { id: locale, label: localeToLanguage(locale) },
-                ]}
-                setSelectedItems={(item) => setLocale(item[0].id as Locale)}
-                label='Choose language'
-                placeholder={localeToLanguage(locale)}
-                ariaLabel='Languages to pick from'
-                getItems={() =>
-                  Promise.resolve(
-                    locales.map((locale) => ({
-                      id: locale,
-                      label: localeToLanguage(locale),
-                    }))
-                  )
-                }
-              />
-            ) : null}
-          </Styled.LanguageSelector>
+          <Styled.Li>
+            <Styled.LanguageSelector>
+              {setLocale !== undefined && !isLoading ? (
+                <Dropdown
+                  id='locale-selector'
+                  enableSearch={false}
+                  isSingleSelectable
+                  selectedItems={[
+                    { id: locale, label: localeToLanguage(locale) },
+                  ]}
+                  setSelectedItems={(item) => setLocale(item[0].id as Locale)}
+                  label='Choose language'
+                  placeholder={localeToLanguage(locale)}
+                  ariaLabel='Languages to pick from'
+                  getItems={() =>
+                    Promise.resolve(
+                      locales.map((locale) => ({
+                        id: locale,
+                        label: localeToLanguage(locale),
+                      }))
+                    )
+                  }
+                />
+              ) : null}
+            </Styled.LanguageSelector>
+          </Styled.Li>
         </Styled.Ul>
       </Styled.Wrapper>
     </Styled.ColorBar>
