@@ -58,17 +58,21 @@ export type Keyword = {
   Keyword: string
 }
 
-export type Block = {
-  Title: string
-  Abstract: string
-  DurationInMinutes: number
-  Document: string
-  References: string
+type BaseEntry = {
   createdAt: string
   updatedAt: string
   publishedAt: string
   vuid: string
   locale: Locale
+  versionNumber: number | null
+}
+
+export type Block = BaseEntry & {
+  Title: string
+  Abstract: string
+  DurationInMinutes: number
+  Document: string
+  References: string
 }
 
 export type BlockOneLevelDeep = Block & {
@@ -86,16 +90,11 @@ export type BlockTwoLevelsDeep = Modify<
   }
 >
 
-export type Lecture = {
+export type Lecture = BaseEntry & {
   Title: string
   Abstract: string
   Acknowledgement: string
   CiteAs: string
-  createdAt: string
-  updatedAt: string
-  publishedAt: string
-  vuid: string
-  locale: Locale
 }
 
 export type LectureOneLevelDeep = Lecture & {
@@ -115,16 +114,11 @@ export type LectureTwoLevelsDeep = Modify<
   }
 >
 
-export type Course = {
+export type Course = BaseEntry & {
   Title: string
   Abstract: string
   Acknowledgement: string
   CiteAs: string
-  createdAt: string
-  updatedAt: string
-  publishedAt: string
-  vuid: string
-  locale: Locale
 }
 
 export type CourseOneLevelDeep = Course & {

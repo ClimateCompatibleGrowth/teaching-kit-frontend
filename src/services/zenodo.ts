@@ -1,8 +1,9 @@
-import axios from 'axios'
-import fs from 'fs'
-import { StrapiWebhookBody } from '../pages/api/zenodo'
+import { StrapiWebhookBody, WebhookBlock } from '../pages/api/zenodo'
 import { getBlock } from '../repositories/strapi'
-import { createZenodoEntry } from '../repositories/zenodo/zenodo'
+import {
+  createZenodoEntry,
+  uploadZenodoFile,
+} from '../repositories/zenodo/zenodo'
 import * as database from '../repositories/zenodo-database'
 import { InternalApiError } from '../shared/error/internal-api-error'
 import { NotImplementedError } from '../shared/error/not-implemented-error'
@@ -13,23 +14,19 @@ import {
   LearningMaterialType,
 } from '../types'
 import { ZenodoBody, ZenodoCreator } from '../repositories/zenodo/types'
+import FormData from 'form-data'
 
-export const publishZenodoEntry = async (webhookBody: StrapiWebhookBody) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${process.env.ZENODO_API_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-  }
-
+export const publishZenodoEntry = async (
+  webhookBody: StrapiWebhookBody<WebhookBlock>
+) => {
   if (
     webhookBody.model &&
     webhookBody.entry?.vuid &&
-    webhookBody.entry.version
+    webhookBody.entry.versionNumber
   ) {
     const databaseEntry = await database.createEntry(
       webhookBody.entry?.vuid,
-      webhookBody.entry.version
+      webhookBody.entry.versionNumber
     )
 
     const strapiContent = await getStrapiContent(
@@ -39,22 +36,41 @@ export const publishZenodoEntry = async (webhookBody: StrapiWebhookBody) => {
 
     const body = generateZenodoBody(strapiContent)
 
-    const zenodoCreationResponse = await createZenodoEntry(body, config)
+    const zenodoCreationResponse = await createZenodoEntry(body)
 
     await database.updateEntryWithZenodoCreation(
       databaseEntry.id,
       zenodoCreationResponse.created
     )
+
+    const file = createMarkdownBlob(strapiContent.attributes.Document)
+    const fileName = generateFileName(strapiContent.attributes.Title)
+    const sad = await uploadZenodoFile(
+      zenodoCreationResponse.links.bucket,
+      `${fileName}.md`,
+      file
+    )
+
+    console.log(sad)
     console.log(zenodoCreationResponse)
   } else {
     throw new InternalApiError(
-      `Cannot publish entry without model, vuid and version of the Strapi entry. Got model: '${webhookBody.model}', vuid: '${webhookBody.entry?.vuid}' and version: '${webhookBody.entry?.version}'`
+      `Cannot publish entry without model, vuid and version of the Strapi entry. Got model: '${webhookBody.model}', vuid: '${webhookBody.entry?.vuid}' and version: '${webhookBody.entry?.versionNumber}'`
     )
   }
 
   return {
     message: 'Entry successfully published to Zenodo',
   }
+}
+
+const generateFileName = (title: string) => title.split(' ').join('-')
+
+const createMarkdownBlob = (markdown: string): FormData => {
+  const formData = new FormData()
+  const markdownBuffer = Buffer.from(markdown)
+  formData.append('file', markdownBuffer)
+  return formData
 }
 
 const generateZenodoBody = (data: Data<BlockTwoLevelsDeep>): ZenodoBody => {
