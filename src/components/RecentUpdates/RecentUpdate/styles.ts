@@ -29,8 +29,10 @@ export const Markdown = styled.div`
   -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
   white-space: normal;
+  margin-top: 1.6rem;
   margin-bottom: 1.6rem;
   p {
+    display: inline;
     strong {
       font-family: ${montserrat[500].style.fontFamily};
     }

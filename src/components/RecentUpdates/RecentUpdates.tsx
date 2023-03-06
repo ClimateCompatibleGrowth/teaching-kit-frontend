@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useRecentUpdates } from '../../hooks/useRecentUpdates'
-import { Accent40, PageContainer } from '../../styles/global'
+import { PageContainer } from '../../styles/global'
 import Button from '../Button/Button'
 import ButtonLink from '../ButtonLink/ButtonLink'
 import RecentUpdate from './RecentUpdate/RecentUpdate'

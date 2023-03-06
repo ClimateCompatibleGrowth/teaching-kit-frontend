@@ -38,24 +38,35 @@ export const LogoWrapper = styled.div`
 `
 
 export const Ul = styled.ul`
-  padding: 0;
   margin: 0;
+  padding: 1rem 0;
 
   display: flex;
   list-style: none;
   justify-content: center;
+  flex-wrap: wrap;
+
+  ${mq.sm} {
+    padding: 0;
+  }
 `
 
 export const Li = styled.li`
   height: max-content;
 
   margin: auto 0;
+  padding: 1rem 0;
 
   color: ${Accent40};
   font-size: 1.4rem;
 
   ${mq.sm} {
     font-size: 1.8rem;
+    padding: 0;
+  }
+
+  ${mq.md} {
+    padding: 0;
   }
 
   a {
@@ -84,5 +95,4 @@ export const Li = styled.li`
 
 export const LanguageSelector = styled.div`
   margin: auto 0;
-  margin-left: 10rem;
 `

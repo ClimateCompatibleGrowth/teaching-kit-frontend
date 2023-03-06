@@ -1,13 +1,7 @@
 import styled from '@emotion/styled'
 import { InputHTMLAttributes } from 'react'
 import { ubuntu } from '../../styles/fonts'
-import {
-  Accent40,
-  Background,
-  ButtonWithoutDefaultStyle,
-  mq,
-  UlWithoutDefaultStyle,
-} from '../../styles/global'
+import { Accent40, mq, UlWithoutDefaultStyle } from '../../styles/global'
 
 type IconButtonProps = {
   isPointingDown: boolean
