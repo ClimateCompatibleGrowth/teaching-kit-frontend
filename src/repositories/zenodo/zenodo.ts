@@ -25,19 +25,16 @@ export const createZenodoEntry = async (
 
 export const uploadZenodoFile = async (
   bucketUrl: string,
-  fileName: string,
-  file: FormData
+  markdown: string,
+  fileName: string
 ) => {
-  const fileUrl = `${bucketUrl}/test`
+  const fileUrl = `${bucketUrl}/${fileName}`
 
-  const response = await axios.put(fileUrl, {
-    name: fileName,
-    ...file,
+  const response = await axios.put(fileUrl, markdown, {
     headers: {
-      ...headers,
-      'Content-Type': 'application/zip',
+      Authorization: `Bearer ${process.env.ZENODO_API_TOKEN}`,
+      'Content-Type': 'text/markdown',
     },
   })
-  console.log(response)
   return response
 }
