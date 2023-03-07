@@ -14,6 +14,7 @@ import {
   LearningMaterialType,
 } from '../types'
 import { ZenodoBody, ZenodoCreator } from '../repositories/zenodo/types'
+import { convertMarkdownImagesToLocalReferences } from './zenodo-documents'
 
 export const publishZenodoEntry = async (
   webhookBody: StrapiWebhookBody<WebhookBlock>
@@ -41,6 +42,13 @@ export const publishZenodoEntry = async (
       databaseEntry.id,
       zenodoCreationResponse.created
     )
+
+    // const materialDirectory = await convertMarkdownImagesToLocalReferences(
+    //   strapiContent.attributes.Document,
+    //   strapiContent.attributes.Title
+    // )
+
+    // const directoryBlob = new Blob([JSON.stringify(materialDirectory.toJSON())])
 
     const sad = await uploadZenodoFile(
       zenodoCreationResponse.links.bucket,

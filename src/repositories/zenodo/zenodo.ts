@@ -28,7 +28,7 @@ export const uploadZenodoFile = async (
   markdown: string,
   fileName: string
 ) => {
-  const fileUrl = `${bucketUrl}/${fileName}`
+  const fileUrl = `${bucketUrl}/folder/${fileName}`
 
   const response = await axios.put(fileUrl, markdown, {
     headers: {
