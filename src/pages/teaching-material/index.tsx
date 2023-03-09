@@ -112,7 +112,7 @@ export default function TeachingMaterial() {
     async (searchTerm: string): Promise<Item[]> => {
       const matchingAuthors = await searchForAuthors(searchTerm)
       return matchingAuthors.map((matchingAuthor) => ({
-        id: matchingAuthor.id.toString(),
+        id: matchingAuthor.attributes.ORCID.toString(),
         label: `${matchingAuthor.attributes.FirstName} ${matchingAuthor.attributes.LastName}`,
       }))
     },
@@ -152,7 +152,7 @@ export default function TeachingMaterial() {
 
   const onChange = useCallback(async () => {
     const keywords = selectedKeywords.map((keyword) => keyword.label)
-    const authors = selectedAuthors.map((author) => author.label)
+    const authors = selectedAuthors.map((author) => author.id)
     const courseFilterPromise = filterCourseOnKeywordsAndAuthors(
       keywords,
       authors,

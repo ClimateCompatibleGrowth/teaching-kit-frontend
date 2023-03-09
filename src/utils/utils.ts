@@ -115,6 +115,6 @@ export const localeToLanguage = (locale: Locale) => {
     case 'en':
       return 'English'
     case 'es-ES':
-      return 'Spanish'
+      return 'Español'
   }
 }

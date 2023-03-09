@@ -36,8 +36,8 @@ export type DeepAffiliation = Affiliation & {
 export type Author = {
   FirstName: string
   LastName: string
+  ORCID: string
   Email?: string
-  ORCID?: string
 }
 
 export type AuthorOneLevelDeep = Author & {
