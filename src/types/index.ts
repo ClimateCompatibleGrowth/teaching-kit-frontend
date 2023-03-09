@@ -58,17 +58,20 @@ export type Keyword = {
   Keyword: string
 }
 
-export type Block = {
+type StrapiBaseEntry = {
+  createdAt: string
+  updatedAt: string
+  publishedAt?: string
+  locale: Locale
+}
+
+export type Block = StrapiBaseEntry & {
   Title: string
   Abstract: string
   DurationInMinutes: number
   Document: string
   References: string
-  createdAt: string
-  updatedAt: string
-  publishedAt: string
   vuid: string
-  locale: Locale
 }
 
 export type BlockOneLevelDeep = Block & {
@@ -79,16 +82,12 @@ export type BlockOneLevelDeep = Block & {
   Keywords: { data: Data<Keyword>[] }
 }
 
-export type Lecture = {
+export type Lecture = StrapiBaseEntry & {
   Title: string
   Abstract: string
   Acknowledgement: string
   CiteAs: string
-  createdAt: string
-  updatedAt: string
-  publishedAt: string
   vuid: string
-  locale: Locale
 }
 
 export type LectureOneLevelDeep = Lecture & {
@@ -108,16 +107,12 @@ export type LectureTwoLevelsDeep = Modify<
   }
 >
 
-export type Course = {
+export type Course = StrapiBaseEntry & {
   Title: string
   Abstract: string
   Acknowledgement: string
   CiteAs: string
-  createdAt: string
-  updatedAt: string
-  publishedAt: string
   vuid: string
-  locale: Locale
 }
 
 export type CourseOneLevelDeep = Course & {
@@ -158,4 +153,49 @@ export type Path = {
     vuid: string
   }
   locale?: string
+}
+
+type Image = {
+  name: string
+  alternativeText: string
+  caption: string | null
+  url: string
+  width: number
+  height: number
+}
+
+type HeroImage = {
+  data: Data<Image>
+}
+
+type InfoCard = {
+  id: number
+  Header: string
+  Content: string
+}
+
+type InfoCardLarge = {
+  id: number
+  Header: string
+  Content: string
+  Image: {
+    data: Data<Image>
+  }
+}
+
+export type Copy = StrapiBaseEntry & {
+  HeroImage: HeroImage
+  Header: string
+  HeaderParagraph: string
+  PrimaryCallToActionButtonLabel: string
+  InfoCardHeader: string
+  InfoCards: InfoCard[]
+  InfoCardsLarge: InfoCardLarge[]
+  DynamicContentHeader: string
+  DynamicContentButtonLabel1: string
+  DynamicContentButtonLabel2: string
+  BottomTextColumn1: string
+  BottomTextColumn2: string
+  FooterHeader: string
+  FooterContent: string
 }

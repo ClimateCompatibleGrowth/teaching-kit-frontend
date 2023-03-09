@@ -6,7 +6,7 @@ import Markdown from '../Markdown/Markdown'
 
 import Image from 'next/image'
 
-export default function Navbar() {
+export default function Footer() {
   return (
     <Styled.ColorBar>
       <Styled.Footer>

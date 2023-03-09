@@ -4,7 +4,7 @@ import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
 import LearningMaterialBadge from '../../components/LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
-import { ResponseArray } from '../../shared/requests/types'
+import { Response, ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnCourse } from '../../shared/requests/utils/publishedEntriesFilter'
 import {
   BlockContentWrapper,
@@ -35,6 +35,7 @@ export default function CoursePage({ course }: Props) {
           citeAs={course.attributes.CiteAs}
           publishedAt={course.attributes.publishedAt}
           updatedAt={course.attributes.updatedAt}
+          locale={course.attributes.locale}
         />
         <MetadataContainer
           level={course.attributes.Level}
@@ -102,7 +103,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
-    const blockVuid = await axios.get(
+    const courseVuid = await axios.get(
       `${process.env.STRAPI_API_URL}/courseByVuid/${ctx.params?.vuid}?locale=${
         ctx.locale ?? ctx.defaultLocale
       }&fallbackToDefaultLocale=true`
@@ -121,10 +122,10 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const populateLevel = 'populate[Level]=*'
     const populateLectureLevel = 'populate[Lectures][populate][Level]=*'
 
-    const res = await axios.get(
-      `${process.env.STRAPI_API_URL}/courses/${blockVuid.data?.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
+    const courseResponse: Response<CourseThreeLevelsDeep> = await axios.get(
+      `${process.env.STRAPI_API_URL}/courses/${courseVuid.data?.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
     )
-    const course: Data<CourseThreeLevelsDeep> = res.data.data
+    const course = courseResponse.data.data
 
     return {
       props: { course: filterOutOnlyPublishedEntriesOnCourse(course) },
