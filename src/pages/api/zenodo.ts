@@ -35,7 +35,6 @@ export default async function postHandler(
   let webhookBody: StrapiWebhookBody<WebhookBlock> = {}
 
   try {
-    // throw new InternalApiError('API endpoint not yet implemented')
     webhookBody = req.body
     const zenodoPublishResponse = await publishZenodoEntry(webhookBody)
     return res.status(200).json(zenodoPublishResponse)

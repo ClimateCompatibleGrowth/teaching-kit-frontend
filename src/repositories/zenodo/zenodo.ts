@@ -1,5 +1,4 @@
 import axios from 'axios'
-import FormData from 'form-data'
 import { ZenodoBody, CreationResponseBody } from './types'
 
 const headers = {
@@ -25,15 +24,15 @@ export const createZenodoEntry = async (
 
 export const uploadZenodoFile = async (
   bucketUrl: string,
-  markdown: string,
-  fileName: string
+  fileName: string,
+  body: any
 ) => {
-  const fileUrl = `${bucketUrl}/folder/${fileName}`
+  const fileUrl = `${bucketUrl}/${fileName}`
 
-  const response = await axios.put(fileUrl, markdown, {
+  const response = await axios.put(fileUrl, body, {
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_API_TOKEN}`,
-      'Content-Type': 'text/markdown',
+      'Content-Type': 'image/jpeg',
     },
   })
   return response

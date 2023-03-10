@@ -43,17 +43,25 @@ export const publishZenodoEntry = async (
       zenodoCreationResponse.created
     )
 
-    // const materialDirectory = await convertMarkdownImagesToLocalReferences(
-    //   strapiContent.attributes.Document,
-    //   strapiContent.attributes.Title
-    // )
+    const updatedZenodoEntities = await convertMarkdownImagesToLocalReferences(
+      strapiContent.attributes.Document
+    )
 
-    // const directoryBlob = new Blob([JSON.stringify(materialDirectory.toJSON())])
-
-    const sad = await uploadZenodoFile(
+    await uploadZenodoFile(
       zenodoCreationResponse.links.bucket,
-      strapiContent.attributes.Document,
-      strapiContent.attributes.Title
+      `${strapiContent.attributes.Title}.md`,
+      updatedZenodoEntities.document
+    )
+
+    await Promise.all(
+      updatedZenodoEntities.images.map(
+        async (image) =>
+          await uploadZenodoFile(
+            zenodoCreationResponse.links.bucket,
+            image.name,
+            image.uint8Array
+          )
+      )
     )
   } else {
     throw new InternalApiError(

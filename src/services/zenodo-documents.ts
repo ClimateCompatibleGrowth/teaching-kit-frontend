@@ -1,59 +1,62 @@
-import { Volume } from 'memfs'
-const fs = Volume.fromJSON({})
-
 type ImageReference = {
   name: string
   path: string
   fileExtension: string
 }
 
-const MATERIAL_DIRECTORY_NAME = 'material'
-const ASSETS_DIRECTORY_NAME = 'assets'
+type Image = {
+  uint8Array: Uint8Array
+  name: string
+}
+
+type UpdatedZenodoEntities = {
+  document: string
+  images: Image[]
+}
 
 export const convertMarkdownImagesToLocalReferences = async (
-  markdown: string,
-  materialTitle: string
-) => {
-  fs.mkdirSync(MATERIAL_DIRECTORY_NAME)
-  fs.mkdirSync(`/${MATERIAL_DIRECTORY_NAME}/${ASSETS_DIRECTORY_NAME}`)
-
+  markdown: string
+): Promise<UpdatedZenodoEntities> => {
   const imageReferences: ImageReference[] = []
 
-  const updatedMarkdown = markdown.replace(
-    /\[(.*?)\]+\((https.+)\)/,
+  const updatedMarkdown = markdown.replaceAll(
+    /\[(.*?)\]+\((.*?)\)/g,
     (_, imageName, imagePath) => {
-      console.log(imageName, imagePath)
-      const fileExtension = imagePath.match(/\.([0-9a-z]+$)/)
+      if (imageName === null && !imagePath.includes('https')) {
+        return ''
+      }
+      const fileExtension: string = imagePath.match(/\.([0-9a-z]+$)/)
+      const imageNameWithoutExtension: [string, string] =
+        imageName.match(/^(.*?)\.(png|jpeg|jpg|gif)/) ?? imageName
       imageReferences.push({
         name: imageName,
         path: imagePath,
         fileExtension,
       })
-      const newImagePath = `${ASSETS_DIRECTORY_NAME}/${imageName}.${fileExtension}`
-      return `[${imageName}](${newImagePath})`
+
+      return `[${imageNameWithoutExtension[1]}](${imageName})`
     }
   )
 
-  await downloadImagesToLocalAssets(imageReferences)
+  const images = await convertImagesToUint8Arrays(imageReferences)
 
-  fs.writeFileSync(
-    `/${MATERIAL_DIRECTORY_NAME}/${materialTitle}.md`,
-    updatedMarkdown
-  )
-
-  return fs
+  return {
+    document: updatedMarkdown,
+    images,
+  }
 }
 
-const downloadImagesToLocalAssets = async (
+const convertImagesToUint8Arrays = async (
   imageReferences: ImageReference[]
-) => {
-  for (const imageReference of imageReferences) {
-    const imageResponse = await fetch(imageReference.path)
-    const imageBlob = await imageResponse.blob()
-    const image = new Uint8Array(await imageBlob.arrayBuffer())
-    fs.writeFileSync(
-      `/${MATERIAL_DIRECTORY_NAME}/assets/${imageReference.name}.${imageReference.fileExtension}`,
-      image
-    )
-  }
+): Promise<Image[]> => {
+  return await Promise.all(
+    imageReferences.map(async (imageReference) => {
+      const imageResponse = await fetch(imageReference.path)
+      const imageBlob = await imageResponse.blob()
+      return {
+        uint8Array: new Uint8Array(await imageBlob.arrayBuffer()),
+        name: imageReference.name,
+      }
+    })
+  )
 }
