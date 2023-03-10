@@ -1,5 +1,7 @@
+import { useRouter } from 'next/router'
 import React, { ReactNode } from 'react'
-import { LearningMaterialType } from '../../../types'
+import { LearningMaterialType, Locale } from '../../../types'
+import { typeToText } from '../../../utils/utils'
 import Badge from '../../Badge/Badge'
 
 type ElementType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
@@ -10,6 +12,8 @@ type Props = {
 }
 
 const LearningMaterialBadge = ({ type, elementType }: Props) => {
+  const { locale } = useRouter()
+
   const getBadgeContent = (
     label: string,
     elementType?: ElementType
@@ -36,19 +40,19 @@ const LearningMaterialBadge = ({ type, elementType }: Props) => {
     case 'BLOCK':
       return (
         <Badge accentColor='yellow'>
-          {getBadgeContent('Lecture block', elementType)}
+          {getBadgeContent(typeToText(type, locale as Locale), elementType)}
         </Badge>
       )
     case 'LECTURE':
       return (
         <Badge accentColor='green'>
-          {getBadgeContent('Lecture', elementType)}
+          {getBadgeContent(typeToText(type, locale as Locale), elementType)}
         </Badge>
       )
     case 'COURSE':
       return (
         <Badge accentColor='pink'>
-          {getBadgeContent('Course', elementType)}
+          {getBadgeContent(typeToText(type, locale as Locale), elementType)}
         </Badge>
       )
   }

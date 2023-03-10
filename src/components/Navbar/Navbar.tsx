@@ -8,21 +8,31 @@ import { LocaleContext } from '../../contexts/LocaleContext'
 import { useContext } from 'react'
 import { localeToLanguage } from '../../utils/utils'
 import { Locale, locales } from '../../types'
+import {
+  CHOOSE_LANGUAGE,
+  HOME,
+  LANGUAGE_PICKER_ARIA_LABEL,
+  LOGO_ALT_TEXT,
+  TEACHING_MATERIAL,
+  translations,
+} from './translations'
 
 export default function Navbar() {
   const { pathname } = useRouter()
   const { locale, setLocale, isLoading } = useContext(LocaleContext)
 
+  const translation = translations[locale]
+
   return (
     <Styled.ColorBar>
       <Styled.Wrapper>
         <Styled.LogoWrapper>
-          <LogoIcon alt='Climate Compatible Growth logotype' />
+          <LogoIcon alt={translation.logoAltText ?? LOGO_ALT_TEXT} />
         </Styled.LogoWrapper>
         <Styled.Ul>
           <Styled.Li>
             <Link aria-current={pathname === '/' ? 'page' : undefined} href='/'>
-              Home
+              {translation.home ?? HOME}
             </Link>
           </Styled.Li>
           <Styled.Li>
@@ -32,7 +42,7 @@ export default function Navbar() {
               }
               href='/teaching-material'
             >
-              Teaching Material
+              {translation.teachingMaterial ?? TEACHING_MATERIAL}
             </Link>
           </Styled.Li>
           <Styled.Li>
@@ -46,9 +56,12 @@ export default function Navbar() {
                     { id: locale, label: localeToLanguage(locale) },
                   ]}
                   setSelectedItems={(item) => setLocale(item[0].id as Locale)}
-                  label='Choose language'
+                  label={translation.languagePicker.label ?? CHOOSE_LANGUAGE}
                   placeholder={localeToLanguage(locale)}
-                  ariaLabel='Languages to pick from'
+                  ariaLabel={
+                    translation.languagePicker.ariaLabel ??
+                    LANGUAGE_PICKER_ARIA_LABEL
+                  }
                   getItems={() =>
                     Promise.resolve(
                       locales.map((locale) => ({

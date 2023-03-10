@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import {
   Author,
@@ -7,6 +8,7 @@ import {
   LearningMaterialType,
   Lecture,
   Level,
+  Locale,
 } from '../../types'
 import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
 import {
@@ -49,6 +51,8 @@ export default function MetadataContainer({
   const [docxDowloadError, setDocxDownloadError] = useState(false)
   const [isPptxDownloadLoading, setIsPptxDownloadLoading] = useState(false)
   const [pptxDowloadError, setPptxDownloadError] = useState(false)
+
+  const { locale } = useRouter()
 
   const docxDownloadHandler = async () => {
     const delayedLoading = setTimeout(() => setIsDocxDownloadLoading(true), 300)
@@ -143,6 +147,7 @@ export default function MetadataContainer({
           </Button>
           <Styled.DownloadSize>{`Document with ${typeToText(
             type,
+            locale as Locale,
             true
           )} content (${docxFileSize})`}</Styled.DownloadSize>
         </Styled.DownloadButtonsContainer>

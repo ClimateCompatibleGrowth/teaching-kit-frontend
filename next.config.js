@@ -28,6 +28,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'licensebuttons.net',
       },
+      {
+        protocol: 'https',
+        hostname: process.env.NEXT_PUBLIC_S3_HOST,
+      },
     ],
     minimumCacheTTL: 1500000,
   },

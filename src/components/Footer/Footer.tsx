@@ -5,30 +5,47 @@ import VercelBanner from '../../../public/vercel-banner.svg'
 import Markdown from '../Markdown/Markdown'
 
 import Image from 'next/image'
+import { useContext } from 'react'
+import { LocaleContext } from '../../contexts/LocaleContext'
+import {
+  COPYRIGHT,
+  CREATIVE_COMMONS_ALT_TEXT,
+  FOOTER_CONTENT,
+  LOGO_ALT_TEXT,
+  translations,
+  VERCEL_ALT_TEXT,
+} from './translations'
 
-export default function Navbar() {
+export default function Footer() {
+  const { locale } = useContext(LocaleContext)
+  const translation = translations[locale]
+
   return (
     <Styled.ColorBar>
       <Styled.Footer>
         <Styled.LogoWrapper>
           <Styled.LogoInnerWrapper>
-            <LogoIcon alt='Climate Compatible Growth logotype' />
-            <p>
-              {`Copyright © Climate Compatible Growth ${new Date().getUTCFullYear()}. All rights reserved.`}
-            </p>
+            <LogoIcon alt={translation.logoAltText ?? LOGO_ALT_TEXT} />
+            <p>{translation.copyright ?? COPYRIGHT}</p>
             <Styled.VercelBanner>
-              <VercelBanner alt='Powered on Vercel' width='67' height='22' />
+              <VercelBanner
+                alt={translation.vercelAltText ?? VERCEL_ALT_TEXT}
+                width='67'
+                height='22'
+              />
             </Styled.VercelBanner>
           </Styled.LogoInnerWrapper>
         </Styled.LogoWrapper>
         <Styled.ContactWrapper>
-          <Markdown>{footerContent}</Markdown>
+          <Markdown>{translation.footerContent ?? FOOTER_CONTENT}</Markdown>
           <br />
           <a href={'https://creativecommons.org/licenses/by/4.0/'}>
             <Image
               width={88}
               height={31}
-              alt='Creative commons BY 4.0 license icon'
+              alt={
+                translation.creativeCommonsAltText ?? CREATIVE_COMMONS_ALT_TEXT
+              }
               src='https://licensebuttons.net/l/by/4.0/88x31.png'
             ></Image>
           </a>
@@ -37,6 +54,3 @@ export default function Navbar() {
     </Styled.ColorBar>
   )
 }
-
-const footerContent =
-  '#### Contacts\n\nTo enquire about access to the teaching kit website to develop and share your own material, please e-mail [teaching@climatecompatiblegrowth.com](mailto:teaching@climatecompatiblegrowth.com)\n\nTo provide feedback on the teaching kit website, please e-mail [platform@climatecompatiblegrowth.com](mailto:platform@climatecompatiblegrowth.com)\n\n These teaching materials are based on content provided by Climate Compatible Growth as part of their FCDO-funded activities. As this content can be adapted by other institutions, the opinions expressed here may not reflect those of CCG or its funders.'

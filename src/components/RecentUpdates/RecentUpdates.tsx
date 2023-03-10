@@ -6,7 +6,17 @@ import ButtonLink from '../ButtonLink/ButtonLink'
 import RecentUpdate from './RecentUpdate/RecentUpdate'
 import * as Styled from './styles'
 
-const RecentUpdates = () => {
+type Props = {
+  title: string
+  loadMoreButtonLabel: string
+  goToFilterPageButtonLabel: string
+}
+
+const RecentUpdates = ({
+  title,
+  loadMoreButtonLabel,
+  goToFilterPageButtonLabel,
+}: Props) => {
   const MAX_UPDATES_TO_SHOW = 30
   const UPDATE_INCREMENTS = 6
   const [updatesToShow, setUpdatesToShow] = useState(UPDATE_INCREMENTS)
@@ -22,7 +32,7 @@ const RecentUpdates = () => {
   return (
     <PageContainer hasBottomPadding hasSmallSidePadding>
       <Styled.CenterWrapper>
-        <h2>Recently added content</h2>
+        <h2>{title}</h2>
       </Styled.CenterWrapper>
       {!isLoadingRecentUpdates && updatesToRender && (
         <Styled.RecentList>
@@ -39,14 +49,14 @@ const RecentUpdates = () => {
           recentUpdates.length > updatesToShow &&
           updatesToShow < MAX_UPDATES_TO_SHOW && (
             <Button primary={false} onClick={addMoreUpdates}>
-              Load more teaching material
+              {loadMoreButtonLabel}
             </Button>
           )}
         {recentUpdates &&
           updatesToRender &&
           recentUpdates.length <= updatesToRender.length && (
             <ButtonLink primary={false} href='/teaching-material'>
-              Find and discover all material
+              {goToFilterPageButtonLabel}
             </ButtonLink>
           )}
       </Styled.CenterWrapper>
