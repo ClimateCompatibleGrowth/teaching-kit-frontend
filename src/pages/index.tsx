@@ -1,23 +1,46 @@
 import Head from 'next/head'
 import PosterList from '../components/PosterList/PosterList'
 import Hero from '../components/Hero/Hero'
-import campus from '/public/images/campus-students.jpeg'
-import students from '/public/images/lesson-students.jpeg'
 import DocumentIcon from '/public/icons/document.svg'
 import ReuseIcon from '/public/icons/reuse.svg'
 import GroupIcon from '/public/icons/group.svg'
 import RecentUpdates from '../components/RecentUpdates/RecentUpdates'
 import TextImage from '../components/TextImage/TextImage'
 import ContentColumns from '../components/ContentColumns/ContentColumns'
+import axios from 'axios'
+import { GetStaticPropsContext } from 'next'
+import { StartPageCopy, Data } from '../types'
+import { ResponseArray } from '../shared/requests/types'
 
-export default function Home() {
+export default function Home(props: Data<StartPageCopy>) {
+  const {
+    BottomTextColumn1,
+    BottomTextColumn2,
+    DynamicContentButtonLabel1,
+    DynamicContentButtonLabel2,
+    DynamicContentHeader,
+    Header,
+    HeaderParagraph,
+    HeroImage,
+    InfoCardHeader,
+    InfoCards,
+    InfoCardsLarge,
+  } = props.attributes
+
+  const getIcon = (id: number) => {
+    if (id === 0) return <DocumentIcon />
+    if (id === 1) return <ReuseIcon />
+    if (id === 2) return <GroupIcon />
+    return null
+  }
+
   return (
     <main>
       <Head>
-        <title>Teaching kit</title>
+        <title>Climate compatible curriculum</title>
         <meta
           name='description'
-          content='KTH dESA Teaching kit Platform, view courses online and download them as a powerpoint'
+          content="Climate compatible growth's Curriculum platform, view courses online and download them as a powerpoint/docx"
         />
         <link rel='icon' href='/favicon.ico' />
         <link
@@ -39,70 +62,86 @@ export default function Home() {
         />
         <link rel='manifest' href='/site.webmanifest' />
       </Head>
-      <Hero {...heroProps} />
-      <PosterList {...posterProps} />
-      <TextImage {...textImageProps} />
-      <RecentUpdates />
-      <ContentColumns {...contentColumnsProps} />
+      <Hero
+        image={{
+          alternativeText: HeroImage.data.attributes.alternativeText,
+          source: {
+            src: HeroImage.data.attributes.url,
+            width: HeroImage.data.attributes.width,
+            height: HeroImage.data.attributes.height,
+          },
+        }}
+        title={Header}
+        body={HeaderParagraph}
+      />
+      {InfoCardHeader !== undefined && InfoCards !== undefined ? (
+        <PosterList
+          title={InfoCardHeader}
+          posters={InfoCards.map((infoCard, index) => ({
+            text: infoCard.Content,
+            title: infoCard.Header,
+            id: infoCard.id.toString(),
+            subTitle: getIcon(index),
+          }))}
+        />
+      ) : null}
+      {InfoCardsLarge !== undefined
+        ? InfoCardsLarge.map((infoCardLarge) => (
+            <TextImage
+              title={infoCardLarge.Header}
+              body={infoCardLarge.Content}
+              image={{
+                alt: infoCardLarge.Image.data.attributes.alternativeText,
+                src: {
+                  src: infoCardLarge.Image.data.attributes.url,
+                  width: infoCardLarge.Image.data.attributes.width,
+                  height: infoCardLarge.Image.data.attributes.height,
+                },
+              }}
+              key={infoCardLarge.id}
+            />
+          ))
+        : null}
+      <RecentUpdates
+        title={DynamicContentHeader}
+        loadMoreButtonLabel={DynamicContentButtonLabel1}
+        goToFilterPageButtonLabel={DynamicContentButtonLabel2}
+      />
+      <ContentColumns
+        columns={[BottomTextColumn1, BottomTextColumn2].map(
+          (bottomTextColumn) => ({ content: bottomTextColumn })
+        )}
+      />
     </main>
   )
 }
 
-const heroProps = {
-  image: {
-    alt: 'Five students sitting outside taking notes',
-    src: campus,
-  },
-  title: 'Let your teaching material come alive',
-  body: 'Our mission is to enable teachers and trainers to use, co-create and share open-licensed teaching and learning material anywhere in the world for delivery online and in the classroom',
-  action: {
-    href: '/teaching-material',
-    label: 'Find teaching material',
-  },
-}
+export async function getStaticProps(ctx: GetStaticPropsContext) {
+  try {
+    const populateHeroImage = 'populate[HeroImage][populate]=*'
+    const populateInfoCard = 'populate[InfoCards][populate]=*'
+    const populateInfoCardLarge = 'populate[InfoCardsLarge][populate]=*'
+    const populate = `${populateHeroImage}&${populateInfoCard}&${populateInfoCardLarge}`
 
-const posterProps = {
-  title: 'Benefits of the teaching kit website',
-  posters: [
-    {
-      id: 'find',
-      subTitle: <DocumentIcon />,
-      title: 'Find teaching material',
-      text: 'Teachers have limited resources to develop high-quality teaching materials, while their students are hungry for new knowledge and have high expectations. Using an existing course can save precious teacher time.\n\n All Courses can be translated into different languages.',
-    },
-    {
-      id: 'customize',
-      subTitle: <ReuseIcon />,
-      title: 'Customize material',
-      text: 'Customizing existing courses can make the material more relevant for learners increasing interest and learner motivation. To customize existing material also saves time. ',
-    },
-    {
-      id: 'collaborate',
-      subTitle: <GroupIcon />,
-      title: 'Collaborate on material',
-      text: 'Global collaboration on course material means that it is always up to date – especially important in cutting edge fields of research such as energy.',
-    },
-  ],
-}
+    const copyResponse: ResponseArray<StartPageCopy> = await axios.get(
+      `${process.env.STRAPI_API_URL}/site-copies?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }&${populate}`
+    )
 
-const textImageProps = {
-  image: {
-    alt: 'Four students gathered around a laptop',
-    src: students,
-  },
-  title: 'Want to develop learning material or provide feedback?',
-  body: 'Global collaboration on course material means that it is always up to date – especially important in cutting edge fields of research such as energy.\n\nTo enquire about access to the teaching kit website to develop and share your own material, please e-mail [teaching@climatecompatiblegrowth.com](mailto:teaching@climatecompatiblegrowth.com)\n\nTo provide feedback on the teaching kit website, please e-mail [platform@climatecompatiblegrowth.com](mailto:platform@climatecompatiblegrowth.com)',
-}
+    if (!copyResponse || copyResponse.data.data.length < 1) {
+      return {
+        notFound: true,
+      }
+    }
 
-const contentColumnsProps = {
-  columns: [
-    {
-      content:
-        'The teaching kit website was developed by KTH Royal Institute of Technology and implemented by Frank Digital within the Climate Compatible Growth Program, funded by the UK Foreign Commonwealth and Development Office.\n\n Original prototypes were developed at KTH Royal Institute of Technology and the early concept was explored in a Masters thesis by Saga Kubulenso.',
-    },
-    {
-      content:
-        'Many individuals have offered their time and expertise during the conceptualisation and implementation of the teaching kit website and to you we offer our thanks.',
-    },
-  ],
+    return {
+      props: copyResponse.data.data[0],
+      revalidate: 60,
+    }
+  } catch (error) {
+    return {
+      notFound: true,
+    }
+  }
 }

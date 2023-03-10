@@ -1,9 +1,10 @@
+import { useRouter } from 'next/router'
 import React from 'react'
 import {
   OnSurfaceAlternative,
   SurfaceAlternative,
 } from '../../../styles/global'
-import { LearningMaterialType } from '../../../types'
+import { LearningMaterialType, Locale } from '../../../types'
 
 type Props = {
   type: LearningMaterialType
@@ -11,20 +12,24 @@ type Props = {
 }
 
 const TabLabel = ({ type, numberOfResults }: Props) => {
-  const getTabLabel = (type: LearningMaterialType): string => {
+  const { locale } = useRouter()
+  const getTabLabel = (type: LearningMaterialType, locale: Locale): string => {
     switch (type) {
       case 'COURSE':
+        if (locale === 'es-ES') return 'Cursos'
         return 'Courses'
       case 'LECTURE':
+        if (locale === 'es-ES') return 'Conferencias'
         return 'Lectures'
       case 'BLOCK':
+        if (locale === 'es-ES') return 'Bloques de conferencias'
         return 'Lecture blocks'
     }
   }
 
   return (
     <h5 style={{ fontWeight: 300 }}>
-      {`${getTabLabel(type)} `}
+      {`${getTabLabel(type, locale as Locale)} `}
       <span
         aria-label={`${numberOfResults} results`}
         style={{

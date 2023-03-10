@@ -4,7 +4,7 @@ import CardList from '../../components/CardList/CardList'
 import LearningMaterial from '../../components/LearningMaterial'
 import LearningMaterialBadge from '../../components/LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
-import { ResponseArray } from '../../shared/requests/types'
+import { Response, ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnLecture } from '../../shared/requests/utils/publishedEntriesFilter'
 import {
   BlockContentWrapper,
@@ -37,6 +37,7 @@ export default function LecturePage({ lecture }: Props) {
           citeAs={lecture.attributes.CiteAs}
           publishedAt={lecture.attributes.publishedAt}
           updatedAt={lecture.attributes.updatedAt}
+          locale={lecture.attributes.locale}
         />
         <MetadataContainer
           level={lecture.attributes.Level}
@@ -119,10 +120,10 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const populateBlockSlides = 'populate[Blocks][populate][Slides]=*'
     const populateLevel = 'populate[Level]=Level'
 
-    const res = await axios.get(
+    const lectureResponse: Response<LectureTwoLevelsDeep> = await axios.get(
       `${process.env.STRAPI_API_URL}/lectures/${lectureVuid.data?.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
     )
-    const lecture: Data<LectureTwoLevelsDeep> = res.data.data
+    const lecture = lectureResponse.data.data
 
     return {
       props: {

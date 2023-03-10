@@ -2,6 +2,7 @@ import React from 'react'
 import {
   LearningMaterialType,
   LearningOutcome,
+  Locale,
   Prerequisite,
 } from '../../types'
 import AccordionGroup from '../AccordionGroup/AccordionGroup'
@@ -11,6 +12,7 @@ import * as Styled from './styles'
 import { formatDate, typeToText } from '../../utils/utils'
 import LearningMaterialBadge from './LearningMaterialBadge/LearningMaterialBadge'
 import Markdown from '../Markdown/Markdown'
+import { useRouter } from 'next/router'
 
 export type Props = {
   type: LearningMaterialType
@@ -22,6 +24,7 @@ export type Props = {
   citeAs?: string
   publishedAt?: string
   updatedAt?: string
+  locale: Locale
 }
 
 export default function LearningMaterial({
@@ -34,7 +37,9 @@ export default function LearningMaterial({
   citeAs,
   publishedAt,
   updatedAt,
+  locale,
 }: Props) {
+  const { locale: routerLocale } = useRouter()
   const updatedText = updatedAt ? `Updated at ${formatDate(updatedAt)} ` : ''
   const createdText = publishedAt ? `Created at ${formatDate(publishedAt)}` : ''
   const getUnorderedListAccordion = (label: string, listItems?: Content[]) => {
@@ -84,9 +89,13 @@ export default function LearningMaterial({
 
   return (
     <Styled.Wrapper>
+      {locale !== routerLocale ? <h1>javulen</h1> : null}
       <LearningMaterialBadge type={type} elementType='h4' />
       <Styled.H1>{title}</Styled.H1>
-      <Styled.H2>{`${typeToText(type)} description`}</Styled.H2>
+      <Styled.H2>{`${typeToText(
+        type,
+        routerLocale as Locale
+      )} description`}</Styled.H2>
       <Markdown>{abstract}</Markdown>
       <Styled.DateInformation>
         {`${updatedText}${createdText}`}
