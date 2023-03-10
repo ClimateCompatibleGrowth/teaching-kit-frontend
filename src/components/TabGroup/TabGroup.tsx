@@ -7,6 +7,7 @@ import {
   CourseThreeLevelsDeep,
   Data,
   LectureTwoLevelsDeep,
+  Locale,
 } from '../../types'
 import { Metadata, ResponseArrayData } from '../../shared/requests/types'
 import CardList from '../CardList/CardList'
@@ -21,7 +22,13 @@ import LearningMaterialBadge from '../LearningMaterial/LearningMaterialBadge/Lea
 import SignalStrengthIcon from '../../../public/icons/signal-strength.svg'
 import ClockIcon from '../../../public/icons/clock.svg'
 import Dropdown from '../Dropdown/Dropdown'
-import { blockSortOptions, SortOption, sortOptions } from '../../types/filters'
+import {
+  getBlockSortOptions,
+  getSortOptions as getCourseAndLectureSortOptions,
+  SortOption,
+} from '../../types/filters'
+import { ARIA_LABEL, LABEL, translations } from './translations'
+import { useRouter } from 'next/router'
 
 type Props = {
   controls: string
@@ -54,7 +61,9 @@ const TabGroup = ({
   currentBlockPageNumber,
   setCurrentBlockPageNumber,
 }: Props) => {
+  const { locale } = useRouter()
   const [tabIndex, setTabIndex] = React.useState(0)
+  const translation = translations[locale as Locale]
 
   const blockDataToCardFormat = (
     data: Data<BlockOneLevelDeep>[]
@@ -147,9 +156,9 @@ const TabGroup = ({
 
   const getSortOptions = (tabValue: number) => {
     if (tabValue === 2) {
-      return blockSortOptions
+      return getBlockSortOptions(locale as Locale)
     }
-    return sortOptions
+    return getCourseAndLectureSortOptions(locale as Locale)
   }
 
   return (
@@ -200,9 +209,9 @@ const TabGroup = ({
           setSelectedItems={(newSelectedSort) => {
             setSelectedSort(newSelectedSort[0] as SortOption)
           }}
-          label='Sort'
+          label={translation.label ?? LABEL}
           placeholder={selectedSort.label}
-          ariaLabel='Sort options to pick from'
+          ariaLabel={translation.ariaLabel ?? ARIA_LABEL}
           enableSearch={false}
           getItems={() =>
             Promise.resolve(Object.values(getSortOptions(tabIndex)))

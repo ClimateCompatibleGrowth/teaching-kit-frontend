@@ -1,4 +1,7 @@
 import styled from '@emotion/styled'
+import axios from 'axios'
+import { GetStaticPropsContext } from 'next'
+import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import Dropdown from '../../components/Dropdown/Dropdown'
 import TabGroup from '../../components/TabGroup/TabGroup'
@@ -7,18 +10,22 @@ import { filterBlockOnKeywordsAndAuthors } from '../../shared/requests/blocks/bl
 import { filterCourseOnKeywordsAndAuthors } from '../../shared/requests/courses/courses'
 import { searchForKeywords } from '../../shared/requests/keywords/keywords'
 import { filterLectureOnKeywordsAndAuthors } from '../../shared/requests/lectures/lectures'
-import { ResponseArrayData } from '../../shared/requests/types'
+import { ResponseArray, ResponseArrayData } from '../../shared/requests/types'
 import { mq, PageContainer, VisuallyHidden } from '../../styles/global'
 import {
   BlockOneLevelDeep,
   CourseThreeLevelsDeep,
   LectureTwoLevelsDeep,
+  FilterPageCopy,
+  Data,
+  Locale,
 } from '../../types'
 import {
   isBlockSortOptionType,
   Item,
   SortOption,
   sortOptions,
+  spanishSortOptions,
 } from '../../types/filters'
 
 // Note that Strapi's default value for page sizes currently is 25. Hence,
@@ -69,13 +76,21 @@ const defaultFilterResult: ResponseArrayData<any> = {
   },
 }
 
-export default function TeachingMaterial() {
+const getDefaultSortOption = (locale: Locale) => {
+  if (locale === 'es-ES') {
+    return spanishSortOptions.alphabeticalASC
+  }
+  return sortOptions.alphabeticalASC
+}
+
+export default function TeachingMaterial(props: Data<FilterPageCopy>) {
+  const { locale } = useRouter()
   const [hasAnyChangeHappened, setHasAnyChangeHappened] =
     useState<boolean>(false)
   const [selectedKeywords, setSelectedKeywords] = useState<Item[]>([])
   const [selectedAuthors, setSelectedAuthors] = useState<Item[]>([])
   const [selectedSort, setSelectedSort] = useState<SortOption>(
-    sortOptions.alphabeticalASC
+    getDefaultSortOption(locale as Locale)
   )
 
   const [currentCoursePageNumber, setCurrentCoursePageNumber] =
@@ -191,7 +206,7 @@ export default function TeachingMaterial() {
   }, [selectedKeywords, selectedAuthors, selectedSort])
 
   useEffect(() => {
-    if (selectedKeywords.length > 1 || selectedAuthors.length > 1) {
+    if (selectedKeywords.length > 0 || selectedAuthors.length > 0) {
       setHasAnyChangeHappened(true)
     }
     onChange()
@@ -202,20 +217,29 @@ export default function TeachingMaterial() {
     onChange,
   ])
 
+  const {
+    Header,
+    FilterHeader,
+    KeywordDropdown,
+    AuthorDropdown,
+    DefaultFilterResultHeader,
+    FilterResultHeader,
+  } = props.attributes
+
   return (
     <PageContainer hasTopPadding hasBottomPadding>
-      <Styled.H1>Teaching Material</Styled.H1>
+      <Styled.H1>{Header}</Styled.H1>
       <div>
-        <Styled.H2>Apply filter</Styled.H2>
+        <Styled.H2>{FilterHeader}</Styled.H2>
         <Styled.FilterGroup>
           <Dropdown
             controls={summaryId}
             id='keyword-options'
             selectedItems={selectedKeywords}
             setSelectedItems={setSelectedKeywords}
-            label='Keyword'
-            placeholder='Select Keywords'
-            ariaLabel='Keywords to pick from'
+            label={KeywordDropdown.Label}
+            placeholder={KeywordDropdown.Placeholder}
+            ariaLabel={KeywordDropdown.AriaLabel}
             maxAmountOfItems={MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN}
             getItems={getMatchingKeywords}
           />
@@ -224,15 +248,17 @@ export default function TeachingMaterial() {
             id='author-options'
             selectedItems={selectedAuthors}
             setSelectedItems={setSelectedAuthors}
-            label='Author'
-            placeholder='Select Authors'
-            ariaLabel='Authors to pick from'
+            label={AuthorDropdown.Label}
+            placeholder={AuthorDropdown.Placeholder}
+            ariaLabel={AuthorDropdown.AriaLabel}
             maxAmountOfItems={MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN}
             getItems={getMatchingAuthors}
           />
         </Styled.FilterGroup>
       </div>
-      <Styled.H2>All Teaching Material</Styled.H2>
+      <Styled.H2>
+        {hasAnyChangeHappened ? FilterResultHeader : DefaultFilterResultHeader}
+      </Styled.H2>
       <VisuallyHidden>
         <p id={summaryId} aria-live='polite'>
           {getResultsSummary()}
@@ -262,4 +288,33 @@ export default function TeachingMaterial() {
       </div>
     </PageContainer>
   )
+}
+
+export async function getStaticProps(ctx: GetStaticPropsContext) {
+  try {
+    const populateHeroImage = 'populate[KeywordDropdown][populate]=*'
+    const populateInfoCard = 'populate[AuthorDropdown][populate]=*'
+    const populate = `${populateHeroImage}&${populateInfoCard}`
+
+    const copyResponse: ResponseArray<FilterPageCopy> = await axios.get(
+      `${process.env.STRAPI_API_URL}/copy-filter-pages?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }&${populate}`
+    )
+
+    if (!copyResponse || copyResponse.data.data.length < 1) {
+      return {
+        notFound: true,
+      }
+    }
+
+    return {
+      props: copyResponse.data.data[0],
+      revalidate: 60,
+    }
+  } catch (error) {
+    return {
+      notFound: true,
+    }
+  }
 }

@@ -1,3 +1,5 @@
+import { Locale } from '.'
+
 export type Item<T = string> = {
   id: T
   label: string
@@ -27,7 +29,21 @@ export type SortOptions = BlockSortOptions & {
   levelDESC: SortOption
 }
 
-export const blockSortOptions: BlockSortOptions = {
+export const getBlockSortOptions = (locale: Locale) => {
+  if (locale === 'es-ES') {
+    return spanishBlockSortOptions
+  }
+  return blockSortOptions
+}
+
+export const getSortOptions = (locale: Locale) => {
+  if (locale === 'es-ES') {
+    return spanishSortOptions
+  }
+  return sortOptions
+}
+
+const blockSortOptions: BlockSortOptions = {
   alphabeticalASC: {
     id: 'ALPHABETICAL_ASC',
     label: 'A to Z',
@@ -37,6 +53,19 @@ export const blockSortOptions: BlockSortOptions = {
     id: 'ALPHABETICAL_DESC',
     label: 'Z to A',
     ariaLabel: 'Alphabetical from Z to A',
+  },
+}
+
+const spanishBlockSortOptions: BlockSortOptions = {
+  alphabeticalASC: {
+    id: 'ALPHABETICAL_ASC',
+    label: 'De la A a la Z',
+    ariaLabel: 'Alfabético de la A a la Z',
+  },
+  alphabeticalDESC: {
+    id: 'ALPHABETICAL_DESC',
+    label: 'De la Z a la A',
+    ariaLabel: 'Alfabético de la Z a la A',
   },
 }
 
@@ -51,5 +80,19 @@ export const sortOptions: SortOptions = {
     id: 'LEVEL_DESC',
     label: 'Expert to Beginner',
     ariaLabel: 'Level from expert to beginner',
+  },
+}
+
+export const spanishSortOptions: SortOptions = {
+  ...spanishBlockSortOptions,
+  levelASC: {
+    id: 'LEVEL_ASC',
+    label: 'Principiante a experto',
+    ariaLabel: 'Nivel de principiante a experto',
+  },
+  levelDESC: {
+    id: 'LEVEL_DESC',
+    label: 'Experto a principiante',
+    ariaLabel: 'Nivel de experto a principiante',
   },
 }

@@ -9,10 +9,10 @@ import TextImage from '../components/TextImage/TextImage'
 import ContentColumns from '../components/ContentColumns/ContentColumns'
 import axios from 'axios'
 import { GetStaticPropsContext } from 'next'
-import { Copy, Data } from '../types'
+import { StartPageCopy, Data } from '../types'
 import { ResponseArray } from '../shared/requests/types'
 
-export default function Home(props: Data<Copy>) {
+export default function Home(props: Data<StartPageCopy>) {
   const {
     BottomTextColumn1,
     BottomTextColumn2,
@@ -123,7 +123,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const populateInfoCardLarge = 'populate[InfoCardsLarge][populate]=*'
     const populate = `${populateHeroImage}&${populateInfoCard}&${populateInfoCardLarge}`
 
-    const copyResponse: ResponseArray<Copy> = await axios.get(
+    const copyResponse: ResponseArray<StartPageCopy> = await axios.get(
       `${process.env.STRAPI_API_URL}/site-copies?locale=${
         ctx.locale ?? ctx.defaultLocale
       }&${populate}`

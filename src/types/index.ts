@@ -37,7 +37,7 @@ export type Author = {
   FirstName: string
   LastName: string
   ORCID: string
-  Email?: string
+  Email: string
 }
 
 export type AuthorOneLevelDeep = Author & {
@@ -183,7 +183,7 @@ type InfoCardLarge = {
   }
 }
 
-export type Copy = StrapiBaseEntry & {
+export type StartPageCopy = StrapiBaseEntry & {
   HeroImage: HeroImage
   Header: string
   HeaderParagraph: string
@@ -198,4 +198,22 @@ export type Copy = StrapiBaseEntry & {
   BottomTextColumn2: string
   FooterHeader: string
   FooterContent: string
+}
+
+type DropdownCopy = {
+  Label: string
+  Placeholder: string
+  AriaLabel: string
+}
+
+export type FilterPageCopy = StrapiBaseEntry & {
+  Header: string
+  FilterHeader: string
+  KeywordDropdown: DropdownCopy
+  AuthorDropdown: DropdownCopy
+  DefaultFilterResultHeader: string
+  FilterResultHeader: string
+  CourseLabel: string
+  LectureLabel: string
+  BlockLabel: string
 }

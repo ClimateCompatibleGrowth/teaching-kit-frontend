@@ -92,7 +92,10 @@ export default function LearningMaterial({
       {locale !== routerLocale ? <h1>javulen</h1> : null}
       <LearningMaterialBadge type={type} elementType='h4' />
       <Styled.H1>{title}</Styled.H1>
-      <Styled.H2>{`${typeToText(type)} description`}</Styled.H2>
+      <Styled.H2>{`${typeToText(
+        type,
+        routerLocale as Locale
+      )} description`}</Styled.H2>
       <Markdown>{abstract}</Markdown>
       <Styled.DateInformation>
         {`${updatedText}${createdText}`}
