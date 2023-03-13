@@ -6,13 +6,26 @@ import {
   Locale,
 } from '../types'
 
-export const typeToText = (type: LearningMaterialType, lowerCase?: boolean) => {
+export const typeToText = (
+  type: LearningMaterialType,
+  locale: Locale,
+  lowerCase?: boolean
+) => {
   switch (type) {
     case 'COURSE':
+      if (locale === 'es-ES') {
+        return lowerCase ? 'curso' : 'Curso'
+      }
       return lowerCase ? 'course' : 'Course'
     case 'LECTURE':
+      if (locale === 'es-ES') {
+        return lowerCase ? 'conferencia' : 'Conferencia'
+      }
       return lowerCase ? 'lecture' : 'Lecture'
     case 'BLOCK':
+      if (locale === 'es-ES') {
+        return lowerCase ? 'bloque de conferencias' : 'Bloque de conferencias'
+      }
       return lowerCase ? 'lecture block' : 'Lecture block'
   }
 }
@@ -115,6 +128,6 @@ export const localeToLanguage = (locale: Locale) => {
     case 'en':
       return 'English'
     case 'es-ES':
-      return 'Spanish'
+      return 'Español'
   }
 }

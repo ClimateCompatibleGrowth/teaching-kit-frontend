@@ -44,16 +44,16 @@ export const AccentYellow = '#F3F5B4'
 export const AccentYellowDarker = '#6E7113'
 
 export const breakpoints = {
-  xs: '480px',
-  sm: '768px',
-  md: '1024px',
-  lg: '1440px',
+  xs: '480px' as const,
+  sm: '768px' as const,
+  md: '1024px' as const,
+  lg: '1440px' as const,
 }
 export const mq = {
-  xs: `@media (min-width: ${breakpoints.xs})`,
-  sm: `@media (min-width: ${breakpoints.sm})`,
-  md: `@media (min-width: ${breakpoints.md})`,
-  lg: `@media (min-width: ${breakpoints.lg})`,
+  xs: `@media (min-width: ${breakpoints.xs})` as const,
+  sm: `@media (min-width: ${breakpoints.sm})` as const,
+  md: `@media (min-width: ${breakpoints.md})` as const,
+  lg: `@media (min-width: ${breakpoints.lg})` as const,
 }
 
 export const BorderRadius = '0.5rem'

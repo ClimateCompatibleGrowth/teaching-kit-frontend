@@ -6,12 +6,15 @@ import SignalStrengthIcon from '../../../../public/icons/signal-strength.svg'
 import * as Styled from './styles'
 import { typeToText, levelToString } from '../../../utils/utils'
 import Markdown from '../../Markdown/Markdown'
+import { useRouter } from 'next/router'
+import { Locale } from '../../../types'
 
 type Props = {
   recentUpdate: RecentUpdateType
 }
 
 const RecentUpdate = ({ recentUpdate }: Props) => {
+  const { locale } = useRouter()
   let typeColor: BadgeColor = 'yellow'
   let href = '/'
   let levelExplanation = 'Level is'
@@ -34,7 +37,9 @@ const RecentUpdate = ({ recentUpdate }: Props) => {
 
   return (
     <Styled.Card href={href}>
-      <Badge accentColor={typeColor}>{typeToText(recentUpdate.Type)}</Badge>
+      <Badge accentColor={typeColor}>
+        {typeToText(recentUpdate.Type, locale as Locale)}
+      </Badge>
       <Styled.Title>{recentUpdate.Title}</Styled.Title>
       {recentUpdate.Abstract && (
         <Styled.Markdown>

@@ -63,17 +63,17 @@ export const getSortString = (sortOption: SortOptionType) => {
 // andGroup is a Strapi query functionality that is not very well documented at the time of writing. See more here:
 // https://forum.strapi.io/t/advanced-api-filter-combining-and-and-or/24375
 const getFilterStringByAuthor = (
-  author: string,
+  authorORCID: string,
   filterFrom: LearningMaterialType,
   andGroup: number
 ) => {
   switch (filterFrom) {
     case 'COURSE':
-      return `filters[$and][${andGroup}][$or][0][CourseCreators][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][1][Lectures][LectureCreators][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][2][Lectures][Blocks][Authors][Name][$containsi]=${author}`
+      return `filters[$and][${andGroup}][$or][0][CourseCreators][ORCID][$containsi]=${authorORCID}&filters[$and][${andGroup}][$or][1][Lectures][LectureCreators][ORCID][$containsi]=${authorORCID}&filters[$and][${andGroup}][$or][2][Lectures][Blocks][Authors][ORCID][$containsi]=${authorORCID}`
     case 'LECTURE':
-      return `filters[$and][${andGroup}][$or][0][LectureCreators][Name][$containsi]=${author}&filters[$and][${andGroup}][$or][1][Blocks][Authors][Name][$containsi]=${author}`
+      return `filters[$and][${andGroup}][$or][0][LectureCreators][ORCID][$containsi]=${authorORCID}&filters[$and][${andGroup}][$or][1][Blocks][Authors][ORCID][$containsi]=${authorORCID}`
     case 'BLOCK':
-      return `filters[$and][${andGroup}][$or][0][Authors][Name][$containsi]=${author}`
+      return `filters[$and][${andGroup}][$or][0][Authors][ORCID][$containsi]=${authorORCID}`
   }
 }
 

@@ -10,7 +10,7 @@ import MetadataContainer from '../../components/MetadataContainer/MetadataContai
 import { summarizeDurations } from '../../utils/utils'
 import LearningMaterial from '../../components/LearningMaterial'
 import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
-import { ResponseArray } from '../../shared/requests/types'
+import { Response, ResponseArray } from '../../shared/requests/types'
 import { filterOutOnlyPublishedEntriesOnBlock } from '../../shared/requests/utils/publishedEntriesFilter'
 import { GetStaticPropsContext } from 'next/types'
 import Markdown from '../../components/Markdown/Markdown'
@@ -32,6 +32,7 @@ export default function BlockPage({ block }: Props) {
           learningOutcomes={block.attributes.LearningOutcomes}
           publishedAt={block.attributes.publishedAt}
           updatedAt={block.attributes.updatedAt}
+          locale={block.attributes.locale}
         />
         <MetadataContainer
           duration={summarizeDurations([block])}
@@ -91,9 +92,10 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const blockVuid = await axios.get(
       `${process.env.STRAPI_API_URL}/blockByVuid/${ctx.params?.vuid}?locale=${
         ctx.locale ?? ctx.defaultLocale
-      }`
+      }&fallbackToDefaultLocale=true`
     )
-    const blockResponse = await axios.get(
+
+    const blockResponse: Response<BlockOneLevelDeep> = await axios.get(
       `${process.env.STRAPI_API_URL}/blocks/${blockVuid.data?.id}?populate=*`
     )
     const block = blockResponse.data.data
@@ -106,6 +108,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
     return {
       props: { block: filterOutOnlyPublishedEntriesOnBlock(block) },
+      revalidate: 60,
     }
   } catch (error) {
     return {
