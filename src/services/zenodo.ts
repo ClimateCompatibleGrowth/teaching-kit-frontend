@@ -1,48 +1,109 @@
-import axios from 'axios'
-import fs from 'fs'
-import { createZenodoEntry } from '../repositories/zenodo'
+import { StrapiWebhookBody, WebhookBlock } from '../pages/api/zenodo'
+import { getBlock } from '../repositories/strapi'
+import {
+  createZenodoEntry,
+  uploadZenodoFile,
+} from '../repositories/zenodo/zenodo'
 import * as database from '../repositories/zenodo-database'
-import { InternalApiError } from '../shared/error/InternalApiError'
-import { LearningMaterialType } from '../types'
+import { InternalApiError } from '../shared/error/internal-api-error'
+import { NotImplementedError } from '../shared/error/not-implemented-error'
+import {
+  AuthorOneLevelDeep,
+  BlockTwoLevelsDeep,
+  Data,
+  LearningMaterialType,
+} from '../types'
+import { ZenodoBody, ZenodoCreator } from '../repositories/zenodo/types'
+import { convertMarkdownImagesToLocalReferences } from './zenodo-documents'
 
-type StrapiWebhookBody = {
-  model?: LearningMaterialType
-  entry?: { id: number; vuid?: string; version: number }
-}
-
-export const publishZenodoEntry = async (webhookBody: StrapiWebhookBody) => {
-  const body = {}
-  const config = {
-    headers: {
-      Authorization: `Bearer ${process.env.ZENODO_API_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-  }
-
+export const publishZenodoEntry = async (
+  webhookBody: StrapiWebhookBody<WebhookBlock>
+) => {
   if (
     webhookBody.model &&
     webhookBody.entry?.vuid &&
-    webhookBody.entry.version
+    webhookBody.entry.versionNumber
   ) {
     const databaseEntry = await database.createEntry(
       webhookBody.entry?.vuid,
-      webhookBody.entry.version
+      webhookBody.entry.versionNumber
     )
 
-    const zenodoCreationResponse = await createZenodoEntry(body, config)
+    const strapiContent = await getStrapiContent(
+      webhookBody.model.toUpperCase() as LearningMaterialType,
+      webhookBody.entry.id
+    )
+
+    const body = generateZenodoBody(strapiContent)
+
+    const zenodoCreationResponse = await createZenodoEntry(body)
 
     await database.updateEntryWithZenodoCreation(
       databaseEntry.id,
       zenodoCreationResponse.created
     )
-    console.log(zenodoCreationResponse)
+
+    const updatedZenodoEntities = await convertMarkdownImagesToLocalReferences(
+      strapiContent.attributes.Document
+    )
+
+    await uploadZenodoFile(
+      zenodoCreationResponse.links.bucket,
+      `${strapiContent.attributes.Title}.md`,
+      updatedZenodoEntities.document
+    )
+
+    await Promise.all(
+      updatedZenodoEntities.images.map(
+        async (image) =>
+          await uploadZenodoFile(
+            zenodoCreationResponse.links.bucket,
+            image.name,
+            image.uint8Array
+          )
+      )
+    )
   } else {
     throw new InternalApiError(
-      `Cannot publish entry without model, vuid and version of the Strapi entry. Got model: '${webhookBody.model}', vuid: '${webhookBody.entry?.vuid}' and version: '${webhookBody.entry?.version}'`
+      `Cannot publish entry without model, vuid and version of the Strapi entry. Got model: '${webhookBody.model}', vuid: '${webhookBody.entry?.vuid}' and version: '${webhookBody.entry?.versionNumber}'`
     )
   }
 
   return {
     message: 'Entry successfully published to Zenodo',
+  }
+}
+
+const generateZenodoBody = (data: Data<BlockTwoLevelsDeep>): ZenodoBody => {
+  return {
+    metadata: {
+      title: data.attributes.Title,
+      description: data.attributes.Abstract,
+      upload_type: 'lesson',
+      creators: data.attributes.Authors.data.map(formatCreator),
+    },
+  }
+}
+
+const formatCreator = (author: Data<AuthorOneLevelDeep>): ZenodoCreator => {
+  return {
+    name: `${author.attributes.LastName}, ${author.attributes.FirstName}`,
+    affiliation: author.attributes.Affiliation.attributes?.Affiliation,
+    orcid: author.attributes.ORCID,
+  }
+}
+
+const getStrapiContent = async (type: LearningMaterialType, id: number) => {
+  switch (type) {
+    case 'COURSE':
+      throw new NotImplementedError(
+        'Support for Zenodo course publication not implemented yet!'
+      )
+    case 'LECTURE':
+      throw new NotImplementedError(
+        'Support for Zenodo lecture publication not implemented yet!'
+      )
+    case 'BLOCK':
+      return await getBlock(id)
   }
 }
