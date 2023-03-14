@@ -1,8 +1,18 @@
 import { getRecentLectures } from '../lectures/lectures'
 import { getRecentBlocks } from '../blocks/blocks'
 import { getRecentCourses } from '../courses/courses'
-import { Block, Data, LearningMaterialType, Level } from '../../../types'
+import {
+  Block,
+  BlockOneLevelDeep,
+  CourseTwoLevelsDeep,
+  Data,
+  LearningMaterialType,
+  LectureTwoLevelsDeep,
+  Level,
+  Locale,
+} from '../../../types'
 import { formatDate, summarizeDurations } from '../../../utils/utils'
+import { DEFAULT_LOCALE } from '../../../contexts/LocaleContext'
 
 export type RecentUpdateType = {
   Id: number
@@ -13,14 +23,74 @@ export type RecentUpdateType = {
   Type: LearningMaterialType
   Level?: { data?: Data<Level> }
   Duration?: number | string
+  Locale: Locale
 }
 
-export const getRecentUpdates = async () => {
+type TranslationOccurances = {
+  [vuid: string]: number
+}
+
+type LearningMaterial =
+  | Data<BlockOneLevelDeep>
+  | Data<LectureTwoLevelsDeep>
+  | Data<CourseTwoLevelsDeep>
+
+const preferredLocale = <T extends LearningMaterial>(
+  locale: Locale,
+  translationOccurances: TranslationOccurances,
+  learningMaterial: T
+): T | undefined => {
+  if (translationOccurances[learningMaterial.attributes.vuid] > 1) {
+    if (learningMaterial.attributes.locale === locale) {
+      return learningMaterial
+    }
+  } else {
+    return learningMaterial
+  }
+}
+
+const countOccurances = <T extends LearningMaterial>(
+  occurances: TranslationOccurances,
+  learningMaterial: T
+): TranslationOccurances => {
+  const vuid = learningMaterial.attributes.vuid
+  if (!occurances[vuid]) {
+    occurances[vuid] = 1
+  } else {
+    occurances[vuid] += 1
+  }
+  return occurances
+}
+
+const getLearningMaterial = async <T extends LearningMaterial>(
+  locale: Locale = DEFAULT_LOCALE,
+  getLearningMaterial: (locale: Locale) => Promise<T[]>
+) => {
+  const coursesWithDifferentLocales =
+    locale !== DEFAULT_LOCALE
+      ? (
+          await Promise.all([
+            getLearningMaterial(locale),
+            getLearningMaterial(DEFAULT_LOCALE),
+          ])
+        ).flat()
+      : await getLearningMaterial(locale)
+  const translationOccurances = coursesWithDifferentLocales.reduce(
+    countOccurances,
+    {} as TranslationOccurances
+  )
+  return coursesWithDifferentLocales.filter((lecture) =>
+    preferredLocale(locale, translationOccurances, lecture)
+  )
+}
+
+export const getRecentUpdates = async (locale?: Locale) => {
   const [courses, lectures, blocks] = await Promise.all([
-    getRecentCourses(),
-    getRecentLectures(),
-    getRecentBlocks(),
+    getLearningMaterial(locale, getRecentCourses),
+    getLearningMaterial(locale, getRecentLectures),
+    getLearningMaterial(locale, getRecentBlocks),
   ])
+
   const now = new Date()
   const nowStamp = formatDate(now)
 
@@ -36,8 +106,10 @@ export const getRecentUpdates = async () => {
       course.attributes.Lectures.data.reduce<Data<Block>[]>(
         (lectures, lecture) => [...lectures, ...lecture.attributes.Blocks.data],
         []
-      )
+      ),
+      locale
     ),
+    Locale: course.attributes.locale,
   }))
 
   const refinedLectures: RecentUpdateType[] = lectures.map((lecture) => ({
@@ -48,7 +120,8 @@ export const getRecentUpdates = async () => {
     Abstract: lecture.attributes.Abstract,
     Type: 'LECTURE',
     Level: lecture.attributes.Level,
-    Duration: summarizeDurations(lecture.attributes.Blocks?.data || []),
+    Duration: summarizeDurations(lecture.attributes.Blocks?.data || [], locale),
+    Locale: lecture.attributes.locale,
   }))
 
   const refinedBlocks: RecentUpdateType[] = blocks.map((block) => ({
@@ -58,7 +131,8 @@ export const getRecentUpdates = async () => {
     Title: block.attributes.Title,
     Abstract: block.attributes.Abstract,
     Type: 'BLOCK',
-    Duration: summarizeDurations([block]),
+    Duration: summarizeDurations([block], locale),
+    Locale: block.attributes.locale,
   }))
 
   return [...refinedBlocks, ...refinedCourses, ...refinedLectures].sort(

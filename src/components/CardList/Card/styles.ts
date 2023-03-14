@@ -58,6 +58,8 @@ export const Markdown = styled.div`
   p {
     margin-bottom: 0;
 
+    display: inline;
+
     strong {
       font-family: ${montserrat[500].style.fontFamily};
     }

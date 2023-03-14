@@ -1,3 +1,4 @@
+import { DEFAULT_LOCALE } from '../contexts/LocaleContext'
 import {
   BlockOneLevelDeep,
   Data,
@@ -5,6 +6,7 @@ import {
   Level,
   Locale,
 } from '../types'
+import { Translations } from '../types/translations'
 
 export const typeToText = (
   type: LearningMaterialType,
@@ -30,6 +32,22 @@ export const typeToText = (
   }
 }
 
+type Time = {
+  minutes: string
+  hour: string
+}
+
+const translations: Translations<Time> = {
+  en: {
+    minutes: 'minutes',
+    hour: 'hour',
+  },
+  'es-ES': {
+    minutes: 'minutos',
+    hour: 'hora',
+  },
+}
+
 const summarizeDurationsInMinutes = (
   blocks: Data<Pick<BlockOneLevelDeep, 'DurationInMinutes'>>[]
 ) => {
@@ -39,22 +57,30 @@ const summarizeDurationsInMinutes = (
   )
 }
 
-const minutesToFormattedHourString = (totalMinutes: number) => {
+const minutesToFormattedHourString = (
+  totalMinutes: number,
+  locale: Locale = DEFAULT_LOCALE
+) => {
   const hours = Math.floor(totalMinutes / 60)
   const minutes = totalMinutes % 60
-  const hourString = `${hours} hour${hours > 1 ? 's' : ''}`
-  const minutesString = `${minutes !== 0 ? `, ${minutes} minutes` : ''}`
+  const hourString = `${hours} ${translations[locale].hour}${
+    hours > 1 ? 's' : ''
+  }`
+  const minutesString = `${
+    minutes !== 0 ? `, ${minutes} ${translations[locale].minutes}` : ''
+  }`
   return `${hourString}${minutesString}`
 }
 
 export const summarizeDurations = (
-  blocks: Data<Pick<BlockOneLevelDeep, 'DurationInMinutes'>>[]
+  blocks: Data<Pick<BlockOneLevelDeep, 'DurationInMinutes'>>[],
+  locale: Locale = DEFAULT_LOCALE
 ) => {
   const durationInMinutes = summarizeDurationsInMinutes(blocks)
   if (durationInMinutes < 60) {
-    return `${durationInMinutes} minutes`
+    return `${durationInMinutes} ${translations[locale].minutes}`
   }
-  return `${minutesToFormattedHourString(durationInMinutes)}`
+  return `${minutesToFormattedHourString(durationInMinutes, locale)}`
 }
 
 export const formatDate = (date: Date | string): string => {

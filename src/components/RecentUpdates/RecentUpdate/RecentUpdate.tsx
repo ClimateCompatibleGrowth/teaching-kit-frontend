@@ -8,16 +8,23 @@ import { typeToText, levelToString } from '../../../utils/utils'
 import Markdown from '../../Markdown/Markdown'
 import { useRouter } from 'next/router'
 import { Locale } from '../../../types'
+import TranslationDoesNotExist from '../../TranslationDoesNotExist/TranslationDoesNotExist'
+import { LEVEL_ARIA_LABEL, translations } from './translations'
 
 type Props = {
   recentUpdate: RecentUpdateType
+  translationDoesNotExistCopy: string | undefined
 }
 
-const RecentUpdate = ({ recentUpdate }: Props) => {
+const RecentUpdate = ({
+  recentUpdate,
+  translationDoesNotExistCopy: _translationDoesNotExistCopy,
+}: Props) => {
   const { locale } = useRouter()
   let typeColor: BadgeColor = 'yellow'
   let href = '/'
-  let levelExplanation = 'Level is'
+  let levelExplanation =
+    translations[locale as Locale].levelAriaLabel ?? LEVEL_ARIA_LABEL
   switch (recentUpdate.Type) {
     case 'LECTURE':
       typeColor = 'green'
@@ -35,8 +42,15 @@ const RecentUpdate = ({ recentUpdate }: Props) => {
       break
   }
 
+  const translationDoesNotExistCopy =
+    _translationDoesNotExistCopy ??
+    'Translation missing. Showing the content in its original language.'
+
   return (
     <Styled.Card href={href}>
+      {recentUpdate.Locale !== locale ? (
+        <TranslationDoesNotExist copy={translationDoesNotExistCopy} />
+      ) : null}
       <Badge accentColor={typeColor}>
         {typeToText(recentUpdate.Type, locale as Locale)}
       </Badge>
@@ -57,7 +71,9 @@ const RecentUpdate = ({ recentUpdate }: Props) => {
         )}
         {recentUpdate.Duration && (
           <Styled.MetaInformation>
-            <ClockIcon aria-label='Duration is' />
+            <ClockIcon
+              aria-label={translations[locale as Locale].durationAriaLabel}
+            />
             {recentUpdate.Duration}
           </Styled.MetaInformation>
         )}

@@ -217,3 +217,7 @@ export type FilterPageCopy = StrapiBaseEntry & {
   LectureLabel: string
   BlockLabel: string
 }
+
+export type GeneralCopy = StrapiBaseEntry & {
+  TranslationDoesNotExist: string
+}
