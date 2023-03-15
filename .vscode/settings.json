@@ -1,3 +1,23 @@
 {
-  "prettier.requireConfig": true
+  "prettier.requireConfig": true,
+  "workbench.colorCustomizations": {
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#c03f5e",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#15202b99",
+    "statusBar.foreground": "#15202b",
+    "statusBarItem.remoteBackground": "#758bd1",
+    "statusBarItem.remoteForeground": "#15202b",
+    "titleBar.activeBackground": "#758bd1",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#758bd199",
+    "titleBar.inactiveForeground": "#15202b99",
+    "sash.hoverBorder": "#9babde",
+    "statusBar.background": "#758bd1",
+    "activityBar.activeBackground": "#9babde",
+    "activityBar.background": "#9babde",
+    "statusBarItem.hoverBackground": "#4f6bc4"
+  },
+  "peacock.color": "#758bd1"
 }
