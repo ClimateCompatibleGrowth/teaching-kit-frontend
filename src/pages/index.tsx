@@ -134,7 +134,6 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
         notFound: true,
       }
     }
-
     return {
       props: copyResponse.data.data[0],
       revalidate: 60,
