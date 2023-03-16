@@ -35,7 +35,7 @@ export type Props = {
     parents: Data<CourseOneLevelDeep>[] | Data<Lecture>[]
   }
   type: LearningMaterialType
-  courseCopy?: CoursePageCopy
+  landingPageCopy?: CoursePageCopy
 }
 
 export default function MetadataContainer({
@@ -48,7 +48,7 @@ export default function MetadataContainer({
   downloadAsPptx,
   parentRelations,
   type,
-  courseCopy,
+  landingPageCopy,
 }: Props) {
   const [isDocxDownloadLoading, setIsDocxDownloadLoading] = useState(false)
   const [docxDowloadError, setDocxDownloadError] = useState(false)
@@ -88,7 +88,7 @@ export default function MetadataContainer({
         {!!level?.data && (
           <Styled.ShortInfo>
             <Styled.SignalStrengthIcon />
-            {courseCopy?.IntermediateHeader}
+            {landingPageCopy?.IntermediateHeader}
           </Styled.ShortInfo>
         )}
         {duration !== undefined && (
@@ -112,7 +112,7 @@ export default function MetadataContainer({
       )}
       {authors?.data?.length !== undefined && authors?.data?.length > 0 && (
         <Styled.HeadingSet>
-          <Styled.Heading>{courseCopy?.Authors}</Styled.Heading>
+          <Styled.Heading>{landingPageCopy?.Authors}</Styled.Heading>
           <Styled.Ul>
             {authors?.data.map((author) => (
               <Styled.Li key={author.id}>
@@ -137,7 +137,7 @@ export default function MetadataContainer({
                 <Styled.DownloadIcon />
                 Powerpoint
               </Button>
-              <Styled.DownloadSize>{`${courseCopy?.PowerpointDownloadDescription} (${pptxFileSize})`}</Styled.DownloadSize>
+              <Styled.DownloadSize>{`${landingPageCopy?.PowerpointDownloadDescription} (${pptxFileSize})`}</Styled.DownloadSize>
             </>
           )}
 
@@ -148,7 +148,7 @@ export default function MetadataContainer({
             <Styled.DownloadIcon />
             Docx
           </Button>
-          <Styled.DownloadSize>{`${courseCopy?.DocxDownloadDescription} (${docxFileSize})`}</Styled.DownloadSize>
+          <Styled.DownloadSize>{`${landingPageCopy?.DocxDownloadDescription} (${docxFileSize})`}</Styled.DownloadSize>
         </Styled.DownloadButtonsContainer>
         {(docxDowloadError || pptxDowloadError) && (
           <Styled.Alert>

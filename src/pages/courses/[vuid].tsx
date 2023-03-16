@@ -24,9 +24,12 @@ import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { summarizeDurations } from '../../utils/utils'
 
-type Props = { course: Data<CourseThreeLevelsDeep>; courseCopy: CoursePageCopy }
+type Props = {
+  course: Data<CourseThreeLevelsDeep>
+  landingPageCopy: CoursePageCopy
+}
 
-export default function CoursePage({ course, courseCopy }: Props) {
+export default function CoursePage({ course, landingPageCopy }: Props) {
   return (
     <PageContainer hasTopPadding hasBottomPadding>
       <LearningMaterialOverview>
@@ -41,7 +44,7 @@ export default function CoursePage({ course, courseCopy }: Props) {
           publishedAt={course.attributes.publishedAt}
           updatedAt={course.attributes.updatedAt}
           locale={course.attributes.locale}
-          courseCopy={courseCopy}
+          landingPageCopy={landingPageCopy}
         />
         <MetadataContainer
           level={course.attributes.Level}
@@ -57,7 +60,7 @@ export default function CoursePage({ course, courseCopy }: Props) {
           pptxFileSize={usePptxFileSize(course)}
           downloadAsDocx={() => handleDocxDownload(course)}
           downloadAsPptx={() => handlePptxDownload(course)}
-          courseCopy={courseCopy}
+          landingPageCopy={landingPageCopy}
           type='COURSE'
         />
         <BlockContentWrapper>
@@ -140,12 +143,12 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
       }`
     )
 
-    const courseCopy = copyResponse.data.data[0].attributes
+    const landingPageCopy = copyResponse.data.data[0].attributes
 
     return {
       props: {
         course: filterOutOnlyPublishedEntriesOnCourse(course),
-        courseCopy,
+        landingPageCopy,
       },
       revalidate: 60,
     }

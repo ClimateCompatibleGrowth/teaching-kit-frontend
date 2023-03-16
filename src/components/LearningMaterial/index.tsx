@@ -27,7 +27,7 @@ export type Props = {
   publishedAt?: string
   updatedAt?: string
   locale: Locale
-  courseCopy?: CoursePageCopy
+  landingPageCopy?: CoursePageCopy
 }
 
 export default function LearningMaterial({
@@ -41,15 +41,15 @@ export default function LearningMaterial({
   publishedAt,
   updatedAt,
   locale,
-  courseCopy,
+  landingPageCopy,
 }: Props) {
   const { locale: routerLocale } = useRouter()
 
   const updatedText = updatedAt
-    ? `${courseCopy?.CourseUpdatedAt} ${formatDate(updatedAt)} `
+    ? `${landingPageCopy?.WasUpdatedAt} ${formatDate(updatedAt)} `
     : ''
   const createdText = publishedAt
-    ? `${courseCopy?.CourseCreatedAt} ${formatDate(publishedAt)}`
+    ? `${landingPageCopy?.WasCreatedAt} ${formatDate(publishedAt)}`
     : ''
   const getUnorderedListAccordion = (label: string, listItems?: Content[]) => {
     return listItems !== undefined
@@ -101,7 +101,7 @@ export default function LearningMaterial({
       {locale !== routerLocale ? <h1>javulen</h1> : null}
       <LearningMaterialBadge type={type} elementType='h4' />
       <Styled.H1>{title}</Styled.H1>
-      <Styled.H2>{`${courseCopy?.HeaderCourseContent}`}</Styled.H2>
+      <Styled.H2>{`${landingPageCopy?.DescriptionHeader}`}</Styled.H2>
       <Markdown>{abstract}</Markdown>
       <Styled.DateInformation>
         {`${updatedText}${createdText}`}

@@ -219,12 +219,12 @@ export type FilterPageCopy = StrapiBaseEntry & {
 }
 
 export type CoursePageCopy = StrapiBaseEntry & {
-  HeaderCourseContent: string
+  DescriptionHeader: string
   Authors: string
-  DownloadCourseContent: string
+  DownloadContent: string
   PowerpointDownloadDescription: string
   DocxDownloadDescription: string
   IntermediateHeader: string
-  CourseCreatedAt: string
-  CourseUpdatedAt: string
+  WasCreatedAt: string
+  WasUpdatedAt: string
 }
