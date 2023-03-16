@@ -218,7 +218,7 @@ export type FilterPageCopy = StrapiBaseEntry & {
   BlockLabel: string
 }
 
-export type CoursePageCopy = StrapiBaseEntry & {
+export type LandingPageCopy = StrapiBaseEntry & {
   DescriptionHeader: string
   Authors: string
   DownloadContent: string
@@ -227,4 +227,5 @@ export type CoursePageCopy = StrapiBaseEntry & {
   IntermediateHeader: string
   WasCreatedAt: string
   WasUpdatedAt: string
+  AlsoPartOf?: string
 }

@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import {
   Author,
   CourseOneLevelDeep,
-  CoursePageCopy,
+  LandingPageCopy,
   Data,
   LearningMaterialType,
   Lecture,
@@ -35,7 +35,7 @@ export type Props = {
     parents: Data<CourseOneLevelDeep>[] | Data<Lecture>[]
   }
   type: LearningMaterialType
-  landingPageCopy?: CoursePageCopy
+  landingPageCopy?: LandingPageCopy
 }
 
 export default function MetadataContainer({
@@ -100,7 +100,7 @@ export default function MetadataContainer({
       </Styled.HeadingSet>
       {parentRelations && (
         <Styled.HeadingSet>
-          <Styled.Heading>Also part of</Styled.Heading>
+          <Styled.Heading>{landingPageCopy?.AlsoPartOf}</Styled.Heading>
           {parentRelations.parents.map((parent) => (
             <div key={parent.id}>
               <Link href={`/${parentRelations.type}/${parent.attributes.vuid}`}>

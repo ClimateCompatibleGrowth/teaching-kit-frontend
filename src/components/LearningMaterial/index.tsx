@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  CoursePageCopy,
+  LandingPageCopy,
   Data,
   LearningMaterialType,
   LearningOutcome,
@@ -27,7 +27,7 @@ export type Props = {
   publishedAt?: string
   updatedAt?: string
   locale: Locale
-  landingPageCopy?: CoursePageCopy
+  landingPageCopy?: LandingPageCopy
 }
 
 export default function LearningMaterial({
