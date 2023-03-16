@@ -1,5 +1,5 @@
 import prisma from '../../prisma/prisma'
-import { InternalApiError } from '../shared/error/InternalApiError'
+import { InternalApiError } from '../shared/error/internal-api-error'
 
 export const createEntry = async (strapiId: string, entryVersion: number) => {
   return await prisma.zenodo_entry.create({

@@ -61,8 +61,9 @@ export type Keyword = {
 type StrapiBaseEntry = {
   createdAt: string
   updatedAt: string
-  publishedAt?: string
+  publishedAt: string
   locale: Locale
+  versionNumber: number | null
 }
 
 export type Block = StrapiBaseEntry & {
@@ -81,6 +82,13 @@ export type BlockOneLevelDeep = Block & {
   Lectures: { data: Data<Lecture>[] }
   Keywords: { data: Data<Keyword>[] }
 }
+
+export type BlockTwoLevelsDeep = Modify<
+  BlockOneLevelDeep,
+  {
+    Authors: { data: Data<AuthorOneLevelDeep>[] }
+  }
+>
 
 export type Lecture = StrapiBaseEntry & {
   Title: string
@@ -220,4 +228,16 @@ export type FilterPageCopy = StrapiBaseEntry & {
 
 export type GeneralCopy = StrapiBaseEntry & {
   TranslationDoesNotExist: string
+}
+
+export type LandingPageCopy = StrapiBaseEntry & {
+  DescriptionHeader: string
+  Authors: string
+  DownloadContent: string
+  PowerpointDownloadDescription: string
+  DocxDownloadDescription: string
+  IntermediateHeader: string
+  WasCreatedAt: string
+  WasUpdatedAt: string
+  AlsoPartOf?: string
 }

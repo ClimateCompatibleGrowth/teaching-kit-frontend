@@ -1,37 +1,46 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { LearningMaterialType } from '../../types'
+import { Block, Course, Lecture } from '../../types'
 import { Prisma } from '@prisma/client'
 import { publishZenodoEntry } from '../../services/zenodo'
-import { InternalApiError } from '../../shared/error/InternalApiError'
+import { InternalApiError } from '../../shared/error/internal-api-error'
 
-type StrapiWebhookRequest = NextApiRequest & {
-  body: StrapiWebhookBody
+type WebhookBaseEntry = {
+  id: number
 }
 
-type StrapiWebhookBody = {
-  model?: LearningMaterialType
-  entry?: { id: number; vuid?: string; version: number }
+export type WebhookBlock = WebhookBaseEntry & Block
+export type WebhookLecture = WebhookBaseEntry & Lecture
+export type WebhookCourse = WebhookBaseEntry & Course
+
+type StrapiWebhookRequest<
+  T extends WebhookBlock | WebhookLecture | WebhookCourse
+> = NextApiRequest & {
+  body: StrapiWebhookBody<T>
 }
 
-//NOTE Authors är för djupt nässlat så jag måste gå in i req och hämta IDt för blocket i fråga och sen göra en ny fetchning mot strapi för att hämta Author
+type StrapiModel = 'course' | 'lecture' | 'block'
+
+export type StrapiWebhookBody<T> = {
+  model?: StrapiModel
+  entry?: T
+}
 
 export default async function postHandler(
-  req: StrapiWebhookRequest,
+  req: StrapiWebhookRequest<WebhookBlock>,
   res: NextApiResponse
 ) {
   if (req.query.secret !== process.env.ZENODO_PUBLISH_SECRET) {
     return res.status(401).json({ message: 'Invalid token' })
   }
-  let webhookBody: StrapiWebhookBody = {}
+  let webhookBody: StrapiWebhookBody<WebhookBlock> = {}
 
   try {
-    throw new InternalApiError('API endpoint not yet implemented')
-    webhookBody = req.body.body
+    webhookBody = req.body
     const zenodoPublishResponse = await publishZenodoEntry(webhookBody)
     return res.status(200).json(zenodoPublishResponse)
   } catch (error) {
     console.log(
-      `Unexpected error handling entry with strapi entry id '${webhookBody.entry?.vuid}' and strapi entry version '${webhookBody.entry?.version}'\n`,
+      `Unexpected error handling entry with strapi entry id '${webhookBody?.entry?.vuid}' and strapi entry version '${webhookBody?.entry?.versionNumber}'\n`,
       error
     )
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

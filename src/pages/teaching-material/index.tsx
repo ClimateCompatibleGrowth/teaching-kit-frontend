@@ -85,6 +85,7 @@ const getDefaultSortOption = (locale: Locale) => {
 
 export default function TeachingMaterial(props: Data<FilterPageCopy>) {
   const { locale } = useRouter()
+
   const [hasAnyChangeHappened, setHasAnyChangeHappened] =
     useState<boolean>(false)
   const [selectedKeywords, setSelectedKeywords] = useState<Item[]>([])
@@ -294,6 +295,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
     const populateHeroImage = 'populate[KeywordDropdown][populate]=*'
     const populateInfoCard = 'populate[AuthorDropdown][populate]=*'
+
     const populate = `${populateHeroImage}&${populateInfoCard}`
 
     const copyResponse: ResponseArray<FilterPageCopy> = await axios.get(

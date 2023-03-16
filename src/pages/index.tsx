@@ -153,7 +153,6 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
         notFound: true,
       }
     }
-
     return {
       props: {
         siteCopy: copyResponse.data.data[0],
