@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Block, BlockOneLevelDeep, Data } from '../../types'
+import { Block, BlockOneLevelDeep, CoursePageCopy, Data } from '../../types'
 import {
   BlockContentWrapper,
   LearningMaterialCourseHeading,
@@ -18,9 +18,9 @@ import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 
-type Props = { block: Data<BlockOneLevelDeep> }
+type Props = { block: Data<BlockOneLevelDeep>; landingPageCopy: CoursePageCopy }
 
-export default function BlockPage({ block }: Props) {
+export default function BlockPage({ block, landingPageCopy }: Props) {
   const blockHasSlides = block.attributes.Slides.length > 0
   return (
     <PageContainer hasTopPadding hasBottomPadding>
@@ -33,6 +33,7 @@ export default function BlockPage({ block }: Props) {
           publishedAt={block.attributes.publishedAt}
           updatedAt={block.attributes.updatedAt}
           locale={block.attributes.locale}
+          landingPageCopy={landingPageCopy}
         />
         <MetadataContainer
           duration={summarizeDurations([block])}
@@ -48,10 +49,11 @@ export default function BlockPage({ block }: Props) {
             parents: block.attributes.Lectures.data,
           }}
           type='BLOCK'
+          landingPageCopy={landingPageCopy}
         />
         <BlockContentWrapper>
           <LearningMaterialCourseHeading>
-            Lecture Block Content
+            {landingPageCopy.DescriptionHeader}
           </LearningMaterialCourseHeading>
           <Markdown>{block.attributes.Document}</Markdown>
         </BlockContentWrapper>
@@ -100,6 +102,14 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     )
     const block = blockResponse.data.data
 
+    const copyResponse: ResponseArray<CoursePageCopy> = await axios.get(
+      `${process.env.STRAPI_API_URL}/copy-block-pages?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }`
+    )
+
+    const landingPageCopy = copyResponse.data.data[0].attributes
+
     if (!block) {
       return {
         notFound: true,
@@ -107,7 +117,10 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     }
 
     return {
-      props: { block: filterOutOnlyPublishedEntriesOnBlock(block) },
+      props: {
+        block: filterOutOnlyPublishedEntriesOnBlock(block),
+        landingPageCopy,
+      },
       revalidate: 60,
     }
   } catch (error) {
