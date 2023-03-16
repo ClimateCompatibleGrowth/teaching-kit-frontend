@@ -12,16 +12,24 @@ import {
   LearningMaterialCourseHeading,
   PageContainer,
 } from '../../styles/global'
-import { Course, CourseThreeLevelsDeep, Data } from '../../types'
+import {
+  Course,
+  CoursePageCopy,
+  CourseThreeLevelsDeep,
+  Data,
+} from '../../types'
 import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { summarizeDurations } from '../../utils/utils'
 
-type Props = { course: Data<CourseThreeLevelsDeep> }
+type Props = {
+  course: Data<CourseThreeLevelsDeep>
+  landingPageCopy: CoursePageCopy
+}
 
-export default function CoursePage({ course }: Props) {
+export default function CoursePage({ course, landingPageCopy }: Props) {
   return (
     <PageContainer hasTopPadding hasBottomPadding>
       <LearningMaterialOverview>
@@ -36,6 +44,7 @@ export default function CoursePage({ course }: Props) {
           publishedAt={course.attributes.publishedAt}
           updatedAt={course.attributes.updatedAt}
           locale={course.attributes.locale}
+          landingPageCopy={landingPageCopy}
         />
         <MetadataContainer
           level={course.attributes.Level}
@@ -51,6 +60,7 @@ export default function CoursePage({ course }: Props) {
           pptxFileSize={usePptxFileSize(course)}
           downloadAsDocx={() => handleDocxDownload(course)}
           downloadAsPptx={() => handlePptxDownload(course)}
+          landingPageCopy={landingPageCopy}
           type='COURSE'
         />
         <BlockContentWrapper>
@@ -127,8 +137,19 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     )
     const course = courseResponse.data.data
 
+    const copyResponse: ResponseArray<CoursePageCopy> = await axios.get(
+      `${process.env.STRAPI_API_URL}/copy-course-pages?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }`
+    )
+
+    const landingPageCopy = copyResponse.data.data[0].attributes
+
     return {
-      props: { course: filterOutOnlyPublishedEntriesOnCourse(course) },
+      props: {
+        course: filterOutOnlyPublishedEntriesOnCourse(course),
+        landingPageCopy,
+      },
       revalidate: 60,
     }
   } catch (error) {
