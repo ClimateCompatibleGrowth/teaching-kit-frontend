@@ -12,16 +12,24 @@ import {
   LearningMaterialOverview,
   PageContainer,
 } from '../../styles/global'
-import { Data, Lecture, LectureTwoLevelsDeep } from '../../types'
+import {
+  Data,
+  LandingPageCopy,
+  Lecture,
+  LectureTwoLevelsDeep,
+} from '../../types'
 import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { summarizeDurations } from '../../utils/utils'
 
-type Props = { lecture: Data<LectureTwoLevelsDeep> }
+type Props = {
+  lecture: Data<LectureTwoLevelsDeep>
+  landingPageCopy: LandingPageCopy
+}
 
-export default function LecturePage({ lecture }: Props) {
+export default function LecturePage({ lecture, landingPageCopy }: Props) {
   const hasSomePptxSlides = lecture.attributes.Blocks.data.some(
     (block) => block.attributes.Slides.length > 0
   )
@@ -38,6 +46,7 @@ export default function LecturePage({ lecture }: Props) {
           publishedAt={lecture.attributes.publishedAt}
           updatedAt={lecture.attributes.updatedAt}
           locale={lecture.attributes.locale}
+          landingPageCopy={landingPageCopy}
         />
         <MetadataContainer
           level={lecture.attributes.Level}
@@ -54,10 +63,11 @@ export default function LecturePage({ lecture }: Props) {
             parents: lecture.attributes.Courses.data,
           }}
           type='LECTURE'
+          landingPageCopy={landingPageCopy}
         />
         <BlockContentWrapper>
           <LearningMaterialCourseHeading>
-            Lecture Content
+            {landingPageCopy?.DescriptionHeader}
           </LearningMaterialCourseHeading>
           <CardList
             cards={lecture.attributes.Blocks.data.map((block) => ({
@@ -125,9 +135,18 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     )
     const lecture = lectureResponse.data.data
 
+    const copyResponse: ResponseArray<LandingPageCopy> = await axios.get(
+      `${process.env.STRAPI_API_URL}/copy-lecture-pages?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }`
+    )
+
+    const landingPageCopy = copyResponse.data.data[0].attributes
+
     return {
       props: {
         lecture: filterOutOnlyPublishedEntriesOnLecture(lecture),
+        landingPageCopy: landingPageCopy,
       },
       revalidate: 60,
     }

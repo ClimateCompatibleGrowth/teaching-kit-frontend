@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Block, BlockOneLevelDeep, CoursePageCopy, Data } from '../../types'
+import { Block, BlockOneLevelDeep, LandingPageCopy, Data } from '../../types'
 import {
   BlockContentWrapper,
   LearningMaterialCourseHeading,
@@ -18,7 +18,10 @@ import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 
-type Props = { block: Data<BlockOneLevelDeep>; landingPageCopy: CoursePageCopy }
+type Props = {
+  block: Data<BlockOneLevelDeep>
+  landingPageCopy: LandingPageCopy
+}
 
 export default function BlockPage({ block, landingPageCopy }: Props) {
   const blockHasSlides = block.attributes.Slides.length > 0
@@ -102,7 +105,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     )
     const block = blockResponse.data.data
 
-    const copyResponse: ResponseArray<CoursePageCopy> = await axios.get(
+    const copyResponse: ResponseArray<LandingPageCopy> = await axios.get(
       `${process.env.STRAPI_API_URL}/copy-block-pages?locale=${
         ctx.locale ?? ctx.defaultLocale
       }`
