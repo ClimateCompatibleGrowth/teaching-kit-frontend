@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { LectureTwoLevelsDeep } from '../../../types'
+import { DEFAULT_LOCALE } from '../../../contexts/LocaleContext'
+import { LectureTwoLevelsDeep, Locale } from '../../../types'
 import { SortOptionType } from '../../../types/filters'
 import { ResponseArray, ResponseArrayData } from '../types'
 import {
@@ -53,11 +54,15 @@ export const filterLectureOnKeywordsAndAuthors = async ({
   return response.data
 }
 
-export const getRecentLectures = async (limit = 30) => {
+export const getRecentLectures = async (
+  _locale: Locale = DEFAULT_LOCALE,
+  limit = 30
+) => {
   const pagination = `pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
   const populate = `populate[Level][populate]=Level&populate[Blocks][populate]=DurationInMinutes`
+  const locale = `locale=${_locale}`
   const response: ResponseArray<LectureTwoLevelsDeep> = await axios.get(
-    `${ENDPOINT}?${pagination}&${populate}`
+    `${ENDPOINT}?${pagination}&${populate}&${locale}`
   )
   return response.data.data
 }

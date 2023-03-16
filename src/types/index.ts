@@ -226,6 +226,10 @@ export type FilterPageCopy = StrapiBaseEntry & {
   BlockLabel: string
 }
 
+export type GeneralCopy = StrapiBaseEntry & {
+  TranslationDoesNotExist: string
+}
+
 export type LandingPageCopy = StrapiBaseEntry & {
   DescriptionHeader: string
   Authors: string
