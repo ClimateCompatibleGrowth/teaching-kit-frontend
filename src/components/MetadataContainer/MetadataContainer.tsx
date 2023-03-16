@@ -126,7 +126,7 @@ export default function MetadataContainer({
         </Styled.HeadingSet>
       )}
       <Styled.HeadingSet>
-        <Styled.Heading>{typeToDownloadLabel(type)}</Styled.Heading>
+        <Styled.Heading>{landingPageCopy?.DownloadContent}</Styled.Heading>
         <Styled.DownloadButtonsContainer>
           {downloadAsPptx && (
             <>
