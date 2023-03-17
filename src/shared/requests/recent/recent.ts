@@ -66,7 +66,7 @@ const getLearningMaterial = async <T extends LearningMaterial>(
   locale: Locale = DEFAULT_LOCALE,
   getLearningMaterial: (locale: Locale) => Promise<T[]>
 ) => {
-  const coursesWithDifferentLocales =
+  const learningMaterialWithDifferentLocales =
     locale !== DEFAULT_LOCALE
       ? (
           await Promise.all([
@@ -75,12 +75,14 @@ const getLearningMaterial = async <T extends LearningMaterial>(
           ])
         ).flat()
       : await getLearningMaterial(locale)
-  const translationOccurances = coursesWithDifferentLocales.reduce(
+  const translationOccurances = learningMaterialWithDifferentLocales.reduce(
     countOccurances,
     {} as TranslationOccurances
   )
-  return coursesWithDifferentLocales.filter((lecture) =>
-    preferredLocale(locale, translationOccurances, lecture)
+  return learningMaterialWithDifferentLocales.filter(
+    (learningMaterial) =>
+      preferredLocale(locale, translationOccurances, learningMaterial) &&
+      learningMaterial.attributes.vuid !== null
   )
 }
 

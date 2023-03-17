@@ -17,6 +17,7 @@ import {
   LandingPageCopy,
   CourseThreeLevelsDeep,
   Data,
+  GeneralCopy,
 } from '../../types'
 import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
@@ -27,9 +28,14 @@ import { summarizeDurations } from '../../utils/utils'
 type Props = {
   course: Data<CourseThreeLevelsDeep>
   landingPageCopy: LandingPageCopy
+  generalCopy: Data<GeneralCopy>
 }
 
-export default function CoursePage({ course, landingPageCopy }: Props) {
+export default function CoursePage({
+  course,
+  landingPageCopy,
+  generalCopy,
+}: Props) {
   return (
     <PageContainer hasTopPadding hasBottomPadding>
       <LearningMaterialOverview>
@@ -45,6 +51,9 @@ export default function CoursePage({ course, landingPageCopy }: Props) {
           updatedAt={course.attributes.updatedAt}
           locale={course.attributes.locale}
           landingPageCopy={landingPageCopy}
+          translationDoesNotExistCopy={
+            generalCopy.attributes.TranslationDoesNotExist
+          }
         />
         <MetadataContainer
           level={course.attributes.Level}
@@ -132,23 +141,34 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const populateLevel = 'populate[Level]=*'
     const populateLectureLevel = 'populate[Lectures][populate][Level]=*'
 
-    const courseResponse: Response<CourseThreeLevelsDeep> = await axios.get(
+    const courseRequest: Promise<Response<CourseThreeLevelsDeep>> = axios.get(
       `${process.env.STRAPI_API_URL}/courses/${courseVuid.data?.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
     )
-    const course = courseResponse.data.data
 
-    const copyResponse: ResponseArray<LandingPageCopy> = await axios.get(
+    const copyRequest: Promise<ResponseArray<LandingPageCopy>> = axios.get(
       `${process.env.STRAPI_API_URL}/copy-course-pages?locale=${
         ctx.locale ?? ctx.defaultLocale
       }`
     )
 
+    const generalCopyRequest: Promise<ResponseArray<GeneralCopy>> = axios.get(
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }`
+    )
+
+    const [courseResponse, copyResponse, generalCopyResponse] =
+      await Promise.all([courseRequest, copyRequest, generalCopyRequest])
+
+    const course = courseResponse.data.data
     const landingPageCopy = copyResponse.data.data[0].attributes
+    const generalCopy = generalCopyResponse.data.data[0]
 
     return {
       props: {
         course: filterOutOnlyPublishedEntriesOnCourse(course),
         landingPageCopy,
+        generalCopy,
       },
       revalidate: 60,
     }

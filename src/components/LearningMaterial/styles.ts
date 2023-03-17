@@ -37,3 +37,7 @@ export const DateInformation = styled.div`
   color: ${Neutral40};
   font-size: 1.4rem;
 `
+
+export const InformationBanner = styled.div`
+  margin-bottom: 1rem;
+`

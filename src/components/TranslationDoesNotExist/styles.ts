@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
 
   padding: 0 1rem;
 
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   align-items: center;
   gap: 8px;

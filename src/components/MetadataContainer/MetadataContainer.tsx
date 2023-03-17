@@ -55,8 +55,6 @@ export default function MetadataContainer({
   const [isPptxDownloadLoading, setIsPptxDownloadLoading] = useState(false)
   const [pptxDowloadError, setPptxDownloadError] = useState(false)
 
-  const { locale } = useRouter()
-
   const docxDownloadHandler = async () => {
     const delayedLoading = setTimeout(() => setIsDocxDownloadLoading(true), 300)
     const download = await downloadAsDocx()

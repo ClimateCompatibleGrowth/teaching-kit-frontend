@@ -15,6 +15,7 @@ import { formatDate, typeToText } from '../../utils/utils'
 import LearningMaterialBadge from './LearningMaterialBadge/LearningMaterialBadge'
 import Markdown from '../Markdown/Markdown'
 import { useRouter } from 'next/router'
+import TranslationDoesNotExist from '../TranslationDoesNotExist/TranslationDoesNotExist'
 
 export type Props = {
   type: LearningMaterialType
@@ -28,6 +29,7 @@ export type Props = {
   updatedAt?: string
   locale: Locale
   landingPageCopy?: LandingPageCopy
+  translationDoesNotExistCopy?: string
 }
 
 export default function LearningMaterial({
@@ -42,6 +44,7 @@ export default function LearningMaterial({
   updatedAt,
   locale,
   landingPageCopy,
+  translationDoesNotExistCopy,
 }: Props) {
   const { locale: routerLocale } = useRouter()
 
@@ -98,7 +101,11 @@ export default function LearningMaterial({
 
   return (
     <Styled.Wrapper>
-      {locale !== routerLocale ? <h1>javulen</h1> : null}
+      {locale !== routerLocale ? (
+        <Styled.InformationBanner>
+          <TranslationDoesNotExist copy={translationDoesNotExistCopy} />
+        </Styled.InformationBanner>
+      ) : null}
       <LearningMaterialBadge type={type} elementType='h4' />
       <Styled.H1>{title}</Styled.H1>
       <Styled.H2>{`${landingPageCopy?.DescriptionHeader}`}</Styled.H2>
