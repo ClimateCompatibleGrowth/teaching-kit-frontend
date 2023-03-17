@@ -240,4 +240,8 @@ export type LandingPageCopy = StrapiBaseEntry & {
   WasCreatedAt: string
   WasUpdatedAt: string
   AlsoPartOf?: string
+  LearningOutcomes?: string
+  Prerequisites?: string
+  Acknowledgement?: string
+  CiteAs?: string
 }

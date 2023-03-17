@@ -9,14 +9,9 @@ import {
   LearningMaterialType,
   Lecture,
   Level,
-  Locale,
 } from '../../types'
 import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
-import {
-  levelToString,
-  typeToDownloadLabel,
-  typeToText,
-} from '../../utils/utils'
+import { levelToString } from '../../utils/utils'
 import Alert from '../Alert/Alert'
 import Button from '../Button/Button'
 
@@ -35,7 +30,7 @@ export type Props = {
     parents: Data<CourseOneLevelDeep>[] | Data<Lecture>[]
   }
   type: LearningMaterialType
-  landingPageCopy?: LandingPageCopy
+  landingPageCopy: LandingPageCopy
 }
 
 export default function MetadataContainer({
@@ -47,7 +42,6 @@ export default function MetadataContainer({
   downloadAsDocx,
   downloadAsPptx,
   parentRelations,
-  type,
   landingPageCopy,
 }: Props) {
   const [isDocxDownloadLoading, setIsDocxDownloadLoading] = useState(false)
@@ -86,7 +80,7 @@ export default function MetadataContainer({
         {!!level?.data && (
           <Styled.ShortInfo>
             <Styled.SignalStrengthIcon />
-            {landingPageCopy?.IntermediateHeader}
+            {levelToString(level)}
           </Styled.ShortInfo>
         )}
         {duration !== undefined && (
@@ -98,7 +92,7 @@ export default function MetadataContainer({
       </Styled.HeadingSet>
       {parentRelations && (
         <Styled.HeadingSet>
-          <Styled.Heading>{landingPageCopy?.AlsoPartOf}</Styled.Heading>
+          <Styled.Heading>{landingPageCopy.AlsoPartOf}</Styled.Heading>
           {parentRelations.parents.map((parent) => (
             <div key={parent.id}>
               <Link href={`/${parentRelations.type}/${parent.attributes.vuid}`}>
@@ -110,7 +104,7 @@ export default function MetadataContainer({
       )}
       {authors?.data?.length !== undefined && authors?.data?.length > 0 && (
         <Styled.HeadingSet>
-          <Styled.Heading>{landingPageCopy?.Authors}</Styled.Heading>
+          <Styled.Heading>{landingPageCopy.Authors}</Styled.Heading>
           <Styled.Ul>
             {authors?.data.map((author) => (
               <Styled.Li key={author.id}>
@@ -124,7 +118,7 @@ export default function MetadataContainer({
         </Styled.HeadingSet>
       )}
       <Styled.HeadingSet>
-        <Styled.Heading>{landingPageCopy?.DownloadContent}</Styled.Heading>
+        <Styled.Heading>{landingPageCopy.DownloadContent}</Styled.Heading>
         <Styled.DownloadButtonsContainer>
           {downloadAsPptx && (
             <>
@@ -135,7 +129,7 @@ export default function MetadataContainer({
                 <Styled.DownloadIcon />
                 Powerpoint
               </Button>
-              <Styled.DownloadSize>{`${landingPageCopy?.PowerpointDownloadDescription} (${pptxFileSize})`}</Styled.DownloadSize>
+              <Styled.DownloadSize>{`${landingPageCopy.PowerpointDownloadDescription} (${pptxFileSize})`}</Styled.DownloadSize>
             </>
           )}
 
@@ -146,7 +140,7 @@ export default function MetadataContainer({
             <Styled.DownloadIcon />
             Docx
           </Button>
-          <Styled.DownloadSize>{`${landingPageCopy?.DocxDownloadDescription} (${docxFileSize})`}</Styled.DownloadSize>
+          <Styled.DownloadSize>{`${landingPageCopy.DocxDownloadDescription} (${docxFileSize})`}</Styled.DownloadSize>
         </Styled.DownloadButtonsContainer>
         {(docxDowloadError || pptxDowloadError) && (
           <Styled.Alert>
