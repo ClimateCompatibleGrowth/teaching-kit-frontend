@@ -9,10 +9,15 @@ import TextImage from '../components/TextImage/TextImage'
 import ContentColumns from '../components/ContentColumns/ContentColumns'
 import axios from 'axios'
 import { GetStaticPropsContext } from 'next'
-import { StartPageCopy, Data } from '../types'
+import { StartPageCopy, Data, GeneralCopy } from '../types'
 import { ResponseArray } from '../shared/requests/types'
 
-export default function Home(props: Data<StartPageCopy>) {
+type Props = {
+  siteCopy: Data<StartPageCopy>
+  generalCopy?: Data<GeneralCopy>
+}
+
+export default function Home({ siteCopy, generalCopy }: Props) {
   const {
     BottomTextColumn1,
     BottomTextColumn2,
@@ -25,7 +30,8 @@ export default function Home(props: Data<StartPageCopy>) {
     InfoCardHeader,
     InfoCards,
     InfoCardsLarge,
-  } = props.attributes
+    PrimaryCallToActionButtonLabel,
+  } = siteCopy.attributes
 
   const getIcon = (id: number) => {
     if (id === 0) return <DocumentIcon />
@@ -73,6 +79,10 @@ export default function Home(props: Data<StartPageCopy>) {
         }}
         title={Header}
         body={HeaderParagraph}
+        action={{
+          href: '/teaching-material',
+          label: PrimaryCallToActionButtonLabel,
+        }}
       />
       {InfoCardHeader !== undefined && InfoCards !== undefined ? (
         <PosterList
@@ -106,6 +116,9 @@ export default function Home(props: Data<StartPageCopy>) {
         title={DynamicContentHeader}
         loadMoreButtonLabel={DynamicContentButtonLabel1}
         goToFilterPageButtonLabel={DynamicContentButtonLabel2}
+        translationDoesNotExistCopy={
+          generalCopy?.attributes.TranslationDoesNotExist
+        }
       />
       <ContentColumns
         columns={[BottomTextColumn1, BottomTextColumn2].map(
@@ -129,13 +142,22 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
       }&${populate}`
     )
 
+    const generalCopyResponse: ResponseArray<GeneralCopy> = await axios.get(
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }`
+    )
+
     if (!copyResponse || copyResponse.data.data.length < 1) {
       return {
         notFound: true,
       }
     }
     return {
-      props: copyResponse.data.data[0],
+      props: {
+        siteCopy: copyResponse.data.data[0],
+        generalCopy: generalCopyResponse?.data.data[0],
+      },
       revalidate: 60,
     }
   } catch (error) {

@@ -3,9 +3,14 @@ import {
   getAuthorsAndKeywordsFilterString,
   getSortString,
 } from '../utils/utils'
-import { CourseThreeLevelsDeep, CourseTwoLevelsDeep } from '../../../types'
+import {
+  CourseThreeLevelsDeep,
+  CourseTwoLevelsDeep,
+  Locale,
+} from '../../../types'
 import { ResponseArray } from '../types'
 import { SortOptionType } from '../../../types/filters'
+import { DEFAULT_LOCALE } from '../../../contexts/LocaleContext'
 
 const ENDPOINT = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/courses`
 const DEFAULT_MATCHES_PER_PAGE = 10
@@ -54,11 +59,15 @@ export const filterCourseOnKeywordsAndAuthors = async (
   return response.data
 }
 
-export const getRecentCourses = async (limit = 30) => {
+export const getRecentCourses = async (
+  _locale: Locale = DEFAULT_LOCALE,
+  limit = 30
+) => {
   const pagination = `pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
   const populate = `populate[Level]=Level&populate[Lectures][populate][Blocks]=DurationInMinutes`
+  const locale = `locale=${_locale}`
   const response: ResponseArray<CourseTwoLevelsDeep> = await axios.get(
-    `${ENDPOINT}?${pagination}&${populate}`
+    `${ENDPOINT}?${pagination}&${populate}&${locale}`
   )
   return response.data.data
 }

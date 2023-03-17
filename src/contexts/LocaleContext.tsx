@@ -14,8 +14,10 @@ type LocaleContext = {
   setLocale?: Dispatch<SetStateAction<Locale>>
 }
 
+export const DEFAULT_LOCALE = 'en'
+
 const defaultContextState: LocaleContext = {
-  locale: 'en',
+  locale: DEFAULT_LOCALE,
   isLoading: true,
 }
 

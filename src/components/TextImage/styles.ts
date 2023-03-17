@@ -1,6 +1,5 @@
 import styled from '@emotion/styled'
 import NextImage from 'next/image'
-import { ubuntu } from '../../styles/fonts'
 import { Accent40, mq, Neutral99, OnNeutral99 } from '../../styles/global'
 
 type PortionProps = {

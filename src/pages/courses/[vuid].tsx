@@ -14,7 +14,7 @@ import {
 } from '../../styles/global'
 import {
   Course,
-  CoursePageCopy,
+  LandingPageCopy,
   CourseThreeLevelsDeep,
   Data,
 } from '../../types'
@@ -26,7 +26,7 @@ import { summarizeDurations } from '../../utils/utils'
 
 type Props = {
   course: Data<CourseThreeLevelsDeep>
-  landingPageCopy: CoursePageCopy
+  landingPageCopy: LandingPageCopy
 }
 
 export default function CoursePage({ course, landingPageCopy }: Props) {
@@ -137,7 +137,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     )
     const course = courseResponse.data.data
 
-    const copyResponse: ResponseArray<CoursePageCopy> = await axios.get(
+    const copyResponse: ResponseArray<LandingPageCopy> = await axios.get(
       `${process.env.STRAPI_API_URL}/copy-course-pages?locale=${
         ctx.locale ?? ctx.defaultLocale
       }`

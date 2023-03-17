@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { BlockOneLevelDeep } from '../../../types'
+import { DEFAULT_LOCALE } from '../../../contexts/LocaleContext'
+import { BlockOneLevelDeep, Locale } from '../../../types'
 import { BlockSortOptionType } from '../../../types/filters'
 import { ResponseArray, ResponseArrayData } from '../types'
 import {
@@ -41,10 +42,14 @@ export const filterBlockOnKeywordsAndAuthors = async ({
   return response.data
 }
 
-export const getRecentBlocks = async (limit = 30) => {
+export const getRecentBlocks = async (
+  _locale: Locale = DEFAULT_LOCALE,
+  limit = 30
+) => {
   const pagination = `pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
+  const locale = `locale=${_locale}`
   const response: ResponseArray<BlockOneLevelDeep> = await axios.get(
-    `${ENDPOINT}?${pagination}`
+    `${ENDPOINT}?${pagination}&${locale}`
   )
   return response.data.data
 }
