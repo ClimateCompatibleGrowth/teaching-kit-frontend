@@ -4,10 +4,12 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import * as Styled from './styles'
 
 type Props = {
-  copy: string
+  copy?: string
 }
 
-const TranslationDoesNotExist = ({ copy }: Props) => {
+const TranslationDoesNotExist = ({
+  copy = 'Translation missing. Showing the content in its original language.',
+}: Props) => {
   return (
     <Styled.Wrapper>
       <InfoOutlinedIcon fontSize='large' />

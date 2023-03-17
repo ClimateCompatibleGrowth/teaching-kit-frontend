@@ -1,7 +1,6 @@
 import React from 'react'
 import {
   LandingPageCopy,
-  Data,
   LearningMaterialType,
   LearningOutcome,
   Locale,
@@ -11,10 +10,11 @@ import AccordionGroup from '../AccordionGroup/AccordionGroup'
 import UnorderedList, { Content } from './UnorderedList/UnorderedList'
 
 import * as Styled from './styles'
-import { formatDate, typeToText } from '../../utils/utils'
+import { formatDate } from '../../utils/utils'
 import LearningMaterialBadge from './LearningMaterialBadge/LearningMaterialBadge'
 import Markdown from '../Markdown/Markdown'
 import { useRouter } from 'next/router'
+import TranslationDoesNotExist from '../TranslationDoesNotExist/TranslationDoesNotExist'
 
 export type Props = {
   type: LearningMaterialType
@@ -27,7 +27,8 @@ export type Props = {
   publishedAt?: string
   updatedAt?: string
   locale: Locale
-  landingPageCopy?: LandingPageCopy
+  landingPageCopy: LandingPageCopy
+  translationDoesNotExistCopy?: string
 }
 
 export default function LearningMaterial({
@@ -42,14 +43,15 @@ export default function LearningMaterial({
   updatedAt,
   locale,
   landingPageCopy,
+  translationDoesNotExistCopy,
 }: Props) {
   const { locale: routerLocale } = useRouter()
 
   const updatedText = updatedAt
-    ? `${landingPageCopy?.WasUpdatedAt} ${formatDate(updatedAt)} `
+    ? `${landingPageCopy.WasUpdatedAt} ${formatDate(updatedAt)} `
     : ''
   const createdText = publishedAt
-    ? `${landingPageCopy?.WasCreatedAt} ${formatDate(publishedAt)}`
+    ? `${landingPageCopy.WasCreatedAt} ${formatDate(publishedAt)}`
     : ''
   const getUnorderedListAccordion = (label: string, listItems?: Content[]) => {
     return listItems !== undefined
@@ -87,21 +89,31 @@ export default function LearningMaterial({
     }))
     return [
       ...getUnorderedListAccordion(
-        'Learning outcomes',
+        `${landingPageCopy.LearningOutcomes}`,
         learningOutComesListItems
       ),
-      ...getUnorderedListAccordion('Prerequisites', prerequisitesListItems),
-      ...getStringAccordion('Acknowledgement', acknowledgement),
-      ...getStringAccordion('Cite as', citeAs),
+      ...getUnorderedListAccordion(
+        `${landingPageCopy.Prerequisites}`,
+        prerequisitesListItems
+      ),
+      ...getStringAccordion(
+        `${landingPageCopy.Acknowledgement}`,
+        acknowledgement
+      ),
+      ...getStringAccordion(`${landingPageCopy.CiteAs}`, citeAs),
     ]
   }
 
   return (
     <Styled.Wrapper>
-      {locale !== routerLocale ? <h1>javulen</h1> : null}
+      {locale !== routerLocale ? (
+        <Styled.InformationBanner>
+          <TranslationDoesNotExist copy={translationDoesNotExistCopy} />
+        </Styled.InformationBanner>
+      ) : null}
       <LearningMaterialBadge type={type} elementType='h4' />
       <Styled.H1>{title}</Styled.H1>
-      <Styled.H2>{`${landingPageCopy?.DescriptionHeader}`}</Styled.H2>
+      <Styled.H2>{`${landingPageCopy.DescriptionHeader}`}</Styled.H2>
       <Markdown>{abstract}</Markdown>
       <Styled.DateInformation>
         {`${updatedText}${createdText}`}

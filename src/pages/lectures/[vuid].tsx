@@ -14,6 +14,7 @@ import {
 } from '../../styles/global'
 import {
   Data,
+  GeneralCopy,
   LandingPageCopy,
   Lecture,
   LectureTwoLevelsDeep,
@@ -27,9 +28,14 @@ import { summarizeDurations } from '../../utils/utils'
 type Props = {
   lecture: Data<LectureTwoLevelsDeep>
   landingPageCopy: LandingPageCopy
+  generalCopy: Data<GeneralCopy>
 }
 
-export default function LecturePage({ lecture, landingPageCopy }: Props) {
+export default function LecturePage({
+  lecture,
+  landingPageCopy,
+  generalCopy,
+}: Props) {
   const hasSomePptxSlides = lecture.attributes.Blocks.data.some(
     (block) => block.attributes.Slides.length > 0
   )
@@ -47,6 +53,9 @@ export default function LecturePage({ lecture, landingPageCopy }: Props) {
           updatedAt={lecture.attributes.updatedAt}
           locale={lecture.attributes.locale}
           landingPageCopy={landingPageCopy}
+          translationDoesNotExistCopy={
+            generalCopy.attributes.TranslationDoesNotExist
+          }
         />
         <MetadataContainer
           level={lecture.attributes.Level}
@@ -67,7 +76,7 @@ export default function LecturePage({ lecture, landingPageCopy }: Props) {
         />
         <BlockContentWrapper>
           <LearningMaterialCourseHeading>
-            {landingPageCopy?.DescriptionHeader}
+            {landingPageCopy.DescriptionHeader}
           </LearningMaterialCourseHeading>
           <CardList
             cards={lecture.attributes.Blocks.data.map((block) => ({
@@ -130,23 +139,34 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const populateBlockSlides = 'populate[Blocks][populate][Slides]=*'
     const populateLevel = 'populate[Level]=Level'
 
-    const lectureResponse: Response<LectureTwoLevelsDeep> = await axios.get(
+    const lectureRequest: Promise<Response<LectureTwoLevelsDeep>> = axios.get(
       `${process.env.STRAPI_API_URL}/lectures/${lectureVuid.data?.id}?${populateCourses}&${populateBlocks}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}`
     )
-    const lecture = lectureResponse.data.data
 
-    const copyResponse: ResponseArray<LandingPageCopy> = await axios.get(
+    const copyRequest: Promise<ResponseArray<LandingPageCopy>> = axios.get(
       `${process.env.STRAPI_API_URL}/copy-lecture-pages?locale=${
         ctx.locale ?? ctx.defaultLocale
       }`
     )
 
+    const generalCopyRequest: Promise<ResponseArray<GeneralCopy>> = axios.get(
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }`
+    )
+
+    const [lectureResponse, copyResponse, generalCopyResponse] =
+      await Promise.all([lectureRequest, copyRequest, generalCopyRequest])
+
+    const lecture = lectureResponse.data.data
     const landingPageCopy = copyResponse.data.data[0].attributes
+    const generalCopy = generalCopyResponse.data.data[0]
 
     return {
       props: {
         lecture: filterOutOnlyPublishedEntriesOnLecture(lecture),
         landingPageCopy: landingPageCopy,
+        generalCopy,
       },
       revalidate: 60,
     }

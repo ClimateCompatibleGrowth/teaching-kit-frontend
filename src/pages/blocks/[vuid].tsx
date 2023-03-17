@@ -1,5 +1,11 @@
 import axios from 'axios'
-import { Block, BlockOneLevelDeep, LandingPageCopy, Data } from '../../types'
+import {
+  Block,
+  BlockOneLevelDeep,
+  LandingPageCopy,
+  Data,
+  GeneralCopy,
+} from '../../types'
 import {
   BlockContentWrapper,
   LearningMaterialCourseHeading,
@@ -21,9 +27,14 @@ import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 type Props = {
   block: Data<BlockOneLevelDeep>
   landingPageCopy: LandingPageCopy
+  generalCopy: Data<GeneralCopy>
 }
 
-export default function BlockPage({ block, landingPageCopy }: Props) {
+export default function BlockPage({
+  block,
+  landingPageCopy,
+  generalCopy,
+}: Props) {
   const blockHasSlides = block.attributes.Slides.length > 0
   return (
     <PageContainer hasTopPadding hasBottomPadding>
@@ -37,6 +48,9 @@ export default function BlockPage({ block, landingPageCopy }: Props) {
           updatedAt={block.attributes.updatedAt}
           locale={block.attributes.locale}
           landingPageCopy={landingPageCopy}
+          translationDoesNotExistCopy={
+            generalCopy.attributes.TranslationDoesNotExist
+          }
         />
         <MetadataContainer
           duration={summarizeDurations([block])}
@@ -100,18 +114,28 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
       }&fallbackToDefaultLocale=true`
     )
 
-    const blockResponse: Response<BlockOneLevelDeep> = await axios.get(
+    const blockRequest: Promise<Response<BlockOneLevelDeep>> = axios.get(
       `${process.env.STRAPI_API_URL}/blocks/${blockVuid.data?.id}?populate=*`
     )
-    const block = blockResponse.data.data
 
-    const copyResponse: ResponseArray<LandingPageCopy> = await axios.get(
+    const copyRequest: Promise<ResponseArray<LandingPageCopy>> = axios.get(
       `${process.env.STRAPI_API_URL}/copy-block-pages?locale=${
         ctx.locale ?? ctx.defaultLocale
       }`
     )
 
+    const generalCopyRequest: Promise<ResponseArray<GeneralCopy>> = axios.get(
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }`
+    )
+
+    const [blockResponse, copyResponse, generalCopyResponse] =
+      await Promise.all([blockRequest, copyRequest, generalCopyRequest])
+
+    const block = blockResponse.data.data
     const landingPageCopy = copyResponse.data.data[0].attributes
+    const generalCopy = generalCopyResponse.data.data[0]
 
     if (!block) {
       return {
@@ -123,6 +147,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
       props: {
         block: filterOutOnlyPublishedEntriesOnBlock(block),
         landingPageCopy,
+        generalCopy,
       },
       revalidate: 60,
     }
