@@ -10,7 +10,7 @@ import AccordionGroup from '../AccordionGroup/AccordionGroup'
 import UnorderedList, { Content } from './UnorderedList/UnorderedList'
 
 import * as Styled from './styles'
-import { formatDate, typeToText } from '../../utils/utils'
+import { formatDate } from '../../utils/utils'
 import LearningMaterialBadge from './LearningMaterialBadge/LearningMaterialBadge'
 import Markdown from '../Markdown/Markdown'
 import { useRouter } from 'next/router'
