@@ -27,7 +27,7 @@ export type Props = {
   publishedAt?: string
   updatedAt?: string
   locale: Locale
-  landingPageCopy?: LandingPageCopy
+  landingPageCopy: LandingPageCopy
 }
 
 export default function LearningMaterial({
@@ -46,10 +46,10 @@ export default function LearningMaterial({
   const { locale: routerLocale } = useRouter()
 
   const updatedText = updatedAt
-    ? `${landingPageCopy?.WasUpdatedAt} ${formatDate(updatedAt)} `
+    ? `${landingPageCopy.WasUpdatedAt} ${formatDate(updatedAt)} `
     : ''
   const createdText = publishedAt
-    ? `${landingPageCopy?.WasCreatedAt} ${formatDate(publishedAt)}`
+    ? `${landingPageCopy.WasCreatedAt} ${formatDate(publishedAt)}`
     : ''
   const getUnorderedListAccordion = (label: string, listItems?: Content[]) => {
     return listItems !== undefined
@@ -87,12 +87,18 @@ export default function LearningMaterial({
     }))
     return [
       ...getUnorderedListAccordion(
-        'Learning outcomes',
+        `${landingPageCopy.LearningOutcomes}`,
         learningOutComesListItems
       ),
-      ...getUnorderedListAccordion('Prerequisites', prerequisitesListItems),
-      ...getStringAccordion('Acknowledgement', acknowledgement),
-      ...getStringAccordion('Cite as', citeAs),
+      ...getUnorderedListAccordion(
+        `${landingPageCopy.Prerequisites}`,
+        prerequisitesListItems
+      ),
+      ...getStringAccordion(
+        `${landingPageCopy.Acknowledgement}`,
+        acknowledgement
+      ),
+      ...getStringAccordion(`${landingPageCopy.CiteAs}`, citeAs),
     ]
   }
 
@@ -101,7 +107,7 @@ export default function LearningMaterial({
       {locale !== routerLocale ? <h1>javulen</h1> : null}
       <LearningMaterialBadge type={type} elementType='h4' />
       <Styled.H1>{title}</Styled.H1>
-      <Styled.H2>{`${landingPageCopy?.DescriptionHeader}`}</Styled.H2>
+      <Styled.H2>{`${landingPageCopy.DescriptionHeader}`}</Styled.H2>
       <Markdown>{abstract}</Markdown>
       <Styled.DateInformation>
         {`${updatedText}${createdText}`}

@@ -67,7 +67,7 @@ export default function LecturePage({ lecture, landingPageCopy }: Props) {
         />
         <BlockContentWrapper>
           <LearningMaterialCourseHeading>
-            {landingPageCopy?.DescriptionHeader}
+            {landingPageCopy.DescriptionHeader}
           </LearningMaterialCourseHeading>
           <CardList
             cards={lecture.attributes.Blocks.data.map((block) => ({
