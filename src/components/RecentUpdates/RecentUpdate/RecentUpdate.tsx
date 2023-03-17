@@ -16,10 +16,7 @@ type Props = {
   translationDoesNotExistCopy: string | undefined
 }
 
-const RecentUpdate = ({
-  recentUpdate,
-  translationDoesNotExistCopy: _translationDoesNotExistCopy,
-}: Props) => {
+const RecentUpdate = ({ recentUpdate, translationDoesNotExistCopy }: Props) => {
   const { locale } = useRouter()
   let typeColor: BadgeColor = 'yellow'
   let href = '/'
@@ -41,10 +38,6 @@ const RecentUpdate = ({
     default:
       break
   }
-
-  const translationDoesNotExistCopy =
-    _translationDoesNotExistCopy ??
-    'Translation missing. Showing the content in its original language.'
 
   return (
     <Styled.Card href={href}>
