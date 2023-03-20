@@ -25,6 +25,7 @@ export const filterLectureOnKeywordsAndAuthors = async ({
   authors,
   pageNumber,
   matchesPerPage,
+  locale,
   sortMethod,
 }: FilterParameters<SortOptionType>): Promise<
   ResponseArrayData<LectureTwoLevelsDeep>

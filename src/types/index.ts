@@ -81,6 +81,9 @@ export type BlockOneLevelDeep = Block & {
   Slides: Slide[]
   Lectures: { data: Data<Lecture>[] }
   Keywords: { data: Data<Keyword>[] }
+  localizations: {
+    data: Data<Block>[]
+  }
 }
 
 export type BlockTwoLevelsDeep = Modify<

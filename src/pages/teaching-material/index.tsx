@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import Dropdown from '../../components/Dropdown/Dropdown'
 import TabGroup from '../../components/TabGroup/TabGroup'
+import { getFilteredBlocks } from '../../services/strapi-locale-filter'
 import { searchForAuthors } from '../../shared/requests/authors/authors'
 import { filterBlockOnKeywordsAndAuthors } from '../../shared/requests/blocks/blocks'
 import { filterCourseOnKeywordsAndAuthors } from '../../shared/requests/courses/courses'
@@ -19,13 +20,21 @@ import {
   FilterPageCopy,
   Data,
   Locale,
+  Block,
 } from '../../types'
 import {
+  ALPHABETICAL_ASC,
+  ALPHABETICAL_DESC,
   isBlockSortOptionType,
   Item,
+  LEVEL_ASC,
+  LEVEL_DESC,
   SortOption,
   sortOptions,
+  SortOptionType,
+  SortOptions,
   spanishSortOptions,
+  getSortOptionKey,
 } from '../../types/filters'
 
 // Note that Strapi's default value for page sizes currently is 25. Hence,
@@ -76,22 +85,24 @@ const defaultFilterResult: ResponseArrayData<any> = {
   },
 }
 
-const getDefaultSortOption = (locale: Locale) => {
+const getTranslatedSort = (sortOptionType: SortOptionType, locale: Locale) => {
+  const sortOptionKey = getSortOptionKey(sortOptionType)
   if (locale === 'es-ES') {
-    return spanishSortOptions.alphabeticalASC
+    return spanishSortOptions[sortOptionKey]
   }
-  return sortOptions.alphabeticalASC
+  return sortOptions[sortOptionKey]
 }
 
 export default function TeachingMaterial(props: Data<FilterPageCopy>) {
-  const { locale } = useRouter()
+  const { locale: _locale } = useRouter()
+  const locale = _locale as Locale
 
   const [hasAnyChangeHappened, setHasAnyChangeHappened] =
     useState<boolean>(false)
   const [selectedKeywords, setSelectedKeywords] = useState<Item[]>([])
   const [selectedAuthors, setSelectedAuthors] = useState<Item[]>([])
   const [selectedSort, setSelectedSort] = useState<SortOption>(
-    getDefaultSortOption(locale as Locale)
+    getTranslatedSort('ALPHABETICAL_ASC', locale)
   )
 
   const [currentCoursePageNumber, setCurrentCoursePageNumber] =
@@ -104,7 +115,7 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
   const [results, setResults] = useState<{
     courses: ResponseArrayData<CourseThreeLevelsDeep>
     lectures: ResponseArrayData<LectureTwoLevelsDeep>
-    blocks: ResponseArrayData<BlockOneLevelDeep>
+    blocks: ResponseArrayData<Block>
   }>({
     courses: defaultFilterResult,
     lectures: defaultFilterResult,
@@ -174,6 +185,7 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
       authors,
       currentCoursePageNumber,
       selectedSort.id,
+      locale,
       DEFAULT_MATCHES_PER_PAGE
     )
     const lectureFilterPromise = filterLectureOnKeywordsAndAuthors({
@@ -181,9 +193,10 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
       authors,
       pageNumber: currentLecturePageNumber,
       sortMethod: selectedSort.id,
+      locale,
       matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
     })
-    const blockFilterPromise = filterBlockOnKeywordsAndAuthors({
+    const blockFilterPromise = getFilteredBlocks({
       keywords,
       authors,
       pageNumber: currentBlockPageNumber,
@@ -191,6 +204,7 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
         ? selectedSort.id
         : 'ALPHABETICAL_ASC',
       matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
+      locale,
     })
     const [courseFilterResult, lectureFilterResult, blockFilterResult] =
       await Promise.all([
@@ -204,7 +218,15 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
       lectures: lectureFilterResult,
       blocks: blockFilterResult,
     })
-  }, [selectedKeywords, selectedAuthors, selectedSort])
+  }, [
+    selectedKeywords,
+    selectedAuthors,
+    selectedSort,
+    locale,
+    currentCoursePageNumber, // Could be improved so that the function does not re-run for all types when one's page number changes
+    currentLecturePageNumber, // Could be improved so that the function does not re-run for all types when one's page number changes
+    currentBlockPageNumber, // Could be improved so that the function does not re-run for all types when one's page number changes
+  ])
 
   useEffect(() => {
     if (selectedKeywords.length > 0 || selectedAuthors.length > 0) {
@@ -217,6 +239,12 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
     selectedSort.id,
     onChange,
   ])
+
+  useEffect(() => {
+    setSelectedSort((previousSort) =>
+      getTranslatedSort(previousSort.id, locale)
+    )
+  }, [locale])
 
   const {
     Header,

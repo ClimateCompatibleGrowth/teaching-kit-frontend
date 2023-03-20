@@ -32,11 +32,13 @@ export const filterCourseOnKeywordsAndAuthors = async (
   authors: string[],
   pageNumber: number,
   sortMethod: SortOptionType,
+  locale: Locale,
   matchesPerPage?: number
 ) => {
   const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
     matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
   }`
+  const localeFilterString = `locale=${locale}`
 
   const sort = getSortString(sortMethod)
 
@@ -48,7 +50,7 @@ export const filterCourseOnKeywordsAndAuthors = async (
 
   const populate = getPopulateString()
 
-  const filters = `${pagination}${authorsAndKeywordsFilterString}`
+  const filters = `${pagination}${authorsAndKeywordsFilterString}&${localeFilterString}`
   const filterString =
     filters.length > 0
       ? `${filters}&${populate}&${sort}`

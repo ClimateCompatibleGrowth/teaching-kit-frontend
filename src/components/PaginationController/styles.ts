@@ -19,7 +19,7 @@ type ChevronButtonProps = {
 export const PaginationController = styled(UlWithoutDefaultStyle)`
   display: flex;
   gap: 0.25rem;
-  margin: 0 auto;
+  margin: 0;
   overflow-x: auto;
 
   ${mq.md} {
@@ -28,8 +28,9 @@ export const PaginationController = styled(UlWithoutDefaultStyle)`
 `
 
 export const PaginationWrapper = styled.div`
-  max-width: 100%;
+  width: 100%;
   display: flex;
+  justify-content: center;
 `
 
 export const PaginationPageButton = styled.li``

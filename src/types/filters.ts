@@ -1,4 +1,10 @@
 import { Locale } from '.'
+import {
+  A_TO_Z,
+  SPANISH_A_TO_Z,
+  SPANISH_Z_TO_A,
+  Z_TO_A,
+} from '../components/TabGroup/translations'
 
 export type Item<T = string> = {
   id: T
@@ -43,40 +49,45 @@ export const getSortOptions = (locale: Locale) => {
   return sortOptions
 }
 
+export const ALPHABETICAL_ASC = 'alphabeticalASC'
+export const ALPHABETICAL_DESC = 'alphabeticalDESC'
+export const LEVEL_ASC = 'levelASC'
+export const LEVEL_DESC = 'levelDESC'
+
 const blockSortOptions: BlockSortOptions = {
-  alphabeticalASC: {
+  [ALPHABETICAL_ASC]: {
     id: 'ALPHABETICAL_ASC',
-    label: 'A to Z',
+    label: A_TO_Z,
     ariaLabel: 'Alphabetical from A to Z',
   },
-  alphabeticalDESC: {
+  [ALPHABETICAL_DESC]: {
     id: 'ALPHABETICAL_DESC',
-    label: 'Z to A',
+    label: Z_TO_A,
     ariaLabel: 'Alphabetical from Z to A',
   },
 }
 
 const spanishBlockSortOptions: BlockSortOptions = {
-  alphabeticalASC: {
+  [ALPHABETICAL_ASC]: {
     id: 'ALPHABETICAL_ASC',
-    label: 'De la A a la Z',
-    ariaLabel: 'Alfabético de la A a la Z',
+    label: SPANISH_A_TO_Z,
+    ariaLabel: `Alfabético ${SPANISH_A_TO_Z}`,
   },
-  alphabeticalDESC: {
+  [ALPHABETICAL_DESC]: {
     id: 'ALPHABETICAL_DESC',
-    label: 'De la Z a la A',
-    ariaLabel: 'Alfabético de la Z a la A',
+    label: SPANISH_Z_TO_A,
+    ariaLabel: `Alfabético ${SPANISH_Z_TO_A}`,
   },
 }
 
 export const sortOptions: SortOptions = {
   ...blockSortOptions,
-  levelASC: {
+  [LEVEL_ASC]: {
     id: 'LEVEL_ASC',
     label: 'Beginner to Expert',
     ariaLabel: 'Level from expert to beginner',
   },
-  levelDESC: {
+  [LEVEL_DESC]: {
     id: 'LEVEL_DESC',
     label: 'Expert to Beginner',
     ariaLabel: 'Level from expert to beginner',
@@ -85,14 +96,29 @@ export const sortOptions: SortOptions = {
 
 export const spanishSortOptions: SortOptions = {
   ...spanishBlockSortOptions,
-  levelASC: {
+  [LEVEL_ASC]: {
     id: 'LEVEL_ASC',
     label: 'Principiante a experto',
     ariaLabel: 'Nivel de principiante a experto',
   },
-  levelDESC: {
+  [LEVEL_DESC]: {
     id: 'LEVEL_DESC',
     label: 'Experto a principiante',
     ariaLabel: 'Nivel de experto a principiante',
   },
+}
+
+export const getSortOptionKey = (
+  sortOptionType: SortOptionType
+): keyof SortOptions => {
+  switch (sortOptionType) {
+    case 'ALPHABETICAL_ASC':
+      return ALPHABETICAL_ASC
+    case 'ALPHABETICAL_DESC':
+      return ALPHABETICAL_DESC
+    case 'LEVEL_ASC':
+      return LEVEL_ASC
+    case 'LEVEL_DESC':
+      return LEVEL_DESC
+  }
 }

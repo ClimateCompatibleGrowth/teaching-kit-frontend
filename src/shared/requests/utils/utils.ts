@@ -1,4 +1,4 @@
-import { LearningMaterialType } from '../../../types'
+import { LearningMaterialType, Locale } from '../../../types'
 import { SortOptionType } from '../../../types/filters'
 
 export type FilterParameters<SortType> = {
@@ -6,6 +6,7 @@ export type FilterParameters<SortType> = {
   authors: string[]
   pageNumber: number
   sortMethod: SortType
+  locale: Locale
   matchesPerPage?: number
 }
 
