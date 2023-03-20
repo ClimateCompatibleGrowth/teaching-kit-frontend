@@ -146,6 +146,9 @@ export type CourseOneLevelDeep = Course & {
   Acknowledgement: string
   CiteAs: string
   Level: { data?: Data<Level> }
+  localizations: {
+    data: Data<Course>[]
+  }
 }
 
 export type CourseTwoLevelsDeep = Modify<
@@ -160,6 +163,15 @@ export type CourseThreeLevelsDeep = Modify<
   CourseTwoLevelsDeep,
   {
     Lectures: { data: Data<LectureTwoLevelsDeep>[] }
+  }
+>
+
+export type CourseThreeLevelsDeepWithThreeLevelsDeepLocalizations = Modify<
+  CourseThreeLevelsDeep,
+  {
+    localizations: {
+      data: Data<CourseThreeLevelsDeep>[]
+    }
   }
 >
 

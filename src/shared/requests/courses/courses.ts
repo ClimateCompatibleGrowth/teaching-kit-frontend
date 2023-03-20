@@ -1,14 +1,15 @@
 import axios from 'axios'
 import {
+  FilterParameters,
   getAuthorsAndKeywordsFilterString,
   getSortString,
 } from '../utils/utils'
 import {
-  CourseThreeLevelsDeep,
+  CourseThreeLevelsDeepWithThreeLevelsDeepLocalizations,
   CourseTwoLevelsDeep,
   Locale,
 } from '../../../types'
-import { ResponseArray } from '../types'
+import { ResponseArray, ResponseArrayData } from '../types'
 import { SortOptionType } from '../../../types/filters'
 import { DEFAULT_LOCALE } from '../../../contexts/LocaleContext'
 
@@ -24,21 +25,25 @@ const getPopulateString = () => {
   const populateKeywords =
     'populate[Lectures][populate][Blocks][populate][Keywords]=*'
   const populateLevel = 'populate[Level][populate]=Level'
-  return `${populateKeywords}&${populateCourseCreators}&${populateLectureCreators}&${populateBlockAuthors}&${populateLevel}`
+  const populateLocalizationsLevel =
+    'populate[localizations][populate][Level]=*'
+  const populateLocalizationsLecturesBlocks =
+    'populate[localizations][populate][Lectures][populate][Blocks]=*'
+  return `${populateKeywords}&${populateCourseCreators}&${populateLectureCreators}&${populateBlockAuthors}&${populateLevel}&${populateLocalizationsLevel}&${populateLocalizationsLecturesBlocks}`
 }
 
-export const filterCourseOnKeywordsAndAuthors = async (
-  keywords: string[],
-  authors: string[],
-  pageNumber: number,
-  sortMethod: SortOptionType,
-  locale: Locale,
-  matchesPerPage?: number
-) => {
+export const filterCourseOnKeywordsAndAuthors = async ({
+  keywords,
+  authors,
+  pageNumber,
+  sortMethod,
+  matchesPerPage,
+}: FilterParameters<SortOptionType>): Promise<
+  ResponseArrayData<CourseThreeLevelsDeepWithThreeLevelsDeepLocalizations>
+> => {
   const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
     matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
   }`
-  const localeFilterString = `locale=${locale}`
 
   const sort = getSortString(sortMethod)
 
@@ -50,14 +55,13 @@ export const filterCourseOnKeywordsAndAuthors = async (
 
   const populate = getPopulateString()
 
-  const filters = `${pagination}${authorsAndKeywordsFilterString}&${localeFilterString}`
+  const filters = `${pagination}${authorsAndKeywordsFilterString}`
   const filterString =
     filters.length > 0
       ? `${filters}&${populate}&${sort}`
       : `?${populate}&${sort}`
-  const response: ResponseArray<CourseThreeLevelsDeep> = await axios.get(
-    `${ENDPOINT}${filterString}`
-  )
+  const response: ResponseArray<CourseThreeLevelsDeepWithThreeLevelsDeepLocalizations> =
+    await axios.get(`${ENDPOINT}${filterString}`)
   return response.data
 }
 

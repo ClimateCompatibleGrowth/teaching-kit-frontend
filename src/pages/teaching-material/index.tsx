@@ -7,10 +7,10 @@ import Dropdown from '../../components/Dropdown/Dropdown'
 import TabGroup from '../../components/TabGroup/TabGroup'
 import {
   getFilteredBlocks,
+  getFilteredCourses,
   getFilteredLectures,
 } from '../../services/strapi-locale-filter'
 import { searchForAuthors } from '../../shared/requests/authors/authors'
-import { filterCourseOnKeywordsAndAuthors } from '../../shared/requests/courses/courses'
 import { searchForKeywords } from '../../shared/requests/keywords/keywords'
 import { ResponseArray, ResponseArrayData } from '../../shared/requests/types'
 import { mq, PageContainer, VisuallyHidden } from '../../styles/global'
@@ -182,14 +182,14 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
     const keywords = selectedKeywords.map((keyword) => keyword.label)
     const authors = selectedAuthors.map((author) => author.id)
 
-    const courseFilterPromise = filterCourseOnKeywordsAndAuthors(
+    const courseFilterPromise = getFilteredCourses({
       keywords,
       authors,
-      currentCoursePageNumber,
-      selectedSort.id,
+      pageNumber: currentCoursePageNumber,
+      sortMethod: selectedSort.id,
       locale,
-      DEFAULT_MATCHES_PER_PAGE
-    )
+      matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
+    })
 
     const lectureFilterPromise = getFilteredLectures({
       keywords,
