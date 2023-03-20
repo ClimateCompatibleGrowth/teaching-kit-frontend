@@ -1,5 +1,8 @@
+import { useRouter } from 'next/router'
 import React, { ReactNode } from 'react'
+import { Locale } from '../../../types'
 import Markdown from '../../Markdown/Markdown'
+import TranslationDoesNotExist from '../../TranslationDoesNotExist/TranslationDoesNotExist'
 import * as Styled from './styles'
 
 export type CardType = {
@@ -11,6 +14,8 @@ export type CardType = {
   subComponent?: ReactNode
   duration?: ReactNode
   level?: ReactNode
+  locale?: Locale
+  translationDoesNotExistCopy: string
 }
 
 type Props = {
@@ -18,9 +23,13 @@ type Props = {
 }
 
 const Card = ({ card }: Props) => {
+  const { locale: routerLocale } = useRouter()
   return (
     <LinkWrapper card={card}>
       <Styled.Card isInteractive={!!card.href}>
+        {card.locale !== undefined && card.locale !== routerLocale ? (
+          <TranslationDoesNotExist copy={card.translationDoesNotExistCopy} />
+        ) : null}
         {typeof card.subTitle === 'string' ? (
           <Styled.SubTitle>{card.subTitle}</Styled.SubTitle>
         ) : null}

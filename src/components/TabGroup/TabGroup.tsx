@@ -7,7 +7,7 @@ import {
   BlockOneLevelDeep,
   CourseThreeLevelsDeep,
   Data,
-  LectureTwoLevelsDeep,
+  LectureOneLevelDeep,
   Locale,
 } from '../../types'
 import { Metadata, ResponseArrayData } from '../../shared/requests/types'
@@ -38,7 +38,7 @@ type Props = {
   selectedSort: SortOption
   setSelectedSort: (newSort: SortOption) => void
   courseResults: ResponseArrayData<CourseThreeLevelsDeep>
-  lectureResults: ResponseArrayData<LectureTwoLevelsDeep>
+  lectureResults: ResponseArrayData<LectureOneLevelDeep>
   blockResults: ResponseArrayData<Block>
   currentCoursePageNumber: number
   setCurrentCoursePageNumber: Dispatch<SetStateAction<number>>
@@ -46,6 +46,7 @@ type Props = {
   setCurrentLecturePageNumber: Dispatch<SetStateAction<number>>
   currentBlockPageNumber: number
   setCurrentBlockPageNumber: Dispatch<SetStateAction<number>>
+  translationDoesNotExistCopy: string
 }
 
 const TabGroup = ({
@@ -61,6 +62,7 @@ const TabGroup = ({
   setCurrentLecturePageNumber,
   currentBlockPageNumber,
   setCurrentBlockPageNumber,
+  translationDoesNotExistCopy,
 }: Props) => {
   const { locale: _locale } = useRouter()
   const locale = _locale as Locale
@@ -80,10 +82,14 @@ const TabGroup = ({
           {summarizeDurations([block], locale)}
         </>
       ),
+      locale: block.attributes.locale,
+      translationDoesNotExistCopy,
     }))
   }
 
-  const lectureDataToCardFormat = (data: Data<LectureTwoLevelsDeep>) => {
+  const lectureDataToCardFormat = (
+    data: Data<LectureOneLevelDeep>
+  ): CardType => {
     const baseCard = dataToCardFormat(data)
     return {
       ...baseCard,
@@ -121,11 +127,13 @@ const TabGroup = ({
           )}
         </>
       ),
+      locale: data.attributes.locale,
+      translationDoesNotExistCopy,
     }
   }
 
   const dataToCardFormat = (
-    learningMaterial: Data<LectureTwoLevelsDeep> | Data<CourseThreeLevelsDeep>
+    learningMaterial: Data<LectureOneLevelDeep> | Data<CourseThreeLevelsDeep>
   ): CardType => {
     const level = levelToString(learningMaterial.attributes.Level)
     return {
@@ -138,6 +146,8 @@ const TabGroup = ({
           {level}
         </React.Fragment>
       ),
+      locale: learningMaterial.attributes.locale,
+      translationDoesNotExistCopy,
     }
   }
 

@@ -107,6 +107,9 @@ export type LectureOneLevelDeep = Lecture & {
   LectureCreators: { data: Data<Author>[] }
   Courses: { data: Data<Course>[] }
   Level: { data?: Data<Level> }
+  localizations: {
+    data: Data<Lecture>[]
+  }
 }
 
 export type LectureTwoLevelsDeep = Modify<
@@ -115,6 +118,15 @@ export type LectureTwoLevelsDeep = Modify<
     Blocks: { data: Data<BlockOneLevelDeep>[] }
     LectureCreators: { data: Data<AuthorOneLevelDeep>[] }
     Courses: { data: Data<CourseOneLevelDeep>[] }
+  }
+>
+
+export type LectureTwoLevelsDeepWithOneLevelDeepLocalizations = Modify<
+  LectureTwoLevelsDeep,
+  {
+    localizations: {
+      data: Data<LectureOneLevelDeep>[]
+    }
   }
 >
 
