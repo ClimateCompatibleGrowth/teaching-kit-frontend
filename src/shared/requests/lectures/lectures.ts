@@ -1,6 +1,10 @@
 import axios from 'axios'
 import { DEFAULT_LOCALE } from '../../../contexts/LocaleContext'
-import { LectureTwoLevelsDeep, Locale } from '../../../types'
+import {
+  LectureTwoLevelsDeep,
+  LectureTwoLevelsDeepWithOneLevelDeepLocalizations,
+  Locale,
+} from '../../../types'
 import { SortOptionType } from '../../../types/filters'
 import { ResponseArray, ResponseArrayData } from '../types'
 import {
@@ -17,7 +21,11 @@ const getPopulateString = () => {
   const populateBlockAuthors = 'populate[Blocks][populate][Authors]=*'
   const populateKeywords = 'populate[Blocks][populate][Keywords]=*'
   const populateLevel = 'populate[Level][populate]=Level'
-  return `${populateKeywords}&${populateBlockAuthors}&${populateLectureCreators}&${populateLevel}`
+  const populateLocalizationsLevel =
+    'populate[localizations][populate][Level]=*'
+  const populateLocalizationsBlocks =
+    'populate[localizations][populate][Blocks]=*'
+  return `${populateKeywords}&${populateBlockAuthors}&${populateLectureCreators}&${populateLevel}&${populateLocalizationsLevel}&${populateLocalizationsBlocks}`
 }
 
 export const filterLectureOnKeywordsAndAuthors = async ({
@@ -27,7 +35,7 @@ export const filterLectureOnKeywordsAndAuthors = async ({
   matchesPerPage,
   sortMethod,
 }: FilterParameters<SortOptionType>): Promise<
-  ResponseArrayData<LectureTwoLevelsDeep>
+  ResponseArrayData<LectureTwoLevelsDeepWithOneLevelDeepLocalizations>
 > => {
   const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
     matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
@@ -48,9 +56,8 @@ export const filterLectureOnKeywordsAndAuthors = async ({
     filters.length > 0
       ? `${filters}&${populate}&${sort}`
       : `?${populate}&${sort}`
-  const response: ResponseArray<LectureTwoLevelsDeep> = await axios.get(
-    `${ENDPOINT}${filterString}`
-  )
+  const response: ResponseArray<LectureTwoLevelsDeepWithOneLevelDeepLocalizations> =
+    await axios.get(`${ENDPOINT}${filterString}`)
   return response.data
 }
 

@@ -83,6 +83,8 @@ export default function CoursePage({
               text: lecture.attributes.Abstract,
               href: `/lectures/${lecture.attributes.vuid}`,
               subTitle: <LearningMaterialBadge type={'LECTURE'} />,
+              translationDoesNotExistCopy:
+                generalCopy.attributes.TranslationDoesNotExist,
             }))}
           />
         </BlockContentWrapper>

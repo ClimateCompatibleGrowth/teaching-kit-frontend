@@ -3,10 +3,11 @@ import React, { Dispatch, SetStateAction, useState } from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import {
+  Block,
   BlockOneLevelDeep,
   CourseThreeLevelsDeep,
   Data,
-  LectureTwoLevelsDeep,
+  LectureOneLevelDeep,
   Locale,
 } from '../../types'
 import { Metadata, ResponseArrayData } from '../../shared/requests/types'
@@ -37,14 +38,15 @@ type Props = {
   selectedSort: SortOption
   setSelectedSort: (newSort: SortOption) => void
   courseResults: ResponseArrayData<CourseThreeLevelsDeep>
-  lectureResults: ResponseArrayData<LectureTwoLevelsDeep>
-  blockResults: ResponseArrayData<BlockOneLevelDeep>
+  lectureResults: ResponseArrayData<LectureOneLevelDeep>
+  blockResults: ResponseArrayData<Block>
   currentCoursePageNumber: number
   setCurrentCoursePageNumber: Dispatch<SetStateAction<number>>
   currentLecturePageNumber: number
   setCurrentLecturePageNumber: Dispatch<SetStateAction<number>>
   currentBlockPageNumber: number
   setCurrentBlockPageNumber: Dispatch<SetStateAction<number>>
+  translationDoesNotExistCopy: string
 }
 
 const TabGroup = ({
@@ -60,14 +62,14 @@ const TabGroup = ({
   setCurrentLecturePageNumber,
   currentBlockPageNumber,
   setCurrentBlockPageNumber,
+  translationDoesNotExistCopy,
 }: Props) => {
-  const { locale } = useRouter()
+  const { locale: _locale } = useRouter()
+  const locale = _locale as Locale
   const [tabIndex, setTabIndex] = React.useState(0)
-  const translation = translations[locale as Locale]
+  const translation = translations[locale]
 
-  const blockDataToCardFormat = (
-    data: Data<BlockOneLevelDeep>[]
-  ): CardType[] => {
+  const blockDataToCardFormat = (data: Data<Block>[]): CardType[] => {
     return data.map((block) => ({
       title: block.attributes.Title,
       id: block.id.toString(),
@@ -77,13 +79,17 @@ const TabGroup = ({
       duration: (
         <>
           <ClockIcon style={{ marginRight: 8 }} />
-          {summarizeDurations([block])}
+          {summarizeDurations([block], locale)}
         </>
       ),
+      locale: block.attributes.locale,
+      translationDoesNotExistCopy,
     }))
   }
 
-  const lectureDataToCardFormat = (data: Data<LectureTwoLevelsDeep>) => {
+  const lectureDataToCardFormat = (
+    data: Data<LectureOneLevelDeep>
+  ): CardType => {
     const baseCard = dataToCardFormat(data)
     return {
       ...baseCard,
@@ -92,7 +98,7 @@ const TabGroup = ({
       duration: (
         <>
           <ClockIcon style={{ marginRight: 8 }} />
-          {summarizeDurations(data.attributes.Blocks.data)}
+          {summarizeDurations(data.attributes.Blocks.data, locale)}
         </>
       ),
     }
@@ -116,15 +122,18 @@ const TabGroup = ({
                 ...lecture.attributes.Blocks.data,
               ],
               [] as Data<Pick<BlockOneLevelDeep, 'DurationInMinutes'>>[]
-            )
+            ),
+            locale
           )}
         </>
       ),
+      locale: data.attributes.locale,
+      translationDoesNotExistCopy,
     }
   }
 
   const dataToCardFormat = (
-    learningMaterial: Data<LectureTwoLevelsDeep> | Data<CourseThreeLevelsDeep>
+    learningMaterial: Data<LectureOneLevelDeep> | Data<CourseThreeLevelsDeep>
   ): CardType => {
     const level = levelToString(learningMaterial.attributes.Level)
     return {
@@ -137,6 +146,8 @@ const TabGroup = ({
           {level}
         </React.Fragment>
       ),
+      locale: learningMaterial.attributes.locale,
+      translationDoesNotExistCopy,
     }
   }
 
@@ -154,11 +165,11 @@ const TabGroup = ({
     ) : null
   }
 
-  const getSortOptions = (tabValue: number) => {
+  const getSortOptions = (tabValue: number, locale: Locale) => {
     if (tabValue === 2) {
-      return getBlockSortOptions(locale as Locale)
+      return getBlockSortOptions(locale)
     }
-    return getCourseAndLectureSortOptions(locale as Locale)
+    return getCourseAndLectureSortOptions(locale)
   }
 
   return (
@@ -214,7 +225,7 @@ const TabGroup = ({
           ariaLabel={translation.ariaLabel ?? ARIA_LABEL}
           enableSearch={false}
           getItems={() =>
-            Promise.resolve(Object.values(getSortOptions(tabIndex)))
+            Promise.resolve(Object.values(getSortOptions(tabIndex, locale)))
           }
         />
       </div>
