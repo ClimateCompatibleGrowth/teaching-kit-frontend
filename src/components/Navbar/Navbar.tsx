@@ -16,6 +16,7 @@ import {
   TEACHING_MATERIAL,
   translations,
 } from './translations'
+import LanguageDropdown from '../Dropdown/LanguageDropdown/LanguageDropdown'
 
 export default function Navbar() {
   const { pathname } = useRouter()
@@ -48,29 +49,7 @@ export default function Navbar() {
           <Styled.Li>
             <Styled.LanguageSelector>
               {setLocale !== undefined && !isLoading ? (
-                <Dropdown
-                  id='locale-selector'
-                  enableSearch={false}
-                  isSingleSelectable
-                  selectedItems={[
-                    { id: locale, label: localeToLanguage(locale) },
-                  ]}
-                  setSelectedItems={(item) => setLocale(item[0].id as Locale)}
-                  label={translation.languagePicker.label ?? CHOOSE_LANGUAGE}
-                  placeholder={localeToLanguage(locale)}
-                  ariaLabel={
-                    translation.languagePicker.ariaLabel ??
-                    LANGUAGE_PICKER_ARIA_LABEL
-                  }
-                  getItems={() =>
-                    Promise.resolve(
-                      locales.map((locale) => ({
-                        id: locale,
-                        label: localeToLanguage(locale),
-                      }))
-                    )
-                  }
-                />
+                <LanguageDropdown />
               ) : null}
             </Styled.LanguageSelector>
           </Styled.Li>
