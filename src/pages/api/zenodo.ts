@@ -32,6 +32,11 @@ export default async function postHandler(
   if (req.query.secret !== process.env.ZENODO_PUBLISH_SECRET) {
     return res.status(401).json({ message: 'Invalid token' })
   }
+  if (req.body.event !== 'entry.publish') {
+    return res.status(400).json({
+      message: `Only accepting publish events. Got: '${req.body.event}'`,
+    })
+  }
   let webhookBody: StrapiWebhookBody<WebhookBlock> = {}
 
   try {

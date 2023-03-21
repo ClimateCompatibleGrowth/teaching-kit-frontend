@@ -22,7 +22,10 @@ export const convertMarkdownImagesToLocalReferences = async (
   const updatedMarkdown = markdown.replaceAll(
     /\[(.*?)\]+\((.*?)\)/g,
     (_, imageName, imagePath) => {
-      if (imageName === null && !imagePath.includes('https')) {
+      if (
+        (imageName === '' || imageName === null) &&
+        !imagePath.includes('https')
+      ) {
         return ''
       }
       const fileExtension: string = imagePath.match(/\.([0-9a-z]+$)/)
