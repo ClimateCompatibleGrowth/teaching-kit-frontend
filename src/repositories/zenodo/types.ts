@@ -19,7 +19,7 @@ type ZenodoMetadata = {
 
 export type CreationResponseBody = {
   created: string
-  id: string
+  id: number
   links: {
     bucket: string
   }

@@ -1,7 +1,6 @@
 type ImageReference = {
   name: string
   path: string
-  fileExtension: string
 }
 
 type Image = {
@@ -20,18 +19,21 @@ export const convertMarkdownImagesToLocalReferences = async (
   const imageReferences: ImageReference[] = []
 
   const updatedMarkdown = markdown.replaceAll(
-    /\[(.*?)\]+\((.*?)\)/g,
+    /\[(.*?)\]\((?=.*https:\/\/teaching-kit-media-assets-2\.s3\.eu-north-1\.amazonaws\.com\/)(.*?)\)/g,
     (_, imageName, imagePath) => {
-      if (imageName === null && !imagePath.includes('https')) {
-        return ''
+      if (
+        (imageName === null || imageName === '') &&
+        !imagePath.includes('https')
+      ) {
+        return `[${imageName}](${imagePath})`
       }
-      const fileExtension: string = imagePath.match(/\.([0-9a-z]+$)/)
+
       const imageNameWithoutExtension: [string, string] =
         imageName.match(/^(.*?)\.(png|jpeg|jpg|gif)/) ?? imageName
+
       imageReferences.push({
         name: imageName,
         path: imagePath,
-        fileExtension,
       })
 
       return `[${imageNameWithoutExtension[1]}](${imageName})`
