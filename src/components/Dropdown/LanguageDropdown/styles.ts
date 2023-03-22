@@ -1,9 +1,6 @@
 import styled from '@emotion/styled'
-import { Background, mq } from '../../../styles/global'
-
-type Props = {
-  isOpen: boolean
-}
+import { montserrat } from '../../../styles/fonts'
+import { Accent40, mq, Primary40 } from '../../../styles/global'
 
 export const Wrapper = styled.div`
   height: auto;
@@ -12,54 +9,29 @@ export const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
 `
-export const DropdownWrapper = styled.div`
-  flex: 0 0 100%;
-  flex-direction: column;
+export const DropdownSelector = styled.select`
+  padding: 0;
   cursor: pointer;
+  background-color: ${Primary40};
+  border: none;
+  font-family: ${montserrat[400].style.fontFamily};
+  color: ${Accent40};
+  font-size: 1.2rem;
 
   ${mq.sm} {
+    font-size: 1.7rem;
     max-width: 240px;
     flex: 0 0 auto;
   }
 `
 export const GlobeIcon = styled.div`
-  width: 3.5rem;
-  height: 3.5rem;
-  margin-right: 0.625rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-`
-export const DropdownArrow = styled.div`
-  width: 3.5rem;
-  height: 3.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-`
+  display: none;
 
-export const DropdownListContainer = styled.div<Props>`
-  :focus {
-    border: 3px solid red;
+  ${mq.sm} {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
   }
-  border: 1px solid #012169;
-  width: 100%;
-  min-height: 3.5rem;
-  margin: 1.7rem 0;
-  gap: 1.7rem;
-  position: absolute;
-  bottom: -100px;
-  overflow: scroll;
-  z-index: 10;
-  background-color: ${Background};
-  opacity: ${(props: Props) => (props.isOpen ? 1 : 0)};
-`
-export const DropdownListItem = styled.div`
-  display: flex;
-  margin: 1rem;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
 `

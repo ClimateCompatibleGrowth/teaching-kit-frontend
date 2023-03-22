@@ -3,15 +3,11 @@ import * as Styled from './styles'
 
 import LogoIcon from '../../../public/logo.svg'
 import { useRouter } from 'next/router'
-import Dropdown from '../Dropdown/Dropdown'
 import { LocaleContext } from '../../contexts/LocaleContext'
 import { useContext } from 'react'
-import { localeToLanguage } from '../../utils/utils'
-import { Locale, locales } from '../../types'
+
 import {
-  CHOOSE_LANGUAGE,
   HOME,
-  LANGUAGE_PICKER_ARIA_LABEL,
   LOGO_ALT_TEXT,
   TEACHING_MATERIAL,
   translations,

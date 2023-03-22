@@ -7,6 +7,7 @@ import {
   Locale,
 } from '../types'
 import { Translations } from '../types/translations'
+import { Language } from '../types'
 
 export const typeToText = (
   type: LearningMaterialType,
@@ -149,11 +150,20 @@ export const getImageMetadata = async (url: string) => {
   return img
 }
 
-export const localeToLanguage = (locale: Locale) => {
+export const localeToLanguage = (locale: Locale): Language => {
   switch (locale) {
     case 'en':
       return 'English'
     case 'es-ES':
       return 'Español'
+  }
+}
+
+export const languageToLocale = (language: Language): Locale => {
+  switch (language) {
+    case 'English':
+      return 'en'
+    case 'Español':
+      return 'es-ES'
   }
 }

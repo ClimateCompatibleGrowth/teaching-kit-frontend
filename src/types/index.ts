@@ -156,6 +156,9 @@ export type DownloadableContent =
 export const locales = ['en', 'es-ES'] as const
 export type Locale = typeof locales[number]
 
+export const languages = ['English', 'Español'] as const
+export type Language = typeof languages[number]
+
 export type Path = {
   params: {
     vuid: string
