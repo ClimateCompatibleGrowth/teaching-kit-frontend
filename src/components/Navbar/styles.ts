@@ -58,7 +58,7 @@ export const Li = styled.li`
   padding: 1rem 0;
 
   color: ${Accent40};
-  font-size: 1.4rem;
+  font-size: 1.2rem;
 
   ${mq.sm} {
     font-size: 1.8rem;
