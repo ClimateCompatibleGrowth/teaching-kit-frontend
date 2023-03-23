@@ -10,11 +10,16 @@ export type ZenodoCreator = {
   orcid?: string
 }
 
+export type ISO639_2_LanguageCode = 'eng' | 'spa' | 'fre'
+
 type ZenodoMetadata = {
   title: string
   description: string
   upload_type: UploadType
   creators: ZenodoCreator[]
+  version?: string
+  language: ISO639_2_LanguageCode
+  keywords?: string[]
 }
 
 export type CreationResponseBody = {

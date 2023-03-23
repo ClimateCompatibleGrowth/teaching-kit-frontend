@@ -12,7 +12,7 @@ export const useTraceUpdate = (props) => {
       return ps
     }, {})
     if (Object.keys(changedProps).length > 0) {
-      console.log('Changed props:', changedProps)
+      console.info('Changed props:', changedProps)
     }
     prev.current = props
   })

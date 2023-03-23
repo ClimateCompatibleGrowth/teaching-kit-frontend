@@ -11,10 +11,20 @@ import {
   AuthorOneLevelDeep,
   BlockTwoLevelsDeep,
   Data,
+  Keyword,
   LearningMaterialType,
+  Locale,
 } from '../types'
-import { ZenodoBody, ZenodoCreator } from '../repositories/zenodo/types'
-import { convertMarkdownImagesToLocalReferences } from './zenodo-documents'
+import {
+  ISO639_2_LanguageCode,
+  ZenodoBody,
+  ZenodoCreator,
+} from '../repositories/zenodo/types'
+import { convertMarkdownImagesToLocalReferences } from './zenodo-images'
+import { BadRequestError } from '../shared/error/bad-request-error'
+import { Type } from '@prisma/client'
+
+const ZENODO_DEPOSIT_BASE_URL = 'https://zenodo.org/deposit'
 
 export const publishZenodoEntry = async (
   webhookBody: StrapiWebhookBody<WebhookBlock>
@@ -24,9 +34,21 @@ export const publishZenodoEntry = async (
     webhookBody.entry?.vuid &&
     webhookBody.entry.versionNumber
   ) {
-    const databaseEntry = await database.createEntry(
+    const existingEntry = await database.getEntry(
       webhookBody.entry?.vuid,
       webhookBody.entry.versionNumber
+    )
+
+    if (existingEntry && existingEntry.created_on_zenodo) {
+      throw new BadRequestError(
+        `Entry with vuid '${webhookBody.entry.vuid}' and version '${webhookBody.entry.versionNumber}' has already been created on Zenodo: ${ZENODO_DEPOSIT_BASE_URL}/${existingEntry.zenodo_deposit_id}`
+      )
+    }
+
+    const databaseEntry = await database.upsertEntry(
+      webhookBody.entry?.vuid,
+      webhookBody.entry.versionNumber,
+      webhookBody.model.toUpperCase() as Type
     )
 
     const strapiContent = await getStrapiContent(
@@ -54,7 +76,7 @@ export const publishZenodoEntry = async (
       updatedZenodoEntities.document
     )
 
-    console.log(
+    console.info(
       `Successfully uploaded file with name '${strapiContent.attributes.Title}.md'`
     )
 
@@ -65,8 +87,12 @@ export const publishZenodoEntry = async (
           image.name,
           image.uint8Array
         )
-        console.log(`Successfully uploaded image with name '${image.name}'`)
+        console.info(`Successfully uploaded image with name '${image.name}'`)
       })
+    )
+
+    console.info(
+      `Successfully created the following Zenodo deposit: ${ZENODO_DEPOSIT_BASE_URL}/${zenodoCreationResponse.id}`
     )
   } else {
     throw new InternalApiError(
@@ -86,14 +112,35 @@ const generateZenodoBody = (data: Data<BlockTwoLevelsDeep>): ZenodoBody => {
       description: data.attributes.Abstract,
       upload_type: 'lesson',
       creators: data.attributes.Authors.data.map(formatCreator),
+      version: data.attributes.versionNumber?.toString(),
+      language: localeToISO639_2_Format(data.attributes.locale),
+      keywords: formatKeywords(data.attributes.Keywords.data),
     },
+  }
+}
+
+const formatKeywords = (keywords: Data<Keyword>[]): string[] | undefined => {
+  if (keywords.length > 0) {
+    return keywords.map((keyword) => keyword.attributes.Keyword)
+  }
+  return undefined
+}
+
+const localeToISO639_2_Format = (locale: Locale): ISO639_2_LanguageCode => {
+  switch (locale) {
+    case 'en':
+      return 'eng'
+    case 'es-ES':
+      return 'spa'
+    default:
+      return 'eng'
   }
 }
 
 const formatCreator = (author: Data<AuthorOneLevelDeep>): ZenodoCreator => {
   return {
     name: `${author.attributes.LastName}, ${author.attributes.FirstName}`,
-    affiliation: author.attributes.Affiliation.attributes?.Affiliation,
+    affiliation: author.attributes.Affiliation.data?.attributes?.Affiliation,
     orcid: author.attributes.ORCID,
   }
 }

@@ -7,12 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Type {
+  BLOCK
+  LECTURE
+  COURSE
+}
+
 model zenodo_entry {
   id                   String        @id @default(uuid())
   strapi_entry_id      String        @default(uuid())
   strapi_entry_version Int
   created_on_zenodo    DateTime?
   zenodo_deposit_id    Int?
+  row_added            DateTime
+  type                 Type
 
   @@unique([strapi_entry_id, strapi_entry_version], name: "entry_identifier")
 }

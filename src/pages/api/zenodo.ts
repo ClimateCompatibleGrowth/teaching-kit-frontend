@@ -3,6 +3,7 @@ import { Block, Course, Lecture } from '../../types'
 import { Prisma } from '@prisma/client'
 import { publishZenodoEntry } from '../../services/zenodo'
 import { InternalApiError } from '../../shared/error/internal-api-error'
+import { BadRequestError } from '../../shared/error/bad-request-error'
 
 type WebhookBaseEntry = {
   id: number
@@ -44,7 +45,7 @@ export default async function postHandler(
     const zenodoPublishResponse = await publishZenodoEntry(webhookBody)
     return res.status(200).json(zenodoPublishResponse)
   } catch (error) {
-    console.log(
+    console.info(
       `Unexpected error handling entry with strapi entry id '${webhookBody?.entry?.vuid}' and strapi entry version '${webhookBody?.entry?.versionNumber}'\n`,
       error
     )
@@ -55,6 +56,10 @@ export default async function postHandler(
       })
     } else if (error instanceof InternalApiError) {
       return res.status(500).json({
+        error: error.message,
+      })
+    } else if (error instanceof BadRequestError) {
+      return res.status(400).json({
         error: error.message,
       })
     }
