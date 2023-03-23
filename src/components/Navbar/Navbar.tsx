@@ -3,19 +3,16 @@ import * as Styled from './styles'
 
 import LogoIcon from '../../../public/logo.svg'
 import { useRouter } from 'next/router'
-import Dropdown from '../Dropdown/Dropdown'
 import { LocaleContext } from '../../contexts/LocaleContext'
 import { useContext } from 'react'
-import { localeToLanguage } from '../../utils/utils'
-import { Locale, locales } from '../../types'
+
 import {
-  CHOOSE_LANGUAGE,
   HOME,
-  LANGUAGE_PICKER_ARIA_LABEL,
   LOGO_ALT_TEXT,
   TEACHING_MATERIAL,
   translations,
 } from './translations'
+import LanguageDropdown from '../Dropdown/LanguageDropdown/LanguageDropdown'
 
 export default function Navbar() {
   const { pathname } = useRouter()
@@ -48,29 +45,7 @@ export default function Navbar() {
           <Styled.Li>
             <Styled.LanguageSelector>
               {setLocale !== undefined && !isLoading ? (
-                <Dropdown
-                  id='locale-selector'
-                  enableSearch={false}
-                  isSingleSelectable
-                  selectedItems={[
-                    { id: locale, label: localeToLanguage(locale) },
-                  ]}
-                  setSelectedItems={(item) => setLocale(item[0].id as Locale)}
-                  label={translation.languagePicker.label ?? CHOOSE_LANGUAGE}
-                  placeholder={localeToLanguage(locale)}
-                  ariaLabel={
-                    translation.languagePicker.ariaLabel ??
-                    LANGUAGE_PICKER_ARIA_LABEL
-                  }
-                  getItems={() =>
-                    Promise.resolve(
-                      locales.map((locale) => ({
-                        id: locale,
-                        label: localeToLanguage(locale),
-                      }))
-                    )
-                  }
-                />
+                <LanguageDropdown />
               ) : null}
             </Styled.LanguageSelector>
           </Styled.Li>
