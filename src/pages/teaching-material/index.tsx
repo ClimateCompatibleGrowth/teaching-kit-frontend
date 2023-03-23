@@ -5,27 +5,32 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import Dropdown from '../../components/Dropdown/Dropdown'
 import TabGroup from '../../components/TabGroup/TabGroup'
+import {
+  getFilteredBlocks,
+  getFilteredCourses,
+  getFilteredLectures,
+} from '../../services/strapi-locale-filter'
 import { searchForAuthors } from '../../shared/requests/authors/authors'
-import { filterBlockOnKeywordsAndAuthors } from '../../shared/requests/blocks/blocks'
-import { filterCourseOnKeywordsAndAuthors } from '../../shared/requests/courses/courses'
 import { searchForKeywords } from '../../shared/requests/keywords/keywords'
-import { filterLectureOnKeywordsAndAuthors } from '../../shared/requests/lectures/lectures'
 import { ResponseArray, ResponseArrayData } from '../../shared/requests/types'
 import { mq, PageContainer, VisuallyHidden } from '../../styles/global'
 import {
-  BlockOneLevelDeep,
   CourseThreeLevelsDeep,
-  LectureTwoLevelsDeep,
   FilterPageCopy,
   Data,
   Locale,
+  Block,
+  LectureOneLevelDeep,
+  GeneralCopy,
 } from '../../types'
 import {
   isBlockSortOptionType,
   Item,
   SortOption,
   sortOptions,
+  SortOptionType,
   spanishSortOptions,
+  getSortOptionKey,
 } from '../../types/filters'
 
 // Note that Strapi's default value for page sizes currently is 25. Hence,
@@ -76,22 +81,29 @@ const defaultFilterResult: ResponseArrayData<any> = {
   },
 }
 
-const getDefaultSortOption = (locale: Locale) => {
+const getTranslatedSort = (sortOptionType: SortOptionType, locale: Locale) => {
+  const sortOptionKey = getSortOptionKey(sortOptionType)
   if (locale === 'es-ES') {
-    return spanishSortOptions.alphabeticalASC
+    return spanishSortOptions[sortOptionKey]
   }
-  return sortOptions.alphabeticalASC
+  return sortOptions[sortOptionKey]
 }
 
-export default function TeachingMaterial(props: Data<FilterPageCopy>) {
-  const { locale } = useRouter()
+type Props = {
+  pageCopy: Data<FilterPageCopy>
+  generalCopy: Data<GeneralCopy>
+}
+
+export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
+  const { locale: _locale } = useRouter()
+  const locale = _locale as Locale
 
   const [hasAnyChangeHappened, setHasAnyChangeHappened] =
     useState<boolean>(false)
   const [selectedKeywords, setSelectedKeywords] = useState<Item[]>([])
   const [selectedAuthors, setSelectedAuthors] = useState<Item[]>([])
   const [selectedSort, setSelectedSort] = useState<SortOption>(
-    getDefaultSortOption(locale as Locale)
+    getTranslatedSort('ALPHABETICAL_ASC', locale)
   )
 
   const [currentCoursePageNumber, setCurrentCoursePageNumber] =
@@ -103,8 +115,8 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
 
   const [results, setResults] = useState<{
     courses: ResponseArrayData<CourseThreeLevelsDeep>
-    lectures: ResponseArrayData<LectureTwoLevelsDeep>
-    blocks: ResponseArrayData<BlockOneLevelDeep>
+    lectures: ResponseArrayData<LectureOneLevelDeep>
+    blocks: ResponseArrayData<Block>
   }>({
     courses: defaultFilterResult,
     lectures: defaultFilterResult,
@@ -169,21 +181,26 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
   const onChange = useCallback(async () => {
     const keywords = selectedKeywords.map((keyword) => keyword.label)
     const authors = selectedAuthors.map((author) => author.id)
-    const courseFilterPromise = filterCourseOnKeywordsAndAuthors(
+
+    const courseFilterPromise = getFilteredCourses({
       keywords,
       authors,
-      currentCoursePageNumber,
-      selectedSort.id,
-      DEFAULT_MATCHES_PER_PAGE
-    )
-    const lectureFilterPromise = filterLectureOnKeywordsAndAuthors({
+      pageNumber: currentCoursePageNumber,
+      sortMethod: selectedSort.id,
+      locale,
+      matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
+    })
+
+    const lectureFilterPromise = getFilteredLectures({
       keywords,
       authors,
       pageNumber: currentLecturePageNumber,
       sortMethod: selectedSort.id,
+      locale,
       matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
     })
-    const blockFilterPromise = filterBlockOnKeywordsAndAuthors({
+
+    const blockFilterPromise = getFilteredBlocks({
       keywords,
       authors,
       pageNumber: currentBlockPageNumber,
@@ -191,7 +208,9 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
         ? selectedSort.id
         : 'ALPHABETICAL_ASC',
       matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
+      locale,
     })
+
     const [courseFilterResult, lectureFilterResult, blockFilterResult] =
       await Promise.all([
         courseFilterPromise,
@@ -204,7 +223,15 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
       lectures: lectureFilterResult,
       blocks: blockFilterResult,
     })
-  }, [selectedKeywords, selectedAuthors, selectedSort])
+  }, [
+    selectedKeywords,
+    selectedAuthors,
+    selectedSort,
+    locale,
+    currentCoursePageNumber, // Could be improved so that the function does not re-run for all types when one's page number changes
+    currentLecturePageNumber, // Could be improved so that the function does not re-run for all types when one's page number changes
+    currentBlockPageNumber, // Could be improved so that the function does not re-run for all types when one's page number changes
+  ])
 
   useEffect(() => {
     if (selectedKeywords.length > 0 || selectedAuthors.length > 0) {
@@ -218,6 +245,12 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
     onChange,
   ])
 
+  useEffect(() => {
+    setSelectedSort((previousSort) =>
+      getTranslatedSort(previousSort.id, locale)
+    )
+  }, [locale])
+
   const {
     Header,
     FilterHeader,
@@ -225,7 +258,9 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
     AuthorDropdown,
     DefaultFilterResultHeader,
     FilterResultHeader,
-  } = props.attributes
+  } = pageCopy.attributes
+
+  const { TranslationDoesNotExist } = generalCopy.attributes
 
   return (
     <PageContainer hasTopPadding hasBottomPadding>
@@ -285,6 +320,7 @@ export default function TeachingMaterial(props: Data<FilterPageCopy>) {
           setCurrentCoursePageNumber={setCurrentCoursePageNumber}
           setCurrentLecturePageNumber={setCurrentLecturePageNumber}
           setCurrentBlockPageNumber={setCurrentBlockPageNumber}
+          translationDoesNotExistCopy={TranslationDoesNotExist}
         />
       </div>
     </PageContainer>
@@ -298,21 +334,34 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
     const populate = `${populateHeroImage}&${populateInfoCard}`
 
-    const copyResponse: ResponseArray<FilterPageCopy> = await axios.get(
+    const pageCopyRequest: Promise<ResponseArray<FilterPageCopy>> = axios.get(
       `${process.env.STRAPI_API_URL}/copy-filter-pages?locale=${
         ctx.locale ?? ctx.defaultLocale
       }&${populate}`
     )
 
-    if (!copyResponse || copyResponse.data.data.length < 1) {
+    const generalCopyRequest: Promise<ResponseArray<GeneralCopy>> = axios.get(
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
+        ctx.locale ?? ctx.defaultLocale
+      }`
+    )
+
+    const [pageCopy, generalCopy] = await Promise.all([
+      pageCopyRequest,
+      generalCopyRequest,
+    ])
+
+    if (!pageCopy || pageCopy.data.data.length < 1) {
       return {
         notFound: true,
       }
     }
 
     return {
-      props: copyResponse.data.data[0],
-      revalidate: 60,
+      props: {
+        pageCopy: pageCopy.data.data[0],
+        generalCopy: generalCopy.data.data[0],
+      },
     }
   } catch (error) {
     return {

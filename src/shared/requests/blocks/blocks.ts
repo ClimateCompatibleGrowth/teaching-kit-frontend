@@ -17,13 +17,15 @@ export const filterBlockOnKeywordsAndAuthors = async ({
   authors,
   pageNumber,
   matchesPerPage,
+  locale,
   sortMethod,
 }: FilterParameters<BlockSortOptionType>): Promise<
   ResponseArrayData<BlockOneLevelDeep>
 > => {
-  const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
+  const pagination = `pagination[page]=${pageNumber}&pagination[pageSize]=${
     matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
   }`
+  const populate = `populate=localizations`
 
   const sort = getSortString(sortMethod)
 
@@ -35,9 +37,11 @@ export const filterBlockOnKeywordsAndAuthors = async ({
 
   const filters = `${pagination}${authorsAndKeywordsFilterString}`
   const filterString =
-    filters.length > 0 ? `${filters}&${sort}&populate=*` : `&${sort}?populate=*`
+    filters.length > 0
+      ? `${filters}&${sort}&${populate}`
+      : `${sort}&${populate}`
   const response: ResponseArray<BlockOneLevelDeep> = await axios.get(
-    `${ENDPOINT}${filterString}`
+    `${ENDPOINT}?${filterString}`
   )
   return response.data
 }
