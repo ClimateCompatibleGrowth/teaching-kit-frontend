@@ -1,7 +1,23 @@
+import { Type } from '@prisma/client'
 import prisma from '../../prisma/prisma'
 import { InternalApiError } from '../shared/error/internal-api-error'
 
-export const createEntry = async (strapiId: string, entryVersion: number) => {
+export const getEntry = async (strapiId: string, entryVersion: number) => {
+  return await prisma.zenodo_entry.findUnique({
+    where: {
+      entry_identifier: {
+        strapi_entry_id: strapiId,
+        strapi_entry_version: entryVersion,
+      },
+    },
+  })
+}
+
+export const upsertEntry = async (
+  strapiId: string,
+  entryVersion: number,
+  type: Type
+) => {
   return await prisma.zenodo_entry.upsert({
     where: {
       entry_identifier: {
@@ -12,6 +28,8 @@ export const createEntry = async (strapiId: string, entryVersion: number) => {
     create: {
       strapi_entry_id: strapiId,
       strapi_entry_version: entryVersion,
+      row_added: new Date(),
+      type,
     },
     update: {},
   })

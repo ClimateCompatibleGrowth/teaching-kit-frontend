@@ -14,8 +14,9 @@ export const getBlock = async (
     )
   }
   const populateAuthor = 'populate[Authors][populate][Affiliation]=*'
+  const populateKeywords = 'populate[Keywords]=*'
   const response: Response<BlockTwoLevelsDeep> = await axios.get(
-    `${ENDPOINT}/${id}?${populateAuthor}`
+    `${ENDPOINT}/${id}?${populateAuthor}&${populateKeywords}`
   )
   return response.data.data
 }

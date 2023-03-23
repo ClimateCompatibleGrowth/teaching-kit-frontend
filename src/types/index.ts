@@ -41,7 +41,7 @@ export type Author = {
 }
 
 export type AuthorOneLevelDeep = Author & {
-  Affiliation: Data<Affiliation>
+  Affiliation: { data: Data<Affiliation> | null }
 }
 
 export const learningMaterialTypes = ['COURSE', 'LECTURE', 'BLOCK'] as const

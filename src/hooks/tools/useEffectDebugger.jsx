@@ -30,7 +30,7 @@ const useEffectDebugger = (effectHook, dependencies, dependencyNames = []) => {
   }, {})
 
   if (Object.keys(changedDeps).length) {
-    console.log('[use-effect-debugger] ', changedDeps)
+    console.info('[use-effect-debugger] ', changedDeps)
   }
 
   useEffect(effectHook, [...dependencies, effectHook])
