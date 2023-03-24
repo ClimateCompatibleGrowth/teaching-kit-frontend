@@ -47,6 +47,10 @@ const translations: Translations<Time> = {
     minutes: 'minutos',
     hour: 'hora',
   },
+  'fr-FR': {
+    minutes: 'minutes',
+    hour: 'heure',
+  },
 }
 
 const summarizeDurationsInMinutes = (
@@ -156,6 +160,8 @@ export const localeToLanguage = (locale: Locale): Language => {
       return 'English'
     case 'es-ES':
       return 'Español'
+    case 'fr-FR':
+      return 'Français'
   }
 }
 
@@ -165,5 +171,7 @@ export const languageToLocale = (language: Language): Locale => {
       return 'en'
     case 'Español':
       return 'es-ES'
+    case 'Français':
+      return 'fr-FR'
   }
 }
