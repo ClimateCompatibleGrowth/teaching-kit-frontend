@@ -19,11 +19,16 @@ type StrapiWebhookRequest<
   body: StrapiWebhookBody<T>
 }
 
-type StrapiModel = 'course' | 'lecture' | 'block'
+export type StrapiModel = 'course' | 'lecture' | 'block'
 
 export type StrapiWebhookBody<T> = {
   model?: StrapiModel
   entry?: T
+}
+
+export type SecuredWebhookBody<T> = {
+  model: StrapiModel
+  entry: T
 }
 
 export default async function postHandler(
