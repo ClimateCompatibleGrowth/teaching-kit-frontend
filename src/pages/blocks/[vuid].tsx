@@ -93,8 +93,15 @@ export async function getStaticPaths() {
   const spanishBlocks: ResponseArray<Block> = await axios.get(
     `${process.env.STRAPI_API_URL}/blocks?locale=es-ES`
   )
+  const frenchBlocks: ResponseArray<Block> = await axios.get(
+    `${process.env.STRAPI_API_URL}/blocks?locale=fr-FR`
+  )
 
-  const allBlocks = [...englishBlocks.data.data, ...spanishBlocks.data.data]
+  const allBlocks = [
+    ...englishBlocks.data.data,
+    ...spanishBlocks.data.data,
+    ...frenchBlocks.data.data,
+  ]
 
   const paths = allBlocks
     .filter((block) => block.attributes.vuid !== null)

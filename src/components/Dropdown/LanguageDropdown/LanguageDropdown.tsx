@@ -13,7 +13,6 @@ export default function LanguageDropdown() {
       ? setLocale(languageToLocale(e.currentTarget.value as Language))
       : null
   }
-  console.log(locales)
 
   return (
     <Styled.Wrapper tabIndex={-1}>

@@ -17,4 +17,8 @@ export const translations: Translations<RecentUpdateTranslation> = {
     durationAriaLabel: 'La duración es',
     levelAriaLabel: 'El nivel es',
   },
+  'fr-FR': {
+    durationAriaLabel: 'La durée est',
+    levelAriaLabel: 'Le niveau est',
+  },
 }

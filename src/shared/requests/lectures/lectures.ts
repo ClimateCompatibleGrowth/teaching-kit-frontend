@@ -68,8 +68,10 @@ export const getRecentLectures = async (
   const pagination = `pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
   const populate = `populate[Level][populate]=Level&populate[Blocks][populate]=DurationInMinutes`
   const locale = `locale=${_locale}`
+  const localization = `populate=localizations`
+
   const response: ResponseArray<LectureTwoLevelsDeep> = await axios.get(
-    `${ENDPOINT}?${pagination}&${populate}&${locale}`
+    `${ENDPOINT}?${pagination}&${populate}&${locale}&${localization}`
   )
   return response.data.data
 }
