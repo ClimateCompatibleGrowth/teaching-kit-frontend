@@ -31,4 +31,12 @@ export const translations: Translations<FooterTranslation> = {
     footerContent:
       '#### Contactos\n\nPara consultar sobre el acceso al sitio web del kit de enseñanza para desarrollar y compartir su propio material, envíe un correo electrónico a [teaching@climatecompatiblegrowth.com](mailto:teaching@climatecompatiblegrowth.com)\n\nPara proporcionar comentarios sobre la enseñanza sitio web del kit, envíe un correo electrónico a [platform@climatecompatiblegrowth.com](mailto:platform@climatecompatiblegrowth.com)\n\n Estos materiales didácticos se basan en el contenido proporcionado por Climate Compatible Growth como parte de sus actividades financiadas por FCDO. Como este contenido puede ser adaptado por otras instituciones, las opiniones expresadas aquí pueden no reflejar las de CCG o sus patrocinadores.',
   },
+  'fr-FR': {
+    logoAltText: 'Logo de Croissance Compatible avec le Climat',
+    copyright: `Copyright © Croissance Compatible avec le Climat ${new Date().getUTCFullYear()}. Tous droits réservés.`,
+    vercelAltText: 'Hébergé par Vercel',
+    creativeCommonsAltText: 'Creative commons BY 4.0 icono de licencia',
+    footerContent:
+      '#### Contacts\n\nPour toute demande concernant laccès au site web du kit pédagogique pour développer et partager votre propre matériel, envoyez un e-mail à [teaching@climatecompatiblegrowth.com](mailto:teaching@climatecompatiblegrowth.com)\n\nPour donner votre avis sur le site web du kit pédagogique, envoyez un e-mail à [platform@climatecompatiblegrowth.com](mailto:platform@climatecompatiblegrowth.com)Ces documents pédagogiques sont basés sur le contenu fourni par Climate Compatible Growth dans le cadre de ses activités financées par le FCDO. Comme ce contenu peut être adapté par dautres institutions, les opinions exprimées ici peuvent ne pas refléter celles de CCG ou de ses sponsors.',
+  },
 }

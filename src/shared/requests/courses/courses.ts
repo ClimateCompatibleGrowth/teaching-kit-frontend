@@ -75,5 +75,6 @@ export const getRecentCourses = async (
   const response: ResponseArray<CourseTwoLevelsDeep> = await axios.get(
     `${ENDPOINT}?${pagination}&${populate}&${locale}`
   )
+
   return response.data.data
 }

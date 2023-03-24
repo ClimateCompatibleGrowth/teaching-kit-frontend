@@ -18,16 +18,22 @@ export const typeToText = (
     case 'COURSE':
       if (locale === 'es-ES') {
         return lowerCase ? 'curso' : 'Curso'
+      } else if (locale === 'fr-FR') {
+        return lowerCase ? 'cours' : 'Cours'
       }
       return lowerCase ? 'course' : 'Course'
     case 'LECTURE':
       if (locale === 'es-ES') {
         return lowerCase ? 'conferencia' : 'Conferencia'
+      } else if (locale === 'fr-FR') {
+        return lowerCase ? 'conférence' : 'Conférence'
       }
       return lowerCase ? 'lecture' : 'Lecture'
     case 'BLOCK':
       if (locale === 'es-ES') {
         return lowerCase ? 'bloque de conferencias' : 'Bloque de conferencias'
+      } else if (locale === 'fr-FR') {
+        return lowerCase ? 'bloc de conférences' : 'Bloc de conférences'
       }
       return lowerCase ? 'lecture block' : 'Lecture block'
   }

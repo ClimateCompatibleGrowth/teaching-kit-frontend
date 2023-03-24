@@ -26,64 +26,32 @@ export type RecentUpdateType = {
   Locale: Locale
 }
 
-type TranslationOccurances = {
-  [vuid: string]: number
-}
-
 type LearningMaterial =
   | Data<BlockOneLevelDeep>
   | Data<LectureTwoLevelsDeep>
   | Data<CourseTwoLevelsDeep>
 
-const preferredLocale = <T extends LearningMaterial>(
-  locale: Locale,
-  translationOccurances: TranslationOccurances,
-  learningMaterial: T
-): T | undefined => {
-  if (translationOccurances[learningMaterial.attributes.vuid] > 1) {
-    if (learningMaterial.attributes.locale === locale) {
-      return learningMaterial
-    }
-  } else {
-    return learningMaterial
-  }
-}
-
-const countOccurances = <T extends LearningMaterial>(
-  occurances: TranslationOccurances,
-  learningMaterial: T
-): TranslationOccurances => {
-  const vuid = learningMaterial.attributes.vuid
-  if (!occurances[vuid]) {
-    occurances[vuid] = 1
-  } else {
-    occurances[vuid] += 1
-  }
-  return occurances
-}
-
 const getLearningMaterial = async <T extends LearningMaterial>(
   locale: Locale = DEFAULT_LOCALE,
   getLearningMaterial: (locale: Locale) => Promise<T[]>
 ) => {
-  const learningMaterialWithDifferentLocales =
-    locale !== DEFAULT_LOCALE
-      ? (
-          await Promise.all([
-            getLearningMaterial(locale),
-            getLearningMaterial(DEFAULT_LOCALE),
-          ])
-        ).flat()
-      : await getLearningMaterial(locale)
-  const translationOccurances = learningMaterialWithDifferentLocales.reduce(
-    countOccurances,
-    {} as TranslationOccurances
-  )
-  return learningMaterialWithDifferentLocales.filter(
-    (learningMaterial) =>
-      preferredLocale(locale, translationOccurances, learningMaterial) &&
-      learningMaterial.attributes.vuid !== null
-  )
+  const learningMaterial = await getLearningMaterial(locale)
+  const defaultLocaleMaterial = await getLearningMaterial(DEFAULT_LOCALE)
+
+  if (locale === DEFAULT_LOCALE) {
+    return learningMaterial
+  }
+
+  const translatedMaterial = learningMaterial.filter((material) => {
+    const targetLocale = locale
+
+    const matchingLocale = material.attributes.locale === targetLocale
+    return matchingLocale
+  })
+
+  return translatedMaterial.length > 0
+    ? translatedMaterial
+    : defaultLocaleMaterial
 }
 
 export const getRecentUpdates = async (locale?: Locale) => {

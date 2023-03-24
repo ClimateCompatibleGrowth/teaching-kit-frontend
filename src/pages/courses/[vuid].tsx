@@ -107,8 +107,15 @@ export async function getStaticPaths() {
   const spanishCourses: ResponseArray<Course> = await axios.get(
     `${process.env.STRAPI_API_URL}/lectures?locale=es-ES`
   )
+  const frenchCourses: ResponseArray<Course> = await axios.get(
+    `${process.env.STRAPI_API_URL}/blocks?locale=fr-FR`
+  )
 
-  const allCourses = [...englishCourses.data.data, ...spanishCourses.data.data]
+  const allCourses = [
+    ...englishCourses.data.data,
+    ...spanishCourses.data.data,
+    ...frenchCourses.data.data,
+  ]
 
   const paths = allCourses
     .filter((course) => course.attributes.vuid !== null)

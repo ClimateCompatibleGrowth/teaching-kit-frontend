@@ -13,4 +13,7 @@ export const translations: Translations<CardList> = {
   'es-ES': {
     noResults: 'No hay resultados para el filtro actual.',
   },
+  'fr-FR': {
+    noResults: 'Il ny a pas de résultats pour le filtre actuel.',
+  },
 }
