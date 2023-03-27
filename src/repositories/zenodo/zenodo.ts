@@ -1,5 +1,10 @@
 import axios from 'axios'
-import { ZenodoBody, CreationResponseBody } from './types'
+import {
+  ZenodoBody,
+  CreationResponseBody,
+  BlockMetadata,
+  LectureMetadata,
+} from './types'
 
 const headers = {
   Authorization: `Bearer ${process.env.ZENODO_API_TOKEN}`,
@@ -7,7 +12,7 @@ const headers = {
 }
 
 export const createZenodoEntry = async (
-  body: ZenodoBody
+  body: ZenodoBody<BlockMetadata | LectureMetadata>
 ): Promise<CreationResponseBody> => {
   const response = await axios.post(
     'https://zenodo.org/api/deposit/depositions',

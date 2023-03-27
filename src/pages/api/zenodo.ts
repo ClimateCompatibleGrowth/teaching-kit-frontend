@@ -4,6 +4,8 @@ import { Prisma } from '@prisma/client'
 import { publishZenodoEntry } from '../../services/zenodo'
 import { InternalApiError } from '../../shared/error/internal-api-error'
 import { BadRequestError } from '../../shared/error/bad-request-error'
+import { NoOperationError } from '../../shared/error/no-operation-error'
+import axios from 'axios'
 
 type WebhookBaseEntry = {
   id: number
@@ -66,6 +68,16 @@ export default async function postHandler(
     } else if (error instanceof BadRequestError) {
       return res.status(400).json({
         error: error.message,
+      })
+    } else if (error instanceof NoOperationError) {
+      return res.status(304).json({
+        error: error.message,
+      })
+    }
+    if (axios.isAxiosError(error) && error.response) {
+      console.info(error.response.data.errors)
+      return res.status(400).json({
+        message: error.response.data.errors,
       })
     }
     res.status(500).json({

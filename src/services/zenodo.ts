@@ -17,19 +17,28 @@ import {
   BlockTwoLevelsDeep,
   Data,
   Keyword,
+  LectureTwoLevelsDeep,
   Locale,
 } from '../types'
 import {
+  BaseZenodoMetadata,
   CreationResponseBody,
   ISO639_2_LanguageCode,
+  BlockMetadata,
   ZenodoBody,
   ZenodoCreator,
+  LectureMetadata,
+  RelatedIdentifier,
 } from '../repositories/zenodo/types'
 import { convertMarkdownImagesToLocalReferences } from './zenodo-images'
 import { BadRequestError } from '../shared/error/bad-request-error'
 import { Type, zenodo_entry } from '@prisma/client'
+import { getMatchingRows, Identifier } from '../repositories/zenodo-database'
+import { NoOperationError } from '../shared/error/no-operation-error'
 
 const ZENODO_DEPOSIT_BASE_URL = 'https://zenodo.org/deposit'
+const PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_LECTURE = 1
+const ZENODO_CCG_COMMUNITY_IDENTIFIER = 'ccg'
 
 export const publishZenodoEntry = async (
   webhookBody: StrapiWebhookBody<WebhookBlock>
@@ -81,16 +90,49 @@ export const publishZenodoEntry = async (
   }
 }
 
-const generateZenodoBody = (data: Data<BlockTwoLevelsDeep>): ZenodoBody => {
+const generateZenodoMetadata = (
+  data: Data<BlockTwoLevelsDeep | LectureTwoLevelsDeep>
+): Omit<BaseZenodoMetadata, 'creators' | 'keywords'> => {
+  return {
+    title: data.attributes.Title,
+    description: data.attributes.Abstract,
+    upload_type: 'lesson',
+    version: data.attributes.versionNumber?.toString(),
+    language: localeToISO639_2_Format(data.attributes.locale),
+    communities: [{ identifier: ZENODO_CCG_COMMUNITY_IDENTIFIER }],
+  }
+}
+
+const generateZenodoBlockBody = (
+  data: Data<BlockTwoLevelsDeep>
+): ZenodoBody<BlockMetadata> => {
   return {
     metadata: {
-      title: data.attributes.Title,
-      description: data.attributes.Abstract,
-      upload_type: 'lesson',
+      ...generateZenodoMetadata(data),
       creators: data.attributes.Authors.data.map(formatCreator),
-      version: data.attributes.versionNumber?.toString(),
-      language: localeToISO639_2_Format(data.attributes.locale),
       keywords: formatKeywords(data.attributes.Keywords.data),
+    },
+  }
+}
+
+const generateZenodoLectureBody = (
+  data: Data<LectureTwoLevelsDeep>,
+  relatedIdentifiers: RelatedIdentifier[]
+): ZenodoBody<LectureMetadata> => {
+  return {
+    metadata: {
+      ...generateZenodoMetadata(data),
+      creators: data.attributes.LectureCreators.data.map(formatCreator),
+      keywords: [
+        ...new Set(
+          formatKeywords(
+            data.attributes.Blocks.data
+              .map((block) => block.attributes.Keywords.data)
+              .flat()
+          )
+        ),
+      ],
+      related_identifiers: relatedIdentifiers,
     },
   }
 }
@@ -131,10 +173,59 @@ const uploadStrapiContent = async (
         'Support for Zenodo course publication not implemented yet!'
       )
     case 'LECTURE':
-    // return await getLecture(id)
+      return await handleLectureUpload(webhookBody, databaseEntry)
     case 'BLOCK':
       return await handleBlockUpload(webhookBody, databaseEntry)
   }
+}
+
+const handleLectureUpload = async (
+  webhookBody: SecuredWebhookBody<WebhookBlock>,
+  databaseEntry: zenodo_entry
+): Promise<CreationResponseBody> => {
+  const strapiLecture = await getLecture(webhookBody.entry.id)
+
+  const lectureBlocks = strapiLecture.attributes.Blocks.data
+    .map((block) => ({
+      id: block.attributes.vuid,
+      version: block.attributes.versionNumber,
+    }))
+    .filter((block): block is Identifier => block.version !== null)
+
+  const zenodoBlocks = await getMatchingRows(lectureBlocks)
+  const publishedZenodoBlocks = zenodoBlocks.filter(
+    (zenodoBlock): zenodoBlock is zenodo_entry & { zenodo_doi: string } =>
+      zenodoBlock.zenodo_doi !== null
+  )
+  const lectureHasEnoughPublishedBlocksToBePublished =
+    publishedZenodoBlocks.length >=
+    PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_LECTURE
+
+  if (!lectureHasEnoughPublishedBlocksToBePublished) {
+    throw new NoOperationError(
+      `Lecture with id '${strapiLecture.id}' and version '${strapiLecture.attributes.versionNumber}' was not uploaded to Zenodo, because it does not have enough published child Lecture Blocks. Expected an amount of published children of ${PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_LECTURE}, found ${publishedZenodoBlocks.length}`
+    )
+  }
+
+  const childBlockReferences: RelatedIdentifier[] = publishedZenodoBlocks.map(
+    (zenodoBlock) => ({
+      identifier: zenodoBlock.zenodo_doi,
+      relation: 'hasPart',
+    })
+  )
+
+  const body = generateZenodoLectureBody(strapiLecture, childBlockReferences)
+
+  const zenodoCreationResponse = await createZenodoEntry(body)
+
+  await database.updateEntryWithZenodoCreation(
+    databaseEntry.id,
+    zenodoCreationResponse.created,
+    zenodoCreationResponse.id,
+    zenodoCreationResponse.metadata.prereserve_doi.doi
+  )
+
+  return zenodoCreationResponse
 }
 
 const handleBlockUpload = async (
@@ -142,14 +233,15 @@ const handleBlockUpload = async (
   databaseEntry: zenodo_entry
 ): Promise<CreationResponseBody> => {
   const strapiBlock = await getBlock(webhookBody.entry.id)
-  const body = generateZenodoBody(strapiBlock)
+  const body = generateZenodoBlockBody(strapiBlock)
 
   const zenodoCreationResponse = await createZenodoEntry(body)
 
   await database.updateEntryWithZenodoCreation(
     databaseEntry.id,
     zenodoCreationResponse.created,
-    zenodoCreationResponse.id
+    zenodoCreationResponse.id,
+    zenodoCreationResponse.metadata.prereserve_doi.doi
   )
 
   const updatedZenodoEntities = await convertMarkdownImagesToLocalReferences(

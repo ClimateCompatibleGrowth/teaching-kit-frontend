@@ -3,7 +3,7 @@ import { InternalApiError } from '../shared/error/internal-api-error'
 import { Response } from '../shared/requests/types'
 import { BlockTwoLevelsDeep, Data, LectureTwoLevelsDeep } from '../types'
 
-const ENDPOINT = `${process.env.STRAPI_API_URL}/blocks`
+const ENDPOINT = `${process.env.STRAPI_API_URL}`
 
 export const getBlock = async (
   id: number
@@ -16,7 +16,7 @@ export const getBlock = async (
   const populateAuthor = 'populate[Authors][populate][Affiliation]=*'
   const populateKeywords = 'populate[Keywords]=*'
   const response: Response<BlockTwoLevelsDeep> = await axios.get(
-    `${ENDPOINT}/${id}?${populateAuthor}&${populateKeywords}`
+    `${ENDPOINT}/blocks/${id}?${populateAuthor}&${populateKeywords}`
   )
   return response.data.data
 }
@@ -33,7 +33,7 @@ export const getLecture = async (
     'populate[LectureCreators][populate][Affiliation]=*'
   const populateKeywords = 'populate[Blocks][populate][Keywords]=*'
   const response: Response<LectureTwoLevelsDeep> = await axios.get(
-    `${ENDPOINT}/${id}?${populateLectureCreator}&${populateKeywords}`
+    `${ENDPOINT}/lectures/${id}?${populateLectureCreator}&${populateKeywords}`
   )
   return response.data.data
 }

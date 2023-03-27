@@ -3,10 +3,10 @@
   "version": "0.1.2",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "develop": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "npm run develop",
+    "develop": "npx prisma generate && next dev",
+    "build": "npx prisma generate && next build",
+    "start": "npx prisma generate && next start",
     "lint": "next lint",
     "analyze": "ANALYZE=true next build"
   },

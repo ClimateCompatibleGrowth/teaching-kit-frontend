@@ -167,3 +167,7 @@ export const languageToLocale = (language: Language): Locale => {
       return 'es-ES'
   }
 }
+
+export const isNotNull = <T>(value: T | null | undefined): value is T => {
+  return value !== null && value !== undefined
+}
