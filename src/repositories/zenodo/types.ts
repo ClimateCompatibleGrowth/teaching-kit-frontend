@@ -1,5 +1,5 @@
-export type ZenodoBody = {
-  metadata?: ZenodoMetadata
+export type ZenodoBody<T extends BlockMetadata | LectureMetadata> = {
+  metadata?: T
 }
 
 type UploadType = 'lesson'
@@ -12,14 +12,29 @@ export type ZenodoCreator = {
 
 export type ISO639_2_LanguageCode = 'eng' | 'spa' | 'fre'
 
-type ZenodoMetadata = {
+type Community = {
+  identifier: string
+}
+
+export type BaseZenodoMetadata = {
   title: string
   description: string
   upload_type: UploadType
-  creators: ZenodoCreator[]
   version?: string
   language: ISO639_2_LanguageCode
+  creators: ZenodoCreator[]
   keywords?: string[]
+  communities: Community[]
+}
+
+export type BlockMetadata = BaseZenodoMetadata & {}
+export type LectureMetadata = BaseZenodoMetadata & {
+  related_identifiers: RelatedIdentifier[]
+}
+
+export type RelatedIdentifier = {
+  identifier: string
+  relation: 'hasPart'
 }
 
 export type CreationResponseBody = {

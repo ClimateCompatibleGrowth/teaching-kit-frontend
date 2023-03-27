@@ -2,6 +2,11 @@ import { Type } from '@prisma/client'
 import prisma from '../../prisma/prisma'
 import { InternalApiError } from '../shared/error/internal-api-error'
 
+export type Identifier = {
+  id: string
+  version: number
+}
+
 export const getEntry = async (strapiId: string, entryVersion: number) => {
   return await prisma.zenodo_entry.findUnique({
     where: {
@@ -35,10 +40,22 @@ export const upsertEntry = async (
   })
 }
 
+export const getMatchingRows = async (entries: Identifier[]) => {
+  return await prisma.zenodo_entry.findMany({
+    where: {
+      OR: entries.map((entry) => ({
+        strapi_entry_id: entry.id,
+        strapi_entry_version: entry.version,
+      })),
+    },
+  })
+}
+
 export const updateEntryWithZenodoCreation = async (
   entryId: string,
   createdAt: string,
-  depositId: number
+  depositId: number,
+  doi: string
 ) => {
   if (typeof createdAt !== 'string') {
     throw new InternalApiError(
@@ -52,6 +69,7 @@ export const updateEntryWithZenodoCreation = async (
     data: {
       created_on_zenodo: createdAt,
       zenodo_deposit_id: depositId,
+      zenodo_doi: doi,
     },
   })
 }

@@ -1,5 +1,10 @@
-import { StrapiWebhookBody, WebhookBlock } from '../pages/api/zenodo'
-import { getBlock } from '../repositories/strapi'
+import {
+  SecuredWebhookBody,
+  StrapiModel,
+  StrapiWebhookBody,
+  WebhookBlock,
+} from '../pages/api/zenodo'
+import { getBlock, getLecture } from '../repositories/strapi'
 import {
   createZenodoEntry,
   uploadZenodoFile,
@@ -12,19 +17,28 @@ import {
   BlockTwoLevelsDeep,
   Data,
   Keyword,
-  LearningMaterialType,
+  LectureTwoLevelsDeep,
   Locale,
 } from '../types'
 import {
+  BaseZenodoMetadata,
+  CreationResponseBody,
   ISO639_2_LanguageCode,
+  BlockMetadata,
   ZenodoBody,
   ZenodoCreator,
+  LectureMetadata,
+  RelatedIdentifier,
 } from '../repositories/zenodo/types'
 import { convertMarkdownImagesToLocalReferences } from './zenodo-images'
 import { BadRequestError } from '../shared/error/bad-request-error'
-import { Type } from '@prisma/client'
+import { Type, zenodo_entry } from '@prisma/client'
+import { getMatchingRows, Identifier } from '../repositories/zenodo-database'
+import { NoOperationError } from '../shared/error/no-operation-error'
 
 const ZENODO_DEPOSIT_BASE_URL = 'https://zenodo.org/deposit'
+const PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_LECTURE = 1
+const ZENODO_CCG_COMMUNITY_IDENTIFIER = 'ccg'
 
 export const publishZenodoEntry = async (
   webhookBody: StrapiWebhookBody<WebhookBlock>
@@ -39,56 +53,27 @@ export const publishZenodoEntry = async (
       webhookBody.entry.versionNumber
     )
 
-    if (existingEntry && existingEntry.created_on_zenodo) {
+    const entryHasAlreadyBeenPublishedToZenodo =
+      existingEntry && existingEntry.created_on_zenodo
+
+    if (entryHasAlreadyBeenPublishedToZenodo) {
       throw new BadRequestError(
         `Entry with vuid '${webhookBody.entry.vuid}' and version '${webhookBody.entry.versionNumber}' has already been created on Zenodo: ${ZENODO_DEPOSIT_BASE_URL}/${existingEntry.zenodo_deposit_id}`
       )
     }
 
     const databaseEntry = await database.upsertEntry(
-      webhookBody.entry?.vuid,
+      webhookBody.entry.vuid,
       webhookBody.entry.versionNumber,
       webhookBody.model.toUpperCase() as Type
     )
 
-    const strapiContent = await getStrapiContent(
-      webhookBody.model.toUpperCase() as LearningMaterialType,
-      webhookBody.entry.id
-    )
-
-    const body = generateZenodoBody(strapiContent)
-
-    const zenodoCreationResponse = await createZenodoEntry(body)
-
-    await database.updateEntryWithZenodoCreation(
-      databaseEntry.id,
-      zenodoCreationResponse.created,
-      zenodoCreationResponse.id
-    )
-
-    const updatedZenodoEntities = await convertMarkdownImagesToLocalReferences(
-      strapiContent.attributes.Document
-    )
-
-    await uploadZenodoFile(
-      zenodoCreationResponse.links.bucket,
-      `${strapiContent.attributes.Title}.md`,
-      updatedZenodoEntities.document
-    )
-
-    console.info(
-      `Successfully uploaded file with name '${strapiContent.attributes.Title}.md'`
-    )
-
-    await Promise.all(
-      updatedZenodoEntities.images.map(async (image) => {
-        await uploadZenodoFile(
-          zenodoCreationResponse.links.bucket,
-          image.name,
-          image.uint8Array
-        )
-        console.info(`Successfully uploaded image with name '${image.name}'`)
-      })
+    const zenodoCreationResponse = await uploadStrapiContent(
+      {
+        entry: webhookBody.entry,
+        model: webhookBody.model,
+      },
+      databaseEntry
     )
 
     console.info(
@@ -105,16 +90,49 @@ export const publishZenodoEntry = async (
   }
 }
 
-const generateZenodoBody = (data: Data<BlockTwoLevelsDeep>): ZenodoBody => {
+const generateZenodoMetadata = (
+  data: Data<BlockTwoLevelsDeep | LectureTwoLevelsDeep>
+): Omit<BaseZenodoMetadata, 'creators' | 'keywords'> => {
+  return {
+    title: data.attributes.Title,
+    description: data.attributes.Abstract,
+    upload_type: 'lesson',
+    version: data.attributes.versionNumber?.toString(),
+    language: localeToISO639_2_Format(data.attributes.locale),
+    communities: [{ identifier: ZENODO_CCG_COMMUNITY_IDENTIFIER }],
+  }
+}
+
+const generateZenodoBlockBody = (
+  data: Data<BlockTwoLevelsDeep>
+): ZenodoBody<BlockMetadata> => {
   return {
     metadata: {
-      title: data.attributes.Title,
-      description: data.attributes.Abstract,
-      upload_type: 'lesson',
+      ...generateZenodoMetadata(data),
       creators: data.attributes.Authors.data.map(formatCreator),
-      version: data.attributes.versionNumber?.toString(),
-      language: localeToISO639_2_Format(data.attributes.locale),
       keywords: formatKeywords(data.attributes.Keywords.data),
+    },
+  }
+}
+
+const generateZenodoLectureBody = (
+  data: Data<LectureTwoLevelsDeep>,
+  relatedIdentifiers: RelatedIdentifier[]
+): ZenodoBody<LectureMetadata> => {
+  return {
+    metadata: {
+      ...generateZenodoMetadata(data),
+      creators: data.attributes.LectureCreators.data.map(formatCreator),
+      keywords: [
+        ...new Set(
+          formatKeywords(
+            data.attributes.Blocks.data
+              .map((block) => block.attributes.Keywords.data)
+              .flat()
+          )
+        ),
+      ],
+      related_identifiers: relatedIdentifiers,
     },
   }
 }
@@ -145,17 +163,111 @@ const formatCreator = (author: Data<AuthorOneLevelDeep>): ZenodoCreator => {
   }
 }
 
-const getStrapiContent = async (type: LearningMaterialType, id: number) => {
-  switch (type) {
+const uploadStrapiContent = async (
+  webhookBody: SecuredWebhookBody<WebhookBlock>,
+  databaseEntry: zenodo_entry
+): Promise<CreationResponseBody> => {
+  switch (webhookBody.model.toUpperCase() as Uppercase<StrapiModel>) {
     case 'COURSE':
       throw new NotImplementedError(
         'Support for Zenodo course publication not implemented yet!'
       )
     case 'LECTURE':
-      throw new NotImplementedError(
-        'Support for Zenodo lecture publication not implemented yet!'
-      )
+      return await handleLectureUpload(webhookBody, databaseEntry)
     case 'BLOCK':
-      return await getBlock(id)
+      return await handleBlockUpload(webhookBody, databaseEntry)
   }
+}
+
+const handleLectureUpload = async (
+  webhookBody: SecuredWebhookBody<WebhookBlock>,
+  databaseEntry: zenodo_entry
+): Promise<CreationResponseBody> => {
+  const strapiLecture = await getLecture(webhookBody.entry.id)
+
+  const lectureBlocks = strapiLecture.attributes.Blocks.data
+    .map((block) => ({
+      id: block.attributes.vuid,
+      version: block.attributes.versionNumber,
+    }))
+    .filter((block): block is Identifier => block.version !== null)
+
+  const zenodoBlocks = await getMatchingRows(lectureBlocks)
+  const publishedZenodoBlocks = zenodoBlocks.filter(
+    (zenodoBlock): zenodoBlock is zenodo_entry & { zenodo_doi: string } =>
+      zenodoBlock.zenodo_doi !== null
+  )
+  const lectureHasEnoughPublishedBlocksToBePublished =
+    publishedZenodoBlocks.length >=
+    PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_LECTURE
+
+  if (!lectureHasEnoughPublishedBlocksToBePublished) {
+    throw new NoOperationError(
+      `Lecture with id '${strapiLecture.id}' and version '${strapiLecture.attributes.versionNumber}' was not uploaded to Zenodo, because it does not have enough published child Lecture Blocks. Expected an amount of published children of ${PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_LECTURE}, found ${publishedZenodoBlocks.length}`
+    )
+  }
+
+  const childBlockReferences: RelatedIdentifier[] = publishedZenodoBlocks.map(
+    (zenodoBlock) => ({
+      identifier: zenodoBlock.zenodo_doi,
+      relation: 'hasPart',
+    })
+  )
+
+  const body = generateZenodoLectureBody(strapiLecture, childBlockReferences)
+
+  const zenodoCreationResponse = await createZenodoEntry(body)
+
+  await database.updateEntryWithZenodoCreation(
+    databaseEntry.id,
+    zenodoCreationResponse.created,
+    zenodoCreationResponse.id,
+    zenodoCreationResponse.metadata.prereserve_doi.doi
+  )
+
+  return zenodoCreationResponse
+}
+
+const handleBlockUpload = async (
+  webhookBody: SecuredWebhookBody<WebhookBlock>,
+  databaseEntry: zenodo_entry
+): Promise<CreationResponseBody> => {
+  const strapiBlock = await getBlock(webhookBody.entry.id)
+  const body = generateZenodoBlockBody(strapiBlock)
+
+  const zenodoCreationResponse = await createZenodoEntry(body)
+
+  await database.updateEntryWithZenodoCreation(
+    databaseEntry.id,
+    zenodoCreationResponse.created,
+    zenodoCreationResponse.id,
+    zenodoCreationResponse.metadata.prereserve_doi.doi
+  )
+
+  const updatedZenodoEntities = await convertMarkdownImagesToLocalReferences(
+    strapiBlock.attributes.Document
+  )
+
+  await uploadZenodoFile(
+    zenodoCreationResponse.links.bucket,
+    `${strapiBlock.attributes.Title}.md`,
+    updatedZenodoEntities.document
+  )
+
+  console.info(
+    `Successfully uploaded file with name '${strapiBlock.attributes.Title}.md'`
+  )
+
+  await Promise.all(
+    updatedZenodoEntities.images.map(async (image) => {
+      await uploadZenodoFile(
+        zenodoCreationResponse.links.bucket,
+        image.name,
+        image.uint8Array
+      )
+      console.info(`Successfully uploaded image with name '${image.name}'`)
+    })
+  )
+
+  return zenodoCreationResponse
 }

@@ -21,6 +21,7 @@ model zenodo_entry {
   zenodo_deposit_id    Int?
   row_added            DateTime
   type                 Type
+  zenodo_doi           String?
 
   @@unique([strapi_entry_id, strapi_entry_version], name: "entry_identifier")
 }
