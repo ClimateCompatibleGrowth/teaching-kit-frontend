@@ -15,9 +15,16 @@ npm install
 npm run dev
 ```
 
+In case you have some issues during the setup with Prisma, see the section under the "Database client" heading below.
+
 ... and the service should be up and running on http://localhost:3000.
 
 In order for the service to run as expected, it needs data which are supposed to be fetched from Strapi on http://localhost:1337. You can pull the source code for the Strapi project from [here](https://github.com/Frank-Digital-Experiences/kth-teaching-kit-backend).
+
+## Database client
+
+For the Zenodo workflow (read more in /docs/zenodo), we use a postgres database to keep track of each entry's upload status. We use [Prisma](https://www.prisma.io/) as a database ORM.
+To get the project running initially, the only thing you should need is to generate the prisma client, which is built-in into our package.json-script for `npm run develop`, `npm run start`, and `npm run build`. If you're working with the Zenodo workflow, you will also need to setup the database locally. You can do this by following the steps in /docs/zenodo/setup.
 
 ## Styling
 
