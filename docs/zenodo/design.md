@@ -32,7 +32,13 @@ If the deposit creation is successful, we update the entry's row in our database
 
 ### Creation of a Course
 
-//TODO - TBD
+First, we want to validate that the course is OK to upload. At the time of writing this (2023-03-28), it is required that the lecture has at least one child lecture which is already published on Zenodo.
+
+To check this, the course is fetched from Strapi by its `id` (which is unique between locales of the same entry. The only constant for the entry is its `vuid`). We extract its child lectures, and query all of their corresponding database rows, to check if they have been published to Zenodo. In case we find more than one row that has a `zenodo_doi` value, we approve the validation and carry on. Else we throw a NoOperationError.
+
+Similarly to the Lecture Block, the course's metadata is then generated from it's Strapi response. One main difference in the metadata is its relation to its child lecture. The course doesn't contain any document or images of its own, instead it refers to its child lecture. So from the validation earlier, we extract the DOI:s of each of the published child lectures, and create metadata references for these.
+
+If the deposit creation is successful, we update the entry's row in our database, with information about when the deposit was created etc. We also save a reserved DOI which the deposit will get once it's published.
 
 ## Retrieval of a deposit
 
