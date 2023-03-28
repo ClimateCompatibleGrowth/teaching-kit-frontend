@@ -64,6 +64,7 @@ type StrapiBaseEntry = {
   publishedAt: string
   locale: Locale
   versionNumber: number | null
+  isVisibleInListView: boolean
 }
 
 export type Block = StrapiBaseEntry & {

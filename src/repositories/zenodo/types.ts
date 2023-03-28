@@ -31,6 +31,9 @@ export type BlockMetadata = BaseZenodoMetadata & {}
 export type LectureMetadata = BaseZenodoMetadata & {
   related_identifiers: RelatedIdentifier[]
 }
+export type CourseMetadata = BaseZenodoMetadata & {
+  related_identifiers: RelatedIdentifier[]
+}
 
 export type RelatedIdentifier = {
   identifier: string

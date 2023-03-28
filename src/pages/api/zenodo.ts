@@ -23,12 +23,16 @@ type StrapiWebhookRequest<
 
 export type StrapiModel = 'course' | 'lecture' | 'block'
 
-export type StrapiWebhookBody<T> = {
+export type StrapiWebhookBody<
+  T extends WebhookBlock | WebhookLecture | WebhookCourse
+> = {
   model?: StrapiModel
   entry?: T
 }
 
-export type SecuredWebhookBody<T> = {
+export type SecuredWebhookBody<
+  T extends WebhookBlock | WebhookLecture | WebhookCourse
+> = {
   model: StrapiModel
   entry: T
 }
