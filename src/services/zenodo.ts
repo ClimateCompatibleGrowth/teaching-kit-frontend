@@ -1,20 +1,21 @@
 import {
   SecuredWebhookBody,
-  StrapiModel,
   StrapiWebhookBody,
   WebhookBlock,
+  WebhookCourse,
+  WebhookLecture,
 } from '../pages/api/zenodo'
-import { getBlock, getLecture } from '../repositories/strapi'
+import { getBlock, getCourse, getLecture } from '../repositories/strapi'
 import {
   createZenodoEntry,
   uploadZenodoFile,
 } from '../repositories/zenodo/zenodo'
 import * as database from '../repositories/zenodo-database'
 import { InternalApiError } from '../shared/error/internal-api-error'
-import { NotImplementedError } from '../shared/error/not-implemented-error'
 import {
   AuthorOneLevelDeep,
   BlockTwoLevelsDeep,
+  CourseThreeLevelsDeep,
   Data,
   Keyword,
   LectureTwoLevelsDeep,
@@ -29,6 +30,7 @@ import {
   ZenodoCreator,
   LectureMetadata,
   RelatedIdentifier,
+  CourseMetadata,
 } from '../repositories/zenodo/types'
 import { convertMarkdownImagesToLocalReferences } from './zenodo-images'
 import { BadRequestError } from '../shared/error/bad-request-error'
@@ -38,6 +40,7 @@ import { NoOperationError } from '../shared/error/no-operation-error'
 
 const ZENODO_DEPOSIT_BASE_URL = 'https://zenodo.org/deposit'
 const PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_LECTURE = 1
+const PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_COURSE = 1
 const ZENODO_CCG_COMMUNITY_IDENTIFIER = 'ccg'
 
 export const publishZenodoEntry = async (
@@ -91,7 +94,7 @@ export const publishZenodoEntry = async (
 }
 
 const generateZenodoMetadata = (
-  data: Data<BlockTwoLevelsDeep | LectureTwoLevelsDeep>
+  data: Data<BlockTwoLevelsDeep | LectureTwoLevelsDeep | CourseThreeLevelsDeep>
 ): Omit<BaseZenodoMetadata, 'creators' | 'keywords'> => {
   return {
     title: data.attributes.Title,
@@ -137,6 +140,32 @@ const generateZenodoLectureBody = (
   }
 }
 
+const generateZenodoCourseBody = (
+  data: Data<CourseThreeLevelsDeep>,
+  relatedIdentifiers: RelatedIdentifier[]
+): ZenodoBody<CourseMetadata> => {
+  return {
+    metadata: {
+      ...generateZenodoMetadata(data),
+      creators: data.attributes.CourseCreators.data.map(formatCreator),
+      keywords: [
+        ...new Set(
+          formatKeywords(
+            data.attributes.Lectures.data
+              .map((lecture) =>
+                lecture.attributes.Blocks.data.map(
+                  (block) => block.attributes.Keywords.data
+                )
+              )
+              .flat(2)
+          )
+        ),
+      ],
+      related_identifiers: relatedIdentifiers,
+    },
+  }
+}
+
 const formatKeywords = (keywords: Data<Keyword>[]): string[] | undefined => {
   if (keywords.length > 0) {
     return keywords.map((keyword) => keyword.attributes.Keyword)
@@ -164,28 +193,87 @@ const formatCreator = (author: Data<AuthorOneLevelDeep>): ZenodoCreator => {
 }
 
 const uploadStrapiContent = async (
-  webhookBody: SecuredWebhookBody<WebhookBlock>,
+  webhookBody: SecuredWebhookBody<
+    WebhookBlock | WebhookLecture | WebhookCourse
+  >,
   databaseEntry: zenodo_entry
 ): Promise<CreationResponseBody> => {
-  switch (webhookBody.model.toUpperCase() as Uppercase<StrapiModel>) {
-    case 'COURSE':
-      throw new NotImplementedError(
-        'Support for Zenodo course publication not implemented yet!'
+  switch (webhookBody.model) {
+    case 'course':
+      return await handleCourseUpload(
+        webhookBody as SecuredWebhookBody<WebhookCourse>,
+        databaseEntry
       )
-    case 'LECTURE':
-      return await handleLectureUpload(webhookBody, databaseEntry)
-    case 'BLOCK':
-      return await handleBlockUpload(webhookBody, databaseEntry)
+    case 'lecture':
+      return await handleLectureUpload(
+        webhookBody as SecuredWebhookBody<WebhookLecture>,
+        databaseEntry
+      )
+    case 'block':
+      return await handleBlockUpload(
+        webhookBody as SecuredWebhookBody<WebhookBlock>,
+        databaseEntry
+      )
   }
 }
 
+const handleCourseUpload = async (
+  webhookBody: SecuredWebhookBody<WebhookCourse>,
+  databaseEntry: zenodo_entry
+): Promise<CreationResponseBody> => {
+  const strapiCourse = await getCourse(webhookBody.entry.id)
+
+  const lectures = strapiCourse.attributes.Lectures.data
+    .filter((lecture) => lecture.attributes.isVisibleInListView)
+    .map((lecture) => ({
+      id: lecture.attributes.vuid,
+      version: lecture.attributes.versionNumber,
+    }))
+    .filter((lecture): lecture is Identifier => lecture.version !== null)
+
+  const zenodoLectures = await getMatchingRows(lectures)
+  const publishedZenodoLectures = zenodoLectures.filter(
+    (zenodoLecture): zenodoLecture is zenodo_entry & { zenodo_doi: string } =>
+      zenodoLecture.zenodo_doi !== null
+  )
+  const courseHasEnoughPublishedLecturesToBePublished =
+    publishedZenodoLectures.length >=
+    PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_COURSE
+
+  if (!courseHasEnoughPublishedLecturesToBePublished) {
+    throw new NoOperationError(
+      `Course with id '${strapiCourse.id}' and version '${strapiCourse.attributes.versionNumber}' was not uploaded to Zenodo, because it does not have enough published child Lectures. Expected an amount of published children of ${PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_COURSE}, found ${publishedZenodoLectures.length}`
+    )
+  }
+
+  const childLecturesReferences: RelatedIdentifier[] =
+    publishedZenodoLectures.map((zenodoLecture) => ({
+      identifier: zenodoLecture.zenodo_doi,
+      relation: 'hasPart',
+    }))
+
+  const body = generateZenodoCourseBody(strapiCourse, childLecturesReferences)
+
+  const zenodoCreationResponse = await createZenodoEntry(body)
+
+  await database.updateEntryWithZenodoCreation(
+    databaseEntry.id,
+    zenodoCreationResponse.created,
+    zenodoCreationResponse.id,
+    zenodoCreationResponse.metadata.prereserve_doi.doi
+  )
+
+  return zenodoCreationResponse
+}
+
 const handleLectureUpload = async (
-  webhookBody: SecuredWebhookBody<WebhookBlock>,
+  webhookBody: SecuredWebhookBody<WebhookLecture>,
   databaseEntry: zenodo_entry
 ): Promise<CreationResponseBody> => {
   const strapiLecture = await getLecture(webhookBody.entry.id)
 
   const lectureBlocks = strapiLecture.attributes.Blocks.data
+    .filter((block) => block.attributes.isVisibleInListView)
     .map((block) => ({
       id: block.attributes.vuid,
       version: block.attributes.versionNumber,
