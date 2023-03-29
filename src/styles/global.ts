@@ -90,9 +90,9 @@ export const PageContainer = styled.div<{
   }
 
   ${mq.lg} {
-    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)};
-    ${(props) => (props.hasSmallSidePadding ? '8rem' : '19.6rem')};
-    ${(props) => (props.hasBottomPadding ? '14rem' : 0)};
+    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)}
+      ${(props) => (props.hasSmallSidePadding ? '8rem' : '19.6rem')}
+      ${(props) => (props.hasBottomPadding ? '14rem' : 0)};
   }
 `
 

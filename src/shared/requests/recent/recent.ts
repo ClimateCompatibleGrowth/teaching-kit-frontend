@@ -35,23 +35,26 @@ const getLearningMaterial = async <T extends LearningMaterial>(
   locale: Locale = DEFAULT_LOCALE,
   getLearningMaterial: (locale: Locale) => Promise<T[]>
 ) => {
-  const learningMaterial = await getLearningMaterial(locale)
-  const defaultLocaleMaterial = await getLearningMaterial(DEFAULT_LOCALE)
+  const learningMaterial = await getLearningMaterial(DEFAULT_LOCALE)
 
   if (locale === DEFAULT_LOCALE) {
     return learningMaterial
   }
 
-  const translatedMaterial = learningMaterial.filter((material) => {
-    const targetLocale = locale
+  const translatedMaterial = learningMaterial.map((material) => {
+    // Annoying TS issue: https://github.com/microsoft/TypeScript/issues/33591 forces us to spread the array
+    // (which makes matchingLocale an array of a union type, instead of an array of one of either type).
+    // This also makes us type cast courses, lectures and blocks in refinedCourses, refinedLectures & refinedBlocks...
+    const matchingLocale = [...material.attributes.localizations.data].find(
+      (localization) => {
+        localization.attributes.locale === locale
+      }
+    )
 
-    const matchingLocale = material.attributes.locale === targetLocale
-    return matchingLocale
+    return matchingLocale ?? material
   })
 
-  return translatedMaterial.length > 0
-    ? translatedMaterial
-    : defaultLocaleMaterial
+  return translatedMaterial
 }
 
 export const getRecentUpdates = async (locale?: Locale) => {
@@ -60,11 +63,14 @@ export const getRecentUpdates = async (locale?: Locale) => {
     getLearningMaterial(locale, getRecentLectures),
     getLearningMaterial(locale, getRecentBlocks),
   ])
+  console.log(courses, 'courses')
 
   const now = new Date()
   const nowStamp = formatDate(now)
 
-  const refinedCourses: RecentUpdateType[] = courses.map((course) => ({
+  const refinedCourses: RecentUpdateType[] = (
+    courses as Data<CourseTwoLevelsDeep>[]
+  ).map((course) => ({
     Id: course.id,
     Vuid: course.attributes.vuid,
     UpdatedAt: course.attributes.updatedAt || nowStamp,
@@ -82,7 +88,9 @@ export const getRecentUpdates = async (locale?: Locale) => {
     Locale: course.attributes.locale,
   }))
 
-  const refinedLectures: RecentUpdateType[] = lectures.map((lecture) => ({
+  const refinedLectures: RecentUpdateType[] = (
+    lectures as Data<LectureTwoLevelsDeep>[]
+  ).map((lecture) => ({
     Id: lecture.id,
     Vuid: lecture.attributes.vuid,
     UpdatedAt: lecture.attributes.updatedAt || nowStamp,
@@ -94,7 +102,9 @@ export const getRecentUpdates = async (locale?: Locale) => {
     Locale: lecture.attributes.locale,
   }))
 
-  const refinedBlocks: RecentUpdateType[] = blocks.map((block) => ({
+  const refinedBlocks: RecentUpdateType[] = (
+    blocks as Data<BlockOneLevelDeep>[]
+  ).map((block) => ({
     Id: block.id,
     Vuid: block.attributes.vuid,
     UpdatedAt: block.attributes.updatedAt || nowStamp,
