@@ -52,8 +52,12 @@ export const getRecentBlocks = async (
 ) => {
   const pagination = `pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
   const locale = `locale=${_locale}`
+
+  const populate = 'populate=localizations'
+
   const response: ResponseArray<BlockOneLevelDeep> = await axios.get(
-    `${ENDPOINT}?${pagination}&${locale}`
+    `${ENDPOINT}?${pagination}&${locale}&${populate}`
   )
+
   return response.data.data
 }

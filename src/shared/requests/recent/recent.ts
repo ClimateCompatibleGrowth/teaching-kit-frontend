@@ -33,9 +33,9 @@ type LearningMaterial =
 
 const getLearningMaterial = async <T extends LearningMaterial>(
   locale: Locale = DEFAULT_LOCALE,
-  getLearningMaterial: (locale: Locale) => Promise<T[]>
+  getLearningMaterial: () => Promise<T[]>
 ) => {
-  const learningMaterial = await getLearningMaterial(DEFAULT_LOCALE)
+  const learningMaterial = await getLearningMaterial()
 
   if (locale === DEFAULT_LOCALE) {
     return learningMaterial
@@ -46,9 +46,7 @@ const getLearningMaterial = async <T extends LearningMaterial>(
     // (which makes matchingLocale an array of a union type, instead of an array of one of either type).
     // This also makes us type cast courses, lectures and blocks in refinedCourses, refinedLectures & refinedBlocks...
     const matchingLocale = [...material.attributes.localizations.data].find(
-      (localization) => {
-        localization.attributes.locale === locale
-      }
+      (localization) => localization.attributes.locale === locale
     )
 
     return matchingLocale ?? material
@@ -63,7 +61,6 @@ export const getRecentUpdates = async (locale?: Locale) => {
     getLearningMaterial(locale, getRecentLectures),
     getLearningMaterial(locale, getRecentBlocks),
   ])
-  console.log(courses, 'courses')
 
   const now = new Date()
   const nowStamp = formatDate(now)

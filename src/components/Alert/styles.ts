@@ -1,6 +1,8 @@
 import styled from '@emotion/styled'
 import { Error20, Error99 } from '../../styles/global'
 
+const iconWidth = '3rem'
+
 export const Wrapper = styled.div`
   padding: 1.6rem;
 
@@ -11,11 +13,10 @@ export const Wrapper = styled.div`
 
 export const HeaderWrapper = styled.div`
   display: flex;
-  margin-bottom: 1rem;
 `
 
 export const Icon = styled.div`
-  width: 3rem;
+  width: ${iconWidth};
 
   display: flex;
   align-items: center;
@@ -30,5 +31,5 @@ export const Title = styled.h4`
 export const Text = styled.p`
   font-size: 1.4rem;
 
-  margin: 0;
+  margin: 1rem 0 0 ${iconWidth};
 `
