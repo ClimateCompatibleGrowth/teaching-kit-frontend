@@ -40,6 +40,17 @@ export const upsertEntry = async (
   })
 }
 
+export const getMatchingRow = async (entry: Identifier) => {
+  return await prisma.zenodo_entry.findUniqueOrThrow({
+    where: {
+      entry_identifier: {
+        strapi_entry_id: entry.id,
+        strapi_entry_version: entry.version,
+      },
+    },
+  })
+}
+
 export const getMatchingRows = async (entries: Identifier[]) => {
   return await prisma.zenodo_entry.findMany({
     where: {
