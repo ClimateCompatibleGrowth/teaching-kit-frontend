@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import NextCors from 'nextjs-cors'
 import { getMatchingRow } from '../../repositories/zenodo-database'
 
 type Request = NextApiRequest & {
@@ -12,6 +13,11 @@ type Query = {
 }
 
 export default async function getHandler(req: Request, res: NextApiResponse) {
+  await NextCors(req, res, {
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    origin: '*',
+    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  })
   if (req.query.secret !== process.env.GET_ZENODO_SECRET) {
     return res.status(401).json({ message: 'Invalid token' })
   }
