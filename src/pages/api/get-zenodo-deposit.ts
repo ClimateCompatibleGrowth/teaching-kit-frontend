@@ -18,9 +18,10 @@ export default async function getHandler(req: Request, res: NextApiResponse) {
     origin:
       process.env.NEXT_PUBLIC_ENVIRONMENT === 'development'
         ? '*'
-        : [`${process.env.STRAPI_API_DOMAIN}/*`],
+        : `${process.env.STRAPI_API_DOMAIN}`,
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   })
+  console.log(process.env.STRAPI_API_DOMAIN)
   if (req.query.secret !== process.env.GET_ZENODO_SECRET) {
     return res.status(401).json({ message: 'Invalid token' })
   }
