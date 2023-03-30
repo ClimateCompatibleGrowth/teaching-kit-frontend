@@ -6,10 +6,7 @@ import {
   WebhookLecture,
 } from '../pages/api/zenodo'
 import { getBlock, getCourse, getLecture } from '../repositories/strapi'
-import {
-  createZenodoEntry,
-  uploadZenodoFile,
-} from '../repositories/zenodo/zenodo'
+import * as zenodo from '../repositories/zenodo/zenodo'
 import * as database from '../repositories/zenodo-database'
 import { InternalApiError } from '../shared/error/internal-api-error'
 import {
@@ -37,13 +34,14 @@ import { BadRequestError } from '../shared/error/bad-request-error'
 import { Type, zenodo_entry } from '@prisma/client'
 import { getMatchingRows, Identifier } from '../repositories/zenodo-database'
 import { NoOperationError } from '../shared/error/no-operation-error'
+import { NotImplementedError } from '../shared/error/not-implemented-error'
 
 const ZENODO_DEPOSIT_BASE_URL = 'https://zenodo.org/deposit'
 const PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_LECTURE = 1
 const PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_COURSE = 1
 const ZENODO_CCG_COMMUNITY_IDENTIFIER = 'ccg'
 
-export const publishZenodoEntry = async (
+export const processZenodoEntry = async (
   webhookBody: StrapiWebhookBody<WebhookBlock>
 ) => {
   if (
@@ -82,6 +80,12 @@ export const publishZenodoEntry = async (
     console.info(
       `Successfully created the following Zenodo deposit: ${ZENODO_DEPOSIT_BASE_URL}/${zenodoCreationResponse.id}`
     )
+    if (process.env.AUTOMATIC_ZENODO_PUBLISHING === 'true') {
+      await publishZenodoEntry(zenodoCreationResponse)
+      console.info(
+        `Successfully published the following Zenodo deposit: ${ZENODO_DEPOSIT_BASE_URL}/${zenodoCreationResponse.id}`
+      )
+    }
   } else {
     throw new InternalApiError(
       `Cannot publish entry without model, vuid and version of the Strapi entry. Got model: '${webhookBody.model}', vuid: '${webhookBody.entry?.vuid}' and version: '${webhookBody.entry?.versionNumber}'`
@@ -91,6 +95,21 @@ export const publishZenodoEntry = async (
   return {
     message: 'Entry successfully published to Zenodo',
   }
+}
+
+const publishZenodoEntry = async (
+  zenodoCreationResponse: CreationResponseBody
+) => {
+  // Do NOT remove the following throw unless you're 100% certain what you're doing.
+  throw new NotImplementedError(
+    'It has not yet been decided if automatic publication should really be implemented'
+  )
+  if (process.env.NEXT_PUBLIC_ENVIRONMENT !== 'production') {
+    throw new InternalApiError(
+      `Can't publish Zenodo deposit from other environment than production. Tried to publish in environment: ${process.env.NEXT_PUBLIC_ENVIRONMENT}`
+    )
+  }
+  return await zenodo.publishDeposit(zenodoCreationResponse.links.publish)
 }
 
 const generateZenodoMetadata = (
@@ -254,7 +273,7 @@ const handleCourseUpload = async (
 
   const body = generateZenodoCourseBody(strapiCourse, childLecturesReferences)
 
-  const zenodoCreationResponse = await createZenodoEntry(body)
+  const zenodoCreationResponse = await zenodo.createEntry(body)
 
   await database.updateEntryWithZenodoCreation(
     databaseEntry.id,
@@ -304,7 +323,7 @@ const handleLectureUpload = async (
 
   const body = generateZenodoLectureBody(strapiLecture, childBlockReferences)
 
-  const zenodoCreationResponse = await createZenodoEntry(body)
+  const zenodoCreationResponse = await zenodo.createEntry(body)
 
   await database.updateEntryWithZenodoCreation(
     databaseEntry.id,
@@ -323,7 +342,7 @@ const handleBlockUpload = async (
   const strapiBlock = await getBlock(webhookBody.entry.id)
   const body = generateZenodoBlockBody(strapiBlock)
 
-  const zenodoCreationResponse = await createZenodoEntry(body)
+  const zenodoCreationResponse = await zenodo.createEntry(body)
 
   await database.updateEntryWithZenodoCreation(
     databaseEntry.id,
@@ -336,7 +355,7 @@ const handleBlockUpload = async (
     strapiBlock.attributes.Document
   )
 
-  await uploadZenodoFile(
+  await zenodo.uploadFile(
     zenodoCreationResponse.links.bucket,
     `${strapiBlock.attributes.Title}.md`,
     updatedZenodoEntities.document
@@ -348,7 +367,7 @@ const handleBlockUpload = async (
 
   await Promise.all(
     updatedZenodoEntities.images.map(async (image) => {
-      await uploadZenodoFile(
+      await zenodo.uploadFile(
         zenodoCreationResponse.links.bucket,
         image.name,
         image.uint8Array

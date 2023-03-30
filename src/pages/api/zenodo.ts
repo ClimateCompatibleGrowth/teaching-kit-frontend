@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Block, Course, Lecture } from '../../types'
 import { Prisma } from '@prisma/client'
-import { publishZenodoEntry } from '../../services/zenodo'
+import { processZenodoEntry } from '../../services/zenodo'
 import { InternalApiError } from '../../shared/error/internal-api-error'
 import { BadRequestError } from '../../shared/error/bad-request-error'
 import { NoOperationError } from '../../shared/error/no-operation-error'
@@ -53,7 +53,7 @@ export default async function postHandler(
 
   try {
     webhookBody = req.body
-    const zenodoPublishResponse = await publishZenodoEntry(webhookBody)
+    const zenodoPublishResponse = await processZenodoEntry(webhookBody)
     return res.status(200).json(zenodoPublishResponse)
   } catch (error) {
     console.info(
