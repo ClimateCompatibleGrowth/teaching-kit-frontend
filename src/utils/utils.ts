@@ -18,16 +18,22 @@ export const typeToText = (
     case 'COURSE':
       if (locale === 'es-ES') {
         return lowerCase ? 'curso' : 'Curso'
+      } else if (locale === 'fr-FR') {
+        return lowerCase ? 'cours' : 'Cours'
       }
       return lowerCase ? 'course' : 'Course'
     case 'LECTURE':
       if (locale === 'es-ES') {
         return lowerCase ? 'conferencia' : 'Conferencia'
+      } else if (locale === 'fr-FR') {
+        return lowerCase ? 'conférence' : 'Conférence'
       }
       return lowerCase ? 'lecture' : 'Lecture'
     case 'BLOCK':
       if (locale === 'es-ES') {
         return lowerCase ? 'bloque de conferencias' : 'Bloque de conferencias'
+      } else if (locale === 'fr-FR') {
+        return lowerCase ? 'bloc de conférences' : 'Bloc de conférences'
       }
       return lowerCase ? 'lecture block' : 'Lecture block'
   }
@@ -46,6 +52,10 @@ const translations: Translations<Time> = {
   'es-ES': {
     minutes: 'minutos',
     hour: 'hora',
+  },
+  'fr-FR': {
+    minutes: 'minutes',
+    hour: 'heure',
   },
 }
 
@@ -156,6 +166,8 @@ export const localeToLanguage = (locale: Locale): Language => {
       return 'English'
     case 'es-ES':
       return 'Español'
+    case 'fr-FR':
+      return 'Français'
   }
 }
 
@@ -165,6 +177,8 @@ export const languageToLocale = (language: Language): Locale => {
       return 'en'
     case 'Español':
       return 'es-ES'
+    case 'Français':
+      return 'fr-FR'
   }
 }
 

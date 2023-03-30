@@ -8,6 +8,10 @@ export const useRecentUpdates = (locale?: Locale) => {
     () => getRecentUpdates(locale)
   )
 
+  if (error) {
+    console.error(error)
+  }
+
   return {
     recentUpdates: data,
     isLoadingRecentUpdates: isLoading,

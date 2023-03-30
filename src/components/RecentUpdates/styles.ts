@@ -19,3 +19,9 @@ export const RecentList = styled.div`
     margin: 2rem 0;
   }
 `
+
+export const Alert = styled.div`
+  width: 55rem;
+
+  margin: auto;
+`

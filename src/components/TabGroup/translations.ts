@@ -19,6 +19,9 @@ export const EXPERT_TO_BEGINNER = 'Expert to Beginner'
 export const SPANISH_A_TO_Z = 'De la A a la Z'
 export const SPANISH_Z_TO_A = 'De la Z a la A'
 
+export const FRENCH_A_TO_Z = 'De A à Z'
+export const FRENCH_Z_TO_A = 'De Z à A'
+
 export const translations: Translations<SortTranslation> = {
   en: {
     label: LABEL,
@@ -35,5 +38,13 @@ export const translations: Translations<SortTranslation> = {
     zToA: SPANISH_Z_TO_A,
     beginnerToExpert: 'Principiante a experto',
     expertToBeginner: 'Experto a principiante',
+  },
+  'fr-FR': {
+    label: 'Trier',
+    ariaLabel: 'Options de tri à choisir',
+    aToZ: FRENCH_A_TO_Z,
+    zToA: FRENCH_Z_TO_A,
+    beginnerToExpert: 'Débutant à expert',
+    expertToBeginner: 'Expert à débutant',
   },
 }

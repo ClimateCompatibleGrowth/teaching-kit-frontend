@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useRecentUpdates } from '../../hooks/useRecentUpdates'
 import { PageContainer } from '../../styles/global'
 import { Locale } from '../../types'
+import Alert from '../Alert/Alert'
 import Button from '../Button/Button'
 import ButtonLink from '../ButtonLink/ButtonLink'
 import RecentUpdate from './RecentUpdate/RecentUpdate'
@@ -40,33 +41,45 @@ const RecentUpdates = ({
       <Styled.CenterWrapper>
         <h2>{title}</h2>
       </Styled.CenterWrapper>
-      {!isLoadingRecentUpdates && updatesToRender && (
-        <Styled.RecentList>
-          {updatesToRender.map((recentUpdate) => (
-            <RecentUpdate
-              recentUpdate={recentUpdate}
-              key={`${recentUpdate.Type}-${recentUpdate.Vuid}`}
-              translationDoesNotExistCopy={translationDoesNotExistCopy}
-            />
-          ))}
-        </Styled.RecentList>
+      {isRecentUpdatesError !== undefined ? (
+        <Styled.Alert>
+          <Alert
+            title='Something went wrong when trying to fetch recent updates...'
+            text='We are sorry for the inconvenience.'
+            type='ERROR'
+          />
+        </Styled.Alert>
+      ) : (
+        <>
+          {!isLoadingRecentUpdates && updatesToRender && (
+            <Styled.RecentList>
+              {updatesToRender.map((recentUpdate) => (
+                <RecentUpdate
+                  recentUpdate={recentUpdate}
+                  key={`${recentUpdate.Type}-${recentUpdate.Vuid}`}
+                  translationDoesNotExistCopy={translationDoesNotExistCopy}
+                />
+              ))}
+            </Styled.RecentList>
+          )}
+          <Styled.CenterWrapper>
+            {recentUpdates &&
+              recentUpdates.length > updatesToShow &&
+              updatesToShow < MAX_UPDATES_TO_SHOW && (
+                <Button primary={false} onClick={addMoreUpdates}>
+                  {loadMoreButtonLabel}
+                </Button>
+              )}
+            {recentUpdates &&
+              updatesToRender &&
+              recentUpdates.length <= updatesToRender.length && (
+                <ButtonLink primary={false} href='/teaching-material'>
+                  {goToFilterPageButtonLabel}
+                </ButtonLink>
+              )}
+          </Styled.CenterWrapper>
+        </>
       )}
-      <Styled.CenterWrapper>
-        {recentUpdates &&
-          recentUpdates.length > updatesToShow &&
-          updatesToShow < MAX_UPDATES_TO_SHOW && (
-            <Button primary={false} onClick={addMoreUpdates}>
-              {loadMoreButtonLabel}
-            </Button>
-          )}
-        {recentUpdates &&
-          updatesToRender &&
-          recentUpdates.length <= updatesToRender.length && (
-            <ButtonLink primary={false} href='/teaching-material'>
-              {goToFilterPageButtonLabel}
-            </ButtonLink>
-          )}
-      </Styled.CenterWrapper>
     </PageContainer>
   )
 }

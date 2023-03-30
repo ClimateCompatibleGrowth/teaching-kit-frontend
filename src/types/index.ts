@@ -181,10 +181,10 @@ export type DownloadableContent =
   | LectureTwoLevelsDeep
   | CourseThreeLevelsDeep
 
-export const locales = ['en', 'es-ES'] as const
+export const locales = ['en', 'es-ES', 'fr-FR'] as const
 export type Locale = typeof locales[number]
 
-export const languages = ['English', 'Español'] as const
+export const languages = ['English', 'Español', 'Français'] as const
 export type Language = typeof languages[number]
 
 export type Path = {

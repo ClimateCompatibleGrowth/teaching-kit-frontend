@@ -5,7 +5,7 @@ import * as Styled from './styles'
 
 type Props = {
   title: string
-  text: string
+  text?: string
   type: AlertType
 }
 
@@ -26,7 +26,7 @@ const Alert = ({ title, text, type }: Props) => {
         <Styled.Icon>{getTitleIcon(type)}</Styled.Icon>
         <Styled.Title>{title}</Styled.Title>
       </Styled.HeaderWrapper>
-      <Styled.Text>{text}</Styled.Text>
+      {text !== undefined ? <Styled.Text>{text}</Styled.Text> : null}
     </Styled.Wrapper>
   )
 }

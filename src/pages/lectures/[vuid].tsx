@@ -109,10 +109,14 @@ export async function getStaticPaths() {
   const spanishLectures: ResponseArray<Lecture> = await axios.get(
     `${process.env.STRAPI_API_URL}/lectures?locale=es-ES`
   )
+  const frenchLectures: ResponseArray<Lecture> = await axios.get(
+    `${process.env.STRAPI_API_URL}/blocks?locale=fr-FR`
+  )
 
   const allLectures = [
     ...englishLectures.data.data,
     ...spanishLectures.data.data,
+    ...frenchLectures.data.data,
   ]
 
   const paths = allLectures

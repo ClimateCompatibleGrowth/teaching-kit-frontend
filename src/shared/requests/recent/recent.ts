@@ -26,64 +26,33 @@ export type RecentUpdateType = {
   Locale: Locale
 }
 
-type TranslationOccurances = {
-  [vuid: string]: number
-}
-
 type LearningMaterial =
   | Data<BlockOneLevelDeep>
   | Data<LectureTwoLevelsDeep>
   | Data<CourseTwoLevelsDeep>
 
-const preferredLocale = <T extends LearningMaterial>(
-  locale: Locale,
-  translationOccurances: TranslationOccurances,
-  learningMaterial: T
-): T | undefined => {
-  if (translationOccurances[learningMaterial.attributes.vuid] > 1) {
-    if (learningMaterial.attributes.locale === locale) {
-      return learningMaterial
-    }
-  } else {
-    return learningMaterial
-  }
-}
-
-const countOccurances = <T extends LearningMaterial>(
-  occurances: TranslationOccurances,
-  learningMaterial: T
-): TranslationOccurances => {
-  const vuid = learningMaterial.attributes.vuid
-  if (!occurances[vuid]) {
-    occurances[vuid] = 1
-  } else {
-    occurances[vuid] += 1
-  }
-  return occurances
-}
-
 const getLearningMaterial = async <T extends LearningMaterial>(
   locale: Locale = DEFAULT_LOCALE,
-  getLearningMaterial: (locale: Locale) => Promise<T[]>
+  getLearningMaterial: () => Promise<T[]>
 ) => {
-  const learningMaterialWithDifferentLocales =
-    locale !== DEFAULT_LOCALE
-      ? (
-          await Promise.all([
-            getLearningMaterial(locale),
-            getLearningMaterial(DEFAULT_LOCALE),
-          ])
-        ).flat()
-      : await getLearningMaterial(locale)
-  const translationOccurances = learningMaterialWithDifferentLocales.reduce(
-    countOccurances,
-    {} as TranslationOccurances
-  )
-  return learningMaterialWithDifferentLocales.filter(
-    (learningMaterial) =>
-      preferredLocale(locale, translationOccurances, learningMaterial) &&
-      learningMaterial.attributes.vuid !== null
-  )
+  const learningMaterial = await getLearningMaterial()
+
+  if (locale === DEFAULT_LOCALE) {
+    return learningMaterial
+  }
+
+  const translatedMaterial = learningMaterial.map((material) => {
+    // Annoying TS issue: https://github.com/microsoft/TypeScript/issues/33591 forces us to spread the array
+    // (which makes matchingLocale an array of a union type, instead of an array of one of either type).
+    // This also makes us type cast courses, lectures and blocks in refinedCourses, refinedLectures & refinedBlocks...
+    const matchingLocale = [...material.attributes.localizations.data].find(
+      (localization) => localization.attributes.locale === locale
+    )
+
+    return matchingLocale ?? material
+  })
+
+  return translatedMaterial
 }
 
 export const getRecentUpdates = async (locale?: Locale) => {
@@ -96,7 +65,9 @@ export const getRecentUpdates = async (locale?: Locale) => {
   const now = new Date()
   const nowStamp = formatDate(now)
 
-  const refinedCourses: RecentUpdateType[] = courses.map((course) => ({
+  const refinedCourses: RecentUpdateType[] = (
+    courses as Data<CourseTwoLevelsDeep>[]
+  ).map((course) => ({
     Id: course.id,
     Vuid: course.attributes.vuid,
     UpdatedAt: course.attributes.updatedAt || nowStamp,
@@ -114,7 +85,9 @@ export const getRecentUpdates = async (locale?: Locale) => {
     Locale: course.attributes.locale,
   }))
 
-  const refinedLectures: RecentUpdateType[] = lectures.map((lecture) => ({
+  const refinedLectures: RecentUpdateType[] = (
+    lectures as Data<LectureTwoLevelsDeep>[]
+  ).map((lecture) => ({
     Id: lecture.id,
     Vuid: lecture.attributes.vuid,
     UpdatedAt: lecture.attributes.updatedAt || nowStamp,
@@ -126,7 +99,9 @@ export const getRecentUpdates = async (locale?: Locale) => {
     Locale: lecture.attributes.locale,
   }))
 
-  const refinedBlocks: RecentUpdateType[] = blocks.map((block) => ({
+  const refinedBlocks: RecentUpdateType[] = (
+    blocks as Data<BlockOneLevelDeep>[]
+  ).map((block) => ({
     Id: block.id,
     Vuid: block.attributes.vuid,
     UpdatedAt: block.attributes.updatedAt || nowStamp,

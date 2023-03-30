@@ -35,4 +35,13 @@ export const translations: Translations<NavbarTranslation> = {
       ariaLabel: 'Idiomas a elegir',
     },
   },
+  'fr-FR': {
+    logoAltText: 'Logo de Croissance Compatible avec le Climat',
+    home: 'Accueil',
+    teachingMaterial: 'Matériel pédagogique',
+    languagePicker: {
+      label: 'Choisissez la langue',
+      ariaLabel: 'Langues disponibles',
+    },
+  },
 }
