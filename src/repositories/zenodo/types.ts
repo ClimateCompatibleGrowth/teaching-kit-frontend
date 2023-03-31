@@ -45,6 +45,7 @@ export type CreationResponseBody = {
   id: number
   links: {
     bucket: string
+    publish: string
   }
   metadata: {
     prereserve_doi: {

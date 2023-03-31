@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Block, Course, Lecture } from '../../types'
 import { Prisma } from '@prisma/client'
-import { publishZenodoEntry } from '../../services/zenodo'
+import { processZenodoEntry } from '../../services/zenodo'
 import { InternalApiError } from '../../shared/error/internal-api-error'
 import { BadRequestError } from '../../shared/error/bad-request-error'
 import { NoOperationError } from '../../shared/error/no-operation-error'
@@ -53,18 +53,19 @@ export default async function postHandler(
 
   try {
     webhookBody = req.body
-    const zenodoPublishResponse = await publishZenodoEntry(webhookBody)
+    const zenodoPublishResponse = await processZenodoEntry(webhookBody)
     return res.status(200).json(zenodoPublishResponse)
   } catch (error) {
     console.info(
-      `Unexpected error handling entry with strapi entry id '${webhookBody?.entry?.vuid}' and strapi entry version '${webhookBody?.entry?.versionNumber}'\n`,
-      error
+      `Unexpected error handling entry with strapi entry id '${webhookBody?.entry?.vuid}' and strapi entry version '${webhookBody?.entry?.versionNumber}'\n`
     )
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      return res.status(400).json({
-        error:
-          'There is a unique constraint violation; an entry with that entry id and entry version already exists in the database.',
-      })
+      if (error.code === 'P2002') {
+        return res.status(400).json({
+          error:
+            'There is a unique constraint violation; an entry with that entry id and entry version already exists in the database.',
+        })
+      }
     } else if (error instanceof InternalApiError) {
       return res.status(500).json({
         error: error.message,
@@ -77,6 +78,8 @@ export default async function postHandler(
       return res.status(304).json({
         error: error.message,
       })
+    } else {
+      console.info(`\n`, error)
     }
     if (axios.isAxiosError(error) && error.response) {
       console.info(error.response.data.errors)

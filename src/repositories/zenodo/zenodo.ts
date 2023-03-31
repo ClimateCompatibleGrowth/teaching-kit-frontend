@@ -11,23 +11,18 @@ const headers = {
   'Content-Type': 'application/json',
 }
 
-export const createZenodoEntry = async (
+export const createEntry = async (
   body: ZenodoBody<BlockMetadata | LectureMetadata>
 ): Promise<CreationResponseBody> => {
   const response = await axios.post(
     'https://zenodo.org/api/deposit/depositions',
     body,
-    {
-      headers: {
-        ...headers,
-        'Content-Type': 'application/json',
-      },
-    }
+    { headers }
   )
   return response.data
 }
 
-export const uploadZenodoFile = async (
+export const uploadFile = async (
   bucketUrl: string,
   fileName: string,
   body: any
@@ -41,4 +36,8 @@ export const uploadZenodoFile = async (
     },
   })
   return response
+}
+
+export const publishDeposit = async (publishEndpoint: string) => {
+  await axios.post(publishEndpoint, {}, { headers })
 }
