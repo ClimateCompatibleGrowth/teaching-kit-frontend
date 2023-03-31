@@ -37,6 +37,7 @@ export type SecuredWebhookBody<
   entry: T
 }
 
+// See documentation in /docs/zenodo/design.md
 export default async function postHandler(
   req: StrapiWebhookRequest<WebhookBlock>,
   res: NextApiResponse

@@ -42,7 +42,8 @@ If the deposit creation is successful, we update the entry's row in our database
 
 ## Retrieval of a deposit
 
-//TODO - TBD
+The retrieval of the Zenodo deposit from the Strapi Admin UI is done through the get-zenodo-deposit endpoint. This is what allows the Admin UI to render the link to the Zenodo deposit in its custom plugin (see more in the Strapi repository; `/docs/plugins/`).
+This endpoint is very simple. It simply takes the vuid and version from the requests, and sees if that combination is present in the database. In that case it returns it.
 
 ## Manual troubleshooting
 

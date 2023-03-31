@@ -8,6 +8,7 @@ type StrapiWebhookRequest = NextApiRequest & {
   }
 }
 
+// See documentation in /docs/revalidate-endpoint.md
 export default async function handler(
   req: StrapiWebhookRequest,
   res: NextApiResponse
