@@ -11,6 +11,7 @@ import axios from 'axios'
 import { GetStaticPropsContext } from 'next'
 import { StartPageCopy, Data, GeneralCopy } from '../types'
 import { ResponseArray } from '../shared/requests/types'
+import DataStructureFigure from '../components/DataStructureFigure/DataStructureFigure'
 
 type Props = {
   siteCopy: Data<StartPageCopy>
@@ -31,7 +32,20 @@ export default function Home({ siteCopy, generalCopy }: Props) {
     InfoCards,
     InfoCardsLarge,
     PrimaryCallToActionButtonLabel,
+    dataStructureDesktop,
+    dataStructureMobile,
+    InfoTextCourseStructure,
+    HowTheTeachingMaterialIsStructured,
+    InfoTextCourseLectureLectureBlock,
   } = siteCopy.attributes
+
+  const dataStructureData = {
+    dataStructureDesktop,
+    dataStructureMobile,
+    HowTheTeachingMaterialIsStructured,
+    InfoTextCourseLectureLectureBlock,
+    InfoTextCourseStructure,
+  }
 
   const getIcon = (id: number) => {
     if (id === 0) return <DocumentIcon />
@@ -95,6 +109,8 @@ export default function Home({ siteCopy, generalCopy }: Props) {
           }))}
         />
       ) : null}
+
+      <DataStructureFigure {...dataStructureData} />
       {InfoCardsLarge !== undefined
         ? InfoCardsLarge.map((infoCardLarge) => (
             <TextImage
@@ -132,9 +148,13 @@ export default function Home({ siteCopy, generalCopy }: Props) {
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
     const populateHeroImage = 'populate[HeroImage][populate]=*'
+    const populateDataStructureDesktop =
+      'populate[dataStructureDesktop][populate]=*'
+    const populateDataStructureMobile =
+      'populate[dataStructureMobile][populate]=*'
     const populateInfoCard = 'populate[InfoCards][populate]=*'
     const populateInfoCardLarge = 'populate[InfoCardsLarge][populate]=*'
-    const populate = `${populateHeroImage}&${populateInfoCard}&${populateInfoCardLarge}`
+    const populate = `${populateHeroImage}&${populateInfoCard}&${populateInfoCardLarge}&${populateDataStructureDesktop}&${populateDataStructureMobile}`
 
     const copyResponse: ResponseArray<StartPageCopy> = await axios.get(
       `${process.env.STRAPI_API_URL}/site-copies?locale=${
