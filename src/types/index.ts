@@ -207,6 +207,10 @@ type HeroImage = {
   data: Data<Image>
 }
 
+type DatastructureImage = {
+  data: Data<Image>
+}
+
 type InfoCard = {
   id: number
   Header: string
@@ -222,21 +226,30 @@ type InfoCardLarge = {
   }
 }
 
-export type StartPageCopy = StrapiBaseEntry & {
-  HeroImage: HeroImage
-  Header: string
-  HeaderParagraph: string
-  PrimaryCallToActionButtonLabel: string
-  InfoCardHeader: string
-  InfoCards: InfoCard[]
-  InfoCardsLarge: InfoCardLarge[]
-  DynamicContentHeader: string
-  DynamicContentButtonLabel1: string
-  DynamicContentButtonLabel2: string
-  BottomTextColumn1: string
-  BottomTextColumn2: string
-  FooterHeader: string
-  FooterContent: string
+export type StartPageCopy = StrapiBaseEntry &
+  DataStructureCopy & {
+    HeroImage: HeroImage
+    Header: string
+    HeaderParagraph: string
+    PrimaryCallToActionButtonLabel: string
+    InfoCardHeader: string
+    InfoCards: InfoCard[]
+    InfoCardsLarge: InfoCardLarge[]
+    DynamicContentHeader: string
+    DynamicContentButtonLabel1: string
+    DynamicContentButtonLabel2: string
+    BottomTextColumn1: string
+    BottomTextColumn2: string
+    FooterHeader: string
+    FooterContent: string
+  }
+
+export type DataStructureCopy = {
+  HowTheTeachingMaterialIsStructured: string
+  InfoTextCourseLectureLectureBlock: string
+  InfoTextCourseStructure: string
+  dataStructureDesktop: DatastructureImage
+  dataStructureMobile: DatastructureImage
 }
 
 type DropdownCopy = {
