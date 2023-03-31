@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client'
 import { NextApiRequest, NextApiResponse } from 'next'
 import NextCors from 'nextjs-cors'
 import { getMatchingRow } from '../../repositories/zenodo-database'
@@ -42,9 +43,16 @@ export default async function getHandler(req: Request, res: NextApiResponse) {
     return res.status(200).json(matchingRow)
   } catch (error) {
     console.info(
-      `Unexpected error handling entry with strapi entry id '${vuid}' and strapi entry version '${version}'\n`,
-      error
+      `Encountered an error handling entry with strapi entry vuid '${vuid}' and strapi entry version '${version}'\n`
     )
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') {
+        return res.status(404).json({
+          error: `Did not find any entry matching strapi entry vuid: '${vuid}', and strapi entry version '${version}'`,
+        })
+      }
+    }
+    console.info(`\n`, error)
     res.status(500).json({
       message: 'Something went wrong...',
     })
