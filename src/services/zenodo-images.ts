@@ -1,3 +1,5 @@
+import { countOccurancesInArray } from '../utils/utils'
+
 type ImageReference = {
   name: string
   path: string
@@ -31,8 +33,18 @@ export const convertMarkdownImagesToLocalReferences = async (
       const imageNameWithoutExtension: [string, string] =
         imageName.match(/^(.*?)\.(png|jpeg|jpg|gif)/) ?? imageName
 
+      const amountOfPreviousImagesWithTheSameName = countOccurancesInArray(
+        imageName,
+        imageReferences.map((imageReference) => imageReference.name)
+      )
+
+      const newImageName =
+        amountOfPreviousImagesWithTheSameName > 0
+          ? `${imageName}_${amountOfPreviousImagesWithTheSameName + 1}`
+          : imageName
+
       imageReferences.push({
-        name: imageName,
+        name: newImageName,
         path: imagePath,
       })
 

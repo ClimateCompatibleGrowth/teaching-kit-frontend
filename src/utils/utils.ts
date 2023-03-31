@@ -185,3 +185,8 @@ export const languageToLocale = (language: Language): Locale => {
 export const isNotNull = <T>(value: T | null | undefined): value is T => {
   return value !== null && value !== undefined
 }
+
+export const countOccurancesInArray = <T>(string: T, array: T[]) =>
+  array.reduce((amountOfOccuraces, current) => {
+    return (amountOfOccuraces += current === string ? 1 : 0)
+  }, 0)

@@ -55,7 +55,9 @@ export const processZenodoEntry = async (
     )
 
     const entryHasAlreadyBeenPublishedToZenodo =
-      existingEntry && existingEntry.created_on_zenodo
+      existingEntry &&
+      existingEntry.created_on_zenodo &&
+      existingEntry.zenodo_doi
 
     if (entryHasAlreadyBeenPublishedToZenodo) {
       throw new BadRequestError(
