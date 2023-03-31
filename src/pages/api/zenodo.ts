@@ -57,24 +57,29 @@ export default async function postHandler(
     return res.status(200).json(zenodoPublishResponse)
   } catch (error) {
     console.info(
-      `Unexpected error handling entry with strapi entry id '${webhookBody?.entry?.vuid}' and strapi entry version '${webhookBody?.entry?.versionNumber}'\n`
+      `Encountered an error handling entry with strapi entry id '${webhookBody?.entry?.vuid}' and strapi entry version '${webhookBody?.entry?.versionNumber}':\n`
     )
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      const message =
+        'There is a unique constraint violation; an entry with that entry id and entry version already exists in the database.'
+      console.info(message)
       if (error.code === 'P2002') {
         return res.status(400).json({
-          error:
-            'There is a unique constraint violation; an entry with that entry id and entry version already exists in the database.',
+          error: message,
         })
       }
     } else if (error instanceof InternalApiError) {
+      console.log(error.message)
       return res.status(500).json({
         error: error.message,
       })
     } else if (error instanceof BadRequestError) {
+      console.log(error.message)
       return res.status(400).json({
         error: error.message,
       })
     } else if (error instanceof NoOperationError) {
+      console.log(error.message)
       return res.status(304).json({
         error: error.message,
       })
