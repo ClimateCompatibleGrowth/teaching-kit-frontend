@@ -4,21 +4,14 @@ import Globe from '../../../../public/icons/globe.svg'
 import { LocaleContext } from '../../../contexts/LocaleContext'
 import { Language, locales } from '../../../types/index'
 import { localeToLanguage, languageToLocale } from '../../../utils/utils'
-import Cookies from 'js-cookie'
 
 export default function LanguageDropdown() {
   const { setLocale, locale } = useContext(LocaleContext)
 
   const handleOnClick = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    return (
-      setLocale
-        ? setLocale(languageToLocale(e.currentTarget.value as Language))
-        : null,
-      Cookies.set(
-        'Langugae',
-        languageToLocale(e.currentTarget.value as Language)
-      )
-    )
+    return setLocale
+      ? setLocale(languageToLocale(e.currentTarget.value as Language))
+      : null
   }
 
   return (
