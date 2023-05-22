@@ -28,16 +28,16 @@ export const LocaleProvider = ({
 }: {
   children: JSX.Element | JSX.Element[]
 }) => {
-  const [locale, setLocale] = useState<Locale>(defaultContextState.locale)
+  const router = useRouter()
+  const [locale, setLocale] = useState<Locale>(router.locale as Locale)
   const [isLoading, setIsLoading] = useState<boolean>(
     defaultContextState.isLoading
   )
-  const router = useRouter()
 
   useEffect(() => {
     setLocale(router.locale as Locale)
     setIsLoading(false)
-  }, [])
+  }, [router.locale])
 
   // Note: This push is slow on 'npm run develop' since the new locale page has to be built.
   // On production build it's more seemless.
