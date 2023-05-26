@@ -1,6 +1,6 @@
 export const X_PADDING = 3
 export const Y_PADDING = 10
-export const DISCLAIMER_Y_PADDING = 12
+export const DISCLAIMER_Y_PADDING = 10
 
 // https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options/#standard-slide-layouts
 const SLIDE_WIDTH_IN_INCHES = 10
