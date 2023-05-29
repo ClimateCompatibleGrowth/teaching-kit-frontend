@@ -13,6 +13,7 @@ type Query = {
   version: string
 }
 
+// See documentation in /docs/zenodo/design.md
 export default async function getHandler(req: Request, res: NextApiResponse) {
   await NextCors(req, res, {
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
