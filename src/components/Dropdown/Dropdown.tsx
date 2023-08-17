@@ -27,6 +27,7 @@ type Props = {
   getItems: (searchTerm: string) => Promise<Item[]>
   enableSearch?: boolean
   maxAmountOfItems?: number
+  sortByLabel?: boolean
 }
 
 export default function Dropdown({
@@ -40,6 +41,7 @@ export default function Dropdown({
   getItems,
   enableSearch = true,
   maxAmountOfItems = 20,
+  sortByLabel = true,
 }: Props) {
   const wrapperRef = createRef<HTMLDivElement>()
   const dropdownRef = createRef<HTMLOListElement>()
@@ -196,6 +198,7 @@ export default function Dropdown({
             selectedItems={selectedItems}
             items={matchingItems}
             toggleItem={isSingleSelectable ? setSingleItem : toggleItem}
+            sortByLabel={sortByLabel}
           />
         )}
       </Styled.DropdownWrapper>

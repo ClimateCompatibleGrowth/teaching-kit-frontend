@@ -25,6 +25,7 @@ type Props = {
   selectedIndex: number
   toggleItem: (item: Item) => void
   maxAmountOfItems?: number
+  sortByLabel?: boolean
 }
 
 const DropdownList: ForwardRefRenderFunction<HTMLOListElement, Props> = (
@@ -36,6 +37,7 @@ const DropdownList: ForwardRefRenderFunction<HTMLOListElement, Props> = (
     items,
     selectedIndex,
     toggleItem,
+    sortByLabel = true,
   }: Props,
   ref: ForwardedRef<HTMLOListElement>
 ) => {
@@ -54,12 +56,19 @@ const DropdownList: ForwardRefRenderFunction<HTMLOListElement, Props> = (
   }
 
   const showLimitedResultsList = items.length > maxAmountOfItems
+  const itemsToDisplay = sortByLabel
+    ? [...items].sort((a, b) => a.label.localeCompare(b.label))
+    : [...items]
+
   const results = [
-    ...items
+    ...itemsToDisplay
       .slice(
         0,
-        items.length > maxAmountOfItems ? maxAmountOfItems : items.length
+        itemsToDisplay.length > maxAmountOfItems
+          ? maxAmountOfItems
+          : itemsToDisplay.length
       )
+      .sort((a, b) => a.label.localeCompare(b.label))
       .map((item, index) => (
         <DropdownListItem
           id={`${id}-option-${index}`}

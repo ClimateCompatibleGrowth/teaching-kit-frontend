@@ -278,6 +278,7 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
             ariaLabel={KeywordDropdown.AriaLabel}
             maxAmountOfItems={MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN}
             getItems={getMatchingKeywords}
+            sortByLabel
           />
           <Dropdown
             controls={summaryId}
@@ -289,6 +290,7 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
             ariaLabel={AuthorDropdown.AriaLabel}
             maxAmountOfItems={MAX_AMOUNT_OF_FILTERS_IN_DROPDOWN}
             getItems={getMatchingAuthors}
+            sortByLabel
           />
         </Styled.FilterGroup>
       </div>
