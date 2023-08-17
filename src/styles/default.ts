@@ -112,6 +112,10 @@ const defaultStyle = css`
     box-sizing: border-box;
   }
 
+  strong {
+    font-family: ${montserrat[600].style.fontFamily};
+  }
+
   main {
     background-image: url('/icons/three-lines.svg');
     background-repeat: no-repeat;
