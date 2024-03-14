@@ -27,6 +27,7 @@ import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { summarizeDurations } from '../../utils/utils'
 import { useWindowSize } from '../../utils/useGetScreenSize'
+import { useEffect, useState } from 'react'
 
 type Props = {
   lecture: Data<LectureTwoLevelsDeep>
@@ -74,7 +75,7 @@ export default function LecturePage({
               generalCopy.attributes.TranslationDoesNotExist
             }
           />
-          {width <= breakpoint && (
+          {hasMounted && width <= breakpoint && (
             <MetadataContainer
               level={lecture.attributes.Level}
               duration={summarizeDurations(lecture.attributes.Blocks.data)}
@@ -112,7 +113,7 @@ export default function LecturePage({
             />
           </BlockContentWrapper>
         </LearningMaterialOverview>
-        {width > breakpoint && (
+        {hasMounted && width > breakpoint && (
           <MetadataContainer
             level={lecture.attributes.Level}
             duration={summarizeDurations(lecture.attributes.Blocks.data)}
