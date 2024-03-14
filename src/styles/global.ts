@@ -97,7 +97,7 @@ export const PageContainer = styled.div<{
 
   ${mq.lg} {
     padding: ${(props) => (props.hasTopPadding ? '8rem' : '0')}
-      ${(props) => (props.hasSmallSidePadding ? '8rem' : '19.6rem')}
+      ${(props) => (props.hasSmallSidePadding ? '8rem' : '0')}
       ${(props) => (props.hasBottomPadding ? '14rem' : '0')};
   }
 `
@@ -148,12 +148,14 @@ export const ButtonWithoutDefaultStyle = styled.button`
 `
 
 export const LearningMaterialOverview = styled.div`
+  p {
+    max-width: 729px;
+  }
   flex-direction: column;
   flex-wrap: nowrap;
-  max-width: 729px;
   column-gap: 4.6rem;
   ${mq.customBp} {
-    margin-right: 4.6rem;
+    /* margin-right: 4.6rem; */
   }
 `
 
@@ -193,7 +195,10 @@ export const FlexContainer = styled.div`
   display: flex;
   justify-content: center;
 
+  gap: 8rem;
+
   ${mq.sm} {
     display: flex;
+    margin: 0 8rem;
   }
 `

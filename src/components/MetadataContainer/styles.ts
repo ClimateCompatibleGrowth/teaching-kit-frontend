@@ -36,7 +36,7 @@ export const MetadataContainer = styled.div`
 
   ${mq.customBp} {
     margin-top: 0;
-    max-width: 27.5rem;
+    max-width: 30.5rem;
   }
 `
 

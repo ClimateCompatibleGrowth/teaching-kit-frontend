@@ -27,6 +27,7 @@ import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { summarizeDurations } from '../../utils/utils'
 import { useWindowSize } from '../../utils/useGetScreenSize'
+import { useEffect, useState } from 'react'
 
 type Props = {
   course: Data<CourseThreeLevelsDeep>
@@ -39,6 +40,12 @@ export default function CoursePage({
   landingPageCopy,
   generalCopy,
 }: Props) {
+  // Using setHasMounted to address a hydration error caused by the discrepancy between server (where window is undefined and width is initialized to 0) and client-side rendering (where window is available and width is set based on the actual window size). This ensures components dependent on window size are only rendered client-side. Note: There might be more optimal solutions to handle this issue.
+  const [hasMounted, setHasMounted] = useState(false)
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
   const { width } = useWindowSize()
   const breakpoint = Number(customBreakPoint)
 
@@ -65,7 +72,7 @@ export default function CoursePage({
               generalCopy.attributes.TranslationDoesNotExist
             }
           />
-          {width <= breakpoint && (
+          {hasMounted && width <= breakpoint && (
             <MetadataContainer
               level={course.attributes.Level}
               duration={summarizeDurations(
@@ -101,7 +108,7 @@ export default function CoursePage({
             />
           </BlockContentWrapper>
         </LearningMaterialOverview>
-        {width > breakpoint && (
+        {hasMounted && width > breakpoint && (
           <MetadataContainer
             level={course.attributes.Level}
             duration={summarizeDurations(

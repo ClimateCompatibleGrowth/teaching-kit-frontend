@@ -26,6 +26,7 @@ import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { useWindowSize } from '../../utils/useGetScreenSize'
+import { useEffect, useState } from 'react'
 
 type Props = {
   block: Data<BlockOneLevelDeep>
@@ -38,6 +39,11 @@ export default function BlockPage({
   landingPageCopy,
   generalCopy,
 }: Props) {
+  // Using setHasMounted to address a hydration error caused by the discrepancy between server (where window is undefined and width is initialized to 0) and client-side rendering (where window is available and width is set based on the actual window size). This ensures components dependent on window size are only rendered client-side. Note: There might be more optimal solutions to handle this issue.
+  const [hasMounted, setHasMounted] = useState(false)
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
   const blockHasSlides = block.attributes.Slides.length > 0
   const { width } = useWindowSize()
   const breakpoint = Number(customBreakPoint)
@@ -62,7 +68,7 @@ export default function BlockPage({
             }
           />
 
-          {width <= breakpoint && (
+          {hasMounted && width <= breakpoint && (
             <MetadataContainer
               duration={summarizeDurations([block])}
               authors={block.attributes.Authors}
@@ -88,7 +94,7 @@ export default function BlockPage({
             <Markdown>{block.attributes.Document}</Markdown>
           </BlockContentWrapper>
         </LearningMaterialOverview>
-        {width > breakpoint && (
+        {hasMounted && width > breakpoint && (
           <MetadataContainer
             duration={summarizeDurations([block])}
             authors={block.attributes.Authors}

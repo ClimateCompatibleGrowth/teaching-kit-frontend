@@ -27,6 +27,7 @@ import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { summarizeDurations } from '../../utils/utils'
 import { useWindowSize } from '../../utils/useGetScreenSize'
+import { useEffect, useState } from 'react'
 
 type Props = {
   lecture: Data<LectureTwoLevelsDeep>
@@ -39,6 +40,12 @@ export default function LecturePage({
   landingPageCopy,
   generalCopy,
 }: Props) {
+  // Using setHasMounted to address a hydration error caused by the discrepancy between server (where window is undefined and width is initialized to 0) and client-side rendering (where window is available and width is set based on the actual window size). This ensures components dependent on window size are only rendered client-side. Note: There might be more optimal solutions to handle this issue.
+  const [hasMounted, setHasMounted] = useState(false)
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
   const hasSomePptxSlides = lecture.attributes.Blocks.data.some(
     (block) => block.attributes.Slides.length > 0
   )
@@ -68,7 +75,7 @@ export default function LecturePage({
               generalCopy.attributes.TranslationDoesNotExist
             }
           />
-          {width <= breakpoint && (
+          {hasMounted && width <= breakpoint && (
             <MetadataContainer
               level={lecture.attributes.Level}
               duration={summarizeDurations(lecture.attributes.Blocks.data)}
@@ -106,7 +113,7 @@ export default function LecturePage({
             />
           </BlockContentWrapper>
         </LearningMaterialOverview>
-        {width > breakpoint && (
+        {hasMounted && width > breakpoint && (
           <MetadataContainer
             level={lecture.attributes.Level}
             duration={summarizeDurations(lecture.attributes.Blocks.data)}
