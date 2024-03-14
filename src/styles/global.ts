@@ -48,18 +48,23 @@ export const breakpoints = {
   sm: '768px' as const,
   md: '1024px' as const,
   lg: '1440px' as const,
+  customBp: '1217px' as const,
 }
 export const mq = {
   xs: `@media (min-width: ${breakpoints.xs})` as const,
   sm: `@media (min-width: ${breakpoints.sm})` as const,
   md: `@media (min-width: ${breakpoints.md})` as const,
   lg: `@media (min-width: ${breakpoints.lg})` as const,
+  customBp: `@media (min-width: ${breakpoints.customBp})` as const,
 }
+
+export const customBreakPoint = 1217
 
 export const BorderRadius = '0.5rem'
 
 export const BlockContentWrapper = styled.div`
   flex: 0 0 100%;
+  margin-top: 6rem;
   img {
     max-width: 100%;
   }
@@ -74,25 +79,26 @@ export const PageContainer = styled.div<{
   hasTopPadding?: boolean
   hasSmallSidePadding?: boolean
 }>`
-  padding: ${(props) => (props.hasTopPadding ? '4rem' : 0)} 1.6rem
-    ${(props) => (props.hasBottomPadding ? '8rem' : 0)};
+  padding: ${(props) => (props.hasTopPadding ? '4rem' : '0')} 1.6rem
+    ${(props) => (props.hasBottomPadding ? '8rem' : '0')};
 
   ${mq.sm} {
-    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)} 2rem
-      ${(props) => (props.hasBottomPadding ? '8rem' : 0)};
+    padding: ${(props) => (props.hasTopPadding ? '8rem' : '0')} 2rem
+      ${(props) => (props.hasBottomPadding ? '8rem' : '0')};
+    margin: 0 auto;
   }
 
   ${mq.md} {
-    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)} 8rem
-      ${(props) => (props.hasBottomPadding ? '14rem' : 0)};
+    padding: ${(props) => (props.hasTopPadding ? '8rem' : '0')} 8rem
+      ${(props) => (props.hasBottomPadding ? '14rem' : '0')};
     max-width: ${breakpoints.lg};
     margin: 0 auto;
   }
 
   ${mq.lg} {
-    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)}
+    padding: ${(props) => (props.hasTopPadding ? '8rem' : '0')}
       ${(props) => (props.hasSmallSidePadding ? '8rem' : '19.6rem')}
-      ${(props) => (props.hasBottomPadding ? '14rem' : 0)};
+      ${(props) => (props.hasBottomPadding ? '14rem' : '0')};
   }
 `
 
@@ -142,17 +148,18 @@ export const ButtonWithoutDefaultStyle = styled.button`
 `
 
 export const LearningMaterialOverview = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  row-gap: 4.6rem;
-  ${mq.sm} {
-    column-gap: 4.6rem;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  max-width: 729px;
+  column-gap: 4.6rem;
+  ${mq.customBp} {
+    margin-right: 4.6rem;
   }
 `
 
 export const LearningMaterialCourseHeading = styled.h2`
   font-size: 2rem;
+
   ${mq.sm} {
     font-size: 2.4rem;
   }
@@ -179,5 +186,14 @@ export const LearningMaterialListItem = styled.li`
     &:hover {
       transform: scale(1.03);
     }
+  }
+`
+
+export const FlexContainer = styled.div`
+  display: flex;
+  justify-content: center;
+
+  ${mq.sm} {
+    display: flex;
   }
 `

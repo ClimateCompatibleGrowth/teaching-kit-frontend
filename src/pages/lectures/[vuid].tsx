@@ -11,6 +11,8 @@ import {
   LearningMaterialCourseHeading,
   LearningMaterialOverview,
   PageContainer,
+  customBreakPoint,
+  FlexContainer,
 } from '../../styles/global'
 import {
   Data,
@@ -24,6 +26,7 @@ import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { summarizeDurations } from '../../utils/utils'
+import { useWindowSize } from '../../utils/useGetScreenSize'
 
 type Props = {
   lecture: Data<LectureTwoLevelsDeep>
@@ -39,58 +42,90 @@ export default function LecturePage({
   const hasSomePptxSlides = lecture.attributes.Blocks.data.some(
     (block) => block.attributes.Slides.length > 0
   )
+
+  const { width } = useWindowSize()
+  const breakpoint = Number(customBreakPoint)
+
+  const docxFileSize = useDocxFileSize(lecture)
+  const pptxFileSize = usePptxFileSize(lecture)
+
   return (
     <PageContainer hasTopPadding hasBottomPadding>
-      <LearningMaterialOverview>
-        <LearningMaterial
-          type='LECTURE'
-          title={lecture.attributes.Title}
-          abstract={lecture.attributes.Abstract}
-          learningOutcomes={lecture.attributes.LearningOutcomes}
-          acknowledgement={lecture.attributes.Acknowledgement}
-          citeAs={lecture.attributes.CiteAs}
-          publishedAt={lecture.attributes.publishedAt}
-          updatedAt={lecture.attributes.updatedAt}
-          locale={lecture.attributes.locale}
-          landingPageCopy={landingPageCopy}
-          translationDoesNotExistCopy={
-            generalCopy.attributes.TranslationDoesNotExist
-          }
-        />
-        <MetadataContainer
-          level={lecture.attributes.Level}
-          duration={summarizeDurations(lecture.attributes.Blocks.data)}
-          authors={lecture.attributes.LectureCreators}
-          docxFileSize={useDocxFileSize(lecture)}
-          pptxFileSize={usePptxFileSize(lecture)}
-          downloadAsDocx={() => handleDocxDownload(lecture)}
-          downloadAsPptx={
-            hasSomePptxSlides ? () => handlePptxDownload(lecture) : undefined
-          }
-          parentRelations={{
-            type: 'courses',
-            parents: lecture.attributes.Courses.data,
-          }}
-          type='LECTURE'
-          landingPageCopy={landingPageCopy}
-        />
-        <BlockContentWrapper>
-          <LearningMaterialCourseHeading>
-            {landingPageCopy.DescriptionHeader}
-          </LearningMaterialCourseHeading>
-          <CardList
-            cards={lecture.attributes.Blocks.data.map((block) => ({
-              id: block.id.toString(),
-              title: block.attributes.Title,
-              text: block.attributes.Abstract,
-              href: `/blocks/${block.attributes.vuid}`,
-              subTitle: <LearningMaterialBadge type='BLOCK' />,
-              translationDoesNotExistCopy:
-                generalCopy.attributes.TranslationDoesNotExist,
-            }))}
+      <FlexContainer>
+        <LearningMaterialOverview>
+          <LearningMaterial
+            type='LECTURE'
+            title={lecture.attributes.Title}
+            abstract={lecture.attributes.Abstract}
+            learningOutcomes={lecture.attributes.LearningOutcomes}
+            acknowledgement={lecture.attributes.Acknowledgement}
+            citeAs={lecture.attributes.CiteAs}
+            publishedAt={lecture.attributes.publishedAt}
+            updatedAt={lecture.attributes.updatedAt}
+            locale={lecture.attributes.locale}
+            landingPageCopy={landingPageCopy}
+            translationDoesNotExistCopy={
+              generalCopy.attributes.TranslationDoesNotExist
+            }
           />
-        </BlockContentWrapper>
-      </LearningMaterialOverview>
+          {width <= breakpoint && (
+            <MetadataContainer
+              level={lecture.attributes.Level}
+              duration={summarizeDurations(lecture.attributes.Blocks.data)}
+              authors={lecture.attributes.LectureCreators}
+              docxFileSize={docxFileSize}
+              pptxFileSize={pptxFileSize}
+              downloadAsDocx={() => handleDocxDownload(lecture)}
+              downloadAsPptx={
+                hasSomePptxSlides
+                  ? () => handlePptxDownload(lecture)
+                  : undefined
+              }
+              parentRelations={{
+                type: 'courses',
+                parents: lecture.attributes.Courses.data,
+              }}
+              type='LECTURE'
+              landingPageCopy={landingPageCopy}
+            />
+          )}
+          <BlockContentWrapper>
+            <LearningMaterialCourseHeading>
+              {landingPageCopy.DescriptionHeader}
+            </LearningMaterialCourseHeading>
+            <CardList
+              cards={lecture.attributes.Blocks.data.map((block) => ({
+                id: block.id.toString(),
+                title: block.attributes.Title,
+                text: block.attributes.Abstract,
+                href: `/blocks/${block.attributes.vuid}`,
+                subTitle: <LearningMaterialBadge type='BLOCK' />,
+                translationDoesNotExistCopy:
+                  generalCopy.attributes.TranslationDoesNotExist,
+              }))}
+            />
+          </BlockContentWrapper>
+        </LearningMaterialOverview>
+        {width > breakpoint && (
+          <MetadataContainer
+            level={lecture.attributes.Level}
+            duration={summarizeDurations(lecture.attributes.Blocks.data)}
+            authors={lecture.attributes.LectureCreators}
+            docxFileSize={docxFileSize}
+            pptxFileSize={pptxFileSize}
+            downloadAsDocx={() => handleDocxDownload(lecture)}
+            downloadAsPptx={
+              hasSomePptxSlides ? () => handlePptxDownload(lecture) : undefined
+            }
+            parentRelations={{
+              type: 'courses',
+              parents: lecture.attributes.Courses.data,
+            }}
+            type='LECTURE'
+            landingPageCopy={landingPageCopy}
+          />
+        )}
+      </FlexContainer>
     </PageContainer>
   )
 }

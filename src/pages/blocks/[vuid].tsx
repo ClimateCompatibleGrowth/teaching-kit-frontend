@@ -8,9 +8,11 @@ import {
 } from '../../types'
 import {
   BlockContentWrapper,
+  FlexContainer,
   LearningMaterialCourseHeading,
   LearningMaterialOverview,
   PageContainer,
+  customBreakPoint,
 } from '../../styles/global'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { summarizeDurations } from '../../utils/utils'
@@ -23,6 +25,7 @@ import Markdown from '../../components/Markdown/Markdown'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
+import { useWindowSize } from '../../utils/useGetScreenSize'
 
 type Props = {
   block: Data<BlockOneLevelDeep>
@@ -36,45 +39,74 @@ export default function BlockPage({
   generalCopy,
 }: Props) {
   const blockHasSlides = block.attributes.Slides.length > 0
+  const { width } = useWindowSize()
+  const breakpoint = Number(customBreakPoint)
+  const docxFileSize = useDocxFileSize(block)
+  const pptxFileSize = usePptxFileSize(block)
+
   return (
     <PageContainer hasTopPadding hasBottomPadding>
-      <LearningMaterialOverview>
-        <LearningMaterial
-          type='BLOCK'
-          title={block.attributes.Title}
-          abstract={block.attributes.Abstract}
-          learningOutcomes={block.attributes.LearningOutcomes}
-          publishedAt={block.attributes.publishedAt}
-          updatedAt={block.attributes.updatedAt}
-          locale={block.attributes.locale}
-          landingPageCopy={landingPageCopy}
-          translationDoesNotExistCopy={
-            generalCopy.attributes.TranslationDoesNotExist
-          }
-        />
-        <MetadataContainer
-          duration={summarizeDurations([block])}
-          authors={block.attributes.Authors}
-          docxFileSize={useDocxFileSize(block)}
-          pptxFileSize={usePptxFileSize(block)}
-          downloadAsDocx={() => handleDocxDownload(block)}
-          downloadAsPptx={
-            blockHasSlides ? () => handlePptxDownload(block) : undefined
-          }
-          parentRelations={{
-            type: 'lectures',
-            parents: block.attributes.Lectures.data,
-          }}
-          type='BLOCK'
-          landingPageCopy={landingPageCopy}
-        />
-        <BlockContentWrapper>
-          <LearningMaterialCourseHeading>
-            {landingPageCopy.DescriptionHeader}
-          </LearningMaterialCourseHeading>
-          <Markdown>{block.attributes.Document}</Markdown>
-        </BlockContentWrapper>
-      </LearningMaterialOverview>
+      <FlexContainer>
+        <LearningMaterialOverview>
+          <LearningMaterial
+            type='BLOCK'
+            title={block.attributes.Title}
+            abstract={block.attributes.Abstract}
+            learningOutcomes={block.attributes.LearningOutcomes}
+            publishedAt={block.attributes.publishedAt}
+            updatedAt={block.attributes.updatedAt}
+            locale={block.attributes.locale}
+            landingPageCopy={landingPageCopy}
+            translationDoesNotExistCopy={
+              generalCopy.attributes.TranslationDoesNotExist
+            }
+          />
+
+          {width <= breakpoint && (
+            <MetadataContainer
+              duration={summarizeDurations([block])}
+              authors={block.attributes.Authors}
+              docxFileSize={docxFileSize}
+              pptxFileSize={pptxFileSize}
+              downloadAsDocx={() => handleDocxDownload(block)}
+              downloadAsPptx={
+                blockHasSlides ? () => handlePptxDownload(block) : undefined
+              }
+              parentRelations={{
+                type: 'lectures',
+                parents: block.attributes.Lectures.data,
+              }}
+              type='BLOCK'
+              landingPageCopy={landingPageCopy}
+            />
+          )}
+
+          <BlockContentWrapper>
+            <LearningMaterialCourseHeading>
+              {landingPageCopy.DescriptionHeader}
+            </LearningMaterialCourseHeading>
+            <Markdown>{block.attributes.Document}</Markdown>
+          </BlockContentWrapper>
+        </LearningMaterialOverview>
+        {width > breakpoint && (
+          <MetadataContainer
+            duration={summarizeDurations([block])}
+            authors={block.attributes.Authors}
+            docxFileSize={docxFileSize}
+            pptxFileSize={pptxFileSize}
+            downloadAsDocx={() => handleDocxDownload(block)}
+            downloadAsPptx={
+              blockHasSlides ? () => handlePptxDownload(block) : undefined
+            }
+            parentRelations={{
+              type: 'lectures',
+              parents: block.attributes.Lectures.data,
+            }}
+            type='BLOCK'
+            landingPageCopy={landingPageCopy}
+          />
+        )}
+      </FlexContainer>
     </PageContainer>
   )
 }
