@@ -44,19 +44,19 @@ export const AccentYellow = '#F3F5B4'
 export const AccentYellowDarker = '#6E7113'
 
 export const breakpoints = {
-  xs: '480px',
-  sm: '768px',
-  md: '1024px',
-  md_lg: '1217px',
-  lg: '1440px',
-} as const
+  xs: '480px' as const,
+  sm: '768px' as const,
+  md: '1024px' as const,
+  lg: '1440px' as const,
+  customBp: '1217px' as const,
+}
 export const mq = {
-  xs: `@media (min-width: ${breakpoints.xs})`,
-  sm: `@media (min-width: ${breakpoints.sm})`,
-  md: `@media (min-width: ${breakpoints.md})`,
-  lg: `@media (min-width: ${breakpoints.lg})`,
-  md_lg: `@media (min-width: ${breakpoints.md_lg})`,
-} as const
+  xs: `@media (min-width: ${breakpoints.xs})` as const,
+  sm: `@media (min-width: ${breakpoints.sm})` as const,
+  md: `@media (min-width: ${breakpoints.md})` as const,
+  lg: `@media (min-width: ${breakpoints.lg})` as const,
+  customBp: `@media (min-width: ${breakpoints.customBp})` as const,
+}
 
 export const customBreakPoint = 1217
 
@@ -97,7 +97,7 @@ export const PageContainer = styled.div<{
 
   ${mq.lg} {
     padding: ${(props) => (props.hasTopPadding ? '8rem' : '0')}
-      ${(props) => (props.hasSmallSidePadding ? '8rem' : '0')}
+      ${(props) => (props.hasSmallSidePadding ? '8rem' : '19.6rem')}
       ${(props) => (props.hasBottomPadding ? '14rem' : '0')};
   }
 `
@@ -146,13 +146,12 @@ export const ButtonWithoutDefaultStyle = styled.button`
 `
 
 export const LearningMaterialOverview = styled.div`
-  p {
-    max-width: 729px;
-  }
   flex-direction: column;
   flex-wrap: nowrap;
+  max-width: 729px;
   column-gap: 4.6rem;
-  ${mq.md_lg} {
+  ${mq.customBp} {
+    margin-right: 4.6rem;
   }
 `
 
@@ -191,9 +190,8 @@ export const LearningMaterialListItem = styled.li`
 export const FlexContainer = styled.div`
   display: flex;
   justify-content: center;
-  gap: 8rem;
 
   ${mq.sm} {
-    margin: 0 8rem;
+    display: flex;
   }
 `

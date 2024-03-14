@@ -25,8 +25,7 @@ import Markdown from '../../components/Markdown/Markdown'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
-import { useWindowSize } from '../../utils/useWindowSize'
-import { useEffect, useState } from 'react'
+import { useWindowSize } from '../../utils/useGetScreenSize'
 
 type Props = {
   block: Data<BlockOneLevelDeep>
@@ -68,7 +67,7 @@ export default function BlockPage({
             }
           />
 
-          {hasMounted && width <= breakpoint && (
+          {width <= breakpoint && (
             <MetadataContainer
               duration={summarizeDurations([block])}
               authors={block.attributes.Authors}
@@ -94,7 +93,7 @@ export default function BlockPage({
             <Markdown>{block.attributes.Document}</Markdown>
           </BlockContentWrapper>
         </LearningMaterialOverview>
-        {hasMounted && width > breakpoint && (
+        {width > breakpoint && (
           <MetadataContainer
             duration={summarizeDurations([block])}
             authors={block.attributes.Authors}
