@@ -11,6 +11,8 @@ import {
   LearningMaterialOverview,
   LearningMaterialCourseHeading,
   PageContainer,
+  customBreakPoint,
+  FlexContainer,
 } from '../../styles/global'
 import {
   Course,
@@ -24,6 +26,8 @@ import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { summarizeDurations } from '../../utils/utils'
+import { useWindowSize } from '../../utils/useWindowSize'
+import { useEffect, useState } from 'react'
 
 type Props = {
   course: Data<CourseThreeLevelsDeep>
@@ -36,59 +40,94 @@ export default function CoursePage({
   landingPageCopy,
   generalCopy,
 }: Props) {
+  // Using setHasMounted to address a hydration error caused by the discrepancy between server (where window is undefined and width is initialized to 0) and client-side rendering (where window is available and width is set based on the actual window size). This ensures components dependent on window size are only rendered client-side. Note: There might be more optimal solutions to handle this issue.
+  const [hasMounted, setHasMounted] = useState(false)
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  const { width } = useWindowSize()
+  const breakpoint = Number(customBreakPoint)
+
+  const docxFileSize = useDocxFileSize(course)
+  const pptxFileSize = usePptxFileSize(course)
+
   return (
     <PageContainer hasTopPadding hasBottomPadding>
-      <LearningMaterialOverview>
-        <LearningMaterial
-          type='COURSE'
-          title={course.attributes.Title}
-          abstract={course.attributes.Abstract}
-          learningOutcomes={course.attributes.LearningOutcomes}
-          prerequisites={course.attributes.Prerequisites}
-          acknowledgement={course.attributes.Acknowledgement}
-          citeAs={course.attributes.CiteAs}
-          publishedAt={course.attributes.publishedAt}
-          updatedAt={course.attributes.updatedAt}
-          locale={course.attributes.locale}
-          landingPageCopy={landingPageCopy}
-          translationDoesNotExistCopy={
-            generalCopy.attributes.TranslationDoesNotExist
-          }
-        />
-        <MetadataContainer
-          level={course.attributes.Level}
-          duration={summarizeDurations(
-            course.attributes.Lectures.data
-              .map((lecture) =>
-                lecture.attributes.Blocks.data.map((block) => block)
-              )
-              .flat()
-          )}
-          authors={course.attributes.CourseCreators}
-          docxFileSize={useDocxFileSize(course)}
-          pptxFileSize={usePptxFileSize(course)}
-          downloadAsDocx={() => handleDocxDownload(course)}
-          downloadAsPptx={() => handlePptxDownload(course)}
-          landingPageCopy={landingPageCopy}
-          type='COURSE'
-        />
-        <BlockContentWrapper>
-          <LearningMaterialCourseHeading>
-            {landingPageCopy.DescriptionHeader}
-          </LearningMaterialCourseHeading>
-          <CardList
-            cards={course.attributes.Lectures.data.map((lecture) => ({
-              id: lecture.id.toString(),
-              title: lecture.attributes.Title,
-              text: lecture.attributes.Abstract,
-              href: `/lectures/${lecture.attributes.vuid}`,
-              subTitle: <LearningMaterialBadge type={'LECTURE'} />,
-              translationDoesNotExistCopy:
-                generalCopy.attributes.TranslationDoesNotExist,
-            }))}
+      <FlexContainer>
+        <LearningMaterialOverview>
+          <LearningMaterial
+            type='COURSE'
+            title={course.attributes.Title}
+            abstract={course.attributes.Abstract}
+            learningOutcomes={course.attributes.LearningOutcomes}
+            prerequisites={course.attributes.Prerequisites}
+            acknowledgement={course.attributes.Acknowledgement}
+            citeAs={course.attributes.CiteAs}
+            publishedAt={course.attributes.publishedAt}
+            updatedAt={course.attributes.updatedAt}
+            locale={course.attributes.locale}
+            landingPageCopy={landingPageCopy}
+            translationDoesNotExistCopy={
+              generalCopy.attributes.TranslationDoesNotExist
+            }
           />
-        </BlockContentWrapper>
-      </LearningMaterialOverview>
+          {hasMounted && width <= breakpoint && (
+            <MetadataContainer
+              level={course.attributes.Level}
+              duration={summarizeDurations(
+                course.attributes.Lectures.data
+                  .map((lecture) =>
+                    lecture.attributes.Blocks.data.map((block) => block)
+                  )
+                  .flat()
+              )}
+              authors={course.attributes.CourseCreators}
+              docxFileSize={docxFileSize}
+              pptxFileSize={pptxFileSize}
+              downloadAsDocx={() => handleDocxDownload(course)}
+              downloadAsPptx={() => handlePptxDownload(course)}
+              landingPageCopy={landingPageCopy}
+              type='COURSE'
+            />
+          )}
+          <BlockContentWrapper>
+            <LearningMaterialCourseHeading>
+              {landingPageCopy.DescriptionHeader}
+            </LearningMaterialCourseHeading>
+            <CardList
+              cards={course.attributes.Lectures.data.map((lecture) => ({
+                id: lecture.id.toString(),
+                title: lecture.attributes.Title,
+                text: lecture.attributes.Abstract,
+                href: `/lectures/${lecture.attributes.vuid}`,
+                subTitle: <LearningMaterialBadge type={'LECTURE'} />,
+                translationDoesNotExistCopy:
+                  generalCopy.attributes.TranslationDoesNotExist,
+              }))}
+            />
+          </BlockContentWrapper>
+        </LearningMaterialOverview>
+        {hasMounted && width > breakpoint && (
+          <MetadataContainer
+            level={course.attributes.Level}
+            duration={summarizeDurations(
+              course.attributes.Lectures.data
+                .map((lecture) =>
+                  lecture.attributes.Blocks.data.map((block) => block)
+                )
+                .flat()
+            )}
+            authors={course.attributes.CourseCreators}
+            docxFileSize={docxFileSize}
+            pptxFileSize={pptxFileSize}
+            downloadAsDocx={() => handleDocxDownload(course)}
+            downloadAsPptx={() => handlePptxDownload(course)}
+            landingPageCopy={landingPageCopy}
+            type='COURSE'
+          />
+        )}
+      </FlexContainer>
     </PageContainer>
   )
 }

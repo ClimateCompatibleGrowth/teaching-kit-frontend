@@ -24,7 +24,9 @@ export default function Navbar() {
     <Styled.ColorBar>
       <Styled.Wrapper>
         <Styled.LogoWrapper>
-          <LogoIcon alt={translation.logoAltText ?? LOGO_ALT_TEXT} />
+          <Link href='/'>
+            <LogoIcon alt={translation.logoAltText ?? LOGO_ALT_TEXT} />
+          </Link>
         </Styled.LogoWrapper>
         <Styled.Ul>
           <Styled.Li>

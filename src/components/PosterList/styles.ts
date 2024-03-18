@@ -6,7 +6,6 @@ export const PosterHeading = styled.h2`
 
 export const PosterList = styled.div`
   gap: 1.6rem;
-
   margin: 2rem 0;
 
   display: flex;

@@ -20,7 +20,6 @@ export const Wrapper = styled.div`
 export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-
   ${mq.sm} {
     text-align: left;
     flex-direction: row;

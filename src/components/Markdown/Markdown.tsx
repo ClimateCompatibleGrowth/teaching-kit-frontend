@@ -10,7 +10,22 @@ const Markdown = (props: ReactMarkdownOptions) => {
       components={{
         img: ({ node, ...props }) => (
           // eslint-disable-next-line @next/next/no-img-element
-          <img crossOrigin='anonymous' alt={props.alt} {...props} /> //https://stackoverflow.com/a/47359958/5837635
+          <img
+            crossOrigin='anonymous'
+            alt={props.alt}
+            {...props}
+            style={{ margin: '60px 0' }}
+          /> //https://stackoverflow.com/a/47359958/5837635
+        ),
+        table: ({ node, ...props }) => (
+          <table {...props} style={{ margin: '60px 0' }}>
+            {props.children}
+          </table>
+        ),
+        h1: ({ node, ...props }) => (
+          <h1 {...props} style={{ margin: '26.8px 0 15px 0' }}>
+            {props.children}
+          </h1>
         ),
       }}
       remarkPlugins={[remarkGfm]}

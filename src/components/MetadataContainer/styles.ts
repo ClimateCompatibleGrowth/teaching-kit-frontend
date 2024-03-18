@@ -20,7 +20,8 @@ export const MetadataContainer = styled.div`
   border-radius: ${BorderRadius};
   gap: 2rem;
   font-size: 1.6rem;
-
+  margin-top: 6rem;
+  height: 58rem;
   a {
     color: ${Accent40};
     text-decoration: underline;
@@ -31,7 +32,13 @@ export const MetadataContainer = styled.div`
   }
 
   ${mq.sm} {
-    flex: 0 1 26%;
+    /* height: 58rem; */
+  }
+
+  ${mq.md_lg} {
+    margin-top: 0;
+    max-width: 30.5rem;
+    height: 100%;
   }
 `
 

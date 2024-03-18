@@ -6,6 +6,7 @@ export const Wrapper = styled.div`
   column-gap: 2.4rem;
   padding-bottom: 8rem;
   flex-wrap: wrap;
+
   p {
     font-size: 1.4rem;
     line-height: 1.7rem;

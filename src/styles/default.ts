@@ -61,8 +61,8 @@ const defaultStyle = css`
   p,
   li {
     margin: 0.8rem 0;
-
     font-size: 1.6rem;
+    line-height: 24px;
     font-family: ${montserrat[400].style.fontFamily};
   }
 

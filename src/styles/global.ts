@@ -44,22 +44,27 @@ export const AccentYellow = '#F3F5B4'
 export const AccentYellowDarker = '#6E7113'
 
 export const breakpoints = {
-  xs: '480px' as const,
-  sm: '768px' as const,
-  md: '1024px' as const,
-  lg: '1440px' as const,
-}
+  xs: '480px',
+  sm: '768px',
+  md: '1024px',
+  md_lg: '1217px',
+  lg: '1440px',
+} as const
 export const mq = {
-  xs: `@media (min-width: ${breakpoints.xs})` as const,
-  sm: `@media (min-width: ${breakpoints.sm})` as const,
-  md: `@media (min-width: ${breakpoints.md})` as const,
-  lg: `@media (min-width: ${breakpoints.lg})` as const,
-}
+  xs: `@media (min-width: ${breakpoints.xs})`,
+  sm: `@media (min-width: ${breakpoints.sm})`,
+  md: `@media (min-width: ${breakpoints.md})`,
+  lg: `@media (min-width: ${breakpoints.lg})`,
+  md_lg: `@media (min-width: ${breakpoints.md_lg})`,
+} as const
+
+export const customBreakPoint = 1217
 
 export const BorderRadius = '0.5rem'
 
 export const BlockContentWrapper = styled.div`
   flex: 0 0 100%;
+  margin-top: 6rem;
   img {
     max-width: 100%;
   }
@@ -74,25 +79,26 @@ export const PageContainer = styled.div<{
   hasTopPadding?: boolean
   hasSmallSidePadding?: boolean
 }>`
-  padding: ${(props) => (props.hasTopPadding ? '4rem' : 0)} 1.6rem
-    ${(props) => (props.hasBottomPadding ? '8rem' : 0)};
+  padding: ${(props) => (props.hasTopPadding ? '4rem' : '0')} 1.6rem
+    ${(props) => (props.hasBottomPadding ? '8rem' : '0')};
 
   ${mq.sm} {
-    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)} 2rem
-      ${(props) => (props.hasBottomPadding ? '8rem' : 0)};
+    padding: ${(props) => (props.hasTopPadding ? '8rem' : '0')} 2rem
+      ${(props) => (props.hasBottomPadding ? '8rem' : '0')};
+    margin: 0 auto;
   }
 
   ${mq.md} {
-    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)} 8rem
-      ${(props) => (props.hasBottomPadding ? '14rem' : 0)};
+    padding: ${(props) => (props.hasTopPadding ? '8rem' : '0')} 8rem
+      ${(props) => (props.hasBottomPadding ? '14rem' : '0')};
     max-width: ${breakpoints.lg};
     margin: 0 auto;
   }
 
   ${mq.lg} {
-    padding: ${(props) => (props.hasTopPadding ? '8rem' : 0)}
-      ${(props) => (props.hasSmallSidePadding ? '8rem' : '19.6rem')}
-      ${(props) => (props.hasBottomPadding ? '14rem' : 0)};
+    padding: ${(props) => (props.hasTopPadding ? '8rem' : '0')}
+      ${(props) => (props.hasSmallSidePadding ? '8rem' : '0')}
+      ${(props) => (props.hasBottomPadding ? '14rem' : '0')};
   }
 `
 
@@ -109,7 +115,6 @@ export const VisuallyHidden = styled.div`
 export const OlWithoutDefaultStyle = styled.ol`
   padding: 0;
   margin: 0;
-
   list-style-type: none;
 
   a {
@@ -122,7 +127,6 @@ export const OlWithoutDefaultStyle = styled.ol`
 export const UlWithoutDefaultStyle = styled.ul`
   padding: 0;
   margin: 0;
-
   list-style-type: none;
 
   a {
@@ -142,17 +146,19 @@ export const ButtonWithoutDefaultStyle = styled.button`
 `
 
 export const LearningMaterialOverview = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  row-gap: 4.6rem;
-  ${mq.sm} {
-    column-gap: 4.6rem;
+  p {
+    max-width: 729px;
+  }
+  flex-direction: column;
+  flex-wrap: nowrap;
+  column-gap: 4.6rem;
+  ${mq.md_lg} {
   }
 `
 
 export const LearningMaterialCourseHeading = styled.h2`
   font-size: 2rem;
+
   ${mq.sm} {
     font-size: 2.4rem;
   }
@@ -179,5 +185,15 @@ export const LearningMaterialListItem = styled.li`
     &:hover {
       transform: scale(1.03);
     }
+  }
+`
+
+export const FlexContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 8rem;
+
+  ${mq.sm} {
+    margin: 0 8rem;
   }
 `
