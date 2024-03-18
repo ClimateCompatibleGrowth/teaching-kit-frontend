@@ -35,7 +35,7 @@ export const MetadataContainer = styled.div`
     max-height: 58rem;
   }
 
-  ${mq.customBp} {
+  ${mq.md_lg} {
     margin-top: 0;
     max-width: 30.5rem;
   }
