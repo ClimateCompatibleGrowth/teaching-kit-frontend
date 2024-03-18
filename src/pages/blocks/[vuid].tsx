@@ -25,7 +25,7 @@ import Markdown from '../../components/Markdown/Markdown'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
-import { useWindowSize } from '../../utils/useGetScreenSize'
+import { useWindowSize } from '../../utils/useWindowSize'
 import { useEffect, useState } from 'react'
 
 type Props = {
