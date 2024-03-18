@@ -47,15 +47,15 @@ export const breakpoints = {
   xs: '480px' as const,
   sm: '768px' as const,
   md: '1024px' as const,
+  md_lg: '1217px' as const,
   lg: '1440px' as const,
-  customBp: '1217px' as const,
 }
 export const mq = {
   xs: `@media (min-width: ${breakpoints.xs})` as const,
   sm: `@media (min-width: ${breakpoints.sm})` as const,
   md: `@media (min-width: ${breakpoints.md})` as const,
   lg: `@media (min-width: ${breakpoints.lg})` as const,
-  customBp: `@media (min-width: ${breakpoints.customBp})` as const,
+  md_lg: `@media (min-width: ${breakpoints.md_lg})` as const,
 }
 
 export const customBreakPoint = 1217
@@ -115,7 +115,6 @@ export const VisuallyHidden = styled.div`
 export const OlWithoutDefaultStyle = styled.ol`
   padding: 0;
   margin: 0;
-
   list-style-type: none;
 
   a {
@@ -128,7 +127,6 @@ export const OlWithoutDefaultStyle = styled.ol`
 export const UlWithoutDefaultStyle = styled.ul`
   padding: 0;
   margin: 0;
-
   list-style-type: none;
 
   a {
@@ -155,7 +153,6 @@ export const LearningMaterialOverview = styled.div`
   flex-wrap: nowrap;
   column-gap: 4.6rem;
   ${mq.customBp} {
-    /* margin-right: 4.6rem; */
   }
 `
 
@@ -194,7 +191,6 @@ export const LearningMaterialListItem = styled.li`
 export const FlexContainer = styled.div`
   display: flex;
   justify-content: center;
-
   gap: 8rem;
 
   ${mq.sm} {
