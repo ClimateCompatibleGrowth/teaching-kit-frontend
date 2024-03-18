@@ -26,7 +26,7 @@ import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { summarizeDurations } from '../../utils/utils'
-import { useWindowSize } from '../../utils/useGetScreenSize'
+import { useWindowSize } from '../../utils/useWindowSize'
 import { useEffect, useState } from 'react'
 
 type Props = {

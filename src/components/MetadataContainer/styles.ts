@@ -32,12 +32,13 @@ export const MetadataContainer = styled.div`
   }
 
   ${mq.sm} {
-    max-height: 58rem;
+    /* height: 58rem; */
   }
 
   ${mq.md_lg} {
     margin-top: 0;
     max-width: 30.5rem;
+    height: 100%;
   }
 `
 
