@@ -97,7 +97,7 @@ export const PageContainer = styled.div<{
 
   ${mq.lg} {
     padding: ${(props) => (props.hasTopPadding ? '8rem' : '0')}
-      ${(props) => (props.hasSmallSidePadding ? '8rem' : '0')}
+      ${(props) => (props.hasSmallSidePadding ? '8rem' : '4rem')}
       ${(props) => (props.hasBottomPadding ? '14rem' : '0')};
   }
 `
@@ -153,6 +153,10 @@ export const LearningMaterialOverview = styled.div`
   flex-wrap: nowrap;
   column-gap: 4.6rem;
   ${mq.md_lg} {
+  }
+
+  h1 {
+    max-width: 729px;
   }
 `
 
