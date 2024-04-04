@@ -14,7 +14,7 @@ const Markdown = (props: ReactMarkdownOptions) => {
             crossOrigin='anonymous'
             alt={props.alt}
             {...props}
-            style={{ margin: '60px 0' }}
+            style={{ marginTop: '45px' }}
           /> //https://stackoverflow.com/a/47359958/5837635
         ),
         table: ({ node, ...props }) => (
