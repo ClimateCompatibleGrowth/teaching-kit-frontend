@@ -13,13 +13,19 @@ import {
   LearningMaterialOverview,
   PageContainer,
   customBreakPoint,
+  PaginationControls,
+  ButtonWithoutDefaultStyle,
+  Accent40,
 } from '../../styles/global'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
 import { summarizeDurations } from '../../utils/utils'
 import LearningMaterial from '../../components/LearningMaterial'
 import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { Response, ResponseArray } from '../../shared/requests/types'
-import { filterOutOnlyPublishedEntriesOnBlock } from '../../shared/requests/utils/publishedEntriesFilter'
+import {
+  filterOutOnlyPublishedEntriesOnBlock,
+  filterOutOnlyPublishedEntriesOnLecture,
+} from '../../shared/requests/utils/publishedEntriesFilter'
 import { GetStaticPropsContext } from 'next/types'
 import Markdown from '../../components/Markdown/Markdown'
 import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
@@ -27,28 +33,59 @@ import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
 import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { useWindowSize } from '../../utils/useWindowSize'
 import { useEffect, useState } from 'react'
+import CardList from '../../components/CardList/CardList'
+import LearningMaterialBadge from '../../components/LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
+import { useRouter } from 'next/router'
 
 type Props = {
   block: Data<BlockOneLevelDeep>
   landingPageCopy: LandingPageCopy
   generalCopy: Data<GeneralCopy>
+  lectureBlocks: any
 }
 
 export default function BlockPage({
   block,
   landingPageCopy,
   generalCopy,
+  lectureBlocks,
 }: Props) {
   // Using setHasMounted to address a hydration error caused by the discrepancy between server (where window is undefined and width is initialized to 0) and client-side rendering (where window is available and width is set based on the actual window size). This ensures components dependent on window size are only rendered client-side. Note: There might be more optimal solutions to handle this issue.
   const [hasMounted, setHasMounted] = useState(false)
+  const [hideNextBtn, setHideNextBtn] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(() =>
+    lectureBlocks.findIndex((b: typeof block) => b.id === block.id)
+  )
   useEffect(() => {
     setHasMounted(true)
+    console.log('current index in useEffect:', currentIndex)
   }, [])
+
   const blockHasSlides = block.attributes.Slides.length > 0
   const { width } = useWindowSize()
   const breakpoint = Number(customBreakPoint)
   const docxFileSize = useDocxFileSize(block)
   const pptxFileSize = usePptxFileSize(block)
+  const router = useRouter()
+  console.log('Lecture blocks length:', lectureBlocks.length)
+
+  const handleNextLectureBlockBtn = () => {
+    console.log('current index:', currentIndex)
+
+    const nextIndex = currentIndex + 1
+    console.log('next index:', nextIndex)
+
+    if (nextIndex < lectureBlocks.length) {
+      setCurrentIndex(nextIndex)
+      console.log('current index:', currentIndex)
+
+      const nextBlock = lectureBlocks[nextIndex]
+      router.push(`/blocks/${nextBlock.attributes.vuid}`)
+    } else if (nextIndex == lectureBlocks.length) {
+      console.log('Slut på arrayen')
+      setHideNextBtn(true)
+    }
+  }
 
   return (
     <PageContainer hasTopPadding hasBottomPadding>
@@ -93,6 +130,34 @@ export default function BlockPage({
             </LearningMaterialCourseHeading>
             <Markdown>{block.attributes.Document}</Markdown>
           </BlockContentWrapper>
+          <PaginationControls>
+            <h2>Episodes in this lecture</h2>
+            <ButtonWithoutDefaultStyle
+              onClick={() => handleNextLectureBlockBtn()}
+              style={{
+                color: `${Accent40}`,
+                fontSize: '1.6rem',
+                fontWeight: 400,
+                display: `${hideNextBtn ? 'none' : 'block'}`,
+                textDecoration: 'underline',
+              }}
+            >
+              Continue to next Lecture Block
+            </ButtonWithoutDefaultStyle>
+          </PaginationControls>
+          <CardList
+            cards={lectureBlocks
+              .filter((_: any, index: number) => index !== 0)
+              .map((block: any) => ({
+                id: block.id.toString(),
+                title: block.attributes.Title,
+                text: block.attributes.Abstract,
+                href: `/blocks/${block.attributes.vuid}`,
+                subTitle: <LearningMaterialBadge type='BLOCK' />,
+                translationDoesNotExistCopy:
+                  generalCopy.attributes.TranslationDoesNotExist,
+              }))}
+          />
         </LearningMaterialOverview>
         {hasMounted && width > breakpoint && (
           <MetadataContainer
@@ -163,42 +228,50 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
       `${process.env.STRAPI_API_URL}/blocks/${blockVuid.data?.id}?populate=*`
     )
 
-    const copyRequest: Promise<ResponseArray<LandingPageCopy>> = axios.get(
+    const [blockResponse] = await Promise.all([blockRequest])
+
+    const block = blockResponse.data.data
+
+    if (!block) {
+      return { notFound: true }
+    }
+
+    // Hämta alla block inom den aktuella föreläsningen
+    const lectureId = block.attributes.Lectures.data[0].id
+    const lectureBlocksResponse = await axios.get(
+      `${process.env.STRAPI_API_URL}/lectures/${lectureId}?populate[Blocks]=*`
+    )
+    const lectureBlocks = lectureBlocksResponse.data.data.attributes.Blocks.data
+
+    // Fortsätt att hämta övriga data
+    const copyRequest = axios.get(
       `${process.env.STRAPI_API_URL}/copy-block-pages?locale=${
         ctx.locale ?? ctx.defaultLocale
       }`
     )
-
-    const generalCopyRequest: Promise<ResponseArray<GeneralCopy>> = axios.get(
+    const generalCopyRequest = axios.get(
       `${process.env.STRAPI_API_URL}/copy-generals?locale=${
         ctx.locale ?? ctx.defaultLocale
       }`
     )
 
-    const [blockResponse, copyResponse, generalCopyResponse] =
-      await Promise.all([blockRequest, copyRequest, generalCopyRequest])
-
-    const block = blockResponse.data.data
+    const [copyResponse, generalCopyResponse] = await Promise.all([
+      copyRequest,
+      generalCopyRequest,
+    ])
     const landingPageCopy = copyResponse.data.data[0].attributes
     const generalCopy = generalCopyResponse.data.data[0]
-
-    if (!block) {
-      return {
-        notFound: true,
-      }
-    }
 
     return {
       props: {
         block: filterOutOnlyPublishedEntriesOnBlock(block),
+        lectureBlocks: lectureBlocks, // Alla block inom föreläsningen
         landingPageCopy,
         generalCopy,
       },
       revalidate: 60,
     }
   } catch (error) {
-    return {
-      notFound: true,
-    }
+    return { notFound: true }
   }
 }

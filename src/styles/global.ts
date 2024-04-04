@@ -65,12 +65,22 @@ export const BorderRadius = '0.5rem'
 export const BlockContentWrapper = styled.div`
   flex: 0 0 100%;
   margin-top: 6rem;
+
   img {
     max-width: 100%;
   }
 
   ${mq.sm} {
     flex: 0 0 calc(75% - 4.6rem);
+    margin-bottom: 6.7rem;
+  }
+`
+
+export const PaginationControls = styled.div`
+  ${mq.sm} {
+    display: flex;
+    justify-content: space-between;
+    width: 78rem;
   }
 `
 
