@@ -21,7 +21,7 @@ export const MetadataContainer = styled.div`
   gap: 2rem;
   font-size: 1.6rem;
   margin-top: 6rem;
-  height: 58rem;
+  height: auto;
   a {
     color: ${Accent40};
     text-decoration: underline;
@@ -31,8 +31,13 @@ export const MetadataContainer = styled.div`
     }
   }
 
+  ${mq.xs} {
+    height: auto;
+  }
+
   ${mq.sm} {
-    /* height: 58rem; */
+    width: 75%;
+    margin: 8rem auto;
   }
 
   ${mq.md_lg} {
