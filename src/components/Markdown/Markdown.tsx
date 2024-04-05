@@ -27,6 +27,11 @@ const Markdown = (props: ReactMarkdownOptions) => {
             {props.children}
           </h1>
         ),
+        h2: ({ node, ...props }) => (
+          <h2 {...props} style={{ marginTop: '35px' }}>
+            {props.children}
+          </h2>
+        ),
       }}
       remarkPlugins={[remarkGfm]}
       {...props}
