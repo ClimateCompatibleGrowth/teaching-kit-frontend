@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import Link from 'next/link'
 import { montserrat, ubuntu } from '../../../styles/fonts'
 import {
+  AccentPink,
   AccentPinkLighter,
   Background,
   BorderRadius,
@@ -9,9 +10,13 @@ import {
   OnPrimary90,
   Surface,
 } from '../../../styles/global'
+import { css } from '@emotion/react'
 
 type CardProps = {
-  isInteractive: boolean
+  isInteractive?: boolean
+  currentIndex?: number
+  index?: number
+  youAreHere?: boolean
 }
 
 export const NextLink = styled(Link)`
@@ -20,19 +25,17 @@ export const NextLink = styled(Link)`
 
 export const Card = styled.div<CardProps>`
   width: 100%;
-
   padding: 2.4rem;
-
-  background-color: ${(props) => (props.isInteractive ? Background : Surface)};
-  color: ${OnPrimary90};
-
   border: ${(props) =>
     props.isInteractive ? `1px solid ${Neutral90}` : 'none'};
   border-radius: ${BorderRadius};
 
+  background-color: ${(props) => props.youAreHere && AccentPinkLighter};
+  color: ${OnPrimary90};
+
   &:hover {
     background-color: ${(props) =>
-      props.isInteractive ? AccentPinkLighter : AccentPinkLighter};
+      props.isInteractive || props.youAreHere ? AccentPinkLighter : Background};
   }
 `
 
@@ -79,8 +82,17 @@ export const SubTitle = styled.h5`
   color: ${OnPrimary90};
 `
 
-export const SubTitleNode = styled.div`
+export const SubTitleNode = styled.div<CardProps>`
   margin-bottom: 2.4rem;
+  ${(CardProps) =>
+    CardProps.youAreHere
+      ? css`
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+        `
+      : css``}
 `
 export const MetaInformation = styled.div`
   display: flex;
@@ -89,4 +101,11 @@ export const MetaInformation = styled.div`
 export const SubComponentWrapper = styled.div`
   width: 95%;
   margin-top: 2rem;
+`
+
+export const YouAreHereWrapper = styled.div`
+  display: flex;
+`
+export const Indicator = styled.p<CardProps>`
+  display: ${(CardProps) => (CardProps.youAreHere ? 'block' : 'none')};
 `

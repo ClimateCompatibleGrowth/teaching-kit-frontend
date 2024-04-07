@@ -56,9 +56,9 @@ export default function BlockPage({
   const [currentIndex, setCurrentIndex] = useState(() =>
     lectureBlocks.findIndex((b: typeof block) => b.id === block.id)
   )
+
   useEffect(() => {
     setHasMounted(true)
-    console.log('current index in useEffect:', currentIndex)
   }, [])
 
   const blockHasSlides = block.attributes.Slides.length > 0
@@ -67,22 +67,16 @@ export default function BlockPage({
   const docxFileSize = useDocxFileSize(block)
   const pptxFileSize = usePptxFileSize(block)
   const router = useRouter()
-  console.log('Lecture blocks length:', lectureBlocks.length)
 
   const handleNextLectureBlockBtn = () => {
-    console.log('current index:', currentIndex)
-
     const nextIndex = currentIndex + 1
-    console.log('next index:', nextIndex)
 
     if (nextIndex < lectureBlocks.length) {
       setCurrentIndex(nextIndex)
-      console.log('current index:', currentIndex)
 
       const nextBlock = lectureBlocks[nextIndex]
       router.push(`/blocks/${nextBlock.attributes.vuid}`)
     } else if (nextIndex == lectureBlocks.length) {
-      console.log('Slut på arrayen')
       setHideNextBtn(true)
     }
   }
@@ -142,21 +136,22 @@ export default function BlockPage({
                 textDecoration: 'underline',
               }}
             >
-              Continue to next Lecture Block
+              Next Lecture Block
             </ButtonWithoutDefaultStyle>
           </PaginationControls>
           <CardList
-            cards={lectureBlocks
-              .filter((_: any, index: number) => index !== 0)
-              .map((block: any) => ({
-                id: block.id.toString(),
-                title: block.attributes.Title,
-                text: block.attributes.Abstract,
-                href: `/blocks/${block.attributes.vuid}`,
-                subTitle: <LearningMaterialBadge type='BLOCK' />,
-                translationDoesNotExistCopy:
-                  generalCopy.attributes.TranslationDoesNotExist,
-              }))}
+            cards={lectureBlocks.map((block: any, index: number) => ({
+              id: block.id.toString(),
+              title: block.attributes.Title,
+              text: block.attributes.Abstract,
+              href: `/blocks/${block.attributes.vuid}`,
+              subTitle: <LearningMaterialBadge type='BLOCK' />,
+              translationDoesNotExistCopy:
+                generalCopy.attributes.TranslationDoesNotExist,
+              index: index,
+            }))}
+            setCurrentIndex={setCurrentIndex}
+            currentIndex={currentIndex}
           />
         </LearningMaterialOverview>
         {hasMounted && width > breakpoint && (
