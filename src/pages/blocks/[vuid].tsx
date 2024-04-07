@@ -60,6 +60,13 @@ export default function BlockPage({
   useEffect(() => {
     setHasMounted(true)
   }, [])
+  useEffect(() => {
+    if (currentIndex === lectureBlocks.length - 1) {
+      setHideNextBtn(true)
+    } else {
+      setHideNextBtn(false)
+    }
+  }, [currentIndex, lectureBlocks.length])
 
   const blockHasSlides = block.attributes.Slides.length > 0
   const { width } = useWindowSize()
@@ -76,7 +83,8 @@ export default function BlockPage({
 
       const nextBlock = lectureBlocks[nextIndex]
       router.push(`/blocks/${nextBlock.attributes.vuid}`)
-    } else if (nextIndex == lectureBlocks.length) {
+    }
+    if (currentIndex === lectureBlocks.length - 2) {
       setHideNextBtn(true)
     }
   }
