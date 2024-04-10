@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { Locale } from '../../../types'
 import Markdown from '../../Markdown/Markdown'
 import TranslationDoesNotExist from '../../TranslationDoesNotExist/TranslationDoesNotExist'
@@ -16,26 +16,60 @@ export type CardType = {
   level?: ReactNode
   locale?: Locale
   translationDoesNotExistCopy: string
+  index?: number
 }
 
-type Props = {
+type CardProps = {
   card: CardType
+  currentIndex?: number
+  setCurrentIndex?: (index: number) => void
 }
 
-const Card = ({ card }: Props) => {
+const Card = ({ card, currentIndex, setCurrentIndex }: CardProps) => {
   const { locale: routerLocale } = useRouter()
+  const [youAreHere, setYouAreHere] = useState(false)
+
+  useEffect(() => {
+    if (typeof currentIndex === 'number' && currentIndex === card.index) {
+      setYouAreHere(true)
+    } else {
+      setYouAreHere(false)
+    }
+  }, [currentIndex, card.index])
+
+  const handleDirectClick = () => {
+    if (typeof card.index === 'number') {
+      const index: number = card.index
+      setCurrentIndex?.(index)
+    }
+  }
+
   return (
     <LinkWrapper card={card}>
-      <Styled.Card isInteractive={!!card.href}>
+      <Styled.Card
+        isInteractive={!!card.href}
+        youAreHere={youAreHere}
+        onClick={handleDirectClick}
+      >
         {card.locale !== undefined && card.locale !== routerLocale ? (
           <TranslationDoesNotExist copy={card.translationDoesNotExistCopy} />
         ) : null}
+
         {typeof card.subTitle === 'string' ? (
           <Styled.SubTitle>{card.subTitle}</Styled.SubTitle>
         ) : null}
-        {typeof card.subTitle === 'object' && (
-          <Styled.SubTitleNode>{card.subTitle}</Styled.SubTitleNode>
-        )}
+
+        <Styled.YouAreHereWrapper>
+          {typeof card.subTitle === 'object' && (
+            <Styled.SubTitleNode youAreHere={youAreHere}>
+              {card.subTitle}
+              <Styled.Indicator youAreHere={youAreHere}>
+                You are here
+              </Styled.Indicator>
+            </Styled.SubTitleNode>
+          )}
+        </Styled.YouAreHereWrapper>
+
         <Styled.Title>{card.title}</Styled.Title>
         <Styled.Markdown>
           <Markdown allowedElements={['p']}>{card.text}</Markdown>
