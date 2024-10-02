@@ -360,7 +360,8 @@ const handleBlockUpload = async (
   await zenodo.uploadFile(
     zenodoCreationResponse.links.bucket,
     `${strapiBlock.attributes.Title}.md`,
-    updatedZenodoEntities.document
+    updatedZenodoEntities.document,
+    { "Content-Type": "text/markdown" }
   )
 
   console.info(
