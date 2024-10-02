@@ -25,7 +25,8 @@ export const createEntry = async (
 export const uploadFile = async (
   bucketUrl: string,
   fileName: string,
-  body: any
+  body: any,
+  extraHeaders: Record<string, string> = {}
 ) => {
   const fileUrl = `${bucketUrl}/${fileName}`
 
@@ -33,6 +34,7 @@ export const uploadFile = async (
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_API_TOKEN}`,
       'Content-Type': 'image/jpeg',
+      ...extraHeaders
     },
   })
   return response
