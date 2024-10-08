@@ -151,18 +151,14 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
     if (!hasAnyChangeHappened) {
       return ''
     }
-    const dataResults = `showing ${results.courses.data.length} course${
-      results.courses.data.length > 1 ? 's' : ''
-    }, ${results.lectures.data.length} lecture${
-      results.lectures.data.length > 1 ? 's' : ''
-    }, and ${results.blocks.data.length} lecture block${
-      results.blocks.data.length > 1 ? 's' : ''
-    }.`
+    const dataResults = `showing ${results.courses.data.length} course${results.courses.data.length > 1 ? 's' : ''
+      }, ${results.lectures.data.length} lecture${results.lectures.data.length > 1 ? 's' : ''
+      }, and ${results.blocks.data.length} lecture block${results.blocks.data.length > 1 ? 's' : ''
+      }.`
     const authorPart =
       selectedAuthors.length !== 0
-        ? `${selectedAuthors.length} author${
-            selectedAuthors.length > 1 ? 's' : ''
-          }.`
+        ? `${selectedAuthors.length} author${selectedAuthors.length > 1 ? 's' : ''
+        }.`
         : ''
     const keywordPart =
       selectedKeywords.length !== 0
@@ -170,11 +166,9 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
         : ''
     const isFiltered = keywordPart || authorPart
     const sortedByPart = `Sorted ${selectedSort.ariaLabel}`
-    const fullSummary = `${dataResults} ${
-      isFiltered ? 'Filtered by' : ''
-    } ${keywordPart} ${
-      keywordPart && authorPart ? 'and' : ''
-    } ${authorPart} ${sortedByPart}`
+    const fullSummary = `${dataResults} ${isFiltered ? 'Filtered by' : ''
+      } ${keywordPart} ${keywordPart && authorPart ? 'and' : ''
+      } ${authorPart} ${sortedByPart}`
     return fullSummary
   }
 
@@ -337,14 +331,12 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const populate = `${populateHeroImage}&${populateInfoCard}`
 
     const pageCopyRequest: Promise<ResponseArray<FilterPageCopy>> = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-filter-pages?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-filter-pages?locale=${ctx.locale ?? ctx.defaultLocale
       }&${populate}`
     )
 
     const generalCopyRequest: Promise<ResponseArray<GeneralCopy>> = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${ctx.locale ?? ctx.defaultLocale
       }`
     )
 

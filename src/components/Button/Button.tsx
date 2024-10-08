@@ -1,23 +1,22 @@
-import React, { ReactNode } from 'react'
+import React, { ButtonHTMLAttributes, ReactNode } from 'react'
 import Loader from '../Loader/Loader'
 
 import * as Styled from './styles'
 
 type Props = {
   children: ReactNode
-  onClick: () => void
   isLoading?: boolean
   primary?: boolean
-} & Styled.Props
+} & Styled.Props & ButtonHTMLAttributes<HTMLButtonElement>
 
-const Button = ({ children, onClick, isLoading, primary = true }: Props) => {
+const Button = ({ children, isLoading, primary = true, ...rest }: Props) => {
   return (
     <Styled.Button
       primary={primary}
-      onClick={onClick}
       aria-live='polite'
       aria-busy={isLoading}
       isLoading={isLoading}
+      {...rest}
     >
       {isLoading ? <Loader /> : children}
     </Styled.Button>

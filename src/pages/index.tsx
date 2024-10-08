@@ -113,20 +113,20 @@ export default function Home({ siteCopy, generalCopy }: Props) {
       <DataStructureFigure {...dataStructureData} />
       {InfoCardsLarge !== undefined
         ? InfoCardsLarge.map((infoCardLarge) => (
-            <TextImage
-              title={infoCardLarge.Header}
-              body={infoCardLarge.Content}
-              image={{
-                alt: infoCardLarge.Image.data.attributes.alternativeText,
-                src: {
-                  src: infoCardLarge.Image.data.attributes.url,
-                  width: infoCardLarge.Image.data.attributes.width,
-                  height: infoCardLarge.Image.data.attributes.height,
-                },
-              }}
-              key={infoCardLarge.id}
-            />
-          ))
+          <TextImage
+            title={infoCardLarge.Header}
+            body={infoCardLarge.Content}
+            image={{
+              alt: infoCardLarge.Image.data.attributes.alternativeText,
+              src: {
+                src: infoCardLarge.Image.data.attributes.url,
+                width: infoCardLarge.Image.data.attributes.width,
+                height: infoCardLarge.Image.data.attributes.height,
+              },
+            }}
+            key={infoCardLarge.id}
+          />
+        ))
         : null}
       <RecentUpdates
         title={DynamicContentHeader}
@@ -157,14 +157,12 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const populate = `${populateHeroImage}&${populateInfoCard}&${populateInfoCardLarge}&${populateDataStructureDesktop}&${populateDataStructureMobile}`
 
     const copyResponse: ResponseArray<StartPageCopy> = await axios.get(
-      `${process.env.STRAPI_API_URL}/site-copies?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/site-copies?locale=${ctx.locale ?? ctx.defaultLocale
       }&${populate}`
     )
 
     const generalCopyResponse: ResponseArray<GeneralCopy> = await axios.get(
-      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${ctx.locale ?? ctx.defaultLocale
       }`
     )
 

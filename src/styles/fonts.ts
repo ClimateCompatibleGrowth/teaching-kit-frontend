@@ -1,5 +1,5 @@
-import { NextFont } from '@next/font/dist/types'
-import { Montserrat, Ubuntu } from '@next/font/google'
+import { NextFont } from "next/dist/compiled/@next/font"
+import { Montserrat, Ubuntu } from "next/font/google"
 
 type UbuntuFont = {
   500: NextFont
