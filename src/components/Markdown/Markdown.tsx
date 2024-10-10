@@ -1,6 +1,5 @@
 import React from 'react'
 import remarkGfm from 'remark-gfm'
-import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown'
 

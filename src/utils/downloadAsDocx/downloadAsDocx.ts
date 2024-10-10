@@ -1,8 +1,9 @@
 import ReactDOMServer from 'react-dom/server'
+import { asBlob } from 'html-docx-js-typescript'
 import saveAs from 'file-saver'
 
 // @ts-ignore (needed until the following is merged: https://github.com/privateOmega/html-to-docx/pull/122)
-import HTMLtoDOCX from 'html-to-docx'
+// import HTMLtoDOCX from 'html-to-docx'
 
 import { Data, DownloadableContent } from '../../types'
 import { isCourseThreeLevelsDeep } from '../../types/checkers'
@@ -38,12 +39,14 @@ const createBlob = async (data: Data<DownloadableContent>) => {
   } else {
     const sourceHTML = ReactDOMServer.renderToString(DocxDownload({ data }))
     const newHtml = await processHTMLString(sourceHTML, data.attributes.Title)
-    const blob = await HTMLtoDOCX(
-      newHtml,
-      undefined,
-      downloadConfiguration,
-      footer
-    )
+
+    // const blob = await HTMLtoDOCX(
+    //   newHtml,
+    //   undefined,
+    //   downloadConfiguration,
+    //   footer
+    // )
+    const blob = (await asBlob(newHtml)) as Blob
     return { blob, title: `${data.attributes.Title}.docx` }
   }
 }

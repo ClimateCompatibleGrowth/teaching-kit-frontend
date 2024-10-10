@@ -26,15 +26,17 @@ export const uploadFile = async (
   bucketUrl: string,
   fileName: string,
   body: any,
-  extraHeaders: Record<string, string> = {}
+  fileType: string
 ) => {
   const fileUrl = `${bucketUrl}/${fileName}`
+  const formData = new FormData()
+  formData.append("file", new Blob([body], { type: fileType }), fileName)
+  formData.append("name", fileName)
 
-  const response = await axios.put(fileUrl, body, {
+  const response = await axios.put(fileUrl, formData, {
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_API_TOKEN}`,
-      'Content-Type': 'image/jpeg',
-      ...extraHeaders
+      "Content-Type": "multipart/form-data"
     },
   })
   return response
