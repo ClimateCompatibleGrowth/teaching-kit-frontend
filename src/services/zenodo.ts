@@ -358,10 +358,10 @@ const handleBlockUpload = async (
   )
 
   await zenodo.uploadFile(
-    zenodoCreationResponse.links.bucket,
+    zenodoCreationResponse.links.files,
     `${strapiBlock.attributes.Title}.md`,
     updatedZenodoEntities.document,
-    { "Content-Type": "text/markdown" }
+    "text/markdown"
   )
 
   console.info(
@@ -371,9 +371,10 @@ const handleBlockUpload = async (
   await Promise.all(
     updatedZenodoEntities.images.map(async (image) => {
       await zenodo.uploadFile(
-        zenodoCreationResponse.links.bucket,
+        zenodoCreationResponse.links.files,
         image.name,
-        image.uint8Array
+        image.uint8Array,
+        'image/*'
       )
       console.info(`Successfully uploaded image with name '${image.name}'`)
     })

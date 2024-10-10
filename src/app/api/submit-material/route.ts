@@ -103,9 +103,6 @@ export async function POST(
 
     return response.json(null)
   } catch (error: any) {
-    console.log("ERRRORROORORORRR ##################################");
-    // console.log(error);
-    // console.log(error);
     console.log(error.response);
     return response.json(null)
   }

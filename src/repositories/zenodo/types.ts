@@ -44,6 +44,7 @@ export type CreationResponseBody = {
   created: string
   id: number
   links: {
+    files: string
     bucket: string
     publish: string
   }
