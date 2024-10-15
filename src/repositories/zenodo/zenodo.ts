@@ -23,17 +23,16 @@ export const createEntry = async (
 }
 
 export const uploadFile = async (
-  bucketUrl: string,
+  filesUrl: string,
   fileName: string,
   body: any,
   fileType: string
 ) => {
-  const fileUrl = `${bucketUrl}/${fileName}`
   const formData = new FormData()
   formData.append("file", new Blob([body], { type: fileType }), fileName)
   formData.append("name", fileName)
 
-  const response = await axios.put(fileUrl, formData, {
+  const response = await axios.post(filesUrl, formData, {
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_API_TOKEN}`,
       "Content-Type": "multipart/form-data"
