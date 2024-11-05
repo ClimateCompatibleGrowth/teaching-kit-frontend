@@ -103,6 +103,7 @@ export type Lecture = StrapiBaseEntry & {
 }
 
 export type LectureOneLevelDeep = Lecture & {
+  Files: MediaFiles
   Blocks: { data: Data<Block>[] }
   LearningOutcomes: LearningOutcome[]
   LectureCreators: { data: Data<Author>[] }
@@ -140,6 +141,8 @@ export type Course = StrapiBaseEntry & {
 }
 
 export type CourseOneLevelDeep = Course & {
+  Files: MediaFiles
+  Logo?: MediaFiles
   Lectures: { data: Data<Lecture>[] }
   CourseCreators: { data: Data<Author>[] }
   LearningOutcomes: LearningOutcome[]
@@ -181,17 +184,57 @@ export type DownloadableContent =
   | LectureTwoLevelsDeep
   | CourseThreeLevelsDeep
 
-export const locales = ['en', 'es-ES', 'fr-FR'] as const
-export type Locale = typeof locales[number]
+export const LOCALES = ['en', 'es-ES', 'fr-FR'] as const
+export type Locale = typeof LOCALES[number]
 
-export const languages = ['English', 'Español', 'Français'] as const
-export type Language = typeof languages[number]
+export const LANGUAGES = ['English', 'Español', 'Français'] as const
+export type Language = typeof LANGUAGES[number]
 
 export type Path = {
   params: {
     vuid: string
   }
   locale?: string
+}
+
+export type MediaFile = {
+  data: Data<{
+    alternativeText: null | string,
+    caption: null | string,
+    createdAt: string,
+    ext: string,
+    hash: string,
+    height: number | null,
+    mime: string,
+    name: string,
+    previewUrl: string | null,
+    provider: string | null,
+    provider_metadata: null,
+    size: number,
+    updatedAt: string | null,
+    url: string,
+    width: number | null
+  }>
+}
+
+export type MediaFiles = {
+  data: Data<{
+    alternativeText: null | string,
+    caption: null | string,
+    createdAt: string,
+    ext: string,
+    hash: string,
+    height: number | null,
+    mime: string,
+    name: string,
+    previewUrl: string | null,
+    provider: string | null,
+    provider_metadata: null,
+    size: number,
+    updatedAt: string | null,
+    url: string,
+    width: number | null
+  }>[]
 }
 
 type Image = {
