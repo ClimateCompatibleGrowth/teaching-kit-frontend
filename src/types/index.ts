@@ -142,7 +142,7 @@ export type Course = StrapiBaseEntry & {
 
 export type CourseOneLevelDeep = Course & {
   Files: MediaFiles
-  Logo?: MediaFiles
+  Logo?: MediaFile
   Lectures: { data: Data<Lecture>[] }
   CourseCreators: { data: Data<Author>[] }
   LearningOutcomes: LearningOutcome[]

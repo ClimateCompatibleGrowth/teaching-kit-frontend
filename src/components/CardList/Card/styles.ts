@@ -6,11 +6,13 @@ import {
   AccentPinkLighter,
   Background,
   BorderRadius,
+  mq,
   Neutral90,
   OnPrimary90,
   Surface,
 } from '../../../styles/global'
 import { css } from '@emotion/react'
+import ButtonLink from '../../ButtonLink/ButtonLink'
 
 type CardProps = {
   isInteractive?: boolean
@@ -26,8 +28,7 @@ export const NextLink = styled(Link)`
 export const Card = styled.div<CardProps>`
   width: 100%;
   padding: 2.4rem;
-  border: ${(props) =>
-    props.isInteractive ? `1px solid ${Neutral90}` : 'none'};
+  border: 1px solid ${Neutral90};
   border-radius: ${BorderRadius};
 
   background-color: ${(props) => props.youAreHere && AccentPinkLighter};
@@ -35,7 +36,7 @@ export const Card = styled.div<CardProps>`
 
   &:hover {
     background-color: ${(props) =>
-      props.isInteractive || props.youAreHere ? AccentPinkLighter : Background};
+    props.isInteractive || props.youAreHere ? AccentPinkLighter : Background};
   }
 `
 
@@ -93,6 +94,23 @@ export const SubTitleNode = styled.div<CardProps>`
           width: 100%;
         `
       : css``}
+`
+export const FilesTitle = styled.h5`
+  margin: 2.4rem 0 1rem;
+  font-family: ${montserrat[400].style.fontFamily};
+  font-size: 1.8rem;
+  color: ${OnPrimary90};
+`
+export const LectureFile = styled(ButtonLink)`
+  margin-top: 1rem;
+  display: inline-block;
+  ${mq.xs} {
+    & + & {
+      display: inline;
+      margin-top: 0;
+      margin-left: 1rem;
+    }
+  }
 `
 export const MetaInformation = styled.div`
   display: flex;

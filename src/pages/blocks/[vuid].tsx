@@ -18,19 +18,13 @@ import {
   Accent40,
 } from '../../styles/global'
 import MetadataContainer from '../../components/MetadataContainer/MetadataContainer'
-import { summarizeDurations } from '../../utils/utils'
 import LearningMaterial from '../../components/LearningMaterial'
-import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
 import { Response, ResponseArray } from '../../shared/requests/types'
 import {
   filterOutOnlyPublishedEntriesOnBlock,
-  filterOutOnlyPublishedEntriesOnLecture,
 } from '../../shared/requests/utils/publishedEntriesFilter'
 import { GetStaticPropsContext } from 'next/types'
 import Markdown from '../../components/Markdown/Markdown'
-import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
-import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
-import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
 import { useWindowSize } from '../../utils/useWindowSize'
 import { useEffect, useState } from 'react'
 import CardList from '../../components/CardList/CardList'
@@ -68,11 +62,8 @@ export default function BlockPage({
     }
   }, [currentIndex, lectureBlocks.length])
 
-  const blockHasSlides = block.attributes.Slides.length > 0
   const { width } = useWindowSize()
   const breakpoint = Number(customBreakPoint)
-  const docxFileSize = useDocxFileSize(block)
-  const pptxFileSize = usePptxFileSize(block)
   const router = useRouter()
 
   const handleNextLectureBlockBtn = () => {
@@ -109,19 +100,11 @@ export default function BlockPage({
 
           {hasMounted && width <= breakpoint && (
             <MetadataContainer
-              duration={summarizeDurations([block])}
               authors={block.attributes.Authors}
-              docxFileSize={docxFileSize}
-              pptxFileSize={pptxFileSize}
-              downloadAsDocx={() => handleDocxDownload(block)}
-              downloadAsPptx={
-                blockHasSlides ? () => handlePptxDownload(block) : undefined
-              }
               parentRelations={{
                 type: 'lectures',
                 parents: block.attributes.Lectures.data,
               }}
-              type='BLOCK'
               landingPageCopy={landingPageCopy}
             />
           )}
@@ -164,19 +147,11 @@ export default function BlockPage({
         </LearningMaterialOverview>
         {hasMounted && width > breakpoint && (
           <MetadataContainer
-            duration={summarizeDurations([block])}
             authors={block.attributes.Authors}
-            docxFileSize={docxFileSize}
-            pptxFileSize={pptxFileSize}
-            downloadAsDocx={() => handleDocxDownload(block)}
-            downloadAsPptx={
-              blockHasSlides ? () => handlePptxDownload(block) : undefined
-            }
             parentRelations={{
               type: 'lectures',
               parents: block.attributes.Lectures.data,
             }}
-            type='BLOCK'
             landingPageCopy={landingPageCopy}
           />
         )}
@@ -222,8 +197,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
     const blockVuid = await axios.get(
-      `${process.env.STRAPI_API_URL}/blockByVuid/${ctx.params?.vuid}?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/blockByVuid/${ctx.params?.vuid}?locale=${ctx.locale ?? ctx.defaultLocale
       }&fallbackToDefaultLocale=true`
     )
 
@@ -248,13 +222,11 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
 
     // Fortsätt att hämta övriga data
     const copyRequest = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-block-pages?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-block-pages?locale=${ctx.locale ?? ctx.defaultLocale
       }`
     )
     const generalCopyRequest = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${ctx.locale ?? ctx.defaultLocale
       }`
     )
 

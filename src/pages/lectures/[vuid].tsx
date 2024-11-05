@@ -21,11 +21,6 @@ import {
   Lecture,
   LectureTwoLevelsDeep,
 } from '../../types'
-import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
-import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
-import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
-import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
-import { summarizeDurations } from '../../utils/utils'
 import { useWindowSize } from '../../utils/useWindowSize'
 import { useEffect, useState } from 'react'
 
@@ -46,15 +41,8 @@ export default function LecturePage({
     setHasMounted(true)
   }, [])
 
-  const hasSomePptxSlides = lecture.attributes.Blocks.data.some(
-    (block) => block.attributes.Slides.length > 0
-  )
-
   const { width } = useWindowSize()
   const breakpoint = Number(customBreakPoint)
-
-  const docxFileSize = useDocxFileSize(lecture)
-  const pptxFileSize = usePptxFileSize(lecture)
 
   return (
     <PageContainer hasTopPadding hasBottomPadding>
@@ -77,22 +65,11 @@ export default function LecturePage({
           />
           {hasMounted && width <= breakpoint && (
             <MetadataContainer
-              level={lecture.attributes.Level}
-              duration={summarizeDurations(lecture.attributes.Blocks.data)}
               authors={lecture.attributes.LectureCreators}
-              docxFileSize={docxFileSize}
-              pptxFileSize={pptxFileSize}
-              downloadAsDocx={() => handleDocxDownload(lecture)}
-              downloadAsPptx={
-                hasSomePptxSlides
-                  ? () => handlePptxDownload(lecture)
-                  : undefined
-              }
               parentRelations={{
                 type: 'courses',
                 parents: lecture.attributes.Courses.data,
               }}
-              type='LECTURE'
               landingPageCopy={landingPageCopy}
             />
           )}
@@ -115,20 +92,11 @@ export default function LecturePage({
         </LearningMaterialOverview>
         {hasMounted && width > breakpoint && (
           <MetadataContainer
-            level={lecture.attributes.Level}
-            duration={summarizeDurations(lecture.attributes.Blocks.data)}
             authors={lecture.attributes.LectureCreators}
-            docxFileSize={docxFileSize}
-            pptxFileSize={pptxFileSize}
-            downloadAsDocx={() => handleDocxDownload(lecture)}
-            downloadAsPptx={
-              hasSomePptxSlides ? () => handlePptxDownload(lecture) : undefined
-            }
             parentRelations={{
               type: 'courses',
               parents: lecture.attributes.Courses.data,
             }}
-            type='LECTURE'
             landingPageCopy={landingPageCopy}
           />
         )}
@@ -174,8 +142,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
     const lectureVuid = await axios.get(
-      `${process.env.STRAPI_API_URL}/lectureByVuid/${ctx.params?.vuid}?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/lectureByVuid/${ctx.params?.vuid}?locale=${ctx.locale ?? ctx.defaultLocale
       }&fallbackToDefaultLocale=true`
     )
 
@@ -192,14 +159,12 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     )
 
     const copyRequest: Promise<ResponseArray<LandingPageCopy>> = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-lecture-pages?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-lecture-pages?locale=${ctx.locale ?? ctx.defaultLocale
       }`
     )
 
     const generalCopyRequest: Promise<ResponseArray<GeneralCopy>> = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${ctx.locale ?? ctx.defaultLocale
       }`
     )
 

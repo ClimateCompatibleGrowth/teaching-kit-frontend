@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import React, { ReactNode, useEffect, useState } from 'react'
-import { Locale } from '../../../types'
+import { Locale, MediaFiles } from '../../../types'
 import Markdown from '../../Markdown/Markdown'
 import TranslationDoesNotExist from '../../TranslationDoesNotExist/TranslationDoesNotExist'
 import * as Styled from './styles'
@@ -10,6 +10,7 @@ export type CardType = {
   title: string
   text: string
   href?: string
+  files?: MediaFiles
   subTitle?: ReactNode
   subComponent?: ReactNode
   duration?: ReactNode
@@ -47,7 +48,6 @@ const Card = ({ card, currentIndex, setCurrentIndex }: CardProps) => {
   return (
     <LinkWrapper card={card}>
       <Styled.Card
-        isInteractive={!!card.href}
         youAreHere={youAreHere}
         onClick={handleDirectClick}
       >
@@ -74,6 +74,10 @@ const Card = ({ card, currentIndex, setCurrentIndex }: CardProps) => {
         <Styled.Markdown>
           <Markdown allowedElements={['p']}>{card.text}</Markdown>
         </Styled.Markdown>
+        {card.files && <Styled.FilesTitle>Lecture files</Styled.FilesTitle>}
+        {card.files?.data.map((file) =>
+          <Styled.LectureFile key={file.id} primary href={file.attributes.url} download>{file.attributes.alternativeText || file.attributes.name}</Styled.LectureFile>
+        )}
         <Styled.MetaInformation>
           {card.level && <Styled.MetaData>{card.level}</Styled.MetaData>}
           {card.duration && <Styled.MetaData>{card.duration}</Styled.MetaData>}
