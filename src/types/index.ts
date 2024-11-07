@@ -44,7 +44,7 @@ export type AuthorOneLevelDeep = Author & {
   Affiliation: { data: Data<Affiliation> | null }
 }
 
-export const learningMaterialTypes = ['COURSE', 'LECTURE', 'BLOCK'] as const
+export const learningMaterialTypes = ['COURSE', 'LECTURE'] as const
 export type LearningMaterialType = typeof learningMaterialTypes[number]
 
 const levelNames = ['1. Beginner', '2. Intermediate', '3. Expert'] as const

@@ -37,12 +37,6 @@ const LearningMaterialBadge = ({ type, elementType }: Props) => {
   }
 
   switch (type) {
-    case 'BLOCK':
-      return (
-        <Badge accentColor='yellow'>
-          {getBadgeContent(typeToText(type, locale as Locale), elementType)}
-        </Badge>
-      )
     case 'LECTURE':
       return (
         <Badge accentColor='green'>

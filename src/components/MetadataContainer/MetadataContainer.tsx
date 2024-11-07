@@ -81,7 +81,7 @@ export default function MetadataContainer({
         <Styled.Heading>{landingPageCopy.DownloadContent}</Styled.Heading>
         <Styled.Ul>
           {files?.data && files.data.map(file =>
-            <Styled.Li>
+            <Styled.Li key={file.id}>
               <ButtonLink primary download href={file.attributes.url}>{file.attributes.alternativeText || file.attributes.name}</ButtonLink>
             </Styled.Li>
           )}

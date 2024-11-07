@@ -39,7 +39,6 @@ type Props = {
   setSelectedSort: (newSort: SortOption) => void
   courseResults: ResponseArrayData<CourseThreeLevelsDeep>
   lectureResults: ResponseArrayData<LectureOneLevelDeep>
-  blockResults: ResponseArrayData<Block>
   currentCoursePageNumber: number
   setCurrentCoursePageNumber: Dispatch<SetStateAction<number>>
   currentLecturePageNumber: number
@@ -55,7 +54,6 @@ const TabGroup = ({
   setSelectedSort,
   courseResults,
   lectureResults,
-  blockResults,
   currentCoursePageNumber,
   setCurrentCoursePageNumber,
   currentLecturePageNumber,
@@ -68,24 +66,6 @@ const TabGroup = ({
   const locale = _locale as Locale
   const [tabIndex, setTabIndex] = React.useState(0)
   const translation = translations[locale]
-
-  const blockDataToCardFormat = (data: Data<Block>[]): CardType[] => {
-    return data.map((block) => ({
-      title: block.attributes.Title,
-      id: block.id.toString(),
-      text: block.attributes.Abstract,
-      href: `/blocks/${block.attributes.vuid}`,
-      subTitle: <LearningMaterialBadge type='BLOCK' />,
-      duration: (
-        <>
-          <ClockIcon style={{ marginRight: 8 }} />
-          {summarizeDurations([block], locale)}
-        </>
-      ),
-      locale: block.attributes.locale,
-      translationDoesNotExistCopy,
-    }))
-  }
 
   const lectureDataToCardFormat = (
     data: Data<LectureOneLevelDeep>
@@ -201,16 +181,6 @@ const TabGroup = ({
             disableRipple
             sx={Styled.Tab}
           />
-          <Tab
-            label={
-              <TabLabel
-                type='BLOCK'
-                numberOfResults={blockResults.meta.pagination.total}
-              />
-            }
-            disableRipple
-            sx={Styled.Tab}
-          />
         </Tabs>
         <Dropdown
           controls={controls}
@@ -252,14 +222,6 @@ const TabGroup = ({
             lectureResults.meta,
             currentLecturePageNumber,
             setCurrentLecturePageNumber
-          )}
-        </TabPanel>
-        <TabPanel value={tabIndex} index={2}>
-          <CardList cards={blockDataToCardFormat(blockResults.data)} />
-          {getPaginationController(
-            blockResults.meta,
-            currentBlockPageNumber,
-            setCurrentBlockPageNumber
           )}
         </TabPanel>
       </div>

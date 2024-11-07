@@ -21,9 +21,6 @@ const TabLabel = ({ type, numberOfResults }: Props) => {
       case 'LECTURE':
         if (locale === 'es-ES') return 'Conferencias'
         return 'Lectures'
-      case 'BLOCK':
-        if (locale === 'es-ES') return 'Bloques de conferencias'
-        return 'Lecture blocks'
     }
   }
 

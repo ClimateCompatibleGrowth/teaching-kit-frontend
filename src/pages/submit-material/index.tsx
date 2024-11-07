@@ -177,19 +177,19 @@ export default function SubmitMaterial() {
               <input name={`lecture-${index}-title`} type="text" value={lecture.title} onChange={(e) => {
                 changeLecture({ ...lecture, title: e.target.value }, index)
               }} />
-              {errors?.lectures && errors.lectures[index] && errors.lectures[index].title?._errors && <ErrorMessage role="alert">{errors.lectures[index].title._errors}</ErrorMessage>}
+              {errors?.lectures && errors.lectures[index] && errors.lectures[index].title?._errors && <ErrorMessage role="alert">{errors?.lectures[index].title?._errors}</ErrorMessage>}
             </Label>
             <Label>
               Lecture abstract
               <textarea name={`lecture-${index}-abstract`} rows={4} value={lecture.abstract} onChange={(e) => {
                 changeLecture({ ...lecture, abstract: e.target.value }, index)
               }} />
-              {errors?.lectures && errors.lectures[index] && errors.lectures[index].abstract?._errors && <ErrorMessage role="alert">{errors.lectures[index].abstract._errors}</ErrorMessage>}
+              {errors?.lectures && errors.lectures[index] && errors.lectures[index].abstract?._errors && <ErrorMessage role="alert">{errors?.lectures[index].abstract?._errors}</ErrorMessage>}
             </Label>
             <Label>
               Lecture files
               <input name={`lecture-${index}-files`} type="file" multiple accept={acceptTypes} />
-              {errors?.lectures && errors.lectures[index] && errors.lectures[index].files?._errors && <ErrorMessage role="alert">{errors.lectures[index].files._errors}</ErrorMessage>}
+              {errors?.lectures && errors.lectures[index] && errors.lectures[index].files?._errors && <ErrorMessage role="alert">{errors?.lectures[index].files?._errors}</ErrorMessage>}
             </Label>
           </LectureWrapper>
         })}

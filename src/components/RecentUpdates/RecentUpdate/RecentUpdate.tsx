@@ -31,10 +31,6 @@ const RecentUpdate = ({ recentUpdate, translationDoesNotExistCopy }: Props) => {
       typeColor = 'pink'
       href = `/courses/${recentUpdate.Vuid}`
       break
-    case 'BLOCK':
-      typeColor = 'yellow'
-      href = `/blocks/${recentUpdate.Vuid}`
-      break
     default:
       break
   }

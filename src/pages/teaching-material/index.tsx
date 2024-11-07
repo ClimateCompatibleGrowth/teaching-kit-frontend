@@ -6,7 +6,6 @@ import { useCallback, useEffect, useState } from 'react'
 import Dropdown from '../../components/Dropdown/Dropdown'
 import TabGroup from '../../components/TabGroup/TabGroup'
 import {
-  getFilteredBlocks,
   getFilteredCourses,
   getFilteredLectures,
 } from '../../services/strapi-locale-filter'
@@ -116,11 +115,9 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
   const [results, setResults] = useState<{
     courses: ResponseArrayData<CourseThreeLevelsDeep>
     lectures: ResponseArrayData<LectureOneLevelDeep>
-    blocks: ResponseArrayData<Block>
   }>({
     courses: defaultFilterResult,
     lectures: defaultFilterResult,
-    blocks: defaultFilterResult,
   })
 
   const summaryId = 'content-results-summary'
@@ -153,7 +150,6 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
     }
     const dataResults = `showing ${results.courses.data.length} course${results.courses.data.length > 1 ? 's' : ''
       }, ${results.lectures.data.length} lecture${results.lectures.data.length > 1 ? 's' : ''
-      }, and ${results.blocks.data.length} lecture block${results.blocks.data.length > 1 ? 's' : ''
       }.`
     const authorPart =
       selectedAuthors.length !== 0
@@ -194,28 +190,16 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
       matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
     })
 
-    const blockFilterPromise = getFilteredBlocks({
-      keywords,
-      authors,
-      pageNumber: currentBlockPageNumber,
-      sortMethod: isBlockSortOptionType(selectedSort.id)
-        ? selectedSort.id
-        : 'ALPHABETICAL_ASC',
-      matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
-      locale,
-    })
 
-    const [courseFilterResult, lectureFilterResult, blockFilterResult] =
+    const [courseFilterResult, lectureFilterResult] =
       await Promise.all([
         courseFilterPromise,
         lectureFilterPromise,
-        blockFilterPromise,
       ])
 
     setResults({
       courses: courseFilterResult,
       lectures: lectureFilterResult,
-      blocks: blockFilterResult,
     })
   }, [
     selectedKeywords,
@@ -301,7 +285,6 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
           controls={summaryId}
           courseResults={results.courses}
           lectureResults={results.lectures}
-          blockResults={results.blocks}
           selectedSort={selectedSort}
           setSelectedSort={setSelectedSort}
           selectedKeywords={selectedKeywords.map(
