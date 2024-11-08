@@ -214,7 +214,7 @@ export type MediaFile = {
     updatedAt: string | null,
     url: string,
     width: number | null
-  }>
+  }> | null
 }
 
 export type MediaFiles = {
@@ -234,7 +234,7 @@ export type MediaFiles = {
     updatedAt: string | null,
     url: string,
     width: number | null
-  }>[]
+  }>[] | null
 }
 
 type Image = {

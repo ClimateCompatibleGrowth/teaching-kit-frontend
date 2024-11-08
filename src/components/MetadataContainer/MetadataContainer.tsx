@@ -35,9 +35,12 @@ export default function MetadataContainer({
   parentRelations,
   landingPageCopy,
 }: Props) {
+  if ((!authors?.data || authors?.data.length === 0) && !acknowledgment && !citeAs && !files?.data) {
+    return null
+  }
   return (
     <Styled.MetadataContainer>
-      {logo && <Styled.Logo src={logo?.data.attributes.url} />}
+      {logo?.data?.attributes?.url && <Styled.Logo src={logo?.data.attributes.url} />}
       {parentRelations && (
         <Styled.HeadingSet>
           <Styled.Heading>{landingPageCopy.AlsoPartOf}</Styled.Heading>
@@ -77,16 +80,16 @@ export default function MetadataContainer({
           {citeAs}
         </Styled.HeadingSet>
       )}
-      <Styled.HeadingSet>
+      {files?.data && <Styled.HeadingSet>
         <Styled.Heading>{landingPageCopy.DownloadContent}</Styled.Heading>
         <Styled.Ul>
-          {files?.data && files.data.map(file =>
+          {files.data.map(file =>
             <Styled.Li key={file.id}>
               <ButtonLink primary download href={file.attributes.url}>{file.attributes.alternativeText || file.attributes.name}</ButtonLink>
             </Styled.Li>
           )}
         </Styled.Ul>
-      </Styled.HeadingSet>
+      </Styled.HeadingSet>}
     </Styled.MetadataContainer>
   )
 }

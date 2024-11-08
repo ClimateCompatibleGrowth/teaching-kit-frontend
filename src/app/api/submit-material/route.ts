@@ -87,9 +87,6 @@ export async function POST(
     }
 
     const validationData = courseSchema.safeParse(inData)
-    console.log('success?', validationData.success);
-    console.log('aa?', validationData.error?.format());
-    console.log(validationData.error?.flatten());
 
     if (!validationData.success) {
       return new Response(JSON.stringify(validationData.error.format()), { status: 400 })

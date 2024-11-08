@@ -143,13 +143,11 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
       'populate[Lectures][populate][Files]=*'
     const populateBlockAuthors =
       'populate[Lectures][populate][Blocks][populate][Authors]=*'
-    const populateBlockSlides =
-      'populate[Lectures][populate][Blocks][populate][Slides]=*'
     const populateLevel = 'populate[Level]=*'
     const populateLectureLevel = 'populate[Lectures][populate][Level]=*'
 
     const courseRequest: Promise<Response<CourseThreeLevelsDeep>> = axios.get(
-      `${process.env.STRAPI_API_URL}/courses/${courseVuid.data?.id}?${populateBlocks}&${populateCourseCreators}&${populateCourseFiles}&${populateCourseLogo}&${populateLectureCreators}&${populateLearningOutcomes}&${populateLectureFiles}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
+      `${process.env.STRAPI_API_URL}/courses/${courseVuid.data?.id}?${populateBlocks}&${populateCourseCreators}&${populateCourseFiles}&${populateCourseLogo}&${populateLectureCreators}&${populateLearningOutcomes}&${populateLectureFiles}&${populateBlockAuthors}&${populateLevel}&${populateLectureLevel}`
     )
 
     const copyRequest: Promise<ResponseArray<LandingPageCopy>> = axios.get(

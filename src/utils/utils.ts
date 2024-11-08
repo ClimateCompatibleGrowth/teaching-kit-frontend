@@ -126,21 +126,6 @@ export const levelToString = (level: {
   return withoutNumerationPrefix
 }
 
-export const typeToDownloadLabel = (type: LearningMaterialType): string => {
-  switch (type) {
-    case 'COURSE':
-      return 'Download course content'
-    case 'LECTURE':
-      return 'Download lecture content'
-    default:
-      return 'Download'
-  }
-}
-
-export const stripBackslashN = (string: string) => {
-  return string.replace(/\n/g, '')
-}
-
 export const getImageMetadata = async (url: string) => {
   const img = new Image()
   img.crossOrigin = 'anonymous' //https://stackoverflow.com/a/47359958/5837635

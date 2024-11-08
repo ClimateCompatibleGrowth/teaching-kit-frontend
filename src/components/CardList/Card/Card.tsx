@@ -74,8 +74,8 @@ const Card = ({ card, currentIndex, setCurrentIndex }: CardProps) => {
         <Styled.Markdown>
           <Markdown allowedElements={['p']}>{card.text}</Markdown>
         </Styled.Markdown>
-        {card.files && <Styled.FilesTitle>Lecture files</Styled.FilesTitle>}
-        {card.files?.data.map((file) =>
+        {card.files?.data && <Styled.FilesTitle>Lecture files</Styled.FilesTitle>}
+        {card.files?.data?.map((file) =>
           <Styled.LectureFile key={file.id} primary href={file.attributes.url} download>{file.attributes.alternativeText || file.attributes.name}</Styled.LectureFile>
         )}
         <Styled.MetaInformation>

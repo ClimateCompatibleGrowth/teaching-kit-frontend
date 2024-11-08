@@ -1,9 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 
-import Tabs from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
 import {
-  Block,
   BlockOneLevelDeep,
   CourseThreeLevelsDeep,
   Data,
@@ -17,7 +14,6 @@ import { CardType } from '../CardList/Card/Card'
 import TabPanel from './TabPanel/TabPanel'
 
 import * as Styled from './styles'
-import TabLabel from './TabLabel/TabLabel'
 import { levelToString, summarizeDurations } from '../../utils/utils'
 import LearningMaterialBadge from '../LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
 import SignalStrengthIcon from '../../../public/icons/signal-strength.svg'
@@ -38,13 +34,8 @@ type Props = {
   selectedSort: SortOption
   setSelectedSort: (newSort: SortOption) => void
   courseResults: ResponseArrayData<CourseThreeLevelsDeep>
-  lectureResults: ResponseArrayData<LectureOneLevelDeep>
   currentCoursePageNumber: number
   setCurrentCoursePageNumber: Dispatch<SetStateAction<number>>
-  currentLecturePageNumber: number
-  setCurrentLecturePageNumber: Dispatch<SetStateAction<number>>
-  currentBlockPageNumber: number
-  setCurrentBlockPageNumber: Dispatch<SetStateAction<number>>
   translationDoesNotExistCopy: string
 }
 
@@ -53,13 +44,8 @@ const TabGroup = ({
   selectedSort,
   setSelectedSort,
   courseResults,
-  lectureResults,
   currentCoursePageNumber,
   setCurrentCoursePageNumber,
-  currentLecturePageNumber,
-  setCurrentLecturePageNumber,
-  currentBlockPageNumber,
-  setCurrentBlockPageNumber,
   translationDoesNotExistCopy,
 }: Props) => {
   const { locale: _locale } = useRouter()
@@ -155,33 +141,6 @@ const TabGroup = ({
   return (
     <div>
       <div style={Styled.HeaderWrapper}>
-        <Tabs
-          value={tabIndex}
-          onChange={(_event, newIndex) => setTabIndex(newIndex)}
-          aria-label='Toggle between categorized filter results'
-          sx={Styled.Tabs}
-        >
-          <Tab
-            label={
-              <TabLabel
-                type='COURSE'
-                numberOfResults={courseResults.meta.pagination.total}
-              />
-            }
-            disableRipple
-            sx={Styled.Tab}
-          />
-          <Tab
-            label={
-              <TabLabel
-                type='LECTURE'
-                numberOfResults={lectureResults.meta.pagination.total}
-              />
-            }
-            disableRipple
-            sx={Styled.Tab}
-          />
-        </Tabs>
         <Dropdown
           controls={controls}
           id='sort-options'
@@ -210,18 +169,6 @@ const TabGroup = ({
             courseResults.meta,
             currentCoursePageNumber,
             setCurrentCoursePageNumber
-          )}
-        </TabPanel>
-        <TabPanel value={tabIndex} index={1}>
-          <CardList
-            cards={lectureResults.data.map((result) =>
-              lectureDataToCardFormat(result)
-            )}
-          />
-          {getPaginationController(
-            lectureResults.meta,
-            currentLecturePageNumber,
-            setCurrentLecturePageNumber
           )}
         </TabPanel>
       </div>
