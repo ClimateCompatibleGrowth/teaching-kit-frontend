@@ -222,8 +222,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
     const blockVuid = await axios.get(
-      `${process.env.STRAPI_API_URL}/blockByVuid/${ctx.params?.vuid}?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/blockByVuid/${ctx.params?.vuid}?locale=${ctx.locale ?? ctx.defaultLocale
       }&fallbackToDefaultLocale=true`
     )
 
@@ -240,21 +239,22 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     }
 
     // Hämta alla block inom den aktuella föreläsningen
-    const lectureId = block.attributes.Lectures.data[0].id
-    const lectureBlocksResponse = await axios.get(
-      `${process.env.STRAPI_API_URL}/lectures/${lectureId}?populate[Blocks]=*`
-    )
-    const lectureBlocks = lectureBlocksResponse.data.data.attributes.Blocks.data
+    let lectureBlocks = []
+    if (block.attributes.Lectures.data.length > 0) {
+      const lectureId = block.attributes.Lectures.data[0].id
+      const lectureBlocksResponse = await axios.get(
+        `${process.env.STRAPI_API_URL}/lectures/${lectureId}?populate[Blocks]=*`
+      )
+      lectureBlocks = lectureBlocksResponse.data.data.attributes.Blocks.data
+    }
 
     // Fortsätt att hämta övriga data
     const copyRequest = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-block-pages?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-block-pages?locale=${ctx.locale ?? ctx.defaultLocale
       }`
     )
     const generalCopyRequest = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${ctx.locale ?? ctx.defaultLocale
       }`
     )
 
