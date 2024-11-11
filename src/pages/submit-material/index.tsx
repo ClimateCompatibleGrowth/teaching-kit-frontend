@@ -7,24 +7,12 @@ import Button from "../../components/Button/Button"
 import Link from "next/link"
 import { LANGUAGES, LOCALES } from "../../types"
 import { ubuntu } from "../../styles/fonts"
+import { FieldErrors } from "../../utils/validation"
 
 type LectureInput = {
   title: string;
   abstract: string;
   files?: FileList;
-}
-
-type FieldErrors = {
-  email?: { _errors: string[] };
-  courseTitle?: { _errors: string[] };
-  courseAbstract?: { _errors: string[] };
-  courseFiles?: { _errors: string[] };
-  locale?: { _errors: string[] };
-  lectures?: {
-    title?: { _errors: string[] },
-    abstract?: { _errors: string[] },
-    files?: { _errors: string[] }
-  }[] | undefined;
 }
 
 const Wrapper = styled.div`
@@ -90,16 +78,14 @@ const ErrorMessage = styled.span`
 export default function SubmitMaterial() {
   const acceptTypes = ".pdf,.docx,.pptx,ppt,.doc,.txt";
   const [errors, setErrors] = useState<FieldErrors>()
-  const [email, setEmail] = useState<string>("a@a.se")
-  const [courseAbstract, setCourseAbstract] = useState<string>("aa")
-  const [courseTitle, setCourseTitle] = useState<string>("bb")
+  const [email, setEmail] = useState<string>("")
+  const [courseAbstract, setCourseAbstract] = useState<string>("")
+  const [courseTitle, setCourseTitle] = useState<string>("")
   const [courseFiles, setCourseFiles] = useState<FileList | null>()
-  const [lectures, setLectures] = useState<LectureInput[]>([{ title: "lecture title", abstract: "lecture abstract", files: undefined }])
+  const [lectures, setLectures] = useState<LectureInput[]>([])
 
   function changeLecture(newLecture: LectureInput, newIndex: number) {
     const newLectures = lectures.map((lecture, index) => index === newIndex ? newLecture : lecture)
-    console.log(lectures, newLectures);
-
     setLectures(newLectures)
   }
 
@@ -132,9 +118,10 @@ export default function SubmitMaterial() {
       body: formData,
     })
     const responseData = await response.json()
-    console.log(response.status, responseData);
     if (!response.ok) {
       setErrors(responseData)
+    } else {
+      window.location.href = '/thank-you'
     }
   }
 
@@ -197,9 +184,10 @@ export default function SubmitMaterial() {
             </Label>
           </LectureWrapper>
         })}
-        <LectureWrapper>
+        {lectures.length < 10 && <LectureWrapper>
           <Button type="button" primary={false} onClick={() => { setLectures([...lectures, { title: '', abstract: '', files: undefined }]) }}>Add new lecture</Button>
-        </LectureWrapper>
+          {errors?.lectures && errors?.lectures && errors?.lectures._errors && <ErrorMessage role="alert">{errors?.lectures._errors}</ErrorMessage>}
+        </LectureWrapper>}
         <TermsLabel>
           <input type="checkbox" required />
           <TermsAndConditions>

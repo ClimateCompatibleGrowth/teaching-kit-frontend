@@ -4,47 +4,8 @@ import type { NextApiResponse } from 'next'
 import { NextRequest } from 'next/server'
 import z, { RefinementCtx } from "zod"
 import { LOCALES } from '../../../types';
+import { courseSchema } from '../../../utils/validation';
 
-const MAXIMUM_FILE_UPLOAD_SIZE = 50_000_000
-
-const fileRefinement = (files: File[], ctx: RefinementCtx) => {
-  if (files.length > 10) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.too_big,
-      maximum: 10,
-      type: "array",
-      inclusive: true,
-      message: "You can add at most 10 course files. Please contact us at ccg@lboro.ac.uk if you need to upload additional files.",
-    });
-  }
-  const isTooBigfile = files.find(file => file.size > MAXIMUM_FILE_UPLOAD_SIZE)
-  if (isTooBigfile) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.too_big,
-      maximum: MAXIMUM_FILE_UPLOAD_SIZE / 1_000_000,
-      type: "number",
-      inclusive: true,
-      message: `Each file must be at most ${MAXIMUM_FILE_UPLOAD_SIZE / 1_000_000}MB in size, please contact us at ccg@lboro.ac.uk if you need to upload bigger files.`,
-    });
-  }
-}
-
-const courseSchema = z.object({
-  email: z.coerce.string().email({ message: "Please fill in a valid email." }),
-  courseTitle: z.string().min(1, { message: "Please fill in a title for the course." }),
-  courseAbstract: z.string().min(1, { message: "Please fill in an abstract for the course." }),
-  courseFiles: z.array(
-    z.instanceof(File))
-    .superRefine(fileRefinement),
-  locale: z.enum(LOCALES, { message: "A valid locale is needed." }),
-  lectures: z.array(z.object({
-    title: z.string().min(1, { message: "Please fill in a title for the lecture." }),
-    abstract: z.string().min(1, { message: "Please fill in an abstract for the lecture." }),
-    files: z.array(
-      z.instanceof(File))
-      .superRefine(fileRefinement),
-  }))
-});
 
 const getLectureData = (formData: FormData) => {
   let lectureIndex = 0
