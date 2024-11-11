@@ -1,5 +1,4 @@
 import { getRecentLectures } from '../lectures/lectures'
-import { getRecentBlocks } from '../blocks/blocks'
 import { getRecentCourses } from '../courses/courses'
 import {
   Block,
@@ -56,10 +55,9 @@ const getLearningMaterial = async <T extends LearningMaterial>(
 }
 
 export const getRecentUpdates = async (locale?: Locale) => {
-  const [courses, lectures, blocks] = await Promise.all([
+  const [courses, lectures] = await Promise.all([
     getLearningMaterial(locale, getRecentCourses),
     getLearningMaterial(locale, getRecentLectures),
-    getLearningMaterial(locale, getRecentBlocks),
   ])
 
   const now = new Date()
@@ -99,20 +97,8 @@ export const getRecentUpdates = async (locale?: Locale) => {
     Locale: lecture.attributes.locale,
   }))
 
-  const refinedBlocks: RecentUpdateType[] = (
-    blocks as Data<BlockOneLevelDeep>[]
-  ).map((block) => ({
-    Id: block.id,
-    Vuid: block.attributes.vuid,
-    UpdatedAt: block.attributes.updatedAt || nowStamp,
-    Title: block.attributes.Title,
-    Abstract: block.attributes.Abstract,
-    Type: 'BLOCK',
-    Duration: summarizeDurations([block], locale),
-    Locale: block.attributes.locale,
-  }))
 
-  return [...refinedBlocks, ...refinedCourses, ...refinedLectures].sort(
+  return [...refinedCourses, ...refinedLectures].sort(
     (a, b) => new Date(b.UpdatedAt).getTime() - new Date(a.UpdatedAt).getTime()
   )
 }

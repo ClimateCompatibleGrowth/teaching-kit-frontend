@@ -62,11 +62,11 @@ export default function LearningMaterial({
   const getStringAccordion = (label: string, content?: string) => {
     return content !== undefined || content !== null
       ? [
-          {
-            label,
-            content: <p>{content}</p>,
-          },
-        ]
+        {
+          label,
+          content: <p>{content}</p>,
+        },
+      ]
       : []
   }
 
@@ -99,14 +99,14 @@ export default function LearningMaterial({
       ...((acknowledgement) =>
         acknowledgement
           ? getStringAccordion(
-              `${landingPageCopy.Acknowledgement}`,
-              acknowledgement
-            )
+            `${landingPageCopy.Acknowledgement}`,
+            acknowledgement
+          )
           : [])(acknowledgement),
       ...((citeAs) =>
         citeAs ? getStringAccordion(`${landingPageCopy.CiteAs}`, citeAs) : [])(
-        citeAs
-      ),
+          citeAs
+        ),
     ]
   }
 

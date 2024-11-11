@@ -74,6 +74,10 @@ export const BlockContentWrapper = styled.div`
     flex: 0 0 calc(75% - 4.6rem);
     margin-bottom: 6.7rem;
   }
+
+  ${mq.md} {
+    grid-column: span 2;
+  }
 `
 
 export const PaginationControls = styled.div`
@@ -156,13 +160,10 @@ export const ButtonWithoutDefaultStyle = styled.button`
 `
 
 export const LearningMaterialOverview = styled.div`
-  p {
-    max-width: 729px;
-  }
-  flex-direction: column;
-  flex-wrap: nowrap;
-  column-gap: 4.6rem;
-  ${mq.md_lg} {
+  ${mq.md} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 5rem;
   }
 
   h1 {

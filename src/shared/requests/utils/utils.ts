@@ -73,8 +73,6 @@ const getFilterStringByAuthor = (
       return `filters[$and][${andGroup}][$or][0][CourseCreators][ORCID][$containsi]=${authorORCID}&filters[$and][${andGroup}][$or][1][Lectures][LectureCreators][ORCID][$containsi]=${authorORCID}&filters[$and][${andGroup}][$or][2][Lectures][Blocks][Authors][ORCID][$containsi]=${authorORCID}`
     case 'LECTURE':
       return `filters[$and][${andGroup}][$or][0][LectureCreators][ORCID][$containsi]=${authorORCID}&filters[$and][${andGroup}][$or][1][Blocks][Authors][ORCID][$containsi]=${authorORCID}`
-    case 'BLOCK':
-      return `filters[$and][${andGroup}][$or][0][Authors][ORCID][$containsi]=${authorORCID}`
   }
 }
 
@@ -101,7 +99,5 @@ const getFilterStringByKeyword = (
       return `filters[$and][${andGroupStartIndex}][$and][${andGroup}][Lectures][Blocks][Keywords][Keyword][$containsi]=${keyword}`
     case 'LECTURE':
       return `filters[$and][${andGroupStartIndex}][$and][${andGroup}][Blocks][Keywords][Keyword][$containsi]=${keyword}`
-    case 'BLOCK':
-      return `filters[$and][${andGroupStartIndex}][$and][${andGroup}][Keywords][Keyword][$containsi]=${keyword}`
   }
 }

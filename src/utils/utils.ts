@@ -29,13 +29,6 @@ export const typeToText = (
         return lowerCase ? 'conférence' : 'Conférence'
       }
       return lowerCase ? 'lecture' : 'Lecture'
-    case 'BLOCK':
-      if (locale === 'es-ES') {
-        return lowerCase ? 'bloque de conferencias' : 'Bloque de conferencias'
-      } else if (locale === 'fr-FR') {
-        return lowerCase ? 'bloc de conférences' : 'Bloc de conférences'
-      }
-      return lowerCase ? 'lecture block' : 'Lecture block'
   }
 }
 
@@ -74,12 +67,10 @@ const minutesToFormattedHourString = (
 ) => {
   const hours = Math.floor(totalMinutes / 60)
   const minutes = totalMinutes % 60
-  const hourString = `${hours} ${translations[locale].hour}${
-    hours > 1 ? 's' : ''
-  }`
-  const minutesString = `${
-    minutes !== 0 ? `, ${minutes} ${translations[locale].minutes}` : ''
-  }`
+  const hourString = `${hours} ${translations[locale].hour}${hours > 1 ? 's' : ''
+    }`
+  const minutesString = `${minutes !== 0 ? `, ${minutes} ${translations[locale].minutes}` : ''
+    }`
   return `${hourString}${minutesString}`
 }
 
@@ -133,23 +124,6 @@ export const levelToString = (level: {
     ''
   )
   return withoutNumerationPrefix
-}
-
-export const typeToDownloadLabel = (type: LearningMaterialType): string => {
-  switch (type) {
-    case 'COURSE':
-      return 'Download course content'
-    case 'LECTURE':
-      return 'Download lecture content'
-    case 'BLOCK':
-      return 'Download lecture block'
-    default:
-      return 'Download'
-  }
-}
-
-export const stripBackslashN = (string: string) => {
-  return string.replace(/\n/g, '')
 }
 
 export const getImageMetadata = async (url: string) => {

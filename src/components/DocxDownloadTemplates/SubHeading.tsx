@@ -8,8 +8,6 @@ type Props = {
 
 const SubHeading = ({ children, downloadedAs }: Props) => {
   switch (downloadedAs) {
-    case 'BLOCK':
-      return <h2>{children}</h2>
     case 'LECTURE':
       return <h3>{children}</h3>
     case 'COURSE':

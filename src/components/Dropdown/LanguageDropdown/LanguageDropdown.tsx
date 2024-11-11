@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import * as Styled from './styles'
 import Globe from '../../../../public/icons/globe.svg'
 import { LocaleContext } from '../../../contexts/LocaleContext'
-import { Language, locales } from '../../../types/index'
+import { Language, LOCALES } from '../../../types/index'
 import { localeToLanguage, languageToLocale } from '../../../utils/utils'
 
 export default function LanguageDropdown() {
@@ -23,7 +23,7 @@ export default function LanguageDropdown() {
         <option value='' selected disabled hidden>
           {localeToLanguage(locale)}
         </option>
-        {locales.map((locale) => {
+        {LOCALES.map((locale) => {
           return <option key={locale}>{localeToLanguage(locale)}</option>
         })}
       </Styled.DropdownSelector>

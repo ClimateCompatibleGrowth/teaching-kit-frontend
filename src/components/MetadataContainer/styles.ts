@@ -21,30 +21,20 @@ export const MetadataContainer = styled.div`
   gap: 2rem;
   font-size: 1.6rem;
   margin-top: 6rem;
-  height: auto;
-  a {
-    color: ${Accent40};
-    text-decoration: underline;
-
-    &:hover {
-      color: ${Primary40};
-    }
-  }
-
-  ${mq.xs} {
-    height: auto;
-  }
 
   ${mq.sm} {
-    width: 75%;
     margin: 8rem auto;
   }
 
-  ${mq.md_lg} {
+  ${mq.lg} {
     margin-top: 0;
-    max-width: 30.5rem;
-    height: 100%;
+    max-width: 40rem;
   }
+`
+
+export const Logo = styled.img`
+  max-width: 50%;
+  margin-bottom: 2rem;
 `
 
 export const Heading = styled.h6`
@@ -54,7 +44,12 @@ export const Heading = styled.h6`
 export const Ul = styled(UlWithoutDefaultStyle)``
 
 export const Li = styled.li`
-  display: flex;
+a {
+    overflow: hidden;
+    max-width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 `
 
 export const DownloadButtonsContainer = styled.div`

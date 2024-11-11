@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
 
 export const CardList = styled.div`
-  max-width: 78rem;
   margin: 2rem 0;
 
   display: flex;

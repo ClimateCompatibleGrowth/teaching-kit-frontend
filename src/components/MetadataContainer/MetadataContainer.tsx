@@ -1,95 +1,46 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Author,
   CourseOneLevelDeep,
   LandingPageCopy,
   Data,
-  LearningMaterialType,
   Lecture,
-  Level,
+  MediaFiles,
+  MediaFile,
 } from '../../types'
-import { DownloadError } from '../../utils/downloadAsDocx/downloadAsDocx'
-import { levelToString } from '../../utils/utils'
-import Alert from '../Alert/Alert'
-import Button from '../Button/Button'
 
 import * as Styled from './styles'
+import ButtonLink from '../ButtonLink/ButtonLink'
 
 export type Props = {
-  level?: { data?: Data<Level> }
-  duration?: string
+  citeAs?: string
+  acknowledgment?: string
+  files?: MediaFiles
+  logo?: MediaFile
   authors?: { data: Data<Author>[] }
-  docxFileSize: string
-  pptxFileSize?: string
-  downloadAsDocx: () => Promise<void | DownloadError>
-  downloadAsPptx?: () => Promise<void | DownloadError>
   parentRelations?: {
     type: 'lectures' | 'courses'
     parents: Data<CourseOneLevelDeep>[] | Data<Lecture>[]
   }
-  type: LearningMaterialType
   landingPageCopy: LandingPageCopy
 }
 
 export default function MetadataContainer({
-  level,
-  duration,
+  acknowledgment,
+  citeAs,
+  files,
+  logo,
   authors,
-  docxFileSize,
-  pptxFileSize,
-  downloadAsDocx,
-  downloadAsPptx,
   parentRelations,
   landingPageCopy,
 }: Props) {
-  const [isDocxDownloadLoading, setIsDocxDownloadLoading] = useState(false)
-  const [docxDowloadError, setDocxDownloadError] = useState(false)
-  const [isPptxDownloadLoading, setIsPptxDownloadLoading] = useState(false)
-  const [pptxDowloadError, setPptxDownloadError] = useState(false)
-
-  const docxDownloadHandler = async () => {
-    const delayedLoading = setTimeout(() => setIsDocxDownloadLoading(true), 300)
-    const download = await downloadAsDocx()
-    if (download?.hasError) {
-      setDocxDownloadError(true)
-    }
-    clearTimeout(delayedLoading)
-    setIsDocxDownloadLoading(false)
+  if ((!authors?.data || authors?.data.length === 0) && !acknowledgment && !citeAs && !files?.data) {
+    return null
   }
-
-  const pptxDownloadHandler = async () => {
-    if (downloadAsPptx) {
-      const delayedLoading = setTimeout(
-        () => setIsPptxDownloadLoading(true),
-        300
-      )
-      const download = await downloadAsPptx()
-      if (download?.hasError) {
-        setPptxDownloadError(true)
-      }
-      clearTimeout(delayedLoading)
-      setIsPptxDownloadLoading(false)
-    }
-  }
-
   return (
     <Styled.MetadataContainer>
-      <Styled.HeadingSet>
-        {!!level?.data && (
-          <Styled.ShortInfo>
-            <Styled.SignalStrengthIcon />
-            {levelToString(level)}
-          </Styled.ShortInfo>
-        )}
-        {duration !== undefined && (
-          <Styled.ShortInfo>
-            <Styled.ClockIcon />
-            {duration}
-          </Styled.ShortInfo>
-        )}
-      </Styled.HeadingSet>
+      {logo?.data?.attributes?.url && <Styled.Logo src={logo?.data.attributes.url} />}
       {parentRelations && (
         <Styled.HeadingSet>
           <Styled.Heading>{landingPageCopy.AlsoPartOf}</Styled.Heading>
@@ -117,43 +68,28 @@ export default function MetadataContainer({
           </Styled.Ul>
         </Styled.HeadingSet>
       )}
-      <Styled.HeadingSet>
+      {acknowledgment && (
+        <Styled.HeadingSet>
+          <Styled.Heading>{landingPageCopy.Acknowledgement}</Styled.Heading>
+          {acknowledgment}
+        </Styled.HeadingSet>
+      )}
+      {citeAs && (
+        <Styled.HeadingSet>
+          <Styled.Heading>{landingPageCopy.CiteAs}</Styled.Heading>
+          {citeAs}
+        </Styled.HeadingSet>
+      )}
+      {files?.data && <Styled.HeadingSet>
         <Styled.Heading>{landingPageCopy.DownloadContent}</Styled.Heading>
-        <Styled.DownloadButtonsContainer>
-          {downloadAsPptx && (
-            <>
-              <Button
-                onClick={pptxDownloadHandler}
-                isLoading={isPptxDownloadLoading}
-              >
-                <Styled.DownloadIcon />
-                Powerpoint
-              </Button>
-              <Styled.DownloadSize>{`${landingPageCopy.PowerpointDownloadDescription} (${pptxFileSize})`}</Styled.DownloadSize>
-            </>
+        <Styled.Ul>
+          {files.data.map(file =>
+            <Styled.Li key={file.id}>
+              <ButtonLink primary download href={file.attributes.url}>{file.attributes.alternativeText || file.attributes.name}</ButtonLink>
+            </Styled.Li>
           )}
-
-          <Button
-            onClick={docxDownloadHandler}
-            isLoading={isDocxDownloadLoading}
-          >
-            <Styled.DownloadIcon />
-            Docx
-          </Button>
-          <Styled.DownloadSize>{`${landingPageCopy.DocxDownloadDescription} (${docxFileSize})`}</Styled.DownloadSize>
-        </Styled.DownloadButtonsContainer>
-        {(docxDowloadError || pptxDowloadError) && (
-          <Styled.Alert>
-            <Alert
-              title='The download failed'
-              text={`Something went wrong when trying to download the ${
-                docxDowloadError ? 'Docx' : 'powerpoint'
-              } document...`}
-              type='ERROR'
-            />
-          </Styled.Alert>
-        )}
-      </Styled.HeadingSet>
+        </Styled.Ul>
+      </Styled.HeadingSet>}
     </Styled.MetadataContainer>
   )
 }

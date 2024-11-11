@@ -20,22 +20,6 @@ export type Props = {
 }
 
 const DocxDownload = ({ data }: Props): JSX.Element => {
-  if (isBlockOneLevelDeep(data)) {
-    return (
-      <div key={data.attributes.Title}>
-        <Heading downloadedAs={'BLOCK'}>{data.attributes.Title}</Heading>
-        <Authors authors={data.attributes?.Authors?.data} />
-        <Duration blocks={[data]} />
-        <Abstract downloadedAs={'BLOCK'} markdown={data.attributes.Abstract} />
-        <LearningOutcomes learningOutcomes={data.attributes.LearningOutcomes} />
-        <Markdown>{data.attributes.Document}</Markdown>
-        <References
-          references={data.attributes.References}
-          downloadedAs={'BLOCK'}
-        />
-      </div>
-    )
-  }
   if (isLectureTwoLevelsDeep(data)) {
     return (
       <div key={data.attributes.Title}>
