@@ -30,8 +30,8 @@ export const convertMarkdownImagesToLocalReferences = async (
         return `[${imageName}](${imagePath})`
       }
 
-      const imageNameWithoutExtension: [string, string] =
-        imageName.match(/^(.*?)\.(png|jpeg|jpg|gif)/) ?? imageName
+      const imageNameWithoutExtension: [string, string, string] =
+        imageName.match(/^(.+)\/(.*?)\.(png|jpeg|jpg|gif)/) ?? imageName
 
       const amountOfPreviousImagesWithTheSameName = countOccurancesInArray(
         imageName,
@@ -44,11 +44,11 @@ export const convertMarkdownImagesToLocalReferences = async (
           : imageName
 
       imageReferences.push({
-        name: newImageName,
+        name: newImageName || `${imageNameWithoutExtension[2]}${imageNameWithoutExtension[3]}`,
         path: imagePath,
       })
 
-      return `[${imageNameWithoutExtension[1]}](${imageName})`
+      return `[${imageNameWithoutExtension[1]}${imageNameWithoutExtension[2]}](${imageName})`
     }
   )
 
