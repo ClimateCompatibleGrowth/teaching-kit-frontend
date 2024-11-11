@@ -68,6 +68,9 @@ export async function POST(
   response: NextApiResponse
 ) {
   try {
+    if (process.env.NEXT_PUBLIC_ACCEPT_FORM_SUBMISSIONS !== 'true') {
+      return new Response("{}", { status: 503 })
+    }
     const formData = await req.formData()
 
     const email = formData.get("email")

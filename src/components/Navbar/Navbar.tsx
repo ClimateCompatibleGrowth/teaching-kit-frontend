@@ -45,7 +45,7 @@ export default function Navbar() {
               {translation.teachingMaterial ?? TEACHING_MATERIAL}
             </Link>
           </Styled.Li>
-          <Styled.Li>
+          {/* {process.env.NEXT_PUBLIC_ACCEPT_FORM_SUBMISSIONS === 'true' && <Styled.Li>
             <Link
               aria-current={
                 pathname === '/submit-material' ? 'page' : undefined
@@ -54,7 +54,7 @@ export default function Navbar() {
             >
               {translation.submitMaterial ?? SUBMIT_MATERIAL}
             </Link>
-          </Styled.Li>
+          </Styled.Li>} */}
           <Styled.Li>
             <Styled.LanguageSelector>
               {setLocale !== undefined && !isLoading ? (

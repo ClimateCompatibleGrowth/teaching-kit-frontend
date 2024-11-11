@@ -138,6 +138,10 @@ export default function SubmitMaterial() {
     }
   }
 
+  if (process.env.NEXT_PUBLIC_ACCEPT_FORM_SUBMISSIONS !== 'true') {
+    return null
+  }
+
   return <PageContainer hasTopPadding hasBottomPadding>
     <Wrapper>
       <h1>Submit teaching material</h1>
