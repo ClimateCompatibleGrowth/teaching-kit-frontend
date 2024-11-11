@@ -360,16 +360,18 @@ const handleBlockUpload = async (
 
   if (strapiBlock.attributes.Slides && strapiBlock.attributes.Slides.length > 0) {
     const { pptx } = await createPptxFile(strapiBlock);
-    const blob = await pptx?.write() as Blob
-    await zenodo.uploadFile(
-      zenodoCreationResponse.links.files,
-      `${strapiBlock.attributes.Title}.pptx`,
-      blob,
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    )
-    console.info(
-      `Successfully uploaded powerpoint with name '${strapiBlock.attributes.Title}.md'`
-    )
+    if (!Array.isArray(pptx)) {
+      const blob = await pptx?.write() as Blob
+      await zenodo.uploadFile(
+        zenodoCreationResponse.links.files,
+        `${strapiBlock.attributes.Title}.pptx`,
+        blob,
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      )
+      console.info(
+        `Successfully uploaded powerpoint with name '${strapiBlock.attributes.Title}.md'`
+      )
+    }
   }
 
   await zenodo.uploadFile(
