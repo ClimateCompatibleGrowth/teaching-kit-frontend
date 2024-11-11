@@ -35,6 +35,7 @@ import { Type, zenodo_entry } from '@prisma/client'
 import { getMatchingRows, Identifier } from '../repositories/zenodo-database'
 import { NoOperationError } from '../shared/error/no-operation-error'
 import { NotImplementedError } from '../shared/error/not-implemented-error'
+import { createPptxFile } from '../utils/downloadAsPptx/downloadAsPptx'
 
 const ZENODO_DEPOSIT_BASE_URL = 'https://zenodo.org/deposit'
 const PUBLISHED_CHILDREN_AMOUNT_THRESHOLD_FOR_LECTURE = 1
@@ -356,6 +357,22 @@ const handleBlockUpload = async (
   const updatedZenodoEntities = await convertMarkdownImagesToLocalReferences(
     strapiBlock.attributes.Document
   )
+
+  if (strapiBlock.attributes.Slides && strapiBlock.attributes.Slides.length > 0) {
+    const { pptx } = await createPptxFile(strapiBlock);
+    if (!Array.isArray(pptx)) {
+      const blob = await pptx?.write() as Blob
+      await zenodo.uploadFile(
+        zenodoCreationResponse.links.files,
+        `${strapiBlock.attributes.Title}.pptx`,
+        blob,
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      )
+      console.info(
+        `Successfully uploaded powerpoint with name '${strapiBlock.attributes.Title}.md'`
+      )
+    }
+  }
 
   await zenodo.uploadFile(
     zenodoCreationResponse.links.files,
