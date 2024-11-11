@@ -31,7 +31,7 @@ export const convertMarkdownImagesToLocalReferences = async (
       }
 
       const imageNameWithoutExtension: [string, string, string, string] =
-        imageName.match(/^(.+)\/(.*?)\.(png|jpeg|jpg|gif)/) ?? imageName
+        imagePath.match(/^(.+)\/(.*?)\.(png|jpeg|jpg|gif)/) ?? imageName
 
       const amountOfPreviousImagesWithTheSameName = countOccurancesInArray(
         imageName,
