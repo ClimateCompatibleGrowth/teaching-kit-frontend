@@ -139,7 +139,7 @@ export default function SubmitMaterial() {
   }
 
   if (process.env.NEXT_PUBLIC_ACCEPT_FORM_SUBMISSIONS !== 'true') {
-    return null
+    return <PageContainer hasTopPadding hasBottomPadding />
   }
 
   return <PageContainer hasTopPadding hasBottomPadding>
