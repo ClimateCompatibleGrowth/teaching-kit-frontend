@@ -386,14 +386,13 @@ const handleBlockUpload = async (
   )
 
   await Promise.all(
-    updatedZenodoEntities.images.map(async (image) => {
-      await zenodo.uploadFile(
+    updatedZenodoEntities.images.map((image) => {
+      return zenodo.uploadFile(
         zenodoCreationResponse.links.files,
         image.name,
         image.uint8Array,
         'image/*'
       )
-      console.info(`Successfully uploaded image with name '${image.name}'`)
     })
   )
 
