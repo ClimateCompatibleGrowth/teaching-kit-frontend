@@ -1,4 +1,4 @@
-import z from 'zod';
+import z, { ZodFormattedError } from 'zod';
 import { LOCALES } from '../types';
 
 export const MAXIMUM_FILE_UPLOAD_SIZE = 50_000_000
@@ -43,17 +43,15 @@ export const courseSchema = z.object({
 });
 
 
-export type FieldErrors = {
-  email?: { _errors: string[] };
-  courseTitle?: { _errors: string[] };
-  courseAbstract?: { _errors: string[] };
-  courseFiles?: { _errors: string[] };
-  locale?: { _errors: string[] };
-  lectures?: Record<number | string,
-    {
-      title?: { _errors: string[] },
-      abstract?: { _errors: string[] },
-      files?: { _errors: string[] }
-    }
-  > & { _errors: string[] };
-}
+export type FieldErrors = ZodFormattedError<{
+  email: string;
+  courseTitle: string;
+  courseAbstract: string;
+  locale: typeof LOCALES[number];
+  lectures: {
+    title: string;
+    abstract: string;
+    files?: File[] | undefined;
+  }[];
+  courseFiles?: File[] | undefined;
+}, string>

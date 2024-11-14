@@ -78,8 +78,9 @@ const ErrorMessage = styled.span`
 
 export default function SubmitMaterial() {
   const acceptTypes = ".pdf,.docx,.pptx,ppt,.doc,.txt";
-  const [errors, setErrors] = useState<FieldErrors | undefined>()
+  const [errors, setErrors] = useState<FieldErrors>()
   const [email, setEmail] = useState<string>("")
+  const [locale, setLocale] = useState<typeof LOCALES[number]>("en")
   const [courseAbstract, setCourseAbstract] = useState<string>("")
   const [courseTitle, setCourseTitle] = useState<string>("")
   const [courseFiles, setCourseFiles] = useState<FileList | null>()
@@ -98,6 +99,7 @@ export default function SubmitMaterial() {
       courseTitle,
       courseAbstract,
       courseFiles,
+      locale,
       lectures
     })
     if (!validationData.success) {
@@ -133,7 +135,7 @@ export default function SubmitMaterial() {
         </Label>
         <Label>
           Content language
-          <select name="locale" defaultValue={LOCALES[0]}>
+          <select name="locale" value={locale} onChange={e => { setLocale(e.target.value as typeof LOCALES[number]) }}>
             {LOCALES.map((locale, i) => <option key={locale} value={locale}>{LANGUAGES[i]}</option>)}
           </select>
         </Label>
