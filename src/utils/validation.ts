@@ -31,14 +31,14 @@ export const courseSchema = z.object({
   courseAbstract: z.string().min(1, { message: "Please fill in an abstract for the course." }),
   courseFiles: z.array(
     z.instanceof(File))
-    .superRefine(fileRefinement),
+    .superRefine(fileRefinement).optional(),
   locale: z.enum(LOCALES, { message: "A valid locale is needed." }),
   lectures: z.array(z.object({
     title: z.string().min(1, { message: "Please fill in a title for the lecture." }),
     abstract: z.string().min(1, { message: "Please fill in an abstract for the lecture." }),
     files: z.array(
       z.instanceof(File))
-      .superRefine(fileRefinement),
+      .superRefine(fileRefinement).optional(),
   })).min(1, { message: "You must add at least one lecture per course." }).max(10, { message: "You can submit at most 10 lectures per course. Please contact us at ccg@lboro.ac.uk if you need to add additional lectures." })
 });
 

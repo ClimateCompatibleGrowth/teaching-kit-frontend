@@ -1,9 +1,6 @@
-import axios, { AxiosError } from 'axios'
-// import FormData from 'form-data';
+import axios from 'axios'
 import type { NextApiResponse } from 'next'
 import { NextRequest } from 'next/server'
-import z, { RefinementCtx } from "zod"
-import { LOCALES } from '../../../types';
 import { courseSchema } from '../../../utils/validation';
 
 

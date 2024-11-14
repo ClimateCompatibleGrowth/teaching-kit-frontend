@@ -7,7 +7,7 @@ import Button from "../../components/Button/Button"
 import Link from "next/link"
 import { LANGUAGES, LOCALES } from "../../types"
 import { ubuntu } from "../../styles/fonts"
-import { FieldErrors } from "../../utils/validation"
+import { courseSchema, FieldErrors } from "../../utils/validation"
 import axios from "axios"
 
 type LectureInput = {
@@ -93,25 +93,17 @@ export default function SubmitMaterial() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    const courseSchema = z.object({
-      email: z.coerce.string().email(),
-      courseTitle: z.string(),
-      courseAbstract: z.string(),
-      courseFiles: z.instanceof(FileList).optional(),
-      lectures: z.array(z.object({
-        title: z.string(),
-        abstract: z.string(),
-        files: z.instanceof(FileList).optional()
-      })).optional()
-    });
-
-    courseSchema.parse({
+    const validationData = courseSchema.safeParse({
       email,
       courseTitle,
       courseAbstract,
       courseFiles,
       lectures
     })
+    if (!validationData.success) {
+      setErrors(validationData.error.format())
+      return
+    }
 
     const formData = new FormData(event.currentTarget)
     const response = await axios.post('/api/submit-material', {
