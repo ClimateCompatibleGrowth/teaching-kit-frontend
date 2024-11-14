@@ -78,7 +78,7 @@ const ErrorMessage = styled.span`
 
 export default function SubmitMaterial() {
   const acceptTypes = ".pdf,.docx,.pptx,ppt,.doc,.txt";
-  const [errors, setErrors] = useState<FieldErrors>()
+  const [errors, setErrors] = useState<FieldErrors | undefined>()
   const [email, setEmail] = useState<string>("")
   const [courseAbstract, setCourseAbstract] = useState<string>("")
   const [courseTitle, setCourseTitle] = useState<string>("")
@@ -101,7 +101,7 @@ export default function SubmitMaterial() {
       lectures
     })
     if (!validationData.success) {
-      setErrors(validationData.error.format())
+      setErrors(validationData.error.format() as FieldErrors)
       return
     }
 
