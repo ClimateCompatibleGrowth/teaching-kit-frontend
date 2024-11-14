@@ -125,9 +125,9 @@ export async function POST(
       })
     }
 
-    return new Response("{}")
+    return new Response("{}", { status: 204 })
   } catch (error: any) {
     console.log("/", error, error.response);
-    return new Response("{}")
+    return new Response("{}", { status: 500 })
   }
 }

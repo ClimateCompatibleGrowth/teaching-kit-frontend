@@ -8,6 +8,7 @@ import Link from "next/link"
 import { LANGUAGES, LOCALES } from "../../types"
 import { ubuntu } from "../../styles/fonts"
 import { FieldErrors } from "../../utils/validation"
+import axios from "axios"
 
 type LectureInput = {
   title: string;
@@ -113,12 +114,12 @@ export default function SubmitMaterial() {
     })
 
     const formData = new FormData(event.currentTarget)
-    const response = await fetch('/api/submit-material', {
+    const response = await axios.post('/api/submit-material', {
       method: 'POST',
       body: formData,
     })
-    const responseData = await response.json()
-    if (!response.ok) {
+    const responseData = await response.data
+    if (response.status !== 204) {
       setErrors(responseData)
     } else {
       window.location.href = '/thank-you'
