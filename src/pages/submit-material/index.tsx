@@ -108,10 +108,8 @@ export default function SubmitMaterial() {
     }
 
     const formData = new FormData(event.currentTarget)
-    const response = await axios.post('/api/submit-material', {
-      method: 'POST',
-      body: formData,
-    })
+    const response = await axios.post('/api/submit-material', formData)
+
     const responseData = await response.data
     if (response.status !== 204) {
       setErrors(responseData)
