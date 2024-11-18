@@ -2,6 +2,7 @@ import { NextFont } from "next/dist/compiled/@next/font"
 import { Montserrat, Ubuntu } from "next/font/google"
 
 type UbuntuFont = {
+  400: NextFont
   500: NextFont
   700: NextFont
 }
@@ -13,6 +14,12 @@ type MontserratFont = {
   600: NextFont
   700: NextFont
 }
+
+const Ubuntu400 = Ubuntu({
+  subsets: ['latin'],
+  style: ['normal'],
+  weight: '400',
+})
 
 const Ubuntu500 = Ubuntu({
   subsets: ['latin'],
@@ -57,6 +64,7 @@ const Montserrat700 = Montserrat({
 })
 
 export const ubuntu: UbuntuFont = {
+  400: Ubuntu400,
   500: Ubuntu500,
   700: Ubuntu700,
 }

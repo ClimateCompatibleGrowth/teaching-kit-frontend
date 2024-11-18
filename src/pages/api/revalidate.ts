@@ -46,8 +46,6 @@ const getPathToPurge = (contentType: LearningMaterialType, vuid: number) => {
       return `/courses/${vuid}`
     case 'lecture':
       return `/lectures/${vuid}`
-    case 'block':
-      return `/blocks/${vuid}`
     default:
       return undefined
   }

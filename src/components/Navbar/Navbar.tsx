@@ -9,6 +9,7 @@ import { useContext } from 'react'
 import {
   HOME,
   LOGO_ALT_TEXT,
+  SUBMIT_MATERIAL,
   TEACHING_MATERIAL,
   translations,
 } from './translations'
@@ -44,6 +45,16 @@ export default function Navbar() {
               {translation.teachingMaterial ?? TEACHING_MATERIAL}
             </Link>
           </Styled.Li>
+          {/* {process.env.NEXT_PUBLIC_ACCEPT_FORM_SUBMISSIONS === 'true' && <Styled.Li>
+            <Link
+              aria-current={
+                pathname === '/submit-material' ? 'page' : undefined
+              }
+              href='/submit-material'
+            >
+              {translation.submitMaterial ?? SUBMIT_MATERIAL}
+            </Link>
+          </Styled.Li>} */}
           <Styled.Li>
             <Styled.LanguageSelector>
               {setLocale !== undefined && !isLoading ? (

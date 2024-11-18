@@ -13,10 +13,9 @@ import {
 export const HeaderWrapper = {
   display: 'flex',
   flexWrap: 'wrap' as 'wrap',
-  justifyContent: 'space-between',
+  justifyContent: 'end',
   alignItems: 'end',
 
-  borderBottom: `1px solid ${Neutral40}`,
   paddingBottom: '0.8rem',
 
   [`${mq.sm}`]: {

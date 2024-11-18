@@ -11,8 +11,6 @@ import {
   LearningMaterialOverview,
   LearningMaterialCourseHeading,
   PageContainer,
-  customBreakPoint,
-  FlexContainer,
 } from '../../styles/global'
 import {
   Course,
@@ -21,12 +19,6 @@ import {
   Data,
   GeneralCopy,
 } from '../../types'
-import { handlePptxDownload } from '../../utils/downloadAsPptx/downloadAsPptx'
-import { handleDocxDownload } from '../../utils/downloadAsDocx/downloadAsDocx'
-import { useDocxFileSize } from '../../utils/downloadAsDocx/useDocxFileSize'
-import { usePptxFileSize } from '../../utils/downloadAsPptx/usePptxFileSize'
-import { summarizeDurations } from '../../utils/utils'
-import { useWindowSize } from '../../utils/useWindowSize'
 import { useEffect, useState } from 'react'
 
 type Props = {
@@ -46,88 +38,50 @@ export default function CoursePage({
     setHasMounted(true)
   }, [])
 
-  const { width } = useWindowSize()
-  const breakpoint = Number(customBreakPoint)
-
-  const docxFileSize = useDocxFileSize(course)
-  const pptxFileSize = usePptxFileSize(course)
-
   return (
     <PageContainer hasTopPadding hasBottomPadding>
-      <FlexContainer>
-        <LearningMaterialOverview>
-          <LearningMaterial
-            type='COURSE'
-            title={course.attributes.Title}
-            abstract={course.attributes.Abstract}
-            learningOutcomes={course.attributes.LearningOutcomes}
-            prerequisites={course.attributes.Prerequisites}
-            acknowledgement={course.attributes.Acknowledgement}
-            citeAs={course.attributes.CiteAs}
-            publishedAt={course.attributes.publishedAt}
-            updatedAt={course.attributes.updatedAt}
-            locale={course.attributes.locale}
-            landingPageCopy={landingPageCopy}
-            translationDoesNotExistCopy={
-              generalCopy.attributes.TranslationDoesNotExist
-            }
+      <LearningMaterialOverview>
+        <LearningMaterial
+          type='COURSE'
+          title={course.attributes.Title}
+          abstract={course.attributes.Abstract}
+          learningOutcomes={course.attributes.LearningOutcomes}
+          prerequisites={course.attributes.Prerequisites}
+          acknowledgement={course.attributes.Acknowledgement}
+          citeAs={course.attributes.CiteAs}
+          publishedAt={course.attributes.publishedAt}
+          updatedAt={course.attributes.updatedAt}
+          locale={course.attributes.locale}
+          landingPageCopy={landingPageCopy}
+          translationDoesNotExistCopy={
+            generalCopy.attributes.TranslationDoesNotExist
+          }
+        />
+        <MetadataContainer
+          acknowledgment={course.attributes.Acknowledgement}
+          citeAs={course.attributes.CiteAs}
+          logo={course.attributes.Logo}
+          files={course.attributes.Files}
+          authors={course.attributes.CourseCreators}
+          landingPageCopy={landingPageCopy}
+        />
+        <BlockContentWrapper>
+          <LearningMaterialCourseHeading>
+            {landingPageCopy.DescriptionHeader}
+          </LearningMaterialCourseHeading>
+          <CardList
+            cards={course.attributes.Lectures.data.map((lecture) => ({
+              id: lecture.id.toString(),
+              title: lecture.attributes.Title,
+              text: lecture.attributes.Abstract,
+              files: lecture.attributes.Files,
+              subTitle: <LearningMaterialBadge type={'LECTURE'} />,
+              translationDoesNotExistCopy:
+                generalCopy.attributes.TranslationDoesNotExist,
+            }))}
           />
-          {hasMounted && width <= breakpoint && (
-            <MetadataContainer
-              level={course.attributes.Level}
-              duration={summarizeDurations(
-                course.attributes.Lectures.data
-                  .map((lecture) =>
-                    lecture.attributes.Blocks.data.map((block) => block)
-                  )
-                  .flat()
-              )}
-              authors={course.attributes.CourseCreators}
-              docxFileSize={docxFileSize}
-              pptxFileSize={pptxFileSize}
-              downloadAsDocx={() => handleDocxDownload(course)}
-              downloadAsPptx={() => handlePptxDownload(course)}
-              landingPageCopy={landingPageCopy}
-              type='COURSE'
-            />
-          )}
-          <BlockContentWrapper>
-            <LearningMaterialCourseHeading>
-              {landingPageCopy.DescriptionHeader}
-            </LearningMaterialCourseHeading>
-            <CardList
-              cards={course.attributes.Lectures.data.map((lecture) => ({
-                id: lecture.id.toString(),
-                title: lecture.attributes.Title,
-                text: lecture.attributes.Abstract,
-                href: `/lectures/${lecture.attributes.vuid}`,
-                subTitle: <LearningMaterialBadge type={'LECTURE'} />,
-                translationDoesNotExistCopy:
-                  generalCopy.attributes.TranslationDoesNotExist,
-              }))}
-            />
-          </BlockContentWrapper>
-        </LearningMaterialOverview>
-        {hasMounted && width > breakpoint && (
-          <MetadataContainer
-            level={course.attributes.Level}
-            duration={summarizeDurations(
-              course.attributes.Lectures.data
-                .map((lecture) =>
-                  lecture.attributes.Blocks.data.map((block) => block)
-                )
-                .flat()
-            )}
-            authors={course.attributes.CourseCreators}
-            docxFileSize={docxFileSize}
-            pptxFileSize={pptxFileSize}
-            downloadAsDocx={() => handleDocxDownload(course)}
-            downloadAsPptx={() => handlePptxDownload(course)}
-            landingPageCopy={landingPageCopy}
-            type='COURSE'
-          />
-        )}
-      </FlexContainer>
+        </BlockContentWrapper>
+      </LearningMaterialOverview>
     </PageContainer>
   )
 }
@@ -171,37 +125,33 @@ export async function getStaticPaths() {
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
     const courseVuid = await axios.get(
-      `${process.env.STRAPI_API_URL}/courseByVuid/${ctx.params?.vuid}?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/courseByVuid/${ctx.params?.vuid}?locale=${ctx.locale ?? ctx.defaultLocale
       }&fallbackToDefaultLocale=true`
     )
 
-    const populateBlocks = 'populate[Lectures][populate][0]=Blocks'
     const populateCourseCreators = 'populate=CourseCreators'
+    const populateCourseFiles =
+      'populate[Files]=*'
+    const populateCourseLogo =
+      'populate[Logo]=*'
     const populateLectureCreators =
       'populate[Lectures][populate][LectureCreators]=*'
     const populateLearningOutcomes =
       'populate[Lectures][populate][LearningOutcomes]=*'
-    const populateBlockAuthors =
-      'populate[Lectures][populate][Blocks][populate][Authors]=*'
-    const populateBlockSlides =
-      'populate[Lectures][populate][Blocks][populate][Slides]=*'
-    const populateLevel = 'populate[Level]=*'
-    const populateLectureLevel = 'populate[Lectures][populate][Level]=*'
+    const populateLectureFiles =
+      'populate[Lectures][populate][Files]=*'
 
     const courseRequest: Promise<Response<CourseThreeLevelsDeep>> = axios.get(
-      `${process.env.STRAPI_API_URL}/courses/${courseVuid.data?.id}?${populateBlocks}&${populateCourseCreators}&${populateLectureCreators}&${populateLearningOutcomes}&${populateBlockAuthors}&${populateBlockSlides}&${populateLevel}&${populateLectureLevel}`
+      `${process.env.STRAPI_API_URL}/courses/${courseVuid.data?.id}?${populateCourseCreators}&${populateCourseFiles}&${populateCourseLogo}&${populateLectureCreators}&${populateLearningOutcomes}&${populateLectureFiles}`
     )
 
     const copyRequest: Promise<ResponseArray<LandingPageCopy>> = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-course-pages?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-course-pages?locale=${ctx.locale ?? ctx.defaultLocale
       }`
     )
 
     const generalCopyRequest: Promise<ResponseArray<GeneralCopy>> = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${ctx.locale ?? ctx.defaultLocale
       }`
     )
 

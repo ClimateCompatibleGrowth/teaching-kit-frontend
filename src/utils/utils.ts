@@ -1,12 +1,7 @@
-import { DEFAULT_LOCALE } from '../contexts/LocaleContext'
 import {
-  BlockOneLevelDeep,
-  Data,
   LearningMaterialType,
-  Level,
   Locale,
 } from '../types'
-import { Translations } from '../types/translations'
 import { Language } from '../types'
 
 export const typeToText = (
@@ -29,69 +24,7 @@ export const typeToText = (
         return lowerCase ? 'conférence' : 'Conférence'
       }
       return lowerCase ? 'lecture' : 'Lecture'
-    case 'BLOCK':
-      if (locale === 'es-ES') {
-        return lowerCase ? 'bloque de conferencias' : 'Bloque de conferencias'
-      } else if (locale === 'fr-FR') {
-        return lowerCase ? 'bloc de conférences' : 'Bloc de conférences'
-      }
-      return lowerCase ? 'lecture block' : 'Lecture block'
   }
-}
-
-type Time = {
-  minutes: string
-  hour: string
-}
-
-const translations: Translations<Time> = {
-  en: {
-    minutes: 'minutes',
-    hour: 'hour',
-  },
-  'es-ES': {
-    minutes: 'minutos',
-    hour: 'hora',
-  },
-  'fr-FR': {
-    minutes: 'minutes',
-    hour: 'heure',
-  },
-}
-
-const summarizeDurationsInMinutes = (
-  blocks: Data<Pick<BlockOneLevelDeep, 'DurationInMinutes'>>[]
-) => {
-  return blocks.reduce(
-    (total, block) => (total += block.attributes.DurationInMinutes),
-    0
-  )
-}
-
-const minutesToFormattedHourString = (
-  totalMinutes: number,
-  locale: Locale = DEFAULT_LOCALE
-) => {
-  const hours = Math.floor(totalMinutes / 60)
-  const minutes = totalMinutes % 60
-  const hourString = `${hours} ${translations[locale].hour}${
-    hours > 1 ? 's' : ''
-  }`
-  const minutesString = `${
-    minutes !== 0 ? `, ${minutes} ${translations[locale].minutes}` : ''
-  }`
-  return `${hourString}${minutesString}`
-}
-
-export const summarizeDurations = (
-  blocks: Data<Pick<BlockOneLevelDeep, 'DurationInMinutes'>>[],
-  locale: Locale = DEFAULT_LOCALE
-) => {
-  const durationInMinutes = summarizeDurationsInMinutes(blocks)
-  if (durationInMinutes < 60) {
-    return `${durationInMinutes} ${translations[locale].minutes}`
-  }
-  return `${minutesToFormattedHourString(durationInMinutes, locale)}`
 }
 
 export const formatDate = (date: Date | string): string => {
@@ -120,36 +53,6 @@ export const sourceIsFromS3 = (string: string): boolean => {
     return source.hostname === process.env.NEXT_PUBLIC_S3_HOST
   }
   return false
-}
-
-export const levelToString = (level: {
-  data?: Data<Level>
-}): string | undefined => {
-  if (!level.data) {
-    return undefined
-  }
-  const withoutNumerationPrefix = level.data.attributes.Level.replace(
-    /[0-9]./g,
-    ''
-  )
-  return withoutNumerationPrefix
-}
-
-export const typeToDownloadLabel = (type: LearningMaterialType): string => {
-  switch (type) {
-    case 'COURSE':
-      return 'Download course content'
-    case 'LECTURE':
-      return 'Download lecture content'
-    case 'BLOCK':
-      return 'Download lecture block'
-    default:
-      return 'Download'
-  }
-}
-
-export const stripBackslashN = (string: string) => {
-  return string.replace(/\n/g, '')
 }
 
 export const getImageMetadata = async (url: string) => {

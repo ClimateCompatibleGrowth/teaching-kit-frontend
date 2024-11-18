@@ -44,15 +44,8 @@ export type AuthorOneLevelDeep = Author & {
   Affiliation: { data: Data<Affiliation> | null }
 }
 
-export const learningMaterialTypes = ['COURSE', 'LECTURE', 'BLOCK'] as const
+export const learningMaterialTypes = ['COURSE', 'LECTURE'] as const
 export type LearningMaterialType = typeof learningMaterialTypes[number]
-
-const levelNames = ['1. Beginner', '2. Intermediate', '3. Expert'] as const
-export type LevelName = typeof levelNames[number]
-
-export type Level = {
-  Level: LevelName
-}
 
 export type Keyword = {
   Keyword: string
@@ -67,33 +60,6 @@ type StrapiBaseEntry = {
   isVisibleInListView: boolean
 }
 
-export type Block = StrapiBaseEntry & {
-  Title: string
-  Abstract: string
-  DurationInMinutes: number
-  Document: string
-  References: string
-  vuid: string
-}
-
-export type BlockOneLevelDeep = Block & {
-  Authors: { data: Data<Author>[] }
-  LearningOutcomes: LearningOutcome[]
-  Slides: Slide[]
-  Lectures: { data: Data<Lecture>[] }
-  Keywords: { data: Data<Keyword>[] }
-  localizations: {
-    data: Data<Block>[]
-  }
-}
-
-export type BlockTwoLevelsDeep = Modify<
-  BlockOneLevelDeep,
-  {
-    Authors: { data: Data<AuthorOneLevelDeep>[] }
-  }
->
-
 export type Lecture = StrapiBaseEntry & {
   Title: string
   Abstract: string
@@ -103,11 +69,10 @@ export type Lecture = StrapiBaseEntry & {
 }
 
 export type LectureOneLevelDeep = Lecture & {
-  Blocks: { data: Data<Block>[] }
+  Files: MediaFiles
   LearningOutcomes: LearningOutcome[]
   LectureCreators: { data: Data<Author>[] }
   Courses: { data: Data<Course>[] }
-  Level: { data?: Data<Level> }
   localizations: {
     data: Data<Lecture>[]
   }
@@ -116,7 +81,6 @@ export type LectureOneLevelDeep = Lecture & {
 export type LectureTwoLevelsDeep = Modify<
   LectureOneLevelDeep,
   {
-    Blocks: { data: Data<BlockOneLevelDeep>[] }
     LectureCreators: { data: Data<AuthorOneLevelDeep>[] }
     Courses: { data: Data<CourseOneLevelDeep>[] }
   }
@@ -140,13 +104,14 @@ export type Course = StrapiBaseEntry & {
 }
 
 export type CourseOneLevelDeep = Course & {
+  Files: MediaFiles
+  Logo?: MediaFile
   Lectures: { data: Data<Lecture>[] }
   CourseCreators: { data: Data<Author>[] }
   LearningOutcomes: LearningOutcome[]
   Prerequisites: Prerequisite[]
   Acknowledgement: string
   CiteAs: string
-  Level: { data?: Data<Level> }
   localizations: {
     data: Data<Course>[]
   }
@@ -177,21 +142,60 @@ export type CourseThreeLevelsDeepWithThreeLevelsDeepLocalizations = Modify<
 >
 
 export type DownloadableContent =
-  | BlockOneLevelDeep
   | LectureTwoLevelsDeep
   | CourseThreeLevelsDeep
 
-export const locales = ['en', 'es-ES', 'fr-FR'] as const
-export type Locale = typeof locales[number]
+export const LOCALES = ['en', 'es-ES', 'fr-FR'] as const
+export type Locale = typeof LOCALES[number]
 
-export const languages = ['English', 'Español', 'Français'] as const
-export type Language = typeof languages[number]
+export const LANGUAGES = ['English', 'Español', 'Français'] as const
+export type Language = typeof LANGUAGES[number]
 
 export type Path = {
   params: {
     vuid: string
   }
   locale?: string
+}
+
+export type MediaFile = {
+  data: Data<{
+    alternativeText: null | string,
+    caption: null | string,
+    createdAt: string,
+    ext: string,
+    hash: string,
+    height: number | null,
+    mime: string,
+    name: string,
+    previewUrl: string | null,
+    provider: string | null,
+    provider_metadata: null,
+    size: number,
+    updatedAt: string | null,
+    url: string,
+    width: number | null
+  }> | null
+}
+
+export type MediaFiles = {
+  data: Data<{
+    alternativeText: null | string,
+    caption: null | string,
+    createdAt: string,
+    ext: string,
+    hash: string,
+    height: number | null,
+    mime: string,
+    name: string,
+    previewUrl: string | null,
+    provider: string | null,
+    provider_metadata: null,
+    size: number,
+    updatedAt: string | null,
+    url: string,
+    width: number | null
+  }>[] | null
 }
 
 type Image = {

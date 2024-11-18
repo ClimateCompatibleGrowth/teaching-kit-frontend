@@ -5,11 +5,7 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import Dropdown from '../../components/Dropdown/Dropdown'
 import TabGroup from '../../components/TabGroup/TabGroup'
-import {
-  getFilteredBlocks,
-  getFilteredCourses,
-  getFilteredLectures,
-} from '../../services/strapi-locale-filter'
+import { getFilteredCourses } from '../../services/strapi-locale-filter'
 import { searchForAuthors } from '../../shared/requests/authors/authors'
 import { searchForKeywords } from '../../shared/requests/keywords/keywords'
 import { ResponseArray, ResponseArrayData } from '../../shared/requests/types'
@@ -19,17 +15,13 @@ import {
   FilterPageCopy,
   Data,
   Locale,
-  Block,
-  LectureOneLevelDeep,
   GeneralCopy,
 } from '../../types'
 import {
-  isBlockSortOptionType,
   Item,
   SortOption,
   sortOptions,
   SortOptionType,
-  spanishSortOptions,
   getSortOptionKey,
 } from '../../types/filters'
 
@@ -81,11 +73,8 @@ const defaultFilterResult: ResponseArrayData<any> = {
   },
 }
 
-const getTranslatedSort = (sortOptionType: SortOptionType, locale: Locale) => {
+const getTranslatedSort = (sortOptionType: SortOptionType) => {
   const sortOptionKey = getSortOptionKey(sortOptionType)
-  if (locale === 'es-ES') {
-    return spanishSortOptions[sortOptionKey]
-  }
   return sortOptions[sortOptionKey]
 }
 
@@ -103,24 +92,16 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
   const [selectedKeywords, setSelectedKeywords] = useState<Item[]>([])
   const [selectedAuthors, setSelectedAuthors] = useState<Item[]>([])
   const [selectedSort, setSelectedSort] = useState<SortOption>(
-    getTranslatedSort('ALPHABETICAL_ASC', locale)
+    getTranslatedSort('ALPHABETICAL_ASC')
   )
 
   const [currentCoursePageNumber, setCurrentCoursePageNumber] =
     useState(DEFAULT_PAGE_NUMBER)
-  const [currentLecturePageNumber, setCurrentLecturePageNumber] =
-    useState(DEFAULT_PAGE_NUMBER)
-  const [currentBlockPageNumber, setCurrentBlockPageNumber] =
-    useState(DEFAULT_PAGE_NUMBER)
 
   const [results, setResults] = useState<{
     courses: ResponseArrayData<CourseThreeLevelsDeep>
-    lectures: ResponseArrayData<LectureOneLevelDeep>
-    blocks: ResponseArrayData<Block>
   }>({
     courses: defaultFilterResult,
-    lectures: defaultFilterResult,
-    blocks: defaultFilterResult,
   })
 
   const summaryId = 'content-results-summary'
@@ -151,10 +132,7 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
     if (!hasAnyChangeHappened) {
       return ''
     }
-    const dataResults = `showing ${results.courses.data.length} course${results.courses.data.length > 1 ? 's' : ''
-      }, ${results.lectures.data.length} lecture${results.lectures.data.length > 1 ? 's' : ''
-      }, and ${results.blocks.data.length} lecture block${results.blocks.data.length > 1 ? 's' : ''
-      }.`
+    const dataResults = `showing ${results.courses.data.length} course${results.courses.data.length > 1 ? 's' : ''}.`
     const authorPart =
       selectedAuthors.length !== 0
         ? `${selectedAuthors.length} author${selectedAuthors.length > 1 ? 's' : ''
@@ -185,37 +163,13 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
       matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
     })
 
-    const lectureFilterPromise = getFilteredLectures({
-      keywords,
-      authors,
-      pageNumber: currentLecturePageNumber,
-      sortMethod: selectedSort.id,
-      locale,
-      matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
-    })
-
-    const blockFilterPromise = getFilteredBlocks({
-      keywords,
-      authors,
-      pageNumber: currentBlockPageNumber,
-      sortMethod: isBlockSortOptionType(selectedSort.id)
-        ? selectedSort.id
-        : 'ALPHABETICAL_ASC',
-      matchesPerPage: DEFAULT_MATCHES_PER_PAGE,
-      locale,
-    })
-
-    const [courseFilterResult, lectureFilterResult, blockFilterResult] =
+    const [courseFilterResult] =
       await Promise.all([
         courseFilterPromise,
-        lectureFilterPromise,
-        blockFilterPromise,
       ])
 
     setResults({
       courses: courseFilterResult,
-      lectures: lectureFilterResult,
-      blocks: blockFilterResult,
     })
   }, [
     selectedKeywords,
@@ -223,8 +177,6 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
     selectedSort,
     locale,
     currentCoursePageNumber, // Could be improved so that the function does not re-run for all types when one's page number changes
-    currentLecturePageNumber, // Could be improved so that the function does not re-run for all types when one's page number changes
-    currentBlockPageNumber, // Could be improved so that the function does not re-run for all types when one's page number changes
   ])
 
   useEffect(() => {
@@ -241,7 +193,7 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
 
   useEffect(() => {
     setSelectedSort((previousSort) =>
-      getTranslatedSort(previousSort.id, locale)
+      getTranslatedSort(previousSort.id)
     )
   }, [locale])
 
@@ -300,8 +252,6 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
         <TabGroup
           controls={summaryId}
           courseResults={results.courses}
-          lectureResults={results.lectures}
-          blockResults={results.blocks}
           selectedSort={selectedSort}
           setSelectedSort={setSelectedSort}
           selectedKeywords={selectedKeywords.map(
@@ -311,11 +261,7 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
             (selectedAuthor) => selectedAuthor.label
           )}
           currentCoursePageNumber={currentCoursePageNumber}
-          currentLecturePageNumber={currentLecturePageNumber}
-          currentBlockPageNumber={currentBlockPageNumber}
           setCurrentCoursePageNumber={setCurrentCoursePageNumber}
-          setCurrentLecturePageNumber={setCurrentLecturePageNumber}
-          setCurrentBlockPageNumber={setCurrentBlockPageNumber}
           translationDoesNotExistCopy={TranslationDoesNotExist}
         />
       </div>
