@@ -13,8 +13,6 @@ export type CardType = {
   files?: MediaFiles
   subTitle?: ReactNode
   subComponent?: ReactNode
-  duration?: ReactNode
-  level?: ReactNode
   locale?: Locale
   translationDoesNotExistCopy: string
   index?: number
@@ -78,10 +76,6 @@ const Card = ({ card, currentIndex, setCurrentIndex }: CardProps) => {
         {card.files?.data?.map((file) =>
           <Styled.LectureFile key={file.id} primary href={file.attributes.url} download>{file.attributes.alternativeText || file.attributes.name}</Styled.LectureFile>
         )}
-        <Styled.MetaInformation>
-          {card.level && <Styled.MetaData>{card.level}</Styled.MetaData>}
-          {card.duration && <Styled.MetaData>{card.duration}</Styled.MetaData>}
-        </Styled.MetaInformation>
         {card.subComponent !== undefined ? (
           <Styled.SubComponentWrapper>
             <hr />

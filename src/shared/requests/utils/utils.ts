@@ -54,10 +54,6 @@ export const getSortString = (sortOption: SortOptionType) => {
       return 'sort=Title:asc'
     case 'ALPHABETICAL_DESC':
       return 'sort=Title:desc'
-    case 'LEVEL_ASC':
-      return 'sort=Level[Level]:asc'
-    case 'LEVEL_DESC':
-      return 'sort=Level[Level]:desc'
   }
 }
 

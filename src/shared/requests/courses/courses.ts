@@ -20,16 +20,7 @@ const getPopulateString = () => {
   const populateCourseCreators = 'populate[CourseCreators][populate]=*'
   const populateLectureCreators =
     'populate[Lectures][populate][LectureCreators]=*'
-  const populateBlockAuthors =
-    'populate[Lectures][populate][Blocks][populate][Authors]=*'
-  const populateKeywords =
-    'populate[Lectures][populate][Blocks][populate][Keywords]=*'
-  const populateLevel = 'populate[Level][populate]=Level'
-  const populateLocalizationsLevel =
-    'populate[localizations][populate][Level]=*'
-  const populateLocalizationsLecturesBlocks =
-    'populate[localizations][populate][Lectures][populate][Blocks]=*'
-  return `${populateKeywords}&${populateCourseCreators}&${populateLectureCreators}&${populateBlockAuthors}&${populateLevel}&${populateLocalizationsLevel}&${populateLocalizationsLecturesBlocks}`
+  return `${populateCourseCreators}&${populateLectureCreators}`
 }
 
 export const filterCourseOnKeywordsAndAuthors = async ({
@@ -41,9 +32,8 @@ export const filterCourseOnKeywordsAndAuthors = async ({
 }: FilterParameters<SortOptionType>): Promise<
   ResponseArrayData<CourseThreeLevelsDeepWithThreeLevelsDeepLocalizations>
 > => {
-  const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
-    matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
-  }`
+  const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
+    }`
 
   const sort = getSortString(sortMethod)
 
@@ -71,10 +61,8 @@ export const getRecentCourses = async (
 ) => {
   const pagination = `pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
 
-  const populateLevel = `populate[Level]=Level`
-  const populateDuration = `populate[Lectures][populate][Blocks]=DurationInMinutes`
   const populateLocalizations = `populate=localizations`
-  const populate = `${populateLevel}&${populateDuration}&${populateLocalizations}`
+  const populate = `${populateLocalizations}`
 
   const locale = `locale=${_locale}`
 

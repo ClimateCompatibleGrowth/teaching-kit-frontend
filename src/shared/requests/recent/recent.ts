@@ -1,16 +1,13 @@
 import { getRecentLectures } from '../lectures/lectures'
 import { getRecentCourses } from '../courses/courses'
 import {
-  Block,
-  BlockOneLevelDeep,
   CourseTwoLevelsDeep,
   Data,
   LearningMaterialType,
   LectureTwoLevelsDeep,
-  Level,
   Locale,
 } from '../../../types'
-import { formatDate, summarizeDurations } from '../../../utils/utils'
+import { formatDate } from '../../../utils/utils'
 import { DEFAULT_LOCALE } from '../../../contexts/LocaleContext'
 
 export type RecentUpdateType = {
@@ -20,13 +17,10 @@ export type RecentUpdateType = {
   Title?: string
   Abstract?: string
   Type: LearningMaterialType
-  Level?: { data?: Data<Level> }
-  Duration?: number | string
   Locale: Locale
 }
 
 type LearningMaterial =
-  | Data<BlockOneLevelDeep>
   | Data<LectureTwoLevelsDeep>
   | Data<CourseTwoLevelsDeep>
 
@@ -72,14 +66,6 @@ export const getRecentUpdates = async (locale?: Locale) => {
     Title: course.attributes.Title,
     Abstract: course.attributes.Abstract,
     Type: 'COURSE',
-    Level: course.attributes.Level,
-    Duration: summarizeDurations(
-      course.attributes.Lectures.data.reduce<Data<Block>[]>(
-        (lectures, lecture) => [...lectures, ...lecture.attributes.Blocks.data],
-        []
-      ),
-      locale
-    ),
     Locale: course.attributes.locale,
   }))
 
@@ -92,8 +78,6 @@ export const getRecentUpdates = async (locale?: Locale) => {
     Title: lecture.attributes.Title,
     Abstract: lecture.attributes.Abstract,
     Type: 'LECTURE',
-    Level: lecture.attributes.Level,
-    Duration: summarizeDurations(lecture.attributes.Blocks?.data || [], locale),
     Locale: lecture.attributes.locale,
   }))
 

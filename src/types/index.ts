@@ -47,13 +47,6 @@ export type AuthorOneLevelDeep = Author & {
 export const learningMaterialTypes = ['COURSE', 'LECTURE'] as const
 export type LearningMaterialType = typeof learningMaterialTypes[number]
 
-const levelNames = ['1. Beginner', '2. Intermediate', '3. Expert'] as const
-export type LevelName = typeof levelNames[number]
-
-export type Level = {
-  Level: LevelName
-}
-
 export type Keyword = {
   Keyword: string
 }
@@ -67,33 +60,6 @@ type StrapiBaseEntry = {
   isVisibleInListView: boolean
 }
 
-export type Block = StrapiBaseEntry & {
-  Title: string
-  Abstract: string
-  DurationInMinutes: number
-  Document: string
-  References: string
-  vuid: string
-}
-
-export type BlockOneLevelDeep = Block & {
-  Authors: { data: Data<Author>[] }
-  LearningOutcomes: LearningOutcome[]
-  Slides: Slide[]
-  Lectures: { data: Data<Lecture>[] }
-  Keywords: { data: Data<Keyword>[] }
-  localizations: {
-    data: Data<Block>[]
-  }
-}
-
-export type BlockTwoLevelsDeep = Modify<
-  BlockOneLevelDeep,
-  {
-    Authors: { data: Data<AuthorOneLevelDeep>[] }
-  }
->
-
 export type Lecture = StrapiBaseEntry & {
   Title: string
   Abstract: string
@@ -104,11 +70,9 @@ export type Lecture = StrapiBaseEntry & {
 
 export type LectureOneLevelDeep = Lecture & {
   Files: MediaFiles
-  Blocks: { data: Data<Block>[] }
   LearningOutcomes: LearningOutcome[]
   LectureCreators: { data: Data<Author>[] }
   Courses: { data: Data<Course>[] }
-  Level: { data?: Data<Level> }
   localizations: {
     data: Data<Lecture>[]
   }
@@ -117,7 +81,6 @@ export type LectureOneLevelDeep = Lecture & {
 export type LectureTwoLevelsDeep = Modify<
   LectureOneLevelDeep,
   {
-    Blocks: { data: Data<BlockOneLevelDeep>[] }
     LectureCreators: { data: Data<AuthorOneLevelDeep>[] }
     Courses: { data: Data<CourseOneLevelDeep>[] }
   }
@@ -149,7 +112,6 @@ export type CourseOneLevelDeep = Course & {
   Prerequisites: Prerequisite[]
   Acknowledgement: string
   CiteAs: string
-  Level: { data?: Data<Level> }
   localizations: {
     data: Data<Course>[]
   }
@@ -180,7 +142,6 @@ export type CourseThreeLevelsDeepWithThreeLevelsDeepLocalizations = Modify<
 >
 
 export type DownloadableContent =
-  | BlockOneLevelDeep
   | LectureTwoLevelsDeep
   | CourseThreeLevelsDeep
 

@@ -1,6 +1,4 @@
 import {
-  Block,
-  BlockOneLevelDeep,
   Course,
   CourseOneLevelDeep,
   CourseThreeLevelsDeep,
@@ -24,10 +22,9 @@ type LectureAllLevels =
   | Data<Lecture>
   | Data<LectureOneLevelDeep>
   | Data<LectureTwoLevelsDeep>
-type BlockAllLevels = Data<Block> | Data<BlockOneLevelDeep>
 
 const isPublished = (
-  entity: CourseAllLevels | LectureAllLevels | BlockAllLevels
+  entity: CourseAllLevels | LectureAllLevels
 ): boolean => {
   return entity.attributes.publishedAt !== null
 }
@@ -88,11 +85,6 @@ const filterOutOnlyPublishedEntriesOnLecturesTwoLevelsDeep = (
   lectures: Data<LectureTwoLevelsDeep>[]
 ) => {
   return lectures.filter(isPublished).map((lecture) => {
-    if (lecture.attributes.Blocks?.data) {
-      lecture.attributes.Blocks.data = filterOutOnlyPublishedEntriesOnBlocks(
-        lecture.attributes.Blocks.data
-      )
-    }
     if (lecture.attributes.Courses?.data) {
       lecture.attributes.Courses.data =
         filterOutOnlyPublishedEntriesOnCoursesOneLevelsDeep(
@@ -100,26 +92,5 @@ const filterOutOnlyPublishedEntriesOnLecturesTwoLevelsDeep = (
         )
     }
     return lecture
-  })
-}
-
-export const filterOutOnlyPublishedEntriesOnBlock = (
-  block: Data<BlockOneLevelDeep>
-) => {
-  const filteredResult = filterOutOnlyPublishedEntriesOnBlocks([block])
-  return filteredResult[0]
-}
-
-const filterOutOnlyPublishedEntriesOnBlocks = (
-  blocks: Data<BlockOneLevelDeep>[]
-) => {
-  return blocks.filter(isPublished).map((block) => {
-    if (block.attributes.Lectures?.data) {
-      block.attributes.Lectures.data =
-        filterOutOnlyPublishedEntriesOnLecturesZeroLevelsDeep(
-          block.attributes.Lectures.data
-        )
-    }
-    return block
   })
 }

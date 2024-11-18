@@ -22,7 +22,6 @@ import {
   SortOption,
   sortOptions,
   SortOptionType,
-  spanishSortOptions,
   getSortOptionKey,
 } from '../../types/filters'
 
@@ -74,11 +73,8 @@ const defaultFilterResult: ResponseArrayData<any> = {
   },
 }
 
-const getTranslatedSort = (sortOptionType: SortOptionType, locale: Locale) => {
+const getTranslatedSort = (sortOptionType: SortOptionType) => {
   const sortOptionKey = getSortOptionKey(sortOptionType)
-  if (locale === 'es-ES') {
-    return spanishSortOptions[sortOptionKey]
-  }
   return sortOptions[sortOptionKey]
 }
 
@@ -96,7 +92,7 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
   const [selectedKeywords, setSelectedKeywords] = useState<Item[]>([])
   const [selectedAuthors, setSelectedAuthors] = useState<Item[]>([])
   const [selectedSort, setSelectedSort] = useState<SortOption>(
-    getTranslatedSort('ALPHABETICAL_ASC', locale)
+    getTranslatedSort('ALPHABETICAL_ASC')
   )
 
   const [currentCoursePageNumber, setCurrentCoursePageNumber] =
@@ -197,7 +193,7 @@ export default function TeachingMaterial({ pageCopy, generalCopy }: Props) {
 
   useEffect(() => {
     setSelectedSort((previousSort) =>
-      getTranslatedSort(previousSort.id, locale)
+      getTranslatedSort(previousSort.id)
     )
   }, [locale])
 

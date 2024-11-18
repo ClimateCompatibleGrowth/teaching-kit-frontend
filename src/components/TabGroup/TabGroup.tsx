@@ -1,7 +1,6 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 
 import {
-  BlockOneLevelDeep,
   CourseThreeLevelsDeep,
   Data,
   LectureOneLevelDeep,
@@ -14,13 +13,9 @@ import { CardType } from '../CardList/Card/Card'
 import TabPanel from './TabPanel/TabPanel'
 
 import * as Styled from './styles'
-import { levelToString, summarizeDurations } from '../../utils/utils'
 import LearningMaterialBadge from '../LearningMaterial/LearningMaterialBadge/LearningMaterialBadge'
-import SignalStrengthIcon from '../../../public/icons/signal-strength.svg'
-import ClockIcon from '../../../public/icons/clock.svg'
 import Dropdown from '../Dropdown/Dropdown'
 import {
-  getBlockSortOptions,
   getSortOptions as getCourseAndLectureSortOptions,
   SortOption,
 } from '../../types/filters'
@@ -53,23 +48,6 @@ const TabGroup = ({
   const [tabIndex, setTabIndex] = React.useState(0)
   const translation = translations[locale]
 
-  const lectureDataToCardFormat = (
-    data: Data<LectureOneLevelDeep>
-  ): CardType => {
-    const baseCard = dataToCardFormat(data)
-    return {
-      ...baseCard,
-      href: `/lectures/${data.attributes.vuid}`,
-      subTitle: <LearningMaterialBadge type='LECTURE' />,
-      duration: (
-        <>
-          <ClockIcon style={{ marginRight: 8 }} />
-          {summarizeDurations(data.attributes.Blocks.data, locale)}
-        </>
-      ),
-    }
-  }
-
   const courseDataToCardFormat = (
     data: Data<CourseThreeLevelsDeep>
   ): CardType => {
@@ -78,21 +56,6 @@ const TabGroup = ({
       ...baseCard,
       href: `/courses/${data.attributes.vuid}`,
       subTitle: <LearningMaterialBadge type='COURSE' />,
-      duration: (
-        <>
-          <ClockIcon style={{ marginRight: 8 }} />
-          {summarizeDurations(
-            data.attributes.Lectures.data.reduce(
-              (blocks, lecture) => [
-                ...blocks,
-                ...lecture.attributes.Blocks.data,
-              ],
-              [] as Data<Pick<BlockOneLevelDeep, 'DurationInMinutes'>>[]
-            ),
-            locale
-          )}
-        </>
-      ),
       locale: data.attributes.locale,
       translationDoesNotExistCopy,
     }
@@ -101,17 +64,10 @@ const TabGroup = ({
   const dataToCardFormat = (
     learningMaterial: Data<LectureOneLevelDeep> | Data<CourseThreeLevelsDeep>
   ): CardType => {
-    const level = levelToString(learningMaterial.attributes.Level)
     return {
       title: learningMaterial.attributes.Title,
       id: learningMaterial.id.toString(),
       text: learningMaterial.attributes.Abstract,
-      level: level && (
-        <React.Fragment>
-          <SignalStrengthIcon style={{ marginRight: 8 }} />
-          {level}
-        </React.Fragment>
-      ),
       locale: learningMaterial.attributes.locale,
       translationDoesNotExistCopy,
     }
@@ -131,11 +87,8 @@ const TabGroup = ({
     ) : null
   }
 
-  const getSortOptions = (tabValue: number, locale: Locale) => {
-    if (tabValue === 2) {
-      return getBlockSortOptions(locale)
-    }
-    return getCourseAndLectureSortOptions(locale)
+  const getSortOptions = () => {
+    return getCourseAndLectureSortOptions()
   }
 
   return (
@@ -154,7 +107,7 @@ const TabGroup = ({
           ariaLabel={translation.ariaLabel ?? ARIA_LABEL}
           enableSearch={false}
           getItems={() =>
-            Promise.resolve(Object.values(getSortOptions(tabIndex, locale)))
+            Promise.resolve(Object.values(getSortOptions()))
           }
         />
       </div>

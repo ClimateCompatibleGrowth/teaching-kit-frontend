@@ -18,14 +18,7 @@ const DEFAULT_MATCHES_PER_PAGE = 10
 
 const getPopulateString = () => {
   const populateLectureCreators = 'populate[LectureCreators]=*'
-  const populateBlockAuthors = 'populate[Blocks][populate][Authors]=*'
-  const populateKeywords = 'populate[Blocks][populate][Keywords]=*'
-  const populateLevel = 'populate[Level][populate]=Level'
-  const populateLocalizationsLevel =
-    'populate[localizations][populate][Level]=*'
-  const populateLocalizationsBlocks =
-    'populate[localizations][populate][Blocks]=*'
-  return `${populateKeywords}&${populateBlockAuthors}&${populateLectureCreators}&${populateLevel}&${populateLocalizationsLevel}&${populateLocalizationsBlocks}`
+  return `${populateLectureCreators}`
 }
 
 export const filterLectureOnKeywordsAndAuthors = async ({
@@ -37,9 +30,8 @@ export const filterLectureOnKeywordsAndAuthors = async ({
 }: FilterParameters<SortOptionType>): Promise<
   ResponseArrayData<LectureTwoLevelsDeepWithOneLevelDeepLocalizations>
 > => {
-  const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${
-    matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
-  }`
+  const pagination = `?pagination[page]=${pageNumber}&pagination[pageSize]=${matchesPerPage ?? DEFAULT_MATCHES_PER_PAGE
+    }`
 
   const sort = getSortString(sortMethod)
 
@@ -67,10 +59,8 @@ export const getRecentLectures = async (
 ) => {
   const pagination = `pagination[limit]=${limit}&sort[0]=publishedAt&sort[1]=createdAt`
 
-  const populateLevel = `populate[Level][populate]=Level`
-  const populateDuration = `populate[Blocks][populate]=DurationInMinutes`
   const populateLocalizations = `populate=localizations`
-  const populate = `${populateLevel}&${populateDuration}&${populateLocalizations}`
+  const populate = `${populateLocalizations}`
 
   const locale = `locale=${_locale}`
 

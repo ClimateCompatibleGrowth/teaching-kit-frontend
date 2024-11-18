@@ -4,7 +4,6 @@ import { filterLectureOnKeywordsAndAuthors } from '../shared/requests/lectures/l
 import { ResponseArrayData } from '../shared/requests/types'
 import { FilterParameters } from '../shared/requests/utils/utils'
 import {
-  Block,
   CourseThreeLevelsDeep,
   LectureOneLevelDeep,
 } from '../types'

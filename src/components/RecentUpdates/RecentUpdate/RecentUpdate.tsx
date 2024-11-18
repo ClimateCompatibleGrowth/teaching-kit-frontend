@@ -1,15 +1,12 @@
 import React from 'react'
 import { RecentUpdateType } from '../../../shared/requests/recent/recent'
 import Badge, { BadgeColor } from '../../Badge/Badge'
-import ClockIcon from '../../../../public/icons/clock.svg'
-import SignalStrengthIcon from '../../../../public/icons/signal-strength.svg'
 import * as Styled from './styles'
-import { typeToText, levelToString } from '../../../utils/utils'
+import { typeToText } from '../../../utils/utils'
 import Markdown from '../../Markdown/Markdown'
 import { useRouter } from 'next/router'
 import { Locale } from '../../../types'
 import TranslationDoesNotExist from '../../TranslationDoesNotExist/TranslationDoesNotExist'
-import { LEVEL_ARIA_LABEL, translations } from './translations'
 
 type Props = {
   recentUpdate: RecentUpdateType
@@ -20,8 +17,6 @@ const RecentUpdate = ({ recentUpdate, translationDoesNotExistCopy }: Props) => {
   const { locale } = useRouter()
   let typeColor: BadgeColor = 'yellow'
   let href = '/'
-  let levelExplanation =
-    translations[locale as Locale].levelAriaLabel ?? LEVEL_ARIA_LABEL
   switch (recentUpdate.Type) {
     case 'LECTURE':
       typeColor = 'green'
@@ -49,24 +44,6 @@ const RecentUpdate = ({ recentUpdate, translationDoesNotExistCopy }: Props) => {
           <Markdown allowedElements={['p']}>{recentUpdate.Abstract}</Markdown>
         </Styled.Markdown>
       )}
-      <Styled.MetaWrapper>
-        {recentUpdate.Level && (
-          <Styled.MetaInformation>
-            <>
-              <SignalStrengthIcon aria-label={levelExplanation} />
-              {levelToString(recentUpdate.Level)}
-            </>
-          </Styled.MetaInformation>
-        )}
-        {recentUpdate.Duration && (
-          <Styled.MetaInformation>
-            <ClockIcon
-              aria-label={translations[locale as Locale].durationAriaLabel}
-            />
-            {recentUpdate.Duration}
-          </Styled.MetaInformation>
-        )}
-      </Styled.MetaWrapper>
     </Styled.Card>
   )
 }
