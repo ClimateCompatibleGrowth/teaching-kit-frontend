@@ -66,9 +66,9 @@ const getFilterStringByAuthor = (
 ) => {
   switch (filterFrom) {
     case 'COURSE':
-      return `filters[$and][${andGroup}][$or][0][CourseCreators][ORCID][$containsi]=${authorORCID}&filters[$and][${andGroup}][$or][1][Lectures][LectureCreators][ORCID][$containsi]=${authorORCID}&filters[$and][${andGroup}][$or][2][Lectures][Blocks][Authors][ORCID][$containsi]=${authorORCID}`
+      return `filters[$and][${andGroup}][$or][0][CourseCreators][ORCID][$containsi]=${authorORCID}&filters[$and][${andGroup}][$or][1][Lectures][LectureCreators][ORCID][$containsi]=${authorORCID}`
     case 'LECTURE':
-      return `filters[$and][${andGroup}][$or][0][LectureCreators][ORCID][$containsi]=${authorORCID}&filters[$and][${andGroup}][$or][1][Blocks][Authors][ORCID][$containsi]=${authorORCID}`
+      return `filters[$and][${andGroup}][$or][0][LectureCreators][ORCID][$containsi]=${authorORCID}`
   }
 }
 
