@@ -5,10 +5,13 @@ import z from "zod"
 import { PageContainer, breakpoints, mq, Neutral40, Accent40, Error20 } from '../../styles/global'
 import Button from "../../components/Button/Button"
 import Link from "next/link"
-import { LANGUAGES, LOCALES } from "../../types"
+import { Data, LANGUAGES, LOCALES, SubmitMaterialPageCopy } from "../../types"
 import { ubuntu } from "../../styles/fonts"
 import { courseSchema, FieldErrors } from "../../utils/validation"
 import axios from "axios"
+import { GetStaticPropsContext } from "next"
+import { ResponseArray } from "../../shared/requests/types"
+import Markdown from "../../components/Markdown/Markdown"
 
 type LectureInput = {
   title: string;
@@ -57,11 +60,13 @@ const TermsLabel = styled.label`
   }
 `
 
-const TermsAndConditions = styled.p`
-  margin-left: 1rem;
-  font-family: ${ubuntu[400].style.fontFamily};
-  font-size: 1.4rem;
-  line-height: 1.2;
+const TermsAndConditions = styled.div`
+  p{
+    margin-left: 1rem;
+    font-family: ${ubuntu[400].style.fontFamily};
+    font-size: 1.4rem;
+    line-height: 1.2;
+  }
 `
 
 const LectureWrapper = styled.fieldset`
@@ -76,7 +81,11 @@ const ErrorMessage = styled.span`
   font-family: ${ubuntu[400].style.fontFamily};
 `
 
-export default function SubmitMaterial() {
+type SubmitMaterialProps = {
+  pageCopy: Data<SubmitMaterialPageCopy>
+}
+
+export default function SubmitMaterial({ pageCopy }: SubmitMaterialProps) {
   const acceptTypes = ".pdf,.docx,.pptx,ppt,.doc,.txt";
   const [errors, setErrors] = useState<FieldErrors>()
   const [email, setEmail] = useState<string>("")
@@ -124,31 +133,31 @@ export default function SubmitMaterial() {
 
   return <PageContainer hasTopPadding hasBottomPadding>
     <Wrapper>
-      <h1>Submit teaching material</h1>
+      <h1>{pageCopy.attributes.PageHeader}</h1>
       <form onSubmit={onSubmit}>
         <Label>
-          Contact email
+          {pageCopy.attributes.ContactEmail}
           <input required name='email' type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           {errors?.email?._errors && <ErrorMessage role="alert">{errors?.email?._errors}</ErrorMessage>}
         </Label>
         <Label>
-          Content language
+          {pageCopy.attributes.ContentLanguage}
           <select name="locale" value={locale} onChange={e => { setLocale(e.target.value as typeof LOCALES[number]) }}>
             {LOCALES.map((locale, i) => <option key={locale} value={locale}>{LANGUAGES[i]}</option>)}
           </select>
         </Label>
         <Label>
-          Course title
+          {pageCopy.attributes.CourseTitle}
           <input name='courseTitle' type="text" value={courseTitle} onChange={(e) => setCourseTitle(e.target.value)} />
           {errors?.courseTitle?._errors && <ErrorMessage role="alert">{errors?.courseTitle?._errors}</ErrorMessage>}
         </Label>
         <Label>
-          Course abstract
+          {pageCopy.attributes.CourseAbstract}
           <textarea name='courseAbstract' rows={8} value={courseAbstract} onChange={e => setCourseAbstract(e.target.value)} />
           {errors?.courseAbstract?._errors && <ErrorMessage role="alert">{errors?.courseAbstract?._errors}</ErrorMessage>}
         </Label>
         <Label>
-          Course materials
+          {pageCopy.attributes.CourseMaterials}
           <input name='courseFiles' type="file" multiple accept={acceptTypes} onChange={e => setCourseFiles(e.target.files)} />
           {errors?.courseFiles && errors?.courseFiles._errors && <ErrorMessage role="alert">{errors?.courseFiles._errors}</ErrorMessage>}
         </Label>
@@ -157,38 +166,69 @@ export default function SubmitMaterial() {
             <legend>{`Lecture ${index + 1}`}</legend>
             <DeleteButton primary={false} type="button" onClick={(e) => { e.preventDefault(); setLectures(lectures.filter((_, j) => j !== index)) }} aria-label={`Delete lecture ${index + 1} from the course`}><DeleteOutlined fontSize="large" /></DeleteButton>
             <Label>
-              Lecture title
+              {pageCopy.attributes.LectureTitle}
               <input name={`lecture-${index}-title`} type="text" value={lecture.title} onChange={(e) => {
                 changeLecture({ ...lecture, title: e.target.value }, index)
               }} />
               {errors?.lectures && errors.lectures[index] && errors.lectures[index].title?._errors && <ErrorMessage role="alert">{errors?.lectures[index].title?._errors}</ErrorMessage>}
             </Label>
             <Label>
-              Lecture abstract
+              {pageCopy.attributes.LectureAbstract}
               <textarea name={`lecture-${index}-abstract`} rows={4} value={lecture.abstract} onChange={(e) => {
                 changeLecture({ ...lecture, abstract: e.target.value }, index)
               }} />
               {errors?.lectures && errors.lectures[index] && errors.lectures[index].abstract?._errors && <ErrorMessage role="alert">{errors?.lectures[index].abstract?._errors}</ErrorMessage>}
             </Label>
             <Label>
-              Lecture files
+              {pageCopy.attributes.LectureFiles}
               <input name={`lecture-${index}-files`} type="file" multiple accept={acceptTypes} />
               {errors?.lectures && errors.lectures[index] && errors.lectures[index].files?._errors && <ErrorMessage role="alert">{errors?.lectures[index].files?._errors}</ErrorMessage>}
             </Label>
           </LectureWrapper>
         })}
         {lectures.length < 10 && <LectureWrapper>
-          <Button type="button" primary={false} onClick={() => { setLectures([...lectures, { title: '', abstract: '', files: undefined }]) }}>Add new lecture</Button>
+          <Button type="button" primary={false} onClick={() => { setLectures([...lectures, { title: '', abstract: '', files: undefined }]) }}>{pageCopy.attributes.AddNewLecture}</Button>
           {errors?.lectures && errors?.lectures && errors?.lectures._errors && <ErrorMessage role="alert">{errors?.lectures._errors}</ErrorMessage>}
         </LectureWrapper>}
         <TermsLabel>
           <input type="checkbox" required />
           <TermsAndConditions>
-            Climate Compatible Growth (#CCG) is a UK government, ODA-funded research programme supporting investment in sustainable energy and transport systems to meet development priorities. <Link href="/terms-and-conditions" target="_blank">Please read these Conditions of Use carefully.</Link>
+            <Markdown>{pageCopy.attributes.TermsAndConditions}</Markdown>
           </TermsAndConditions>
         </TermsLabel>
-        <Button type="submit">Submit</Button>
+        <Button type="submit">{pageCopy.attributes.SubmitButton}</Button>
       </form>
     </Wrapper>
   </PageContainer >
+}
+
+export async function getStaticProps(ctx: GetStaticPropsContext) {
+  try {
+    const pageCopyRequest: Promise<ResponseArray<SubmitMaterialPageCopy>> = axios.get(
+      `${process.env.STRAPI_API_URL}/copy-submit-material-pages?locale=${ctx.locale ?? ctx.defaultLocale
+      }`
+    )
+
+    const [pageCopy] = await Promise.all([
+      pageCopyRequest,
+    ])
+
+    if (!pageCopy || pageCopy.data.data.length < 1) {
+      return {
+        notFound: true,
+      }
+    }
+
+    return {
+      props: {
+        pageCopy: pageCopy.data.data[0],
+      },
+    }
+  } catch (error) {
+    console.warn(error);
+
+    return {
+      notFound: true,
+    }
+  }
 }

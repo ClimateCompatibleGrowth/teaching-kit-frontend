@@ -141,10 +141,6 @@ export type CourseThreeLevelsDeepWithThreeLevelsDeepLocalizations = Modify<
   }
 >
 
-export type DownloadableContent =
-  | LectureTwoLevelsDeep
-  | CourseThreeLevelsDeep
-
 export const LOCALES = ['en', 'es-ES', 'fr-FR'] as const
 export type Locale = typeof LOCALES[number]
 
@@ -260,6 +256,27 @@ type DropdownCopy = {
   Label: string
   Placeholder: string
   AriaLabel: string
+}
+
+export type SubmissionConfirmationPageCopy = StrapiBaseEntry & {
+  Title: string
+  Body: string
+}
+
+export type SubmitMaterialPageCopy = StrapiBaseEntry & {
+  PageHeader: string
+  ContactEmail: string
+  ContentLanguage: string
+  CourseTitle: string
+  CourseAbstract: string
+  CourseMaterials: string
+  LectureWrapper: string
+  LectureTitle: string
+  LectureAbstract: string
+  LectureFiles: string
+  AddNewLecture: string
+  SubmitButton: string
+  TermsAndConditions: string
 }
 
 export type FilterPageCopy = StrapiBaseEntry & {
