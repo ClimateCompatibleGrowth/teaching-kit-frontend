@@ -72,7 +72,7 @@ const getFilterStringByAuthor = (
   }
 }
 
-export const getKeywordsFilterString = (
+const getKeywordsFilterString = (
   keywords: string[],
   filterFrom: LearningMaterialType,
   andGroupStartIndex = 0

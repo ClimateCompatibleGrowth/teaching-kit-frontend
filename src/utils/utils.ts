@@ -37,32 +37,6 @@ export const formatDate = (date: Date | string): string => {
   return dateObj.toLocaleDateString('sv-SE')
 }
 
-export const isValidUrl = (string: string): boolean => {
-  let url
-  try {
-    url = new URL(string)
-  } catch (_) {
-    return false
-  }
-  return url.protocol === 'http:' || url.protocol === 'https:'
-}
-
-export const sourceIsFromS3 = (string: string): boolean => {
-  if (isValidUrl(string)) {
-    const source = new URL(string)
-    return source.hostname === process.env.NEXT_PUBLIC_S3_HOST
-  }
-  return false
-}
-
-export const getImageMetadata = async (url: string) => {
-  const img = new Image()
-  img.crossOrigin = 'anonymous' //https://stackoverflow.com/a/47359958/5837635
-  img.src = url
-  await img.decode()
-  return img
-}
-
 export const localeToLanguage = (locale: Locale): Language => {
   switch (locale) {
     case 'en':
@@ -84,12 +58,3 @@ export const languageToLocale = (language: Language): Locale => {
       return 'fr-FR'
   }
 }
-
-export const isNotNull = <T>(value: T | null | undefined): value is T => {
-  return value !== null && value !== undefined
-}
-
-export const countOccurancesInArray = <T>(string: T, array: T[]) =>
-  array.reduce((amountOfOccuraces, current) => {
-    return (amountOfOccuraces += current === string ? 1 : 0)
-  }, 0)

@@ -1,8 +1,5 @@
-import { Locale } from '.'
 import {
   A_TO_Z,
-  SPANISH_A_TO_Z,
-  SPANISH_Z_TO_A,
   Z_TO_A,
 } from '../components/TabGroup/translations'
 
