@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Type {
+  BLOCK
+  LECTURE
+  COURSE
+}
+
+model zenodo_entry {
+  id                   String        @id @default(uuid())
+  strapi_entry_id      String        @default(uuid())
+  strapi_entry_version Int
+  created_on_zenodo    DateTime?
+  zenodo_deposit_id    Int?
+  row_added            DateTime
+  type                 Type
+  zenodo_doi           String?
+
+  @@unique([strapi_entry_id, strapi_entry_version], name: "entry_identifier")
+}
