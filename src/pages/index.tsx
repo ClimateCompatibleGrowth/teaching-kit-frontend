@@ -84,13 +84,11 @@ export default function Home({ siteCopy, generalCopy }: Props) {
       </Head>
       <Hero
         image={{
-          alternativeText: HeroImage?.data?.attributes?.alternativeText ?? '',
+          alternativeText: HeroImage.data.attributes.alternativeText,
           source: {
-            src:
-              HeroImage?.data?.attributes?.url ??
-              'https://placehold.co/600x400',
-            width: HeroImage?.data?.attributes?.width ?? 1440,
-            height: HeroImage?.data?.attributes?.height ?? 800,
+            src: HeroImage.data.attributes.url,
+            width: HeroImage.data.attributes.width,
+            height: HeroImage.data.attributes.height,
           },
         }}
         title={Header}
@@ -115,30 +113,27 @@ export default function Home({ siteCopy, generalCopy }: Props) {
       <DataStructureFigure {...dataStructureData} />
       {InfoCardsLarge !== undefined
         ? InfoCardsLarge.map((infoCardLarge) => (
-            <TextImage
-              title={infoCardLarge?.Header ?? ''}
-              body={infoCardLarge?.Content ?? ''}
-              image={{
-                alt:
-                  infoCardLarge?.Image?.data?.attributes?.alternativeText ?? '',
-                src: {
-                  src:
-                    infoCardLarge?.Image?.data?.attributes?.url ??
-                    'https://placehold.co/600x400',
-                  width: infoCardLarge?.Image?.data?.attributes?.width ?? 640,
-                  height: infoCardLarge?.Image?.data?.attributes?.height ?? 480,
-                },
-              }}
-              key={infoCardLarge?.id ?? ''}
-            />
-          ))
+          <TextImage
+            title={infoCardLarge.Header}
+            body={infoCardLarge.Content}
+            image={{
+              alt: infoCardLarge.Image.data.attributes.alternativeText,
+              src: {
+                src: infoCardLarge.Image.data.attributes.url,
+                width: infoCardLarge.Image.data.attributes.width,
+                height: infoCardLarge.Image.data.attributes.height,
+              },
+            }}
+            key={infoCardLarge.id}
+          />
+        ))
         : null}
       <RecentUpdates
         title={DynamicContentHeader}
         loadMoreButtonLabel={DynamicContentButtonLabel1}
         goToFilterPageButtonLabel={DynamicContentButtonLabel2}
         translationDoesNotExistCopy={
-          generalCopy?.attributes?.TranslationDoesNotExist ?? ''
+          generalCopy?.attributes.TranslationDoesNotExist
         }
       />
       <ContentColumns
@@ -162,14 +157,12 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const populate = `${populateHeroImage}&${populateInfoCard}&${populateInfoCardLarge}&${populateDataStructureDesktop}&${populateDataStructureMobile}`
 
     const copyResponse: ResponseArray<StartPageCopy> = await axios.get(
-      `${process.env.STRAPI_API_URL}/site-copies?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/site-copies?locale=${ctx.locale ?? ctx.defaultLocale
       }&${populate}`
     )
 
     const generalCopyResponse: ResponseArray<GeneralCopy> = await axios.get(
-      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
-        ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${ctx.locale ?? ctx.defaultLocale
       }`
     )
 

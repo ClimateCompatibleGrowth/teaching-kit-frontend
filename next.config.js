@@ -23,22 +23,14 @@ const nextConfig = {
   },
 
   images: {
-    dangerouslyAllowSVG: true,
-    contentDispositionType: 'attachment',
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'storageteachingkit.blob.core.windows.net',
-        pathname: '/**',
-      },
       {
         protocol: 'https',
         hostname: 'licensebuttons.net',
       },
       {
         protocol: 'https',
-        hostname: 'placehold.co',
+        hostname: process.env.NEXT_PUBLIC_S3_HOST,
       },
     ],
     minimumCacheTTL: 1500000,
