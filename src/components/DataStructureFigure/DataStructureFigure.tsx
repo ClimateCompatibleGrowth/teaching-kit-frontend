@@ -1,5 +1,5 @@
 import React from 'react'
-
+import Image from 'next/image'
 import * as Styled from './styles'
 import { PageContainer } from '../../styles/global'
 import { DataStructureCopy } from '../../types/index'
@@ -13,14 +13,26 @@ const DataStructureFigure = ({
   dataStructureDesktop,
   dataStructureMobile,
 }: Props) => {
-  if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
-    dataStructureDesktop.data.attributes.url = `https://${process.env.NEXT_PUBLIC_S3_HOST}/datastructure_Desktop_f37347020d.svg`
-    dataStructureMobile.data.attributes.url = `https://${process.env.NEXT_PUBLIC_S3_HOST}/data_Structure_Mobile_b19377e567.svg`
-  }
+  console.log('DataStructure props:', {
+    dataStructureDesktop,
+    dataStructureMobile,
+  })
+
+  // Placeholder URLs - nu med .png format
+  const placeholderDesktop =
+    'https://placehold.co/800x600.png?text=Desktop+Structure'
+  const placeholderMobile =
+    'https://placehold.co/400x600.png?text=Mobile+Structure'
+
+  // Använd antingen den riktiga bilden eller placeholder
+  const desktopImageUrl =
+    dataStructureDesktop?.data?.attributes?.url || placeholderDesktop
+  const mobileImageUrl =
+    dataStructureMobile?.data?.attributes?.url || placeholderMobile
 
   return (
     <PageContainer>
-      <Styled.Header> {HowTheTeachingMaterialIsStructured}</Styled.Header>
+      <Styled.Header>{HowTheTeachingMaterialIsStructured}</Styled.Header>
       <Styled.Wrapper>
         <Styled.ContentWrapper>
           <Styled.LeftContainer>
@@ -33,13 +45,35 @@ const DataStructureFigure = ({
           </Styled.RightContainer>
         </Styled.ContentWrapper>
         <Styled.ImageWrapper>
-          <Styled.DesktopImage
-            src={dataStructureDesktop.data.attributes.url}
-            alt={dataStructureDesktop.data.attributes.alternativeText}
+          <Image
+            src={desktopImageUrl}
+            alt={
+              dataStructureDesktop?.data?.attributes?.alternativeText ||
+              'Desktop structure'
+            }
+            width={800}
+            height={600}
+            priority
+            onError={(e) => {
+              console.error('Failed to load desktop image:', desktopImageUrl)
+              const target = e.target as HTMLImageElement
+              target.src = placeholderDesktop
+            }}
           />
-          <Styled.MobileImage
-            src={dataStructureMobile.data.attributes.url}
-            alt={dataStructureMobile.data.attributes.alternativeText}
+          <Image
+            src={mobileImageUrl}
+            alt={
+              dataStructureMobile?.data?.attributes?.alternativeText ||
+              'Mobile structure'
+            }
+            width={400}
+            height={600}
+            priority
+            onError={(e) => {
+              console.error('Failed to load mobile image:', mobileImageUrl)
+              const target = e.target as HTMLImageElement
+              target.src = placeholderMobile
+            }}
           />
         </Styled.ImageWrapper>
       </Styled.Wrapper>
