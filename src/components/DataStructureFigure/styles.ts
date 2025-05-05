@@ -13,10 +13,12 @@ export const Header = styled.h2`
     text-align: left;
   }
 `
+
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 `
+
 export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -40,36 +42,41 @@ export const RightContainer = styled.div`
   flex: 1;
   margin-bottom: 4.2rem;
 `
+
 export const RightTitle = styled.p``
 
 export const ImageWrapper = styled.div`
   margin-bottom: 8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
 
   ${mq.sm} {
     margin-bottom: 8rem;
   }
 `
 
-export const DesktopImage = styled.img`
-  @media screen and (max-width: 768px) {
-    display: none;
-  }
+export const DesktopImageWrapper = styled.div`
+  display: none;
+  width: 100%;
+  min-height: 400px;
+  position: relative;
+  margin-bottom: 4rem;
 
-  max-width: 100%;
-  height: 100%;
-  margin: 0 auto 4rem;
-  object-fit: cover;
+  ${mq.sm} {
+    display: block;
+  }
 `
 
-export const MobileImage = styled.img`
+export const MobileImageWrapper = styled.div`
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  aspect-ratio: 2/3;
+
   ${mq.sm} {
     display: none;
   }
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 100%;
-  height: 100%;
-  margin: 0 auto 4rem;
-  object-fit: cover;
 `
