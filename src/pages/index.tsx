@@ -161,11 +161,18 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const populateInfoCardLarge = 'populate[InfoCardsLarge][populate]=*'
     const populate = `${populateHeroImage}&${populateInfoCard}&${populateInfoCardLarge}&${populateDataStructureDesktop}&${populateDataStructureMobile}`
 
-    const copyResponse: ResponseArray<StartPageCopy> = await axios.get(
+    // First try to fetch the translation for the requested language
+    let copyResponse: ResponseArray<StartPageCopy> = await axios.get(
       `${process.env.STRAPI_API_URL}/site-copies?locale=${
         ctx.locale ?? ctx.defaultLocale
       }&${populate}`
     )
+    // If no content was found, fetch the English version instead
+    if (!copyResponse.data.data.length) {
+      copyResponse = await axios.get(
+        `${process.env.STRAPI_API_URL}/site-copies?locale=en&${populate}`
+      )
+    }
 
     const generalCopyResponse: ResponseArray<GeneralCopy> = await axios.get(
       `${process.env.STRAPI_API_URL}/copy-generals?locale=${
