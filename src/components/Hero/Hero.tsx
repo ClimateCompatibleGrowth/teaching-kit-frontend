@@ -18,7 +18,7 @@ interface Props {
 
 export default function Hero({ image, title, body, action }: Props) {
   if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
-    image.source.src = `https://${process.env.NEXT_PUBLIC_S3_HOST}/campus_students_6b3f510781.jpeg?updated_at=2023-03-08T14:05:20.823Z`
+    image.source.src = `https://${process.env.NEXT_PUBLIC_S3_HOST}/blobstorage/assets/kth_hero_e10a115311.jpeg`
   }
   return (
     <>

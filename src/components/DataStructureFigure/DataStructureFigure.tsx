@@ -13,18 +13,13 @@ const DataStructureFigure = ({
   dataStructureDesktop,
   dataStructureMobile,
 }: Props) => {
-  console.log('DataStructure props:', {
-    dataStructureDesktop,
-    dataStructureMobile,
-  })
-
-  // Placeholder URLs - nu med .png format
+  // placeholder URL
   const placeholderDesktop =
     'https://placehold.co/800x600.png?text=Desktop+Structure'
   const placeholderMobile =
     'https://placehold.co/400x600.png?text=Mobile+Structure'
 
-  // Använd antingen den riktiga bilden eller placeholder
+  // Use either the actual image or placeholder
   const desktopImageUrl =
     dataStructureDesktop?.data?.attributes?.url || placeholderDesktop
   const mobileImageUrl =
@@ -45,36 +40,40 @@ const DataStructureFigure = ({
           </Styled.RightContainer>
         </Styled.ContentWrapper>
         <Styled.ImageWrapper>
-          <Image
-            src={desktopImageUrl}
-            alt={
-              dataStructureDesktop?.data?.attributes?.alternativeText ||
-              'Desktop structure'
-            }
-            width={800}
-            height={600}
-            priority
-            onError={(e) => {
-              console.error('Failed to load desktop image:', desktopImageUrl)
-              const target = e.target as HTMLImageElement
-              target.src = placeholderDesktop
-            }}
-          />
-          <Image
-            src={mobileImageUrl}
-            alt={
-              dataStructureMobile?.data?.attributes?.alternativeText ||
-              'Mobile structure'
-            }
-            width={400}
-            height={600}
-            priority
-            onError={(e) => {
-              console.error('Failed to load mobile image:', mobileImageUrl)
-              const target = e.target as HTMLImageElement
-              target.src = placeholderMobile
-            }}
-          />
+          <Styled.DesktopImageWrapper>
+            <Image
+              src={desktopImageUrl}
+              alt={
+                dataStructureDesktop?.data?.attributes?.alternativeText ||
+                'Desktop structure'
+              }
+              fill
+              style={{ objectFit: 'contain' }}
+              priority
+              onError={(e) => {
+                console.error('Failed to load desktop image:', desktopImageUrl)
+                const target = e.target as HTMLImageElement
+                target.src = placeholderDesktop
+              }}
+            />
+          </Styled.DesktopImageWrapper>
+          <Styled.MobileImageWrapper>
+            <Image
+              src={mobileImageUrl}
+              alt={
+                dataStructureMobile?.data?.attributes?.alternativeText ||
+                'Mobile structure'
+              }
+              fill
+              style={{ objectFit: 'contain' }}
+              priority
+              onError={(e) => {
+                console.error('Failed to load mobile image:', mobileImageUrl)
+                const target = e.target as HTMLImageElement
+                target.src = placeholderMobile
+              }}
+            />
+          </Styled.MobileImageWrapper>
         </Styled.ImageWrapper>
       </Styled.Wrapper>
     </PageContainer>
