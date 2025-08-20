@@ -2,6 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 import {
   Author,
+  AuthorOneLevelDeep,
   CourseOneLevelDeep,
   LandingPageCopy,
   Data,
@@ -18,7 +19,7 @@ export type Props = {
   acknowledgment?: string
   files?: MediaFiles
   logo?: MediaFile
-  authors?: { data: Data<Author>[] }
+  courseCreators?: { data: Data<AuthorOneLevelDeep>[] }
   parentRelations?: {
     type: 'lectures' | 'courses'
     parents: Data<CourseOneLevelDeep>[] | Data<Lecture>[]
@@ -31,13 +32,16 @@ export default function MetadataContainer({
   citeAs,
   files,
   logo,
-  authors,
+  courseCreators,
   parentRelations,
   landingPageCopy,
 }: Props) {
-  if ((!authors?.data || authors?.data.length === 0) && !acknowledgment && !citeAs && !files?.data) {
+
+  
+  if ((!courseCreators?.data || courseCreators?.data.length === 0) && !acknowledgment && !citeAs && !files?.data) {
     return null
   }
+ 
   return (
     <Styled.MetadataContainer>
       {logo?.data?.attributes?.url && <Styled.Logo src={logo?.data.attributes.url} />}
@@ -53,16 +57,26 @@ export default function MetadataContainer({
           ))}
         </Styled.HeadingSet>
       )}
-      {authors?.data?.length !== undefined && authors?.data?.length > 0 && (
+      {courseCreators?.data?.length !== undefined && courseCreators?.data?.length > 0 && (
         <Styled.HeadingSet>
           <Styled.Heading>{landingPageCopy.Authors}</Styled.Heading>
           <Styled.Ul>
-            {authors?.data.map((author) => (
+            {courseCreators?.data.map((author) => (
               <Styled.Li key={author.id}>
                 <Styled.EmailIcon />
                 <a href={`mailto:${author.attributes.Email}`}>
                   {author.attributes.FirstName} {author.attributes.LastName}
                 </a>
+                {author.attributes.Affiliation?.data?.attributes?.Affiliation && (
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <strong>Affiliation:</strong> {author.attributes.Affiliation.data.attributes.Affiliation}
+                  </div>
+                )}
+                {author.attributes.ORCID && /\d/.test(author.attributes.ORCID) && (
+                  <div style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>
+                    <strong>ORCID:</strong> {author.attributes.ORCID.replace(/\D/g, '')}
+                  </div>
+                )}
               </Styled.Li>
             ))}
           </Styled.Ul>

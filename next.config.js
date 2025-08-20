@@ -28,6 +28,12 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       {
+        protocol: 'http',  
+        hostname: '20.91.139.244',  
+        port: '1337', 
+        pathname: '/**',
+      },
+      {
         protocol: 'https',
         hostname: 'storageteachingkit.blob.core.windows.net',
         pathname: '/**',

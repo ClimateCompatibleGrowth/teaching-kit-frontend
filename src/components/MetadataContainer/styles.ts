@@ -49,6 +49,13 @@ a {
     max-width: 100%;
     white-space: nowrap;
     text-overflow: ellipsis;
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `
 

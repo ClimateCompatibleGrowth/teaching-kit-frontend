@@ -62,7 +62,7 @@ export default function CoursePage({
           citeAs={course.attributes.CiteAs}
           logo={course.attributes.Logo}
           files={course.attributes.Files}
-          authors={course.attributes.CourseCreators}
+          courseCreators={course.attributes.CourseCreators}
           landingPageCopy={landingPageCopy}
         />
         <BlockContentWrapper>
@@ -129,7 +129,7 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
       }&fallbackToDefaultLocale=true`
     )
 
-    const populateCourseCreators = 'populate=CourseCreators'
+    const populateCourseCreators = 'populate[CourseCreators][populate][Affiliation]=*'
     const populateCourseFiles =
       'populate[Files]=*'
     const populateCourseLogo =
