@@ -59,6 +59,7 @@ export const Markdown = styled.div`
   -webkit-box-orient: vertical;
   white-space: normal;
 
+
   p {
     margin-bottom: 0;
 
@@ -85,6 +86,7 @@ export const SubTitle = styled.h5`
 
 export const SubTitleNode = styled.div<CardProps>`
   margin-bottom: 2.4rem;
+  
   ${(CardProps) =>
     CardProps.youAreHere
       ? css`
@@ -100,21 +102,24 @@ export const FilesTitle = styled.h5`
   font-family: ${montserrat[400].style.fontFamily};
   font-size: 1.8rem;
   color: ${OnPrimary90};
+
 `
-export const LectureFile = styled(ButtonLink)`
+
+
+export const FilesContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
   margin-top: 1rem;
-  display: inline-block;
-  ${mq.xs} {
-    & + & {
-      display: inline;
-      margin-top: 0;
-      margin-left: 1rem;
-    }
-  }
+`
+
+export const LectureFile = styled(ButtonLink)`
+ 
 `
 export const MetaInformation = styled.div`
   display: flex;
   align-items: center;
+
 `
 export const SubComponentWrapper = styled.div`
   width: 95%;

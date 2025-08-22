@@ -21,7 +21,6 @@ export const ExternalLink = styled("a", {
 }) <AnchorHTMLAttributes<HTMLAnchorElement> & ButtonLinkProps>`
   display: inline-block;
   padding: 1.1rem 2.4rem;
-
   background-color: ${(props) => (props.primary ? Accent40 : undefined)};
   border-width: 1px;
   border-style: solid;
@@ -52,6 +51,7 @@ export const InternalLink = styled(Link, {
 }) <AnchorHTMLAttributes<HTMLAnchorElement> & ButtonLinkProps>`
   display: inline-block;
   padding: 1.1rem 2.4rem;
+
 
   background-color: ${(props) => (props.primary ? Accent40 : undefined)};
   border-width: 1px;

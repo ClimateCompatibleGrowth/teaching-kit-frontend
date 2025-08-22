@@ -1,7 +1,7 @@
 import z, { ZodFormattedError } from 'zod';
 import { LOCALES } from '../types';
 
-export const MAXIMUM_FILE_UPLOAD_SIZE = 50_000_000
+export const MAXIMUM_FILE_UPLOAD_SIZE = 100_000_000
 
 const fileRefinement = (files: File, ctx: z.RefinementCtx) => {
   if (files.length > 10) {
