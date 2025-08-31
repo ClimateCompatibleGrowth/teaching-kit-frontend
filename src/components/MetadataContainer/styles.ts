@@ -34,7 +34,8 @@ export const MetadataContainer = styled.div`
 
 export const Logo = styled.img`
   max-width: 50%;
-  margin-bottom: 2rem;
+  margin: 0 auto 2rem auto;
+  display: block;
 `
 
 export const Heading = styled.h6`

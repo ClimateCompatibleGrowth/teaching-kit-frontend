@@ -113,6 +113,24 @@ export const FilesContainer = styled.div`
   margin-top: 1rem;
 `
 
+export const Logo = styled.img`
+  max-width: 120px;
+  height: auto;
+  flex-shrink: 0;
+  border-radius: ${BorderRadius};
+`
+
+export const ContentAndLogoContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+`
+
+export const TextContent = styled.div`
+  flex: 1;
+`
+
 export const LectureFile = styled(ButtonLink)`
  
 `

@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import React, { ReactNode, useEffect, useState } from 'react'
-import { Locale, MediaFiles } from '../../../types'
+import { Locale, MediaFiles, MediaFile } from '../../../types'
 import Markdown from '../../Markdown/Markdown'
 import TranslationDoesNotExist from '../../TranslationDoesNotExist/TranslationDoesNotExist'
 import * as Styled from './styles'
@@ -16,6 +16,7 @@ export type CardType = {
   locale?: Locale
   translationDoesNotExistCopy: string
   index?: number
+  logo?: MediaFile
 }
 
 type CardProps = {
@@ -27,6 +28,7 @@ type CardProps = {
 const Card = ({ card, currentIndex, setCurrentIndex }: CardProps) => {
   const { locale: routerLocale } = useRouter()
   const [youAreHere, setYouAreHere] = useState(false)
+
 
   useEffect(() => {
     if (typeof currentIndex === 'number' && currentIndex === card.index) {
@@ -42,36 +44,32 @@ const Card = ({ card, currentIndex, setCurrentIndex }: CardProps) => {
       setCurrentIndex?.(index)
     }
   }
-
+ 
+  
   return (
+  
     <LinkWrapper card={card}>
       <Styled.Card
         youAreHere={youAreHere}
         onClick={handleDirectClick}
       >
+        
         {card.locale !== undefined && card.locale !== routerLocale ? (
           <TranslationDoesNotExist copy={card.translationDoesNotExistCopy} />
         ) : null}
 
-        {typeof card.subTitle === 'string' ? (
-          <Styled.SubTitle>{card.subTitle}</Styled.SubTitle>
-        ) : null}
-
-        <Styled.YouAreHereWrapper>
-          {typeof card.subTitle === 'object' && (
-            <Styled.SubTitleNode youAreHere={youAreHere}>
-              {card.subTitle}
-              <Styled.Indicator youAreHere={youAreHere}>
-                You are here
-              </Styled.Indicator>
-            </Styled.SubTitleNode>
+        {/* Flex container för title, text och logo */}
+        <Styled.ContentAndLogoContainer>
+          <Styled.TextContent>
+            <Styled.Title>{card.title}</Styled.Title>
+            <Styled.Markdown>
+              <Markdown allowedElements={['p']}>{card.text}</Markdown>
+            </Styled.Markdown>
+          </Styled.TextContent>
+          {card.logo?.data?.attributes?.url && (
+            <Styled.Logo src={card.logo.data.attributes.url} alt={card.logo.data.attributes.alternativeText || card.title} />
           )}
-        </Styled.YouAreHereWrapper>
-
-        <Styled.Title>{card.title}</Styled.Title>
-        <Styled.Markdown>
-          <Markdown allowedElements={['p']}>{card.text}</Markdown>
-        </Styled.Markdown>
+        </Styled.ContentAndLogoContainer>
         {card.files?.data && <Styled.FilesTitle>Lecture files</Styled.FilesTitle>}
         {card.files?.data && (
           <Styled.FilesContainer>

@@ -20,7 +20,8 @@ const getPopulateString = () => {
   const populateCourseCreators = 'populate[CourseCreators][populate]=*'
   const populateLectureCreators =
     'populate[Lectures][populate][LectureCreators]=*'
-  return `${populateCourseCreators}&${populateLectureCreators}`
+  const populateLogo = 'populate[Logo]=*'
+  return `${populateCourseCreators}&${populateLectureCreators}&${populateLogo}`
 }
 
 export const filterCourseOnKeywordsAndAuthors = async ({

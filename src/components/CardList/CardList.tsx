@@ -13,8 +13,8 @@ type CardListProps = {
 
 const CardList = ({ cards, currentIndex, setCurrentIndex }: CardListProps) => {
   const { locale } = useRouter()
-
   return (
+    
     <Styled.CardList>
       {cards.map((card) => (
         <Card

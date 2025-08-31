@@ -57,6 +57,7 @@ const TabGroup = ({
       href: `/courses/${data.attributes.vuid}`,
       subTitle: <LearningMaterialBadge type='COURSE' />,
       locale: data.attributes.locale,
+      logo: data.attributes.Logo, 
       translationDoesNotExistCopy,
     }
   }
