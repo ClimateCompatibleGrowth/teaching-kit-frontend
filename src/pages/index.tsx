@@ -11,7 +11,7 @@ import axios from 'axios'
 import { GetStaticPropsContext } from 'next'
 import { StartPageCopy, Data, GeneralCopy } from '../types'
 import { ResponseArray } from '../shared/requests/types'
-import DataStructureFigure from '../components/DataStructureFigure/DataStructureFigure'
+
 
 type Props = {
   siteCopy: Data<StartPageCopy>
@@ -112,7 +112,7 @@ export default function Home({ siteCopy, generalCopy }: Props) {
         />
       ) : null}
 
-      <DataStructureFigure {...dataStructureData} />
+
       {InfoCardsLarge !== undefined
         ? InfoCardsLarge.map((infoCardLarge) => (
             <TextImage
