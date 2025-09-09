@@ -8,7 +8,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   
-  // Increase body size limit for file uploads
+  // Increase body size limit for file uploads.
   experimental: {
     serverComponentsExternalPackages: [],
   },
