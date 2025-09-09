@@ -86,7 +86,7 @@ type SubmitMaterialProps = {
 }
 
 export default function SubmitMaterial({ pageCopy }: SubmitMaterialProps) {
-  const acceptTypes = ".pdf,.docx,.pptx,ppt,.doc,.txt";
+  const acceptTypes = ".pdf,.docx,.pptx,.ppt,.doc,.txt";
   const [errors, setErrors] = useState<FieldErrors>()
   const [email, setEmail] = useState<string>("")
   const [locale, setLocale] = useState<typeof LOCALES[number]>("en")
