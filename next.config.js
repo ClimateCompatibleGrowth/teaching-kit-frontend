@@ -7,6 +7,18 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  
+  // Increase body size limit for file uploads
+  experimental: {
+    serverComponentsExternalPackages: [],
+  },
+  
+  // Configure API routes to handle larger file uploads
+  api: {
+    bodyParser: {
+      sizeLimit: '100mb',
+    },
+  },
 
   // https://github.com/privateOmega/html-to-docx/issues/129
   webpack: (config) => {

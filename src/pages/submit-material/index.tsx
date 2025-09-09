@@ -159,6 +159,9 @@ export default function SubmitMaterial({ pageCopy }: SubmitMaterialProps) {
         <Label>
           {pageCopy.attributes.CourseMaterials}
           <input name='courseFiles' type="file" multiple accept={acceptTypes} onChange={e => setCourseFiles(e.target.files)} />
+          <small style={{fontSize: '1.2rem', color: '#666', marginTop: '0.5rem', display: 'block'}}>
+            Stöds: PDF, Word (.docx, .doc), PowerPoint (.pptx, .ppt), Text (.txt)
+          </small>
           {errors?.courseFiles && errors?.courseFiles._errors && <ErrorMessage role="alert">{errors?.courseFiles._errors}</ErrorMessage>}
         </Label>
         {lectures.map((lecture, index) => {
@@ -182,6 +185,9 @@ export default function SubmitMaterial({ pageCopy }: SubmitMaterialProps) {
             <Label>
               {pageCopy.attributes.LectureFiles}
               <input name={`lecture-${index}-files`} type="file" multiple accept={acceptTypes} />
+              <small style={{fontSize: '1.2rem', color: '#666', marginTop: '0.5rem', display: 'block'}}>
+                Stöds: PDF, Word (.docx, .doc), PowerPoint (.pptx, .ppt), Text (.txt)
+              </small>
               {errors?.lectures && errors.lectures[index] && errors.lectures[index].files?._errors && <ErrorMessage role="alert">{errors?.lectures[index].files?._errors}</ErrorMessage>}
             </Label>
           </LectureWrapper>

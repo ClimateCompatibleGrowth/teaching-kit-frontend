@@ -20,6 +20,15 @@ const getLectureData = (formData: FormData) => {
   return lectures
 }
 
+// Configure body size limit for this API route
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '100mb',
+    },
+  },
+}
+
 // See documentation in /docs/zenodo/design.md
 export async function POST(
   req: NextRequest,
