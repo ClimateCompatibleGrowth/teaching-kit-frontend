@@ -17,12 +17,17 @@ export const Footer = styled.footer`
   column-gap: 1.6rem;
   flex-wrap: wrap;
   word-break: break-word;
-  ${mq.sm} {
+  ${mq.md} {
     padding: 0 8rem;
     flex-wrap: nowrap;
   }
 `
+export const ReintregateLogo = styled.img`
+  height: 131px;
+  width: auto;
+  margin-left: 30px;
 
+`
 export const LogoWrapper = styled.div`
   position: relative;
   flex: 0 0 100%;
@@ -32,17 +37,17 @@ export const LogoWrapper = styled.div`
     height: 14.1rem;
     width: auto;
   }
-  ${mq.sm} {
+  ${mq.md} {
     flex: 0 0 50%;
     order: 0;
     text-align: left;
   }
-`
+  `
 export const LogoInnerWrapper = styled.div`
-  ${mq.sm} {
+  ${mq.md} {
     position: absolute;
     bottom: 0;
-    padding-bottom: 3rem;
+    padding-bottom: 6.1rem;
   }
 `
 
@@ -56,7 +61,7 @@ export const ContactWrapper = styled.div`
     color: ${Accent40};
     text-decoration: underline;
   }
-  ${mq.sm} {
+  ${mq.md} {
     flex: 0 0 50%;
     margin-bottom: 0;
   }
