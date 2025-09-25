@@ -20,14 +20,8 @@ const getLectureData = (formData: FormData) => {
   return lectures
 }
 
-// Configure body size limit for this API route
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '100mb',
-    },
-  },
-}
+// Configure route segment config for this API route
+export const maxDuration = 300 // 5 minutes for large file uploads
 
 // See documentation in /docs/zenodo/design.md
 export async function POST(
