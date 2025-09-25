@@ -21,7 +21,7 @@ const getLectureData = (formData: FormData) => {
 }
 
 // Configure route segment config for this API route
-export const maxDuration = 300 // 5 minutes for large file uploads
+export const maxDuration = 300 
 
 // See documentation in /docs/zenodo/design.md
 export async function POST(
