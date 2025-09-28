@@ -12,11 +12,13 @@ import axios from "axios"
 import { GetStaticPropsContext } from "next"
 import { ResponseArray } from "../../shared/requests/types"
 import Markdown from "../../components/Markdown/Markdown"
+// Direct upload functions are now used in the API route
 
 type LectureInput = {
   title: string;
   abstract: string;
   files?: FileList;
+  uploadedFileIds?: number[];
 }
 
 const Wrapper = styled.div`
@@ -94,6 +96,8 @@ export default function SubmitMaterial({ pageCopy }: SubmitMaterialProps) {
   const [courseTitle, setCourseTitle] = useState<string>("")
   const [courseFiles, setCourseFiles] = useState<FileList | null>()
   const [lectures, setLectures] = useState<LectureInput[]>([])
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
 
   function changeLecture(newLecture: LectureInput, newIndex: number) {
     const newLectures = lectures.map((lecture, index) => index === newIndex ? newLecture : lecture)
@@ -102,28 +106,72 @@ export default function SubmitMaterial({ pageCopy }: SubmitMaterialProps) {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setIsUploading(true)
+    setUploadProgress(0)
 
-    const validationData = courseSchema.safeParse({
-      email,
-      courseTitle,
-      courseAbstract,
-      courseFiles,
-      locale,
-      lectures
-    })
-    if (!validationData.success) {
-      setErrors(validationData.error.format() as FieldErrors)
-      return
-    }
+    try {
+      // Validate form data first
+      const validationData = courseSchema.safeParse({
+        email,
+        courseTitle,
+        courseAbstract,
+        courseFiles,
+        locale,
+        lectures
+      })
+      if (!validationData.success) {
+        setErrors(validationData.error.format() as FieldErrors)
+        setIsUploading(false)
+        return
+      }
 
-    const formData = new FormData(event.currentTarget)
-    const response = await axios.post('/api/submit-material', formData)
+      // Send metadata and files to our API using FormData
+      const formData = new FormData()
+      formData.append('email', email)
+      formData.append('locale', locale)
+      formData.append('courseTitle', courseTitle)
+      formData.append('courseAbstract', courseAbstract)
+      
+      // Add course files
+      if (courseFiles) {
+        for (let i = 0; i < courseFiles.length; i++) {
+          formData.append('courseFiles', courseFiles[i])
+        }
+      }
+      
+      // Add lectures
+      lectures.forEach((lecture, index) => {
+        console.log('📝 Processing lecture:', index, {
+          title: lecture.title,
+          hasFiles: !!lecture.files,
+          fileCount: lecture.files?.length || 0
+        })
+        formData.append(`lecture-${index}-title`, lecture.title)
+        formData.append(`lecture-${index}-abstract`, lecture.abstract)
+        if (lecture.files && lecture.files.length > 0) {
+          for (let i = 0; i < lecture.files.length; i++) {
+            formData.append(`lecture-${index}-files`, lecture.files[i])
+            console.log('📝 Added lecture file:', lecture.files[i].name)
+          }
+        }
+      })
 
-    const responseData = await response.data
-    if (response.status !== 204) {
-      setErrors(responseData)
-    } else {
-      window.location.href = '/thank-you'
+      const response = await axios.post('/api/submit-material', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+
+      if (response.status !== 204) {
+        setErrors(response.data)
+      } else {
+        window.location.href = '/thank-you'
+      }
+    } catch (error) {
+      console.error('Form submission failed:', error)
+      setErrors({ _errors: ['Form submission failed. Please try again.'] })
+    } finally {
+      setIsUploading(false)
     }
   }
 
@@ -184,7 +232,15 @@ export default function SubmitMaterial({ pageCopy }: SubmitMaterialProps) {
             </Label>
             <Label>
               {pageCopy.attributes.LectureFiles}
-              <input name={`lecture-${index}-files`} type="file" multiple accept={acceptTypes} />
+              <input 
+                name={`lecture-${index}-files`} 
+                type="file" 
+                multiple 
+                accept={acceptTypes}
+                onChange={(e) => {
+                  changeLecture({ ...lecture, files: e.target.files || undefined }, index)
+                }}
+              />
               <small style={{fontSize: '1.2rem', color: '#666', marginTop: '0.5rem', display: 'block'}}>
                 Stöds: PDF, Word (.docx, .doc), PowerPoint (.pptx, .ppt), Text (.txt)
               </small>
@@ -202,7 +258,31 @@ export default function SubmitMaterial({ pageCopy }: SubmitMaterialProps) {
             <Markdown>{pageCopy.attributes.TermsAndConditions}</Markdown>
           </TermsAndConditions>
         </TermsLabel>
-        <Button type="submit">{pageCopy.attributes.SubmitButton}</Button>
+        
+        {/* Upload Progress */}
+        {isUploading && (
+          <div style={{ marginBottom: '2rem' }}>
+            <p>Laddar upp filer...</p>
+            <div style={{ 
+              width: '100%', 
+              height: '20px', 
+              backgroundColor: '#f0f0f0', 
+              borderRadius: '10px',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#4CAF50',
+                animation: 'pulse 1.5s ease-in-out infinite'
+              }} />
+            </div>
+          </div>
+        )}
+
+        <Button type="submit" disabled={isUploading}>
+          {isUploading ? 'Laddar upp...' : pageCopy.attributes.SubmitButton}
+        </Button>
       </form>
     </Wrapper>
   </PageContainer >
