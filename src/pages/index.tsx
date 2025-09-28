@@ -152,8 +152,7 @@ export default function Home({ siteCopy, generalCopy }: Props) {
 
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
-    console.log('getStaticProps called with locale:', ctx.locale)
-    console.log('STRAPI_API_URL:', process.env.STRAPI_API_URL)
+   
 
     const populateHeroImage = 'populate[HeroImage][populate]=*'
     const populateDataStructureDesktop =
@@ -167,19 +166,19 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
     const apiUrl = `${process.env.STRAPI_API_URL}/site-copies?locale=${
       ctx.locale ?? ctx.defaultLocale
     }&${populate}`
-    console.log('Fetching from URL:', apiUrl)
+
 
     // First try to fetch the translation for the requested language
     let copyResponse: ResponseArray<StartPageCopy> = await axios.get(apiUrl)
-    console.log('Initial API response:', copyResponse.data)
+
 
     // If no content was found, fetch the English version instead
     if (!copyResponse.data.data.length) {
-      console.log('No content found, fetching English version')
+
       const englishApiUrl = `${process.env.STRAPI_API_URL}/site-copies?locale=en&${populate}`
-      console.log('Fetching English version from:', englishApiUrl)
+
       copyResponse = await axios.get(englishApiUrl)
-      console.log('English API response:', copyResponse.data)
+
     }
 
     const generalCopyResponse: ResponseArray<GeneralCopy> = await axios.get(
@@ -187,10 +186,10 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
         ctx.locale ?? ctx.defaultLocale
       }`
     )
-    console.log('General copy response:', generalCopyResponse.data)
+
 
     if (!copyResponse || copyResponse.data.data.length < 1) {
-      console.log('No content found in final response, returning notFound')
+
       return {
         notFound: true,
       }

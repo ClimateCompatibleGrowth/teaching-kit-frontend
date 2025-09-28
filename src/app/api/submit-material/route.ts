@@ -4,21 +4,7 @@ import { NextRequest } from 'next/server'
 import { courseSchema } from '../../../utils/validation';
 
 
-const getLectureData = (formData: FormData) => {
-  let lectureIndex = 0
-  let lectures = []
-  while (lectureIndex < 10) {
-    const title = formData.get(`lecture-${lectureIndex}-title`)
-    const abstract = formData.get(`lecture-${lectureIndex}-abstract`)
-    const files = formData.getAll(`lecture-${lectureIndex}-files`) as File[]
-    if (files.length === 0 && !abstract && !title) {
-      break;
-    }
-    lectures.push({ title, abstract, files })
-    lectureIndex++;
-  }
-  return lectures
-}
+// getLectureData function removed - now using direct upload approach
 
 // Configure route segment config for this API route
 export const maxDuration = 300 // 5 minutes for large file uploads
@@ -31,15 +17,38 @@ export async function POST(
     if (process.env.NEXT_PUBLIC_ACCEPT_FORM_SUBMISSIONS !== 'true') {
       return new Response("{}", { status: 503 })
     }
-    const formData = await req.formData()
 
+    // Parse FormData
+    const formData = await req.formData()
     const email = formData.get("email")
     const locale = formData.get("locale")
     const courseTitle = formData.get("courseTitle")
     const courseAbstract = formData.get("courseAbstract")
     const courseFiles = formData.getAll("courseFiles") as File[]
-    const lectures = getLectureData(formData)
+    
+    // Parse lectures
+    const lectures = []
+    let lectureIndex = 0
+    while (lectureIndex < 10) {
+      const title = formData.get(`lecture-${lectureIndex}-title`)
+      const abstract = formData.get(`lecture-${lectureIndex}-abstract`)
+      const files = formData.getAll(`lecture-${lectureIndex}-files`) as File[]
+      
+      console.log('📝 Parsing lecture:', lectureIndex, {
+        title,
+        abstract,
+        fileCount: files.length,
+        files: files.map(f => f.name)
+      })
+      
+      if (files.length === 0 && !abstract && !title) {
+        break;
+      }
+      lectures.push({ title, abstract, files })
+      lectureIndex++;
+    }
 
+    // Validate the data
     const inData = {
       email,
       locale,
@@ -55,7 +64,7 @@ export async function POST(
       return new Response(JSON.stringify(validationData.error.format()), { status: 400 })
     }
 
-    const lectureIds: number[] = await Promise.all(lectures.map(async lecture => {
+    const lectureIds: number[] = await Promise.all(lectures.map(async (lecture: any) => {
       const newLecture = await axios.post(`${process.env.STRAPI_API_URL}/lectures`,
         {
           data: {
@@ -71,21 +80,20 @@ export async function POST(
           },
         })
       const newLectureId = newLecture.data.data.id
-      if (lecture.files && lecture.files.every(file => file.size > 0)) {
-        const fileForm = new FormData()
-        lecture.files.forEach(lectureFile => {
-          fileForm.append("files", lectureFile, `UNVERIFIED-${lectureFile.name}`)
-        });
-        fileForm.append("ref", "api::lecture.lecture")
-        fileForm.append("refId", newLectureId)
-        fileForm.append("field", "Files")
-        await axios.post(`${process.env.STRAPI_API_URL}/upload`,
-          fileForm,
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.STRAPI_API_SUBMIT_KEY}`
-            },
-          })
+      
+      // Upload files directly to the lecture using Strapi's ref system
+      if (lecture.files && lecture.files.length > 0) {
+        console.log('🔗 Processing lecture files for lecture:', newLectureId, 'files:', lecture.files.length)
+        const { uploadLectureFiles } = await import('../../../utils/directUpload')
+        await uploadLectureFiles(
+          lecture.files,
+          process.env.STRAPI_API_URL || '',
+          process.env.STRAPI_API_SUBMIT_KEY || '',
+          newLectureId
+        )
+        console.log('🔗 Lecture files processed successfully for lecture:', newLectureId)
+      } else {
+        console.log('🔗 No files to upload for lecture:', newLectureId)
       }
       return newLectureId
     }));
@@ -108,20 +116,15 @@ export async function POST(
         },
       })
 
-    if (courseFiles && courseFiles.every(file => file.size > 0)) {
-      const fileForm = new FormData()
-      courseFiles.forEach(courseFile => {
-        fileForm.append("files", courseFile, `UNVERIFIED-${courseFile.name}`)
-      });
-      fileForm.append("ref", "api::course.course")
-      fileForm.append("refId", newCourse.data.data.id)
-      fileForm.append("field", "Files")
-      await axios.post(`${process.env.STRAPI_API_URL}/upload`,
-        fileForm, {
-        headers: {
-          Authorization: `Bearer ${process.env.STRAPI_API_SUBMIT_KEY}`
-        },
-      })
+    // Upload course files directly to the course using Strapi's ref system
+    if (courseFiles && courseFiles.length > 0) {
+      const { uploadCourseFiles } = await import('../../../utils/directUpload')
+      await uploadCourseFiles(
+        courseFiles,
+        process.env.STRAPI_API_URL || '',
+        process.env.STRAPI_API_SUBMIT_KEY || '',
+        newCourse.data.data.id
+      )
     }
 
     return new Response(null, { status: 204 })

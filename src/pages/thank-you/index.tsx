@@ -44,7 +44,6 @@ export async function getStaticProps(ctx: GetStaticPropsContext) {
       pageCopyRequest,
     ])
 
-    console.log(pageCopy);
 
 
     if (!pageCopy || pageCopy.data.data.length < 1) {
