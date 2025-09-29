@@ -91,13 +91,14 @@ export async function POST(
         },
       })
 
-    // Return IDs so client can upload files directly to Strapi
+    // Return IDs so client can upload files direkt till Strapi
     const responseBody = {
       courseId: newCourse.data.data.id,
       lectureIds,
     }
 
     return new Response(JSON.stringify(responseBody), { status: 200 })
+
   } catch (error: any) {
     console.error(error);
 
