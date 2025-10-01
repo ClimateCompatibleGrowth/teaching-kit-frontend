@@ -9,6 +9,7 @@ import { Data, LANGUAGES, LOCALES, SubmitMaterialPageCopy } from "../../types"
 import { ubuntu } from "../../styles/fonts"
 import { courseSchema, FieldErrors } from "../../utils/validation"
 import axios from "axios"
+import { uploadCourseFiles, uploadLectureFiles } from "../../utils/directUpload"
 import { GetStaticPropsContext } from "next"
 import { ResponseArray } from "../../shared/requests/types"
 import Markdown from "../../components/Markdown/Markdown"
@@ -125,35 +126,16 @@ export default function SubmitMaterial({ pageCopy }: SubmitMaterialProps) {
         return
       }
 
-      // Send metadata and files to our API using FormData
+      // 1) Skicka endast metadata till API:t för att skapa entiteter
       const formData = new FormData()
       formData.append('email', email)
       formData.append('locale', locale)
       formData.append('courseTitle', courseTitle)
       formData.append('courseAbstract', courseAbstract)
-      
-      // Add course files
-      if (courseFiles) {
-        for (let i = 0; i < courseFiles.length; i++) {
-          formData.append('courseFiles', courseFiles[i])
-        }
-      }
-      
-      // Add lectures
+      // Lägg till föreläsningar (endast metadata)
       lectures.forEach((lecture, index) => {
-        console.log('📝 Processing lecture:', index, {
-          title: lecture.title,
-          hasFiles: !!lecture.files,
-          fileCount: lecture.files?.length || 0
-        })
         formData.append(`lecture-${index}-title`, lecture.title)
         formData.append(`lecture-${index}-abstract`, lecture.abstract)
-        if (lecture.files && lecture.files.length > 0) {
-          for (let i = 0; i < lecture.files.length; i++) {
-            formData.append(`lecture-${index}-files`, lecture.files[i])
-            console.log('📝 Added lecture file:', lecture.files[i].name)
-          }
-        }
       })
 
       const response = await axios.post('/api/submit-material', formData, {
@@ -162,11 +144,34 @@ export default function SubmitMaterial({ pageCopy }: SubmitMaterialProps) {
         },
       })
 
-      if (response.status !== 204) {
+      if (response.status !== 200) {
         setErrors(response.data)
-      } else {
-        window.location.href = '/thank-you'
+        setIsUploading(false)
+        return
       }
+
+      const { courseId, lectureIds } = response.data as { courseId: number; lectureIds: number[] }
+
+      // 2) Ladda upp filer direkt till Strapi och koppla via ref
+      const apiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || process.env.STRAPI_API_URL || ''
+      const apiKey = process.env.NEXT_PUBLIC_STRAPI_API_SUBMIT_KEY || process.env.STRAPI_API_SUBMIT_KEY || ''
+
+      // Kursfiler
+      if (courseFiles && courseFiles.length > 0) {
+        await uploadCourseFiles(courseFiles, apiUrl, apiKey, courseId)
+      }
+
+      // Lecture-filer
+      if (lectureIds && Array.isArray(lectureIds)) {
+        for (let i = 0; i < lectureIds.length; i++) {
+          const files = lectures[i]?.files
+          if (files && files.length > 0) {
+            await uploadLectureFiles(files, apiUrl, apiKey, lectureIds[i])
+          }
+        }
+      }
+
+      window.location.href = '/thank-you'
     } catch (error) {
       console.error('Form submission failed:', error)
       setErrors({ _errors: ['Form submission failed. Please try again.'] })
