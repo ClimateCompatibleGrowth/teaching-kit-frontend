@@ -47,6 +47,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'teachingkit.climatecompatiblegrowth.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'storageteachingkit.blob.core.windows.net',
         pathname: '/**',
       },
