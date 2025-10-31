@@ -101,6 +101,7 @@ export type Course = StrapiBaseEntry & {
   Acknowledgement: string
   CiteAs: string
   vuid: string
+  SubmitterEmail?: string
 }
 
 export type CourseOneLevelDeep = Course & {

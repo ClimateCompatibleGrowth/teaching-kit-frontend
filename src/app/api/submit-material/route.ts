@@ -77,6 +77,7 @@ export async function POST(
       data: {
         Title: `UNVERIFIED-${courseTitle}`,
         Abstract: courseAbstract,
+        SubmitterEmail: email, // Save the submitter's email
         Lectures: lectureIds.length > 0 ? {
           connect: lectureIds.map((lectureId) => ({ id: lectureId, locale, status: 'draft' }))
         } : null,
