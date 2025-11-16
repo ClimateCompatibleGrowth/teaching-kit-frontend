@@ -21,18 +21,41 @@ export const Wrapper = styled.div`
 
 export const LogoWrapper = styled.div`
   height: 6rem;
+  display: flex;
+  align-items: center;
+  position: relative;
 
   ${mq.sm} {
     height: 10rem;
+    padding-left: 14rem;
   }
 
   svg {
     height: 100%;
     width: auto;
+    display: block !important;
+    flex-shrink: 0;
+    min-width: 6rem;
 
     ${mq.sm} {
       height: 140px;
       position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+`
+
+export const ReintegrateLogoWrapper = styled.div`
+  margin-left: 1.6rem;
+
+  img {
+    height: 4rem;
+    width: auto;
+
+    ${mq.sm} {
+      height: 6rem;
     }
   }
 `

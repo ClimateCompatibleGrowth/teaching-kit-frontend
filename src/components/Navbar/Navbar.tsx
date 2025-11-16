@@ -1,7 +1,9 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import * as Styled from './styles'
 
 import LogoIcon from '../../../public/logo.svg'
+import ReintegrateLogo from '../../../public/LOGO RE-INTEGRATE.png'
 import { useRouter } from 'next/router'
 import { LocaleContext } from '../../contexts/LocaleContext'
 import { useContext } from 'react'
@@ -28,6 +30,13 @@ export default function Navbar() {
           <Link href='/'>
             <LogoIcon alt={translation.logoAltText ?? LOGO_ALT_TEXT} />
           </Link>
+          <Styled.ReintegrateLogoWrapper>
+            <Image
+              src={ReintegrateLogo}
+              alt='RE-Integrate logo'
+              priority
+            />
+          </Styled.ReintegrateLogoWrapper>
         </Styled.LogoWrapper>
         <Styled.Ul>
           <Styled.Li>
