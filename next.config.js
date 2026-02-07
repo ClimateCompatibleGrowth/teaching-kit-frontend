@@ -7,12 +7,12 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  
+
   // Increase body size limit for file uploads
   experimental: {
     serverComponentsExternalPackages: [],
   },
-  
+
   // Configure API routes to handle larger file uploads
   api: {
     bodyParser: {
@@ -40,9 +40,9 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       {
-        protocol: 'http',  
-        hostname: '20.91.139.244',  
-        port: '1337', 
+        protocol: 'http',
+        hostname: '20.91.139.244',
+        port: '1337',
         pathname: '/**',
       },
       {

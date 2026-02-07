@@ -15,11 +15,18 @@ export const translations: Record<Locale, CookieConsentTranslations> = {
     accept: 'Accept',
     decline: 'Decline',
   },
-  sv: {
-    title: 'Cookiesamtycke',
+  'es-ES': {
+    title: 'Consentimiento de cookies',
     description:
-      'Vi använder cookies för att samla in besöksstatistik med Google Analytics (GA4). Detta hjälper oss att förbättra webbplatsen och förstå hur den används. Du kan välja att tillåta eller avböja cookies.',
-    accept: 'Tillåt',
-    decline: 'Avböj',
+      'Utilizamos cookies para recopilar estadísticas de visitantes con Google Analytics (GA4). Esto nos ayuda a mejorar el sitio web y comprender cómo se utiliza. Puede elegir aceptar o rechazar las cookies.',
+    accept: 'Aceptar',
+    decline: 'Rechazar',
+  },
+  'fr-FR': {
+    title: 'Consentement aux cookies',
+    description:
+      "Nous utilisons des cookies pour collecter des statistiques de visiteurs avec Google Analytics (GA4). Cela nous aide à améliorer le site Web et à comprendre comment il est utilisé. Vous pouvez choisir d'accepter ou de refuser les cookies.",
+    accept: 'Accepter',
+    decline: 'Refuser',
   },
 }
