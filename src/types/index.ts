@@ -45,7 +45,7 @@ export type AuthorOneLevelDeep = Author & {
 }
 
 export const learningMaterialTypes = ['COURSE', 'LECTURE'] as const
-export type LearningMaterialType = typeof learningMaterialTypes[number]
+export type LearningMaterialType = (typeof learningMaterialTypes)[number]
 
 export type Keyword = {
   Keyword: string
@@ -143,10 +143,10 @@ export type CourseThreeLevelsDeepWithThreeLevelsDeepLocalizations = Modify<
 >
 
 export const LOCALES = ['en', 'es-ES', 'fr-FR'] as const
-export type Locale = typeof LOCALES[number]
+export type Locale = (typeof LOCALES)[number]
 
 export const LANGUAGES = ['English', 'Español', 'Français'] as const
-export type Language = typeof LANGUAGES[number]
+export type Language = (typeof LANGUAGES)[number]
 
 export type Path = {
   params: {
@@ -157,42 +157,44 @@ export type Path = {
 
 export type MediaFile = {
   data: Data<{
-    alternativeText: null | string,
-    caption: null | string,
-    createdAt: string,
-    ext: string,
-    hash: string,
-    height: number | null,
-    mime: string,
-    name: string,
-    previewUrl: string | null,
-    provider: string | null,
-    provider_metadata: null,
-    size: number,
-    updatedAt: string | null,
-    url: string,
+    alternativeText: null | string
+    caption: null | string
+    createdAt: string
+    ext: string
+    hash: string
+    height: number | null
+    mime: string
+    name: string
+    previewUrl: string | null
+    provider: string | null
+    provider_metadata: null
+    size: number
+    updatedAt: string | null
+    url: string
     width: number | null
   }> | null
 }
 
 export type MediaFiles = {
-  data: Data<{
-    alternativeText: null | string,
-    caption: null | string,
-    createdAt: string,
-    ext: string,
-    hash: string,
-    height: number | null,
-    mime: string,
-    name: string,
-    previewUrl: string | null,
-    provider: string | null,
-    provider_metadata: null,
-    size: number,
-    updatedAt: string | null,
-    url: string,
-    width: number | null
-  }>[] | null
+  data:
+    | Data<{
+        alternativeText: null | string
+        caption: null | string
+        createdAt: string
+        ext: string
+        hash: string
+        height: number | null
+        mime: string
+        name: string
+        previewUrl: string | null
+        provider: string | null
+        provider_metadata: null
+        size: number
+        updatedAt: string | null
+        url: string
+        width: number | null
+      }>[]
+    | null
 }
 
 type Image = {
