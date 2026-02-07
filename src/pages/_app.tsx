@@ -1,6 +1,8 @@
 import type { AppProps } from 'next/app'
 import Navbar from '../components/Navbar/Navbar'
 import Footer from '../components/Footer/Footer'
+import CookieConsent from '../components/CookieConsent/CookieConsent'
+import GoogleAnalytics from '../components/GoogleAnalytics/GoogleAnalytics'
 import { Global } from '@emotion/react'
 import defaultStyle from '../styles/default'
 import { LocaleProvider } from '../contexts/LocaleContext'
@@ -10,9 +12,11 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <LocaleProvider>
         <Global styles={defaultStyle} />
+        <GoogleAnalytics />
         <Navbar />
         <Component {...pageProps} />
         <Footer />
+        <CookieConsent />
       </LocaleProvider>
     </>
   )
