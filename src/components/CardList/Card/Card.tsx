@@ -29,7 +29,6 @@ const Card = ({ card, currentIndex, setCurrentIndex }: CardProps) => {
   const { locale: routerLocale } = useRouter()
   const [youAreHere, setYouAreHere] = useState(false)
 
-
   useEffect(() => {
     if (typeof currentIndex === 'number' && currentIndex === card.index) {
       setYouAreHere(true)
@@ -44,21 +43,15 @@ const Card = ({ card, currentIndex, setCurrentIndex }: CardProps) => {
       setCurrentIndex?.(index)
     }
   }
- 
-  
+
   return (
-  
     <LinkWrapper card={card}>
-      <Styled.Card
-        youAreHere={youAreHere}
-        onClick={handleDirectClick}
-      >
-        
+      <Styled.Card youAreHere={youAreHere} onClick={handleDirectClick}>
         {card.locale !== undefined && card.locale !== routerLocale ? (
           <TranslationDoesNotExist copy={card.translationDoesNotExistCopy} />
         ) : null}
 
-        {/* Flex container för title, text och logo */}
+        {/* Flex container for title, text and logo */}
         <Styled.ContentAndLogoContainer>
           <Styled.TextContent>
             <Styled.Title>{card.title}</Styled.Title>
@@ -67,15 +60,41 @@ const Card = ({ card, currentIndex, setCurrentIndex }: CardProps) => {
             </Styled.Markdown>
           </Styled.TextContent>
           {card.logo?.data?.attributes?.url && (
-            <Styled.Logo src={card.logo.data.attributes.url} alt={card.logo.data.attributes.alternativeText || card.title} />
+            <Styled.Logo
+              src={card.logo.data.attributes.url}
+              alt={card.logo.data.attributes.alternativeText || card.title}
+            />
           )}
         </Styled.ContentAndLogoContainer>
-        {card.files?.data && <Styled.FilesTitle>Lecture files</Styled.FilesTitle>}
+        {/* Here is the blue lecture download buttons */}
+        {card.files?.data && (
+          <Styled.FilesTitle>Lecture files</Styled.FilesTitle>
+        )}
         {card.files?.data && (
           <Styled.FilesContainer>
-            {card.files.data.map((file) =>
-              <Styled.LectureFile key={file.id} primary href={file.attributes.url} download>{file.attributes.alternativeText || file.attributes.name}</Styled.LectureFile>
-            )}
+            {card.files.data.map((file) => {
+              const fileName =
+                file.attributes.alternativeText || file.attributes.name
+              return (
+                <Styled.LectureFile
+                  key={file.id}
+                  primary
+                  href={file.attributes.url}
+                  download
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && window.gtag) {
+                      window.gtag('event', 'file_download', {
+                        file_name: fileName,
+                        link_url: file.attributes.url,
+                        card_title: card.title,
+                      })
+                    }
+                  }}
+                >
+                  {fileName}
+                </Styled.LectureFile>
+              )
+            })}
           </Styled.FilesContainer>
         )}
         {card.subComponent !== undefined ? (

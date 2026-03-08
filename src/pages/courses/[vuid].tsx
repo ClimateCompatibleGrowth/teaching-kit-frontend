@@ -125,33 +125,34 @@ export async function getStaticPaths() {
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   try {
     const courseVuid = await axios.get(
-      `${process.env.STRAPI_API_URL}/courseByVuid/${ctx.params?.vuid}?locale=${ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/courseByVuid/${ctx.params?.vuid}?locale=${
+        ctx.locale ?? ctx.defaultLocale
       }&fallbackToDefaultLocale=true`
     )
 
-    const populateCourseCreators = 'populate[CourseCreators][populate][Affiliation]=*'
-    const populateCourseFiles =
-      'populate[Files]=*'
-    const populateCourseLogo =
-      'populate[Logo]=*'
+    const populateCourseCreators =
+      'populate[CourseCreators][populate][Affiliation]=*'
+    const populateCourseFiles = 'populate[Files]=*'
+    const populateCourseLogo = 'populate[Logo]=*'
     const populateLectureCreators =
       'populate[Lectures][populate][LectureCreators]=*'
     const populateLearningOutcomes =
       'populate[Lectures][populate][LearningOutcomes]=*'
-    const populateLectureFiles =
-      'populate[Lectures][populate][Files]=*'
+    const populateLectureFiles = 'populate[Lectures][populate][Files]=*'
 
     const courseRequest: Promise<Response<CourseThreeLevelsDeep>> = axios.get(
       `${process.env.STRAPI_API_URL}/courses/${courseVuid.data?.id}?${populateCourseCreators}&${populateCourseFiles}&${populateCourseLogo}&${populateLectureCreators}&${populateLearningOutcomes}&${populateLectureFiles}`
     )
 
     const copyRequest: Promise<ResponseArray<LandingPageCopy>> = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-course-pages?locale=${ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-course-pages?locale=${
+        ctx.locale ?? ctx.defaultLocale
       }`
     )
 
     const generalCopyRequest: Promise<ResponseArray<GeneralCopy>> = axios.get(
-      `${process.env.STRAPI_API_URL}/copy-generals?locale=${ctx.locale ?? ctx.defaultLocale
+      `${process.env.STRAPI_API_URL}/copy-generals?locale=${
+        ctx.locale ?? ctx.defaultLocale
       }`
     )
 
