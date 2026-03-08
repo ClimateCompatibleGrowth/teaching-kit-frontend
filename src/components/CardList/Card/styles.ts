@@ -36,7 +36,7 @@ export const Card = styled.div<CardProps>`
 
   &:hover {
     background-color: ${(props) =>
-    props.isInteractive || props.youAreHere ? AccentPinkLighter : Background};
+      props.isInteractive || props.youAreHere ? AccentPinkLighter : Background};
   }
 `
 
@@ -58,7 +58,6 @@ export const Markdown = styled.div`
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   white-space: normal;
-
 
   p {
     margin-bottom: 0;
@@ -86,7 +85,7 @@ export const SubTitle = styled.h5`
 
 export const SubTitleNode = styled.div<CardProps>`
   margin-bottom: 2.4rem;
-  
+
   ${(CardProps) =>
     CardProps.youAreHere
       ? css`
@@ -102,9 +101,7 @@ export const FilesTitle = styled.h5`
   font-family: ${montserrat[400].style.fontFamily};
   font-size: 1.8rem;
   color: ${OnPrimary90};
-
 `
-
 
 export const FilesContainer = styled.div`
   display: flex;
@@ -131,13 +128,10 @@ export const TextContent = styled.div`
   flex: 1;
 `
 
-export const LectureFile = styled(ButtonLink)`
- 
-`
+export const LectureFile = styled(ButtonLink)``
 export const MetaInformation = styled.div`
   display: flex;
   align-items: center;
-
 `
 export const SubComponentWrapper = styled.div`
   width: 95%;
