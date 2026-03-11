@@ -76,23 +76,24 @@ const Card = ({ card, currentIndex, setCurrentIndex }: CardProps) => {
               const fileName =
                 file.attributes.alternativeText || file.attributes.name
               return (
-                <Styled.LectureFile
-                  key={file.id}
-                  primary
-                  href={file.attributes.url}
-                  download
-                  onClick={() => {
-                    if (typeof window !== 'undefined' && window.gtag) {
-                      window.gtag('event', 'file_download', {
-                        file_name: fileName,
-                        link_url: file.attributes.url,
-                        card_title: card.title,
-                      })
-                    }
-                  }}
-                >
-                  {fileName}
-                </Styled.LectureFile>
+              <Styled.LectureFile
+                key={file.id}
+                primary
+                href={file.attributes.url}
+                download
+                onClick={() => {
+                  if (typeof window !== 'undefined' && window.gtag) {
+                    window.gtag('event', 'file_download_custom', {
+                      file_name: fileName,
+                      link_url: file.attributes.url,
+                      card_title: card.title,
+                      transport_type: 'beacon',
+                    })
+                  }
+                }}
+              >
+  {fileName}
+</Styled.LectureFile>
               )
             })}
           </Styled.FilesContainer>
