@@ -34,7 +34,9 @@ const RecentUpdates = ({
     setUpdatesToShow(updatesToShow + UPDATE_INCREMENTS)
   }
 
-  const updatesToRender = recentUpdates?.slice(0, updatesToShow)
+  const updatesToRender = recentUpdates
+    ?.slice(0, updatesToShow)
+    .filter((update) => update.Type === 'COURSE')
 
   return (
     <PageContainer hasBottomPadding hasSmallSidePadding>
